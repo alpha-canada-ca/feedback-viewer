@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{wide}" lang="en">
+
+<th:block layout:fragment="content">
+	<table id="problemTable" class="wb-tables table">
+		<thead>
+			<tr>
+				<th>Language</th>
+				<th>URL</th>
+				<th>Yes/No</th>
+				<th>Problem</th>
+				<th>Problem Details</th>
+				<th>Date Entered</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr th:remove="tag" th:utext="${data}"></tr>
+		</tbody>
+	</table>
+</th:block>
+</html>

@@ -1,0 +1,17 @@
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{default}" xmlns:th="http://www.thymeleaf.org">
+<th:block layout:fragment="content">
+	<form action="addProblem" method="post">
+		Problem:<input type="text" name="problem" value="Test Problem" /></br>
+		Problem Details:<br/>
+		<textarea rows="5" cols="40" name="problemDetails"></textarea>
+		<br /> URL:<input type="url" name="url" value="http://www.test.com" />
+		<input type="hidden" name="language" value="en" /><br />
+		Institution:<input type="text" name="institution" value="TBS"/><br/>
+		Theme:<input type="text" name="theme" value="Test"/><br/>
+		Section:<input type="text" name="section" value="DTO"/><br/><br/>
+		 <input
+			type="submit" value="submit" />
+	</form>
+</th:block>
+</html>

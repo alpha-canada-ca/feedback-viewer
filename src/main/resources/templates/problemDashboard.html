@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{wide}" lang="en">
+
+<th:block layout:fragment="content">
+	<table id="problemTable" class="wb-tables table">
+		<thead>
+			<tr>
+				<th>Institution</th>
+				<th>Section</th>
+				<th>Theme</th>
+				<th>Language</th>
+				<th>URL</th>
+				<th>Yes/No</th>
+				<th>Problem</th>
+				<th>Problem Details</th>
+				<th>Date Entered</th>
+				<th>Tags</th>
+				<th>Resolution</th>
+				<th>Resolution Date</th>
+				<th>Action</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr th:remove="tag" th:utext="${data}"></tr>
+		</tbody>
+	</table>
+	<section id="submitWindow"
+		class="mfp-hide modal-dialog modal-content overlay-def">
+		<header class="modal-header">
+			<h1 class="modal-title">Resolution</h1>
+		</header>
+		<div class="modal-body">
+			<div class="wb-frmvld">
+				<form id="resolutionForm" name="resolutionForm" method="post">
+					<div class="form-group">
+						<label for="comments" class="control-label required">
+							Notes: </label>
+						<textarea id="notes" name="notes" class="form-control"
+							required="required" rows="10" cols="47"></textarea>
+					</div>
+					<input type="submit" class="btn" name="submit" id="submit"
+						value="Submit" />
+				</form>
+			</div>
+		</div>
+	</section>
+	<section id="tagWindow"
+		class="mfp-hide modal-dialog modal-content overlay-def">
+		<header class="modal-header">
+			<h1 class="modal-title">Tags</h1>
+		</header>
+		<div class="modal-body">
+			<div class="wb-frmvld">
+				<form id="tagsForm" name="tagsForm" method="post">
+					<div class="form-group">
+						<label for="tags" class="control-label required"> Tags: </label>
+						<textarea id="tags" name="tags" class="form-control"
+							required="required" rows="10" cols="47"></textarea>
+					</div>
+					<input type="submit" class="btn" name="submit" id="submit"
+						value="Submit" />
+				</form>
+			</div>
+		</div>
+	</section>
+
+
+
+
+</th:block>
+<th:block layout:fragment="script">
+	<script th:inline="javascript">
+		$(document).on("wb-ready.wb", function() {
+			const columns = {
+				DEPARTMENT : 0,
+				LANGUAGE : 1,
+				URL : 2,
+				YESNO : 3,
+				PROBLEM : 4,
+				PROBLEM_DETAILS : 5,
+				PROBLEM_DATE : 6,
+				TAGS : 7,
+				RESOLUTION : 8,
+				RESOLUTION_DATE : 9,
+				ACTION : 10
+			};
+			$("#problemTable").on("click",".resolveBtn", function(e) {
+				var id = $(e.target).attr("id").replace("resolve","");
+				var items = $("#resolve" + id).parent().parent().parent().find("td");
+				$("#notes").val($(items.get(columns.RESOLUTION)).text());
+				//alert($('#submitWindow').find('input#submit').length);
+				$('#submitWindow').find('input#submit').off().on("click",function(e) {
+					e.preventDefault();
+					e.stopImmediatePropagation();
+					var obj = {
+						"department" : $(items.get(columns.DEPARMENT)).text(),
+						"language" : $(items.get(columns.LANGUAGE)).text(),
+						"url" : $(items.get(columns.URL)).text(),
+						"yesno" : $(items.get(columns.YESNO)).text(),
+						"problem" : $(items.get(columns.PROBLEM)).text(),
+						"problemDetails" : $(items.get(columns.PROBLEM_DETAILS)).text(),
+						"problemDate" : $(items.get(columns.PROBLEM_DATE)).text(),
+						"resolution" : $("#notes").val(),
+						"id" : id
+					};
+					$.ajax({
+					    type:     "post",
+					    data:     obj,
+					    cache:    false,
+					    url:      "updateProblem",
+					    dataType: "text",
+					    error: function (xhr,status, error) {
+					    	console.log(xhr.responseText);
+					    },
+					    success: function (date) {
+					    	$(items.get(columns.RESOLUTION)).text($("#notes").val());
+					    	$("#notes").val("");
+					    	$(items.get(columns.RESOLUTION_DATE)).text(date);
+					    	$(".popup-modal-dismiss").click();
+					    }
+					});
+					
+				});
+				wb.doc.trigger("open.wb-lbx", [ [ {
+					src : "#submitWindow",
+					type : "inline"
+				} ] ]);
+
+			});
+			
+			$("#problemTable").on("click",".deleteBtn", function(e) {
+				var id = $(e.target).parent().attr("id").replace("delete","");
+				$.ajax({
+				    type:     "get",
+				    data:     {"id" : id},
+				    cache:    false,
+				    url:      "deleteProblem",
+				    dataType: "text",
+				    error: function (xhr,status, error) {
+				    	console.log(xhr.responseText);
+				    },
+				    success: function () {
+				    	var tr = $(e.target).parent().parent().parent().parent();
+				    	var row = $('#problemTable').DataTable().row($(tr));
+				    	row.remove();
+				    	$('#problemTable').DataTable().draw("full-hold");
+				    }
+				});
+			});
+			
+			$("#problemTable").on("click",".tagBtn", function(e) {
+				var id = $(e.target).attr("id").replace("tag","");
+				var items = $("#tag" + id).parent().parent().parent().find("td");
+				var tags = $(items.get(columns.TAGS)).text().replace(/\s*\(x\)\s*/g,",").replace(/.$/,"");
+				$("#tags").val(tags);
+				$('#tagWindow').find('input#submit').off().on("click",function(e) {
+					e.preventDefault();
+					e.stopImmediatePropagation();
+					var obj = {
+						"tags" : $("#tags").val(),
+						"id" : id
+					};
+					$.ajax({
+					    type:     "post",
+					    data:     obj,
+					    cache:    false,
+					    url:      "updateTags",
+					    dataType: "text",
+					    error: function (xhr,status, error) {
+					    	console.log(xhr.responseText);
+					    },
+					    success: function (tags) {
+					    	$(items.get(columns.TAGS)).html(tags);
+					    	$("#tags").val("");
+					    	$(".popup-modal-dismiss").click();
+					    }
+					});
+					
+				});
+				wb.doc.trigger("open.wb-lbx", [ [ {
+					src : "#tagWindow",
+					type : "inline"
+				} ] ]);
+
+			});
+			
+			$("#problemTable").on("click",".tagDeleteBtn", function(e) {
+				var id = $(e.target).attr("id").replace("tagDelete","");
+				var tag = $(e.target).text().replace(/\s*\(x\)\s*/g,"");
+				var obj = {
+					"tag" : tag,
+					"id" : id
+				};
+				$.ajax({
+				    type:     "post",
+				    data:     obj,
+				    cache:    false,
+				    url:      "deleteTag",
+				    dataType: "text",
+				    error: function (xhr,status, error) {
+				    	console.log(xhr.responseText);
+				    },
+				    success: function (tags) {
+				    	$(e.target).remove();
+				    }
+				});
+			});
+		});
+	</script>
+</th:block>
+</html>

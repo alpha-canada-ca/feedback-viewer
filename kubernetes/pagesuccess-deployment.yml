@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: pagesuccess-app
+  name: pagesuccess-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pagesuccess-app
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: pagesuccess-app
+    spec:
+      containers:
+      - image: tbsacr.azurecr.io/pagesuccess:1.0.0
+        imagePullPolicy: Always
+        name: pagesuccess
+        resources: 
+          limits:
+            cpu: 1500m
+            memory: 2Gi
+          requests:
+            cpu: 1500m
+            memory: 2Gi
+
