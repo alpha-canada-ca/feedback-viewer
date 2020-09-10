@@ -24,6 +24,6 @@ spec:
             cpu: 1500m
             memory: 2Gi
           requests:
-            cpu: 1500m
-            memory: 2Gi
+            cpu: 250m
+            memory: 256Mi
 
