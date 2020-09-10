@@ -12,3 +12,4 @@ buildNumber.properties
 # Spring Boot files
 **/application.properties
 **/application*.properties
+.DS_Store
