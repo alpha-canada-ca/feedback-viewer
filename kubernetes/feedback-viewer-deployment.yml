@@ -2,23 +2,23 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: pagesuccess-app
-  name: pagesuccess-app
+    app: feedback-viewer
+  name: feedback-viewer
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: pagesuccess-app
+      app: feedback-viewer
   strategy: {}
   template:
     metadata:
       labels:
-        app: pagesuccess-app
+        app: feedback-viewer
     spec:
       containers:
-      - image: tbsacr.azurecr.io/pagesuccess:1.0.0
+      - image: tbsacr.azurecr.io/feedback-viewer:1.0.0
         imagePullPolicy: Always
-        name: pagesuccess
+        name: feedback-viewer
         resources: 
           limits:
             cpu: 1500m
