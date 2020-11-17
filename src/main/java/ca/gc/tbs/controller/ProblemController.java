@@ -142,7 +142,7 @@ public class ProblemController {
 		User user = this.userService.getCurrentUser();
 		List<Problem> problems = null;
 		if (this.userService.isAdmin(user)) {
-			problems = this.problemRepository.findByProcessed("false");
+			problems = this.problemRepository.findByProcessed("true");
 		} else {
 			problems = this.problemRepository.findByProcessedAndInstitution("true", user.getInstitution());
 		}
