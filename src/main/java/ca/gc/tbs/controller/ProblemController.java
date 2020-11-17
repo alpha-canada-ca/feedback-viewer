@@ -35,7 +35,13 @@ public class ProblemController {
 	public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 	private static final Logger LOG = LoggerFactory.getLogger(ProblemController.class);
 	public static final String COLLECTION_PROBLEM = "problem";
+	public String[] OUTPUT_HEADERS_EN = { "Institution", "Section", "Theme", "Language", "URL",
+			"Problem", "Problem Details", "Date Entered", "Tags", "Resolution", "Resolution Date",
+			"Action" };
 
+	
+	
+	
 	@Autowired
 	private ProblemRepository problemRepository;
 
@@ -53,7 +59,7 @@ public class ProblemController {
 			String problemDetails = request.getParameter("problemDetails");
 			Problem problem = new Problem(System.currentTimeMillis() + "", request.getParameter("url"),
 					DATE_FORMAT.format(new Date()), request.getParameter("problem"), problemDetails,
-					request.getParameter("language"), "", "", "", "Test", "No", request.getParameter("institution"),
+					request.getParameter("language"), "", "", "", "Test", request.getParameter("institution"),
 					request.getParameter("theme"), request.getParameter("section"));
 			problem.setProblemDate(INPUT_FORMAT.format(new Date()));
 			problem.setProcessed("true");
@@ -136,7 +142,7 @@ public class ProblemController {
 		User user = this.userService.getCurrentUser();
 		List<Problem> problems = null;
 		if (this.userService.isAdmin(user)) {
-			problems = this.problemRepository.findByProcessed("true");
+			problems = this.problemRepository.findByProcessed("false");
 		} else {
 			problems = this.problemRepository.findByProcessedAndInstitution("true", user.getInstitution());
 		}
@@ -149,7 +155,6 @@ public class ProblemController {
 				builder.append("<td>" + problem.getTheme() + "</td>");
 				builder.append("<td>" + problem.getLanguage() + "</td>");
 				builder.append("<td>" + problem.getUrl() + "</td>");
-				builder.append("<td>" + problem.getYesno() + "</td>");
 				builder.append("<td>" + problem.getProblem() + "</td>");
 				builder.append("<td>" + problem.getProblemDetails() + "</td>");
 				builder.append("<td>" + DATE_FORMAT.format(INPUT_FORMAT.parse(problem.getProblemDate())) + "</td>");
@@ -188,7 +193,6 @@ public class ProblemController {
 				builder.append("<tr>");
 				builder.append("<td>" + problem.getLanguage() + "</td>");
 				builder.append("<td>" + problem.getUrl() + "</td>");
-				builder.append("<td>" + problem.getYesno() + "</td>");
 				builder.append("<td>" + problem.getProblem() + "</td>");
 				builder.append("<td>" + problem.getProblemDetails() + "</td>");
 				builder.append("<td>" + DATE_FORMAT.format(INPUT_FORMAT.parse(problem.getProblemDate())) + "</td>");

@@ -51,7 +51,6 @@ public class ImportController {
 					problem.setUrl(record.get("Page URL"));
 					problem.setProblem(record.get("What's wrong"));
 					problem.setProblemDetails(record.get("Details"));
-					problem.setYesno(record.get("Y/N"));
 					String[] topics = record.get("Topic").trim().split(",");
 					if (topics.length > 0) {
 						problem.setTags(Arrays.asList(topics));

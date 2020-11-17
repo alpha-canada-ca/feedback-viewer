@@ -17,7 +17,6 @@ public class Problem {
 	private String topic="";
 	private String problemDate="";
 	private String title="";
-	private String yesno="";
 	private String dataOrigin="";
 	private List<String> tags = new ArrayList<String>();
 	public String institution="";
@@ -35,7 +34,7 @@ public class Problem {
 	}
 
 	public Problem(String id, String url, String problemDate, String problem, String problemDetails, String language,
-			String resolutionDate, String resolution, String topic, String title, String yesno, String institution,
+			String resolutionDate, String resolution, String topic, String title, String institution,
 			String theme, String section) {
 		super();
 		this.id = id;
@@ -48,7 +47,6 @@ public class Problem {
 		this.topic = topic;
 		this.language = language;
 		this.title = title;
-		this.yesno = yesno;
 		this.institution = institution;
 		this.theme = theme;
 		this.section = section;
@@ -140,14 +138,6 @@ public class Problem {
 
 	public void setTitle(String title) {
 		this.title = title;
-	}
-
-	public String getYesno() {
-		return yesno;
-	}
-
-	public void setYesno(String yesno) {
-		this.yesno = yesno;
 	}
 
 	public String getProcessed() {

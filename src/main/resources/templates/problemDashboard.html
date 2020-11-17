@@ -5,28 +5,89 @@
 	layout:decorate="~{wide}" lang="en">
 
 <th:block layout:fragment="content">
-	<table id="problemTable" class="wb-tables table" data-wb-tables='{ "paging" : true }'>
-		<thead>
-			<tr>
-				<th>Institution</th>
-				<th>Section</th>
-				<th>Theme</th>
-				<th>Language</th>
-				<th>URL</th>
-				<th>Yes/No</th>
-				<th>Problem</th>
-				<th>Problem Details</th>
-				<th>Date Entered</th>
-				<th>Tags</th>
-				<th>Resolution</th>
-				<th>Resolution Date</th>
-				<th>Action</th>
-			</tr>
-		</thead>
-		<tbody>
-			<tr th:remove="tag" th:utext="${data}"></tr>
-		</tbody>
-	</table>
+	<div class="row"></div>
+		<div class="col-md-4">
+			<h4 class="wb-inv">Filtering options</h4>
+			<details open>
+				<summary>
+					<h4 class="h4">Filter options</h4>
+				</summary>
+				<p class="mrgn-tp-md">Use filters to change your results in the
+					data table</p>
+				<form class="wb-tables-filter" data-bind-to="problemTable">
+					<div class="form-group">
+						<label for="Institution">Institution</label> <select
+							class="form-control" id="Institution" name="Institution" data-column="0">
+							<option value="">All</option>
+							<option value="Service Canada">Service Canada</option>
+							<option value="Global Affairs Canada">Global Affairs Canada</option>
+							<option value="Canada Revenue Agency">Canada Revenue Agency</option>
+							<option value="Public Health Agency of Canada">Public Health Agency of Canada</option>
+							
+							<!-- DEPARTMENTS -->
+						</select>
+					</div>
+					<div class="form-group">
+						<label for="dt_theme">Theme</label> <select class="form-control"
+							id="dt_theme" name="dt_theme" data-column="2">
+							<option value="">All</option>
+							<option value="Benefits">Benefits</option>
+							<option value="Taxes">Taxes</option>
+							<option value="Health">Health</option>
+							<option value="Travel">Travel</option>
+							<!-- THEMES -->
+						</select>
+					</div>
+					
+					<div class="btn-group">
+						<button type="submit" class="btn btn-primary"
+							aria-controls="problemTable">Filter</button>
+						<button type="reset" class="btn btn-primary">Reset to
+							defaults</button>
+					</div>
+				</form>
+			</details>
+		</div>
+		<div class="col-md-8">
+			<table id="problemTable" class="wb-tables table" data-wb-tables='{ "paging" : true }'>
+				<thead>
+					<tr>
+						<th>Institution</th>
+						<th>Section</th>
+						<th>Theme</th>
+						<th>Language</th>
+						<th>URL</th>
+						<th>Problem</th>
+						<th>Problem Details</th>
+						<th>Date Entered</th>
+						<th>Tags</th>
+						<th>Resolution</th>
+						<th>Resolution Date</th>
+						<th>Action</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:remove="tag" th:utext="${data}"></tr>
+				</tbody>
+				<tfoot>
+					<tr>
+						<th>Institution</th>
+						<th>Section</th>
+						<th>Theme</th>
+						<th>Language</th>
+						<th>URL</th>
+						<th>Problem</th>
+						<th>Problem Details</th>
+						<th>Date Entered</th>
+						<th>Tags</th>
+						<th>Resolution</th>
+						<th>Resolution Date</th>
+						<th>Action</th>
+					</tr>
+				</tfoot>
+			</table>
+		</div>
+	</div>
 	<section id="submitWindow"
 		class="mfp-hide modal-dialog modal-content overlay-def">
 		<header class="modal-header">
@@ -73,20 +134,47 @@
 </th:block>
 <th:block layout:fragment="script">
 	<script th:inline="javascript">
+		
 		$(document).on("wb-ready.wb", function() {
 			const columns = {
 				DEPARTMENT : 0,
-				LANGUAGE : 1,
-				URL : 2,
-				YESNO : 3,
-				PROBLEM : 4,
-				PROBLEM_DETAILS : 5,
-				PROBLEM_DATE : 6,
-				TAGS : 7,
-				RESOLUTION : 8,
-				RESOLUTION_DATE : 9,
-				ACTION : 10
+				SECTION : 1,
+				THEME : 2,
+				LANGUAGE : 3,
+				URL : 4,
+				PROBLEM : 5,
+				PROBLEM_DETAILS : 6,
+				PROBLEM_DATE : 7,
+				TAGS : 8,
+				RESOLUTION : 9,
+				RESOLUTION_DATE : 10,
+				ACTION : 11
 			};
+
+
+
+			$('#problemTable tfoot th').each( function (i) {
+				var title = $('#problemTable thead th').eq( $(this).index() ).text();
+				$(this).html( '<input type="text" placeholder="Search '+title+'" data-index="'+i+'" />' );
+			} );
+		
+			// DataTable
+			table = $('#problemTable').DataTable( {
+				retrieve:       true,
+				scrollY:        "300px",
+				scrollX:        true,
+				scrollCollapse: true,
+				paging:         false,
+				fixedColumns:   true
+			}); 
+		
+			// Filter event handler
+			$( table.table().container() ).on( 'keyup', 'tfoot input', function () {
+				table
+					.column( $(this).data('index') )
+					.search( this.value )
+					.draw();
+			} );
 			$("#problemTable").on("click",".resolveBtn", function(e) {
 				var id = $(e.target).attr("id").replace("resolve","");
 				var items = $("#resolve" + id).parent().parent().parent().find("td");
@@ -99,7 +187,6 @@
 						"department" : $(items.get(columns.DEPARMENT)).text(),
 						"language" : $(items.get(columns.LANGUAGE)).text(),
 						"url" : $(items.get(columns.URL)).text(),
-						"yesno" : $(items.get(columns.YESNO)).text(),
 						"problem" : $(items.get(columns.PROBLEM)).text(),
 						"problemDetails" : $(items.get(columns.PROBLEM_DETAILS)).text(),
 						"problemDate" : $(items.get(columns.PROBLEM_DATE)).text(),
@@ -131,6 +218,7 @@
 
 			});
 			
+			
 			$("#problemTable").on("click",".deleteBtn", function(e) {
 				var id = $(e.target).parent().attr("id").replace("delete","");
 				$.ajax({
@@ -144,9 +232,9 @@
 				    },
 				    success: function () {
 				    	var tr = $(e.target).parent().parent().parent().parent();
-				    	var row = $('#problemTable').DataTable().row($(tr));
-				    	row.remove();
-				    	$('#problemTable').DataTable().draw("full-hold");
+				    //	var row = ($('#problemTable').DataTable().row($(tr))).remove();
+				    //	row.remove();
+				    //	$('#problemTable').DataTable().draw("full-hold");
 				    }
 				});
 			});
@@ -208,6 +296,8 @@
 				    }
 				});
 			});
+		
+
 		});
 	</script>
 </th:block>
