@@ -19,19 +19,21 @@
 						<label for="Institution">Institution</label> <select
 							class="form-control" id="Institution" name="Institution" data-column="0">
 							<option value="">All</option>
-							<option value="Service Canada">Service Canada</option>
-							<option value="Global Affairs Canada">Global Affairs Canada</option>
-							<option value="Canada Revenue Agency">Canada Revenue Agency</option>
+							<option value="DTO">Digital Transformation Office</option>
+							<option value="FIN">Department of Finance</option>
+							<option value="Health Canada">Health Canada</option>
 							<option value="Public Health Agency of Canada">Public Health Agency of Canada</option>
+							<option value="CRA">Canada Revenue Agency</option>
 							
 							<!-- DEPARTMENTS -->
 						</select>
 					</div>
+
 					<div class="form-group">
 						<label for="dt_theme">Theme</label> <select class="form-control"
 							id="dt_theme" name="dt_theme" data-column="2">
 							<option value="">All</option>
-							<option value="Benefits">Benefits</option>
+							<option value="COVID">COVID</option>
 							<option value="Taxes">Taxes</option>
 							<option value="Health">Health</option>
 							<option value="Travel">Travel</option>
@@ -49,43 +51,30 @@
 			</details>
 		</div>
 		<div class="col-md-8">
-			<table id="problemTable" class="wb-tables table" data-wb-tables='{ "paging" : true }'>
-				<thead>
-					<tr>
-						<th>Institution</th>
-						<th>Section</th>
-						<th>Theme</th>
-						<th>Language</th>
-						<th>URL</th>
-						<th>Problem</th>
-						<th>Problem Details</th>
-						<th>Date Entered</th>
-						<th>Tags</th>
-						<th>Resolution</th>
-						<th>Resolution Date</th>
-						<th>Action</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr th:remove="tag" th:utext="${data}"></tr>
-				</tbody>
-				<tfoot>
-					<tr>
-						<th>Institution</th>
-						<th>Section</th>
-						<th>Theme</th>
-						<th>Language</th>
-						<th>URL</th>
-						<th>Problem</th>
-						<th>Problem Details</th>
-						<th>Date Entered</th>
-						<th>Tags</th>
-						<th>Resolution</th>
-						<th>Resolution Date</th>
-						<th>Action</th>
-					</tr>
-				</tfoot>
-			</table>
+			
+				<table id="problemTable" class="table">
+					<thead>
+						<tr>
+							<th>Institution</th>
+							<th>Section</th>
+							<th>Theme</th>
+							<th>Language</th>
+							<th>URL</th>
+							<th>Problem</th>
+							<th>Problem Details</th>
+							<th>Date Entered</th>
+							<th>Tags</th>
+							<th>Resolution</th>
+							<th>Resolution Date</th>
+							<th>Action</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:remove="tag" th:utext="${data}"></tr>
+					</tbody>
+					
+				</table>
+			
 		</div>
 	</div>
 	<section id="submitWindow"
@@ -133,7 +122,61 @@
 
 </th:block>
 <th:block layout:fragment="script">
+	<script
+	src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+<script
+	src="https://cdn.datatables.net/buttons/1.6.1/js/dataTables.buttons.min.js"></script>
+<script
+	src="https://cdn.datatables.net/buttons/1.6.1/js/buttons.flash.min.js"></script>
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+<script
+	src="https://cdn.datatables.net/buttons/1.6.1/js/buttons.html5.min.js"></script>
+<script
+	src="https://cdn.datatables.net/buttons/1.6.1/js/buttons.print.min.js"></script>
+<script
+	src="https://cdn.datatables.net/colreorder/1.5.2/js/dataTables.colReorder.min.js"></script>
+
 	<script th:inline="javascript">
+
+		$(document).ready(function() {
+			$('#problemTable thead tr').clone(true).appendTo( '#problemTable thead' );
+			$('#problemTable thead tr:eq(1) th').each( function (i) {
+				var title = $(this).text();
+				$(this).html( '<input type="text" placeholder="Search '+title+'" />' );
+		
+				$( 'input', this ).on( 'keyup change', function () {
+					if ( table.column(i).search() !== this.value ) {
+						table
+							.column(i)
+							.search( this.value )
+							.draw();
+					}
+				} );
+			} );
+		
+			var table = $('#problemTable').DataTable( {
+				retrieve: true,
+				orderCellsTop: true,
+				fixedHeader: true,
+				dom: 'fBr<"table-responsive"t>i',
+				buttons : [{
+					extend : 'csv',
+					className : 'btn btn-default',
+					},{
+					extend : 'excel',
+					className : 'btn btn-default'
+				}]
+			} );
+		
+			$('#problemTable').find( 'thead th' ).append( '<span class="sorting-cnt"><span class="sorting-icons"></span></span>')
+
+		} );
+		
 		
 		$(document).on("wb-ready.wb", function() {
 			const columns = {
@@ -151,30 +194,19 @@
 				ACTION : 11
 			};
 
-
-
-			$('#problemTable tfoot th').each( function (i) {
-				var title = $('#problemTable thead th').eq( $(this).index() ).text();
-				$(this).html( '<input type="text" placeholder="Search '+title+'" data-index="'+i+'" />' );
-			} );
-		
 			// DataTable
-			table = $('#problemTable').DataTable( {
+			var table = $('#problemTable').DataTable( {
 				retrieve:       true,
-				scrollY:        "300px",
-				scrollX:        true,
 				scrollCollapse: true,
 				paging:         false,
-				fixedColumns:   true
+				fixedColumns:   true,
+				colReorder:     true,
+				scrollY:        "300px",
+				scrollX:        true			
 			}); 
-		
-			// Filter event handler
-			$( table.table().container() ).on( 'keyup', 'tfoot input', function () {
-				table
-					.column( $(this).data('index') )
-					.search( this.value )
-					.draw();
-			} );
+			
+			
+			
 			$("#problemTable").on("click",".resolveBtn", function(e) {
 				var id = $(e.target).attr("id").replace("resolve","");
 				var items = $("#resolve" + id).parent().parent().parent().find("td");
