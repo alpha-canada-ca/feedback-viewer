@@ -151,7 +151,31 @@
 	<script th:inline="javascript">
 		
  
+		$.fn.dataTableExt.afnFiltering.push(
+			function( oSettings, aData, iDataIndex ) {
+				var iMin = $('#min').val().replaceAll("-", "") * 1;
+				var iMax = $('#max').val().replaceAll("-", "") * 1;
 
+				var iVersion = aData[7].replaceAll("-", "") * 1;
+				if ( iMin == "" && iMax == "" )
+				{
+					return true;
+				}
+				else if ( iMin == "" && iVersion <= iMax )
+				{
+					return true;
+				}
+				else if ( iMin <= iVersion && "" == iMax )
+				{
+					return true;
+				}
+				else if ( iMin <= iVersion && iVersion <= iMax )
+				{
+					return true;
+				}
+				return false;
+			}
+		);
 	
 		$(document).ready(function() {
 			$('#problemTable thead tr').clone(true).appendTo( '#problemTable thead' );
@@ -185,7 +209,8 @@
 		
 			$('#problemTable').find( 'thead th' ).append( '<span class="sorting-cnt"><span class="sorting-icons"></span></span>')
 
-	
+			$('#min').keyup( function() { table.fnDraw(); } );
+    		$('#max').keyup( function() { table.fnDraw(); } );
 
 
 		} );
