@@ -129,7 +129,7 @@ public class ProblemController {
 		StringBuilder builder = new StringBuilder();
 		for (String tag : problem.getTags()) {
 			builder.append("<button id='tagDelete" + problem.getId() + "' class='tagDeleteBtn btn btn-xs'>" + tag
-					+ " (x)</button>");
+					+ " </button>");
 		}
 		return builder.toString();
 	}
