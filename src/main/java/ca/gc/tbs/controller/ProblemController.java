@@ -7,19 +7,27 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.datatables.DataTablesInput;
+import org.springframework.data.mongodb.datatables.DataTablesOutput;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.view.RedirectView;
+
+import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 import ca.gc.tbs.domain.OriginalProblem;
 import ca.gc.tbs.domain.Problem;
@@ -69,6 +77,37 @@ public class ProblemController {
 			return new RedirectView("/error");
 		}
 	}
+
+		
+
+    @RequestMapping(value = "/problemData") 
+    @ResponseBody
+    public DataTablesOutput<Problem> list(@Valid DataTablesInput input)  {
+    	Criteria findProcessed = where("processed").is("true");
+    	return problemRepository.findAll(input, findProcessed);
+	}
+    
+    @RequestMapping(value = "/excelProblemData") 
+    @ResponseBody
+    public DataTablesOutput<Problem> excel(@Valid DataTablesInput input)  {
+    	input.setStart(0);
+    	input.setLength(-1);
+    	System.out.println(problemRepository.findAll(input));
+    	return problemRepository.findAll(input);
+	}
+    
+    
+    /*
+    @PostMapping(value = "/csv") 
+    @ResponseBody
+    public DataTablesOutput<Problem> csv(@Valid DataTablesInput input)  {
+    	Criteria findProcessed = where("processed").is("false");
+    	return problemRepository.findAll(input, findProcessed);
+	}
+    */
+    
+    
+
 
 	@PostMapping(value = "/deleteTag")
 	public @ResponseBody String deleteTag(HttpServletRequest request) {
@@ -209,7 +248,7 @@ public class ProblemController {
 	@GetMapping(value = "/problemDashboard")
 	public ModelAndView problemDashboard() throws Exception {
 		ModelAndView mav = new ModelAndView();
-		mav.addObject("data", this.getProblemData());
+		//mav.addObject("data", this.getProblemData());
 		mav.setViewName("problemDashboard");
 		return mav;
 	}

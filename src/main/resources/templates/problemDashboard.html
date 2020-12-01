@@ -76,7 +76,7 @@
 						</tr>
 					</thead>
 					<tbody>
-						<tr th:remove="tag" th:utext="${data}"></tr>
+				<!--<tr th:remove="tag" th:utext="${data}"></tr> -->
 					</tbody>
 					
 				</table>
@@ -147,11 +147,13 @@
 <script
 	src="https://cdn.datatables.net/colreorder/1.5.2/js/dataTables.colReorder.min.js"></script>
 
+	<script type="text/javascript" src="js/spring-friendly.min.js"></script>
+
 	
 	<script th:inline="javascript">
 		
  
-		$.fn.dataTableExt.afnFiltering.push(
+	/*	$.fn.dataTableExt.afnFiltering.push(
 			function( oSettings, aData, iDataIndex ) {
 				var iMin = $('#min').val().replaceAll("-", "") * 1;
 				var iMax = $('#max').val().replaceAll("-", "") * 1;
@@ -175,25 +177,113 @@
 				}
 				return false;
 			}
-		);
+		); */
 	
 		$(document).ready(function() {
-			$('#problemTable thead tr').clone(true).appendTo( '#problemTable thead' );
-			$('#problemTable thead tr:eq(1) th').each( function (i) {
-				var title = $(this).text();
-				$(this).html( '<input type="text" placeholder="Search '+title+'" />' );
+
+			function newexportaction(e, dt, button, config) {
+				var self = this;
+				var oldStart = dt.settings()[0]._iDisplayStart;
+				dt.one('preXhr', function (e, s, data) {
+					// Just this once, load all data from the server...
+					data.start = 0;
+					data.length = 2147483647;
+					dt.one('preDraw', function (e, settings) {
+						// Call the original action function
+						if (button[0].className.indexOf('buttons-copy') >= 0) {
+							$.fn.dataTable.ext.buttons.copyHtml5.action.call(self, e, dt, button, config);
+						} else if (button[0].className.indexOf('buttons-excel') >= 0) {
+							$.fn.dataTable.ext.buttons.excelHtml5.available(dt, config) ?
+								$.fn.dataTable.ext.buttons.excelHtml5.action.call(self, e, dt, button, config) :
+								$.fn.dataTable.ext.buttons.excelFlash.action.call(self, e, dt, button, config);
+						} else if (button[0].className.indexOf('buttons-csv') >= 0) {
+							$.fn.dataTable.ext.buttons.csvHtml5.available(dt, config) ?
+								$.fn.dataTable.ext.buttons.csvHtml5.action.call(self, e, dt, button, config) :
+								$.fn.dataTable.ext.buttons.csvFlash.action.call(self, e, dt, button, config);
+						} else if (button[0].className.indexOf('buttons-pdf') >= 0) {
+							$.fn.dataTable.ext.buttons.pdfHtml5.available(dt, config) ?
+								$.fn.dataTable.ext.buttons.pdfHtml5.action.call(self, e, dt, button, config) :
+								$.fn.dataTable.ext.buttons.pdfFlash.action.call(self, e, dt, button, config);
+						} else if (button[0].className.indexOf('buttons-print') >= 0) {
+							$.fn.dataTable.ext.buttons.print.action(e, dt, button, config);
+						}
+						dt.one('preXhr', function (e, s, data) {
+							// DataTables thinks the first item displayed is index 0, but we're not drawing that.
+							// Set the property to what it was before exporting.
+							settings._iDisplayStart = oldStart;
+							data.start = oldStart;
+						});
+						// Reload the grid with the original page. Otherwise, API functions like table.cell(this) don't work properly.
+						setTimeout(dt.ajax.reload, 0);
+						// Prevent rendering of the full data to the DOM
+						return false;
+					});
+				});
+				// Requery the server with the new one-time export settings
+				dt.ajax.reload();
+			};
 		
-				$( 'input', this ).on( 'keyup change', function () {
-					if ( table.column(i).search() !== this.value ) {
-						table
-							.column(i)
-							.search( this.value )
-							.draw();
-					}
-				} );
-			} );
+			$('#problemTable').find( 'thead th' ).append( '<span class="sorting-cnt"><span class="sorting-icons"></span></span>')
+
+
+			
+			var table = $('table#problemTable').DataTable({
+				"lengthMenu": [10, 25, 50, -1],
+				retrieve: true,
+				'ajax' : '/problemData',
+				'serverSide' : true,
+				columns : [{
+				data : 'institution'
+				}, {
+				data : 'section'
+				},
+				{
+				data : 'theme'
+				},
+				{
+				data : 'language'
+				},
+				{
+				data : 'url'
+				},
+				{
+				data : 'problem'
+				},
+				{
+				data : 'problemDetails'
+				},
+				{
+				data : 'problemDate'
+				},
+				{
+				data : 'tags'
+				},
+				{
+				data : 'resolution'
+				},
+				{
+				data : 'resolutionDate'
+				},
+				 {
+				data : 'problem',
+				render: function (data, type, row) {
+					return data || '';
+				}
+				}],
+				orderCellsTop: true,
+				fixedHeader: true,
+				dom: 'fBr<"table-responsive"t>ltip',
+				buttons : [{
+					"extend": 'csv',
+					className : 'btn btn-default',                         
+                    "action": newexportaction
+					}]
+			});
 		
-			var table = $('#problemTable').DataTable( {
+        
+			
+			/*
+			var table = $('table#problemTable').DataTable( {
 				retrieve: true,
 				orderCellsTop: true,
 				fixedHeader: true,
@@ -204,20 +294,36 @@
 					},{
 					extend : 'excel',
 					className : 'btn btn-default'
-				}]
+				}],
 			} );
-		
-			$('#problemTable').find( 'thead th' ).append( '<span class="sorting-cnt"><span class="sorting-icons"></span></span>')
+			*/
+			
+					
+						$('#problemTable thead tr').clone(true).appendTo( '#problemTable thead' );
+						$('#problemTable thead tr:eq(1) th').each( function (i) {
+							var title = $(this).text();
+							$(this).html( '<input type="text" placeholder="Search '+title+'" />' );
+					
+							$( 'input', this ).on( 'keyup change', function () {
+								if ( table.column(i).search() !== this.value ) {
+									table
+										.column(i)
+										.search( this.value )
+										.draw();
+								}
+							} );
+						} );
+				
+	
+			/*	$('#min').keyup( function() { table.fnDraw(); } );
+				$('#max').keyup( function() { table.fnDraw(); } );
 
-			$('#min').keyup( function() { table.fnDraw(); } );
-    		$('#max').keyup( function() { table.fnDraw(); } );
 
-
+			*/
 		} );
 		
-		
 		$(document).on("wb-ready.wb", function() {
-			const columns = {
+		/*	const columns = {
 				DEPARTMENT : 0,
 				SECTION : 1,
 				THEME : 2,
@@ -233,7 +339,8 @@
 			};
 
 			// DataTable
-			var table = $('#problemTable').DataTable( {
+			
+		/*	var table = $('#problemTable').DataTable( {
 				retrieve:       true,
 				scrollCollapse: true,
 				paging:         true,
@@ -242,7 +349,7 @@
 				scrollY:        "300px",
 				scrollX:        true			
 			}); 
-			
+			*/
 			
 			
 			$("#problemTable").on("click",".resolveBtn", function(e) {

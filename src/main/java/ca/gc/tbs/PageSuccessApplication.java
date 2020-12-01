@@ -7,11 +7,14 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.mongodb.datatables.DataTablesRepositoryFactoryBean;
+import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
 
 
 
 @SpringBootApplication
+@EnableMongoRepositories(repositoryFactoryBeanClass = DataTablesRepositoryFactoryBean.class)
 public class PageSuccessApplication {
 
     public static void main(String[] args) {
