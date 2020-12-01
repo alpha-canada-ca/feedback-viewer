@@ -196,7 +196,7 @@ public class ProblemController {
 				builder.append("<td>" + problem.getUrl() + "</td>");
 				builder.append("<td>" + problem.getProblem() + "</td>");
 				builder.append("<td>" + problem.getProblemDetails() + "</td>");
-				builder.append("<td>" + DATE_FORMAT.format(INPUT_FORMAT.parse(problem.getProblemDate())) + "</td>");
+				builder.append("<td>" + problem.getProblemDate() + "</td>");
 				builder.append("<td class='tagCol'>");
 				builder.append(this.generateTagHtml(problem));
 				builder.append("</td>");
@@ -234,7 +234,7 @@ public class ProblemController {
 				builder.append("<td>" + problem.getUrl() + "</td>");
 				builder.append("<td>" + problem.getProblem() + "</td>");
 				builder.append("<td>" + problem.getProblemDetails() + "</td>");
-				builder.append("<td>" + DATE_FORMAT.format(INPUT_FORMAT.parse(problem.getProblemDate())) + "</td>");
+				builder.append("<td>" + problem.getProblemDate() + "</td>");
 				builder.append("</tr>");
 				finalBuilder.append(builder);
 			} catch (Exception e) {
