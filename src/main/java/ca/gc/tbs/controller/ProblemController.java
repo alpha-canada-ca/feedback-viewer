@@ -107,7 +107,7 @@ public class ProblemController {
     		}
     	}
     	
-    	Criteria findProcessed = where("processed").is("false") ;
+    	Criteria findProcessed = where("processed").is("true") ;
     	return problemRepository.findAll(input, findProcessed);
 	}
 	
