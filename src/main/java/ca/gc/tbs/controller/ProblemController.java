@@ -201,7 +201,7 @@ public class ProblemController {
 	}
 	public void parseDates() {
 		List<Problem> problems = null;
-		problems = this.problemRepository.findByProcessed("false");
+		problems = this.problemRepository.findByProcessed("true");
 		for (Problem problem : problems) {
 			try {
 				if(problem.getProblemDate().contains("GMT")) {
