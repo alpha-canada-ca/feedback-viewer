@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.datatables.DataTablesInput;
+import org.springframework.data.mongodb.datatables.DataTablesInput.Column;
 import org.springframework.data.mongodb.datatables.DataTablesOutput;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -83,9 +84,33 @@ public class ProblemController {
     @RequestMapping(value = "/problemData") 
     @ResponseBody
     public DataTablesOutput<Problem> list(@Valid DataTablesInput input)  {
-    	Criteria findProcessed = where("processed").is("true");
+    
+    	 
+    	String dateSearchVal = input.getColumn("problemDate").get().getSearch().getValue();
+
+    	if(dateSearchVal.contains(":")) {
+    		
+    		String[] ret = dateSearchVal.split(":");
+    
+    		if(ret.length == 2) {
+    		
+	    		String dateSearchValA = ret[0];
+	    		
+	    		String dateSearchValB = ret[1];
+	    		
+	    		input.getColumn("problemDate").get().getSearch().setValue("");
+	
+	        	Criteria dateCriteria = where("problemDate").gte(dateSearchValA).lte(dateSearchValB);
+	    		if(dateSearchValA != "" && dateSearchValB != "") {
+	    			return problemRepository.findAll(input, dateCriteria);
+	    		}
+    		}
+    	}
+    	
+    	Criteria findProcessed = where("processed").is("false") ;
     	return problemRepository.findAll(input, findProcessed);
 	}
+	
     
     
     
@@ -174,6 +199,21 @@ public class ProblemController {
 		}
 		return builder.toString();
 	}
+	public void parseDates() {
+		List<Problem> problems = null;
+		problems = this.problemRepository.findByProcessed("false");
+		for (Problem problem : problems) {
+			try {
+				System.out.println("before parse Date for: " + problem.getProblemDate());
+				problem.setProblemDate(DATE_FORMAT.format(INPUT_FORMAT.parse(problem.getProblemDate())));
+				this.problemRepository.save(problem);
+				System.out.println("parsed Date for: " + problem.getProblemDate());
+			}
+			catch (Exception e) {
+				LOG.error("Could not parse date because:" + problem.getId() + " " + e.getMessage());
+			}
+		}
+	}
 
 	public String getProblemData() {
 
@@ -236,7 +276,7 @@ public class ProblemController {
 				builder.append("<td>" + problem.getUrl() + "</td>");
 				builder.append("<td>" + problem.getProblem() + "</td>");
 				builder.append("<td>" + problem.getProblemDetails() + "</td>");
-				builder.append("<td>" + problem.getProblemDate() + "</td>");
+				builder.append("<td>" + (DATE_FORMAT.format(INPUT_FORMAT.parse(problem.getProblemDate())))+ "</td>");
 				builder.append("</tr>");
 				finalBuilder.append(builder);
 			} catch (Exception e) {

@@ -16,50 +16,70 @@ public class TopTaskSurvey {
 	private String autoTagProcessed;
 	
 	
-	@Field("date-time")
+	//@Field("date-time")
 	private String dateTime;
-	@Field("survey-referrer")
+	
+	//@Field("survey-referrer")
 	private String surveyReferrer;
-	@Field("language")
+	
+	//@Field("language")
 	private String language;
-	@Field("device")
+	
+	//@Field("device")
 	private String device;
-	@Field("dept")
+	
+	//@Field("dept")
 	private String dept;
-	@Field("theme")
+	
+	//@Field("theme")
 	private String theme;
-	@Field("grouping")
+	
+	//@Field("grouping")
 	private String grouping;
-	@Field("task")
+	
+	//@Field("task")
 	private String task;
-	@Field("task-satisfaction")
-	private String taskSatisfication;
-	@Field("task-ease")
+	
+
+	//@Field("task-satisfaction")
+	private String taskSatisfaction;
+	
+	//@Field("task-ease")
 	private String taskEase;
-	@Field("task-complete")
+	
+	//@Field("task-complete")
 	private String taskComplete;
-	@Field("task-complete-no-why")
+	
+	//@Field("task-complete-no-why")
 	private String taskCompleteNoWhy;
-	@Field("task-improve")
-	private String samplingImprove;
-	@Field("sampling-invitation")
+	
+	//@Field("task-improve")
+	private String taskImprove;
+	
+	//@Field("sampling-invitation")
 	private String samplingInvitation;
-	@Field("sampling-gc")
+	
+	//@Field("sampling-gc")
 	private String samplingGC;
-	@Field("sampling-canada")
+	
+	//@Field("sampling-canada")
 	private String samplingCanada;
-    @Field("sampling-theme")
+	
+   // @Field("sampling-theme")
     private String samplingTheme;
-	@Field("sampling-institution")
+    
+	//@Field("sampling-institution")
 	private String samplingInstitution;
-	@Field("sampling-grouping")
+	
+	//@Field("sampling-grouping")
 	private String samplingGrouping;
-	@Field("sampling-task")
+	
+	//@Field("sampling-task")
 	private String samplingTask;
 	
 	public TopTaskSurvey( String dateTime, String surveyReferrer, String language, String device, String dept, 
-	 String theme, String grouping, String task, String taskSatisfication, String taskEase,String taskComplete,
-	 String taskCompleteNoWhy, String samplingImprove, String samplingInvitation,String samplingGC, String samplingCanada,
+	 String theme, String grouping, String task, String taskSatisfaction, String taskEase,String taskComplete,
+	 String taskCompleteNoWhy, String taskImprove, String samplingInvitation,String samplingGC, String samplingCanada,
 	 String samplingTheme, String samplingInstitution, String samplingGrouping, String samplingTask) {
 		 this.dateTime = dateTime;
 		 this.surveyReferrer = surveyReferrer;
@@ -69,11 +89,11 @@ public class TopTaskSurvey {
 		 this.theme = theme;
 		 this.grouping = grouping;
 		 this.task = task;
-		 this.taskSatisfication = taskSatisfication;
+		 this.taskSatisfaction = taskSatisfaction;
 		 this.taskEase = taskEase;
 		 this.taskComplete = taskComplete;
 		 this.taskCompleteNoWhy = taskCompleteNoWhy;
-		 this.samplingImprove = samplingImprove;
+		 this.taskImprove = taskImprove;
 		 this.samplingInvitation = samplingInvitation;
 		 this.samplingGC = samplingGC;
 		 this.samplingCanada = samplingCanada;
@@ -161,12 +181,7 @@ public class TopTaskSurvey {
 	public void setTask(String task) {
 		this.task = task;
 	}
-	public String getTaskSatisfication() {
-		return taskSatisfication;
-	}
-	public void setTaskSatisfication(String taskSatisfication) {
-		this.taskSatisfication = taskSatisfication;
-	}
+
 	public String getTaskEase() {
 		return taskEase;
 	}
@@ -185,11 +200,26 @@ public class TopTaskSurvey {
 	public void setTaskCompleteNoWhy(String taskCompleteNoWhy) {
 		this.taskCompleteNoWhy = taskCompleteNoWhy;
 	}
-	public String getSamplingImprove() {
-		return samplingImprove;
+	public String getTaskSatisfaction() {
+		return taskSatisfaction;
 	}
-	public void setSamplingImprove(String samplingImprove) {
-		this.samplingImprove = samplingImprove;
+
+	public void setTaskSatisfaction(String taskSatisfaction) {
+		this.taskSatisfaction = taskSatisfaction;
+	}
+
+	public String getTaskImprove() {
+		return taskImprove;
+	}
+
+	public void setTaskImprove(String taskImprove) {
+		this.taskImprove = taskImprove;
+	}
+	public String getSamplingImprove() {
+		return taskImprove;
+	}
+	public void setSamplingImprove(String taskImprove) {
+		this.taskImprove = taskImprove;
 	}
 	public String getSamplingInvitation() {
 		return samplingInvitation;

@@ -10,7 +10,7 @@
                 <h4 class="h4">Filter options</h4>
             </summary>
             <p class="mrgn-tp-md">Use filters to change your results in the data table</p>
-            <form class="wb-tables-filter" data-bind-to="problemTable">
+            <form class="wb-tables-filter" data-bind-to="topTaskTable">
                 <div class="form-group">
                     <label for="Institution">Institution</label> <select class="form-control" id="Institution" name="Institution" data-column="0">
 							<option value="">All</option>
@@ -36,12 +36,12 @@
 
                 <div class="form-group">
                     <label for="date">Date</label>
-                    <input type="date" class="form-control" id="min" name="min">
+                    <!-- <input type="date" class="form-control" id="min" name="min"> -->
                     <input type="date" class="form-control" id="max" name="max">
                 </div>
 
                 <div class="btn-group">
-                    <button type="submit" class="btn btn-primary" aria-controls="problemTable">Filter</button>
+                    <button type="submit" class="btn btn-primary" aria-controls="topTaskTable">Filter</button>
                     <button type="reset" class="btn btn-primary">Reset to
 							defaults</button>
                 </div>
@@ -51,19 +51,29 @@
 
     <div class="col-md-9">
 
-        <table id="problemTable" class="small table">
+        <table id="topTaskTable" class="small table">
             <thead>
                 <tr>
-                    <th>Institution</th>
-                    <th>Section</th>
-                    <th>Theme</th>
+                    <th>Date</th>
+                    <th>Survey Referrer</th>
                     <th>Language</th>
-                    <th>URL</th>
-                    <th>Problem</th>
-                    <th>Problem Details</th>
-                    <th>Date Entered</th>
-                    <th>Tags</th>
-
+                    <th>Device</th>
+                    <th>Department</th>
+                    <th>Theme</th>
+                    <th>Grouping</th>
+                    <th>Task</th>
+                    <th>Task Satisfaction</th>
+                    <th>Task Ease</th>
+                    <th>Task Complete</th>
+                    <th>Task Complete No Why</th>
+                    <th>Task Improve</th>
+                    <th>Sampling Invitation</th>
+                    <th>Sampling GC</th>
+                    <th>Sampling Canada</th>
+                    <th>Sampling Theme</th>
+                    <th>Sampling Institution</th>
+                    <th>Sampling Group</th>
+                    <th>Sampling Task</th>
                 </tr>
             </thead>
             <tbody>
@@ -127,6 +137,66 @@
 
 
     <script th:inline="javascript">
+        // $.fn.dataTableExt.afnFiltering.push(
+        //     function(oSettings, aData, iDataIndex) {
+        //         var iMin = $('#min').val().replaceAll("-", "") * 1;
+        //         var iMax = $('#max').val().replaceAll("-", "") * 1;
+        //         var iVersion = aData[7].replaceAll("-", "") * 1;
+        //         if (iMin == "" && iMax == "") {
+        //             console.log("empty")
+        //             return true;
+        //         } else if (iMin == "" && iVersion <= iMax) {
+        //             return true;
+        //         } else if (iMin <= iVersion && "" == iMax) {
+        //             return true;
+        //         } else if (iMin <= iVersion && iVersion <= iMax) {
+        //             return true;
+        //         }
+        //         return false;
+        //     }
+        // );
+        // $.fn.dataTableExt.afnFiltering.push(
+        //     function(oSettings, aData, iDataIndex) {
+        //         var iMin = $('#min').val().split("-");
+        //         iMin[1] = monthDict[iMin[1]];
+        //         var ret = [iMin[1], iMin[2], iMin[0]];
+        //         var ret = ret.join(" ");
+
+
+        //         var iMax = $('#min').val().split("-");
+        //         iMax[1] = monthDict[iMax[1]];
+        //         var ret2 = [iMax[1], iMax[2], iMax[0]];
+        //         var ret2 = ret2.join(" ");
+
+        //         if (ret == "" && ret2 == "") {
+        //             return true;
+        //         } else if (ret == "" && iVersion <= ret2) {
+        //             return true;
+        //         } else if (ret <= iVersion && "" == ret2) {
+        //             return true;
+        //         } else if (ret <= iVersion && iVersion <= ret2) {
+        //             return true;
+        //         }
+        //         return false;
+        //     }
+        // );
+        /*  $.fn.dataTableExt.afnFiltering.push(
+              function(oSettings, aData, iDataIndex) {
+                  var iMin = Date.parse($('#min').val());
+                  var iMax = Date.parse($('#max').val());
+                  var iVersion = Date.parse(aData[7]);
+                  if (iMin == "" && iMax == "") {
+                      return true;
+                  } else if (iMin == "" && iVersion <= iMax) {
+                      return true;
+                  } else if (iMin <= iVersion && "" == iMax) {
+                      return true;
+                  } else if (iMin <= iVersion && iVersion <= iMax) {
+                      return true;
+                  }
+                  return false;
+              }
+          ); */
         $(document).ready(function() {
 
 
@@ -173,33 +243,83 @@
                 dt.ajax.reload();
             };
 
-            $('#problemTable').find('thead th').append('<span class="sorting-cnt"><span class="sorting-icons"></span></span>')
+            $('#topTaskTable').find('thead th').append('<span class="sorting-cnt"><span class="sorting-icons"></span></span>')
 
+            monthDict = {
+                '01': 'Jan',
+                '02': 'Feb',
+                '03': 'Mar',
+                '04': 'Apr',
+                '05': 'May',
+                '06': 'Jun',
+                '07': 'Jul',
+                '08': 'Aug',
+                '09': 'Sep',
+                '10': 'Oct',
+                '11': 'Nov',
+                '12': 'Dec'
+            };
+            monthDict2 = {
+                'Jan': '01',
+                'Feb': '02',
+                'Mar': '03',
+                'Apr': '04',
+                'May': '05',
+                'Jun': '06',
+                'Jul': '07',
+                'Aug': '08',
+                'Sep': '09',
+                'Oct': '10',
+                'Nov': '11',
+                'Dec': '12'
+            };
 
-            var table = $('table#problemTable').DataTable({
+            var table = $('table#topTaskTable').DataTable({
                 "lengthMenu": [10, 25, 50, -1],
                 retrieve: true,
-                'ajax': '/problemData',
+                'ajax': '/topTaskData',
                 'serverSide': true,
                 columns: [{
-                    data: 'institution'
+                    data: 'dateTime'
                 }, {
-                    data: 'section'
-                }, {
-                    data: 'theme'
+                    data: 'surveyReferrer'
                 }, {
                     data: 'language'
                 }, {
-                    data: 'url'
+                    data: 'device'
                 }, {
-                    data: 'problem'
+                    data: 'dept'
                 }, {
-                    data: 'problemDetails'
+                    data: 'theme'
                 }, {
-                    data: 'problemDate'
+                    data: 'grouping'
                 }, {
-                    data: 'tags'
-                }],
+                    data: 'task'
+                }, {
+                    data: 'taskSatisfaction'
+                }, {
+                    data: 'taskEase'
+                }, {
+                    data: 'taskComplete'
+                }, {
+                    data: 'taskCompleteNoWhy'
+                }, {
+                    data: 'taskImprove'
+                }, {
+                    data: 'samplingInvitation'
+                }, {
+                    data: 'samplingGC'
+                }, {
+                    data: 'samplingCanada'
+                }, {
+                    data: 'samplingTheme'
+                }, {
+                    data: 'samplingInstitution'
+                }, {
+                    data: 'samplingGrouping'
+                }, {
+                    data: 'samplingTask'
+                }, ],
                 orderCellsTop: true,
                 fixedHeader: true,
                 dom: 'fBr<"table-responsive"t>ltip',
@@ -215,8 +335,8 @@
 
 
 
-            $('#problemTable thead tr').clone(true).appendTo('#problemTable thead');
-            $('#problemTable thead tr:eq(1) th').each(function(i) {
+            $('#topTaskTable thead tr').clone(true).appendTo('#topTaskTable thead');
+            $('#topTaskTable thead tr:eq(1) th').each(function(i) {
                 var title = $(this).text();
                 $(this).html('<input type="text" placeholder="Search ' + title + '" />');
 
@@ -229,33 +349,30 @@
                     }
                 });
             });
-
-
-            $('#min', this).on('keyup change', function() {
-                if (this.value != "" && $('#max').val() != "") {
+            /*  $('#min', this).on('keyup change', function() {
+                if (this.value != "") {
+                    var minDate = (this.value).split("-");
+                    var minSearch = monthDict[minDate[1]] + " " + minDate[2] + " " + minDate[0]
                     table
                         .column(7)
-                        .search(this.value + ":" + $('#max').val())
+                        .search(minSearch)
                         .draw();
                 }
             });
+*/
 
             $('#max', this).on('keyup change', function() {
-                if (this.value != "" && $('#min').val() != "") {
+                if (this.value != "") {
+                    var date = (this.value).split("-");
+                    var search = monthDict[date[1]] + " " + date[2] + " " + date[0]
                     table
-                        .column(7)
-                        .search($('#min').val() + ":" + this.value)
+                        .column(1)
+                        .search(search)
                         .draw();
                 }
             });
 
 
-            // $('#min').keyup(function() {
-            //     table.fnDraw();
-            // });
-            // $('#max').keyup(function() {
-            //     table.fnDraw();
-            // });
 
         });
 
@@ -263,7 +380,7 @@
 
 
 
-            $("#problemTable").on("click", ".resolveBtn", function(e) {
+            $("#topTaskTable").on("click", ".resolveBtn", function(e) {
                 var id = $(e.target).attr("id").replace("resolve", "");
                 var items = $("#resolve" + id).parent().parent().parent().find("td");
                 $("#notes").val($(items.get(columns.RESOLUTION)).text());
@@ -309,7 +426,7 @@
             });
 
 
-            $("#problemTable").on("click", ".deleteBtn", function(e) {
+            $("#topTaskTable").on("click", ".deleteBtn", function(e) {
                 var id = $(e.target).parent().attr("id").replace("delete", "");
                 $.ajax({
                     type: "get",
@@ -324,14 +441,14 @@
                     },
                     success: function() {
                         var tr = $(e.target).parent().parent().parent().parent();
-                        //	var row = ($('#problemTable').DataTable().row($(tr))).remove();
+                        //	var row = ($('#topTaskTable').DataTable().row($(tr))).remove();
                         //	row.remove();
-                        //	$('#problemTable').DataTable().draw("full-hold");
+                        //	$('#topTaskTable').DataTable().draw("full-hold");
                     }
                 });
             });
 
-            $("#problemTable").on("click", ".tagBtn", function(e) {
+            $("#topTaskTable").on("click", ".tagBtn", function(e) {
                 var id = $(e.target).attr("id").replace("tag", "");
                 var items = $("#tag" + id).parent().parent().parent().find("td");
                 var tags = $(items.get(columns.TAGS)).text().replace(/\s*\(x\)\s*/g, ",").replace(/.$/, "");
@@ -369,7 +486,7 @@
 
             });
 
-            $("#problemTable").on("click", ".tagDeleteBtn", function(e) {
+            $("#topTaskTable").on("click", ".tagDeleteBtn", function(e) {
                 var id = $(e.target).attr("id").replace("tagDelete", "");
                 var tag = $(e.target).text().replace(/\s*\(x\)\s*/g, "");
                 var obj = {
@@ -395,6 +512,5 @@
         });
     </script>
 </th:block>
-
 
 </html>
