@@ -85,7 +85,7 @@ public class ProblemController {
     @ResponseBody
     public DataTablesOutput<Problem> list(@Valid DataTablesInput input)  {
     
-    	 
+    	parseDates();
     	String dateSearchVal = input.getColumn("problemDate").get().getSearch().getValue();
 
     	if(dateSearchVal.contains(":")) {
@@ -204,10 +204,12 @@ public class ProblemController {
 		problems = this.problemRepository.findByProcessed("false");
 		for (Problem problem : problems) {
 			try {
-				System.out.println("before parse Date for: " + problem.getProblemDate());
-				problem.setProblemDate(DATE_FORMAT.format(INPUT_FORMAT.parse(problem.getProblemDate())));
-				this.problemRepository.save(problem);
-				System.out.println("parsed Date for: " + problem.getProblemDate());
+				if(problem.getProblemDate().contains("GMT")) {
+					System.out.println("before parse Date for: " + problem.getProblemDate());
+					problem.setProblemDate(DATE_FORMAT.format(INPUT_FORMAT.parse(problem.getProblemDate())));
+					this.problemRepository.save(problem);
+					System.out.println("parsed Date for: " + problem.getProblemDate());
+				}
 			}
 			catch (Exception e) {
 				LOG.error("Could not parse date because:" + problem.getId() + " " + e.getMessage());
