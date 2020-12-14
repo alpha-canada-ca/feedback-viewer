@@ -50,37 +50,48 @@
     </div>
 
     <div class="col-md-9">
+        <div class="table-responsive">
+            <table id="topTaskTable" class="small table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Survey Referrer</th>
+                        <th>Language</th>
+                        <th>Device</th>
+                        <th>Screener</th>
+                        <th>Department 1</th>
+                        <th>Theme 1</th>
+                        <th>Grouping 1</th>
+                        <th>Task 1</th>
+                        <th>Task 1 Other</th>
+                        <th>Department 2</th>
+                        <th>Theme 2</th>
+                        <th>Grouping 2</th>
+                        <th>Task 2</th>
+                        <th>Task 2 Other</th>
+                        <th>Task Satisfaction</th>
+                        <th>Task Ease</th>
+                        <th>Task Completion</th>
+                        <th>Task Improve</th>
+                        <th>Task Improve Comment</th>
+                        <th>Task Why Not</th>
+                        <th>Task Why Not Comment</th>
+                        <th>Sampling</th>
+                        <th>Sampling Invitation</th>
+                        <th>Sampling GC</th>
+                        <th>Sampling Canada</th>
+                        <th>Sampling Theme</th>
+                        <th>Sampling Institution</th>
+                        <th>Sampling Group</th>
+                        <th>Sampling Task</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!--<tr th:remove="tag" th:utext="${data}"></tr> -->
+                </tbody>
 
-        <table id="topTaskTable" class="small table">
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>Survey Referrer</th>
-                    <th>Language</th>
-                    <th>Device</th>
-                    <th>Department</th>
-                    <th>Theme</th>
-                    <th>Grouping</th>
-                    <th>Task</th>
-                    <th>Task Satisfaction</th>
-                    <th>Task Ease</th>
-                    <th>Task Complete</th>
-                    <th>Task Complete No Why</th>
-                    <th>Task Improve</th>
-                    <th>Sampling Invitation</th>
-                    <th>Sampling GC</th>
-                    <th>Sampling Canada</th>
-                    <th>Sampling Theme</th>
-                    <th>Sampling Institution</th>
-                    <th>Sampling Group</th>
-                    <th>Sampling Task</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!--<tr th:remove="tag" th:utext="${data}"></tr> -->
-            </tbody>
-
-        </table>
+            </table>
+        </div>
 
     </div>
     </div>
@@ -245,34 +256,7 @@
 
             $('#topTaskTable').find('thead th').append('<span class="sorting-cnt"><span class="sorting-icons"></span></span>')
 
-            monthDict = {
-                '01': 'Jan',
-                '02': 'Feb',
-                '03': 'Mar',
-                '04': 'Apr',
-                '05': 'May',
-                '06': 'Jun',
-                '07': 'Jul',
-                '08': 'Aug',
-                '09': 'Sep',
-                '10': 'Oct',
-                '11': 'Nov',
-                '12': 'Dec'
-            };
-            monthDict2 = {
-                'Jan': '01',
-                'Feb': '02',
-                'Mar': '03',
-                'Apr': '04',
-                'May': '05',
-                'Jun': '06',
-                'Jul': '07',
-                'Aug': '08',
-                'Sep': '09',
-                'Oct': '10',
-                'Nov': '11',
-                'Dec': '12'
-            };
+
 
             var table = $('table#topTaskTable').DataTable({
                 "lengthMenu": [10, 25, 50, -1],
@@ -288,23 +272,41 @@
                 }, {
                     data: 'device'
                 }, {
-                    data: 'dept'
+                    data: 'dept1'
                 }, {
-                    data: 'theme'
+                    data: 'theme1'
                 }, {
-                    data: 'grouping'
+                    data: 'grouping1'
                 }, {
-                    data: 'task'
+                    data: 'task1'
+                }, {
+                    data: 'task1other'
+                }, {
+                    data: 'dept2'
+                }, {
+                    data: 'theme2'
+                }, {
+                    data: 'grouping2'
+                }, {
+                    data: 'task2'
+                }, {
+                    data: 'task2other'
                 }, {
                     data: 'taskSatisfaction'
                 }, {
                     data: 'taskEase'
                 }, {
-                    data: 'taskComplete'
-                }, {
-                    data: 'taskCompleteNoWhy'
+                    data: 'taskCompletion'
                 }, {
                     data: 'taskImprove'
+                }, {
+                    data: 'taskImproveComment'
+                }, {
+                    data: 'taskWhyNot'
+                }, {
+                    data: 'taskWhyNotComment'
+                }, {
+                    data: 'sampling'
                 }, {
                     data: 'samplingInvitation'
                 }, {

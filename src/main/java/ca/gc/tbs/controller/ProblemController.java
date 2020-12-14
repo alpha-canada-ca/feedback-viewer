@@ -84,9 +84,9 @@ public class ProblemController {
     @RequestMapping(value = "/problemData") 
     @ResponseBody
     public DataTablesOutput<Problem> list(@Valid DataTablesInput input)  {
-    
-    	//parseDates();
+
     	String dateSearchVal = input.getColumn("problemDate").get().getSearch().getValue();
+
 
     	if(dateSearchVal.contains(":")) {
     		

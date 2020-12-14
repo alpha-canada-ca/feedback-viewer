@@ -40,7 +40,7 @@ public class ContentService {
 	}
 
 	private String cleanSIN(String content) {
-		return content.replaceAll("\\d{3}\\s?\\d{3}\\s?\\d{3}", "### ### ###");
+		return content.replaceAll("(\\d{3}\\s*\\d{3}\\s*\\d{3}|\\d{3}\\D*\\d{3}\\D*\\d{3})", "### ### ###");
 	}
 
 	private String cleanPhoneNumber(String content) {

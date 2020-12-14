@@ -56,8 +56,8 @@ public class TopTaskController {
     @RequestMapping(value = "/topTaskData") 
     @ResponseBody
     public DataTablesOutput<TopTaskSurvey> list(@Valid DataTablesInput input)  {
-    	//Criteria findProcessed = where("processed").is("false");
-    	return topTaskRepository.findAll(input);
+    	Criteria findProcessed = where("processed").is("false");
+    	return topTaskRepository.findAll(input, findProcessed);
 	}
    
 	@GetMapping(value = "/topTaskDashboard")

@@ -1,8 +1,48 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{wide}" lang="en">
-
 <th:block layout:fragment="content">
-    <div class="row"></div>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+    <style>
+        th {
+            font-size: 13px;
+        }
+        
+        td {
+            font-size: 13px;
+        }
+        
+        .table.dataTable {
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+            font-size: 13px;
+        }
+        
+        .dataTables_filter input {
+            height: 35px;
+            width: 150px;
+        }
+        
+        .dataTables_filter {
+            font-size: 15px;
+        }
+        
+        .dataTables_length {
+            font-size: 13px;
+        }
+        
+        .dataTables_info {
+            font-size: 13px;
+        }
+        
+        .dataTables_paginate {
+            font-size: 13px;
+        }
+        
+        .dt-button {
+            text-align: center;
+            font-size: 13px;
+        }
+    </style>
     <div class="col-md-3">
         <h4 class="wb-inv">Filtering options</h4>
         <details open>
@@ -14,7 +54,7 @@
                 <div class="form-group">
                     <label for="Institution">Institution</label> <select class="form-control" id="Institution" name="Institution" data-column="0">
 							<option value="">All</option>
-							<option value="FIN">Department of Finance</option>
+                            <option value="FIN">Department of Finance</option>
 							<option value="Health Canada">Health Canada</option>
 							<option value="Public Health Agency of Canada">Public Health Agency of Canada</option>
 							<option value="CRA">Canada Revenue Agency</option>
@@ -42,35 +82,35 @@
 
                 <div class="btn-group">
                     <button type="submit" class="btn btn-primary" aria-controls="problemTable">Filter</button>
-                    <button type="reset" class="btn btn-primary">Reset to
-							defaults</button>
+                    <button type="reset" class="btn btn-primary">Reset to defaults</button>
                 </div>
             </form>
         </details>
     </div>
 
     <div class="col-md-9">
+        <div class="table-responsive">
+            <table id="problemTable" class="small table" style=''>
+                <thead>
+                    <tr>
+                        <th>Institution</th>
+                        <th>Section</th>
+                        <th>Theme</th>
+                        <th>Language</th>
+                        <th>URL</th>
+                        <th>Problem</th>
+                        <th>Problem Details</th>
+                        <th>Date Entered</th>
+                        <th>Tags</th>
 
-        <table id="problemTable" class="small table">
-            <thead>
-                <tr>
-                    <th>Institution</th>
-                    <th>Section</th>
-                    <th>Theme</th>
-                    <th>Language</th>
-                    <th>URL</th>
-                    <th>Problem</th>
-                    <th>Problem Details</th>
-                    <th>Date Entered</th>
-                    <th>Tags</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!--<tr th:remove="tag" th:utext="${data}"></tr> -->
+                </tbody>
 
-                </tr>
-            </thead>
-            <tbody>
-                <!--<tr th:remove="tag" th:utext="${data}"></tr> -->
-            </tbody>
-
-        </table>
+            </table>
+        </div>
 
     </div>
     </div>
@@ -122,12 +162,17 @@
     <script src="https://cdn.datatables.net/buttons/1.6.1/js/buttons.html5.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/1.6.1/js/buttons.print.min.js"></script>
     <script src="https://cdn.datatables.net/colreorder/1.5.2/js/dataTables.colReorder.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/busy-load@0.1.2/src/index.min.js"></script>
 
     <script type="text/javascript" src="js/spring-friendly.min.js"></script>
 
 
     <script th:inline="javascript">
         $(document).ready(function() {
+
+
+
+
 
 
 
@@ -177,6 +222,12 @@
 
 
             var table = $('table#problemTable').DataTable({
+                processing: true,
+                ajax: {},
+                "language": {
+                    processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading..n.</span> '
+                },
+
                 "lengthMenu": [10, 25, 50, -1],
                 retrieve: true,
                 'ajax': '/problemData',
@@ -205,10 +256,17 @@
                 dom: 'fBr<"table-responsive"t>ltip',
                 buttons: [{
                     "extend": 'csv',
+                    "text": 'Download CSV',
                     className: 'btn btn-default',
-                    "action": newexportaction
+                    "action": newexportaction,
+                }, {
+                    "extend": 'excel',
+                    "text": "Download Excel",
+                    className: 'btn btn-default',
+                    "action": newexportaction,
                 }]
             });
+
 
 
 
@@ -231,21 +289,50 @@
             });
 
 
+
+            var flag = false;
+            var flag2 = false;
             $('#min', this).on('keyup change', function() {
                 if (this.value != "" && $('#max').val() != "") {
+                    flag = true;
                     table
                         .column(7)
                         .search(this.value + ":" + $('#max').val())
                         .draw();
                 }
+                if ($('#dt_theme').val() != "" && flag) {
+                    table
+                        .column(2)
+                        .search($('#dt_theme').val())
+                        .draw()
+                }
+                if ($('#Institution').val() != "" && flag) {
+                    table
+                        .column(0)
+                        .search($('#Institution').val())
+                        .draw()
+                }
             });
 
             $('#max', this).on('keyup change', function() {
                 if (this.value != "" && $('#min').val() != "") {
+                    flag2 = true;
                     table
                         .column(7)
                         .search($('#min').val() + ":" + this.value)
                         .draw();
+                }
+                if ($('#dt_theme').val() != "" && flag2) {
+                    table
+                        .column(2)
+                        .search($('#dt_theme').val())
+                        .draw()
+                }
+                if ($('#Institution').val() != "" && flag2) {
+                    table
+                        .column(0)
+                        .search($('#Institution').val())
+                        .draw()
                 }
             });
 
