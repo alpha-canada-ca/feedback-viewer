@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{default}" lang="en">
+<th:block layout:fragment="content">
+    <style>
+        ​ .dt-button {
+            align-items: flex-start;
+            font-size: 15px;
+            text-align: center;
+            visibility: visible;
+        }
+        
+        .dataTables_processing {
+            background: none !important;
+        }
+        
+        .fa {
+            position: fixed;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            visibility: visible;
+        }
+    </style>
+    <p class="mrgn-tp-md">To access feedback from the task success survey, make selections using the filters, then download your data as either an Excel or CSV file.</p>
+    <h2 class="mrgn-lft-md h3">Filter options</h2>
+    <div class="row">
+        <form class="wb-tables-filter col-md-10" data-bind-to="topTaskTable">
+            <div class="form-group col-md-5">
+                <label for="Department">Department</label> <select class="form-control" id="Department" name="Department" data-column="5">
+                        <option value="">All</option>
+                        <option value="FIN">Department of Finance</option>
+                        <option value="Health Canada">Health Canada</option>
+                        <option value="Public Health Agency of Canada">Public Health Agency of Canada</option>
+                        <option value="CRA">Canada Revenue Agency</option>
+                        <option value="ISED">Innovation, Science and Economic Development Canada</option>
+                        
+                        <!-- DEPARTMENTS -->
+                    </select>
+            </div>
+
+            <div class="form-group col-md-2">
+                <label for="dt_theme">Theme</label> <select class="form-control" id="dt_theme" name="dt_theme" data-column="6">
+                        <option value="">All</option>
+                        <option value="COVID">COVID</option>
+                        <option value="Taxes">Taxes</option>
+                        <option value="Health">Health</option>
+                        <option value="Travel">Travel</option>
+                        <!-- THEMES -->
+                    </select>
+            </div>
+            <div class="form-horizontal col-md-5">
+                <label for="date">Date range</label>
+                <div class="form-group">
+                    <label for="min" class="col-sm-4 control-label">Start date:</label>
+                    <input type="date" class="col-sm-8 form-control" id="min" name="min">
+                </div>
+                <div class="form-group">
+                    <label for="max" class="col-sm-4 control-label">End date:</label>
+                    <input type="date" class="col-sm-8 form-control" id="max" name="max">
+                </div>
+            </div>
+            <div class="clearfix"></div>
+            <div class="btn-group-lg mrgn-bttm-lg col-md-12">
+                <button type="submit" class="btn btn-primary" aria-controls="topTaskTable" id="filter">Filter</button>
+                <button type="reset" class="btn btn-default" id="reset">Reset to defaults</button>
+            </div>
+        </form>
+        <div class="col-md-2 mrgn-tp-lg">
+            <table id="topTaskTable" class="hidden">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Survey Referrer</th>
+                        <th>Language</th>
+                        <th>Device</th>
+                        <th>Screener</th>
+                        <th>Department</th>
+                        <th>Theme</th>
+                        <th>Grouping</th>
+                        <th>Task</th>
+                        <th>Task Other</th>
+                        <th>Task Satisfaction</th>
+                        <th>Task Ease</th>
+                        <th>Task Completion</th>
+                        <th>Task Improve</th>
+                        <th>Task Improve Comment</th>
+                        <th>Task Why Not</th>
+                        <th>Task Why Not Comment</th>
+                        <th>Sampling</th>
+                        <th>Sampling Invitation</th>
+                        <th>Sampling GC</th>
+                        <th>Sampling Canada</th>
+                        <th>Sampling Theme</th>
+                        <th>Sampling Institution</th>
+                        <th>Sampling Group</th>
+                        <th>Sampling Task</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!--<tr th:remove="tag" th:utext="${data}"></tr> -->
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+</th:block>
+<th:block layout:fragment="script">
+    <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/1.6.1/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/1.6.1/js/buttons.flash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+    <script src="https://cdn.datatables.net/buttons/1.6.1/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/1.6.1/js/buttons.print.min.js"></script>
+    <script src="https://cdn.datatables.net/colreorder/1.5.2/js/dataTables.colReorder.min.js"></script>
+
+    <script type="text/javascript" src="js/spring-friendly.min.js"></script>
+
+
+    <script th:inline="javascript">
+        $(document).ready(function() {
+
+
+
+            function newexportaction(e, dt, button, config) {
+                var self = this;
+                var oldStart = dt.settings()[0]._iDisplayStart;
+                dt.one('preXhr', function(e, s, data) {
+                    // Just this once, load all data from the server...
+                    data.start = 0;
+                    data.length = 2147483647;
+                    dt.one('preDraw', function(e, settings) {
+                        // Call the original action function
+                        if (button[0].className.indexOf('buttons-copy') >= 0) {
+                            $.fn.dataTable.ext.buttons.copyHtml5.action.call(self, e, dt, button, config);
+                        } else if (button[0].className.indexOf('buttons-excel') >= 0) {
+                            $.fn.dataTable.ext.buttons.excelHtml5.available(dt, config) ?
+                                $.fn.dataTable.ext.buttons.excelHtml5.action.call(self, e, dt, button, config) :
+                                $.fn.dataTable.ext.buttons.excelFlash.action.call(self, e, dt, button, config);
+                        } else if (button[0].className.indexOf('buttons-csv') >= 0) {
+                            $.fn.dataTable.ext.buttons.csvHtml5.available(dt, config) ?
+                                $.fn.dataTable.ext.buttons.csvHtml5.action.call(self, e, dt, button, config) :
+                                $.fn.dataTable.ext.buttons.csvFlash.action.call(self, e, dt, button, config);
+                        } else if (button[0].className.indexOf('buttons-pdf') >= 0) {
+                            $.fn.dataTable.ext.buttons.pdfHtml5.available(dt, config) ?
+                                $.fn.dataTable.ext.buttons.pdfHtml5.action.call(self, e, dt, button, config) :
+                                $.fn.dataTable.ext.buttons.pdfFlash.action.call(self, e, dt, button, config);
+                        } else if (button[0].className.indexOf('buttons-print') >= 0) {
+                            $.fn.dataTable.ext.buttons.print.action(e, dt, button, config);
+                        }
+                        dt.one('preXhr', function(e, s, data) {
+                            // DataTables thinks the first item displayed is index 0, but we're not drawing that.
+                            // Set the property to what it was before exporting.
+                            settings._iDisplayStart = oldStart;
+                            data.start = oldStart;
+                        });
+                        // Reload the grid with the original page. Otherwise, API functions like table.cell(this) don't work properly.
+                        setTimeout(dt.ajax.reload, 0);
+                        // Prevent rendering of the full data to the DOM
+                        return false;
+                    });
+                });
+                // Requery the server with the new one-time export settings
+                dt.ajax.reload();
+            };
+
+            $('#topTaskTable').find('thead th').append('<span class="sorting-cnt"><span class="sorting-icons"></span></span>')
+
+
+
+            var table = $('table#topTaskTable').DataTable({
+                processing: true,
+                ajax: {},
+                "language": {
+                    processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span> '
+                },
+                "lengthMenu": [10, 25, 50, -1],
+                retrieve: true,
+                'ajax': '/topTaskData',
+                'serverSide': true,
+                columns: [{
+                    data: 'dateTime'
+                }, {
+                    data: 'surveyReferrer'
+                }, {
+                    data: 'language'
+                }, {
+                    data: 'device'
+                }, {
+                    data: 'screener'
+                }, {
+                    data: 'dept'
+                }, {
+                    data: 'theme'
+                }, {
+                    data: 'grouping'
+                }, {
+                    data: 'task'
+                }, {
+                    data: 'taskOther'
+                }, {
+                    data: 'taskSatisfaction'
+                }, {
+                    data: 'taskEase'
+                }, {
+                    data: 'taskCompletion'
+                }, {
+                    data: 'taskImprove'
+                }, {
+                    data: 'taskImproveComment'
+                }, {
+                    data: 'taskWhyNot'
+                }, {
+                    data: 'taskWhyNotComment'
+                }, {
+                    data: 'taskSampling'
+                }, {
+                    data: 'samplingInvitation'
+                }, {
+                    data: 'samplingGC'
+                }, {
+                    data: 'samplingCanada'
+                }, {
+                    data: 'samplingTheme'
+                }, {
+                    data: 'samplingInstitution'
+                }, {
+                    data: 'samplingGrouping'
+                }, {
+                    data: 'samplingTask'
+                }, ],
+                orderCellsTop: true,
+                fixedHeader: true,
+                dom: 'Br',
+                buttons: [{
+                    "extend": 'csv',
+                    "text": 'Download CSV',
+                    className: 'btn btn-default mrgn-bttm-md',
+                    "action": newexportaction,
+                }, {
+                    "extend": 'excel',
+                    "text": "Download Excel",
+                    className: 'btn btn-default',
+                    "action": newexportaction,
+                }]
+            });
+
+
+
+
+
+
+            // $('#topTaskTable thead tr').clone(true).appendTo('#topTaskTable thead');
+            // $('#topTaskTable thead tr:eq(1) th').each(function(i) {
+            //     var title = $(this).text();
+            //     $(this).html('<input type="text" placeholder="Search ' + title + '" />');
+
+            //     $('input', this).on('keyup change', function() {
+            //         if (table.column(i).search() !== this.value) {
+            //             table
+            //                 .column(i)
+            //                 .search(this.value)
+            //                 .draw();
+            //         }
+            //     });
+            // });
+
+            var flag = false;
+            var flag2 = false;
+            $('#min', this).on('keyup change', function() {
+                if (this.value != "" && $('#max').val() != "") {
+                    flag = true;
+                    table
+                        .column(0)
+                        .search(this.value + ":" + $('#max').val())
+                        .draw();
+                }
+                if ($('#dt_theme').val() != "" && flag) {
+                    table
+                        .column(6)
+                        .search($('#dt_theme').val())
+                        .draw()
+                }
+                if ($('#Department').val() != "" && flag) {
+                    table
+                        .column(5)
+                        .search($('#Department').val())
+                        .draw()
+                }
+            });
+
+            $('#max', this).on('keyup change', function() {
+                if (this.value != "" && $('#min').val() != "") {
+                    flag2 = true;
+                    table
+                        .column(0)
+                        .search($('#min').val() + ":" + this.value)
+                        .draw();
+                }
+                if ($('#dt_theme').val() != "" && flag2) {
+                    table
+                        .column(6)
+                        .search($('#dt_theme').val())
+                        .draw()
+                }
+                if ($('#Department').val() != "" && flag2) {
+                    table
+                        .column(5)
+                        .search($('#Department').val())
+                        .draw()
+                }
+            });
+
+
+        });
+
+        $(document).on("wb-ready.wb", function() {
+
+
+
+            // $("#topTaskTable").on("click", ".resolveBtn", function(e) {
+            //     var id = $(e.target).attr("id").replace("resolve", "");
+            //     var items = $("#resolve" + id).parent().parent().parent().find("td");
+            //     $("#notes").val($(items.get(columns.RESOLUTION)).text());
+            //     //alert($('#submitWindow').find('input#submit').length);
+            //     $('#submitWindow').find('input#submit').off().on("click", function(e) {
+            //         e.preventDefault();
+            //         e.stopImmediatePropagation();
+            //         var obj = {
+            //             "department": $(items.get(columns.DEPARMENT)).text(),
+            //             "language": $(items.get(columns.LANGUAGE)).text(),
+            //             "url": $(items.get(columns.URL)).text(),
+            //             "problem": $(items.get(columns.PROBLEM)).text(),
+            //             "problemDetails": $(items.get(columns.PROBLEM_DETAILS)).text(),
+            //             "problemDate": $(items.get(columns.PROBLEM_DATE)).text(),
+            //             "resolution": $("#notes").val(),
+            //             "id": id
+            //         };
+            //         $.ajax({
+            //             type: "post",
+            //             data: obj,
+            //             cache: false,
+            //             url: "updateProblem",
+            //             dataType: "text",
+            //             error: function(xhr, status, error) {
+            //                 console.log(xhr.responseText);
+            //             },
+            //             success: function(date) {
+            //                 $(items.get(columns.RESOLUTION)).text($("#notes").val());
+            //                 $("#notes").val("");
+            //                 $(items.get(columns.RESOLUTION_DATE)).text(date);
+            //                 $(".popup-modal-dismiss").click();
+            //             }
+            //         });
+
+            //     });
+            //     wb.doc.trigger("open.wb-lbx", [
+            //         [{
+            //             src: "#submitWindow",
+            //             type: "inline"
+            //         }]
+            //     ]);
+
+            // });
+
+
+            // $("#topTaskTable").on("click", ".deleteBtn", function(e) {
+            //     var id = $(e.target).parent().attr("id").replace("delete", "");
+            //     $.ajax({
+            //         type: "get",
+            //         data: {
+            //             "id": id
+            //         },
+            //         cache: false,
+            //         url: "deleteProblem",
+            //         dataType: "text",
+            //         error: function(xhr, status, error) {
+            //             console.log(xhr.responseText);
+            //         },
+            //         success: function() {
+            //             var tr = $(e.target).parent().parent().parent().parent();
+            //             //	var row = ($('#topTaskTable').DataTable().row($(tr))).remove();
+            //             //	row.remove();
+            //             //	$('#topTaskTable').DataTable().draw("full-hold");
+            //         }
+            //     });
+            // });
+
+            // $("#topTaskTable").on("click", ".tagBtn", function(e) {
+            //     var id = $(e.target).attr("id").replace("tag", "");
+            //     var items = $("#tag" + id).parent().parent().parent().find("td");
+            //     var tags = $(items.get(columns.TAGS)).text().replace(/\s*\(x\)\s*/g, ",").replace(/.$/, "");
+            //     $("#tags").val(tags);
+            //     $('#tagWindow').find('input#submit').off().on("click", function(e) {
+            //         e.preventDefault();
+            //         e.stopImmediatePropagation();
+            //         var obj = {
+            //             "tags": $("#tags").val(),
+            //             "id": id
+            //         };
+            //         $.ajax({
+            //             type: "post",
+            //             data: obj,
+            //             cache: false,
+            //             url: "updateTags",
+            //             dataType: "text",
+            //             error: function(xhr, status, error) {
+            //                 console.log(xhr.responseText);
+            //             },
+            //             success: function(tags) {
+            //                 $(items.get(columns.TAGS)).html(tags);
+            //                 $("#tags").val("");
+            //                 $(".popup-modal-dismiss").click();
+            //             }
+            //         });
+
+            //     });
+            //     wb.doc.trigger("open.wb-lbx", [
+            //         [{
+            //             src: "#tagWindow",
+            //             type: "inline"
+            //         }]
+            //     ]);
+
+            // });
+
+            // $("#topTaskTable").on("click", ".tagDeleteBtn", function(e) {
+            //     var id = $(e.target).attr("id").replace("tagDelete", "");
+            //     var tag = $(e.target).text().replace(/\s*\(x\)\s*/g, "");
+            //     var obj = {
+            //         "tag": tag,
+            //         "id": id
+            //     };
+            //     $.ajax({
+            //         type: "post",
+            //         data: obj,
+            //         cache: false,
+            //         url: "deleteTag",
+            //         dataType: "text",
+            //         error: function(xhr, status, error) {
+            //             console.log(xhr.responseText);
+            //         },
+            //         success: function(tags) {
+            //             $(e.target).remove();
+            //         }
+            //     });
+            // });
+
+
+        });
+    </script>
+</th:block>
+
+</html>

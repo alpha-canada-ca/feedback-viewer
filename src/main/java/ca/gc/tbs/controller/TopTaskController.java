@@ -56,15 +56,38 @@ public class TopTaskController {
     @RequestMapping(value = "/topTaskData") 
     @ResponseBody
     public DataTablesOutput<TopTaskSurvey> list(@Valid DataTablesInput input)  {
+    	
+    	String dateSearchVal = input.getColumn("dateTime").get().getSearch().getValue();
+
+
+    	if(dateSearchVal.contains(":")) {
+    		
+    		String[] ret = dateSearchVal.split(":");
+    
+    		if(ret.length == 2) {
+    		
+	    		String dateSearchValA = ret[0];
+	    		
+	    		String dateSearchValB = ret[1];
+	    		
+	    		input.getColumn("dateTime").get().getSearch().setValue("");
+	
+	        	Criteria dateCriteria = where("dateTime").gte(dateSearchValA).lte(dateSearchValB);
+	    		if(dateSearchValA != "" && dateSearchValB != "") {
+	    			return topTaskRepository.findAll(input, dateCriteria);
+	    		}
+    		}
+    	}
+    	
     	Criteria findProcessed = where("processed").is("false");
     	return topTaskRepository.findAll(input, findProcessed);
 	}
    
-	@GetMapping(value = "/topTaskDashboard")
-	public ModelAndView topTaskDashboard() throws Exception {
+	@GetMapping(value = "/topTaskSurvey")
+	public ModelAndView topTaskSurvey() throws Exception {
 		ModelAndView mav = new ModelAndView();
 		//mav.addObject("data", this.getProblemData());
-		mav.setViewName("topTaskDashboard");
+		mav.setViewName("topTaskSurvey");
 		return mav;
 	}
 

@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.view.RedirectView;
 
-import ca.gc.tbs.domain.OriginalProblem;
-import ca.gc.tbs.repository.OriginalProblemRepository;
+
+import ca.gc.tbs.domain.Problem;
 import ca.gc.tbs.repository.ProblemRepository;
 import ca.gc.tbs.service.ContentService;
 
@@ -26,8 +26,6 @@ public class ImportController {
 	@Autowired
 	ProblemRepository problemRepository;
 
-	@Autowired
-	OriginalProblemRepository originalProblemRespository;
 
 	@Autowired
 	ContentService contentService;
@@ -44,7 +42,7 @@ public class ImportController {
 		try {
 			for (final CSVRecord record : parser) {
 				try {
-					OriginalProblem problem = new OriginalProblem();
+					Problem problem = new Problem();
 					problem.setId(record.get("Ref Number").replace("/", ""));
 					problem.setProblemDate(record.get("Date/time received"));
 					problem.setTitle(record.get("Page Title"));
@@ -69,7 +67,6 @@ public class ImportController {
 					problem.setPersonalInfoProcessed("false");
 					problem.setDataOrigin("Health CSV");
 					this.problemRepository.save(problem);
-					this.originalProblemRespository.save(problem);
 
 				} catch (Exception e) {
 					System.out.println(e.getMessage());
@@ -81,6 +78,6 @@ public class ImportController {
 			parser.close();
 			reader.close();
 		}
-		return new RedirectView("/problemDashboard");
+		return new RedirectView("/pageFeedback");
 	}
 }

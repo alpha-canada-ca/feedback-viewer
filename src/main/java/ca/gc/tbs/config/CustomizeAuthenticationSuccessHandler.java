@@ -37,7 +37,7 @@ public class CustomizeAuthenticationSuccessHandler extends SimpleUrlAuthenticati
 				if ("ADMIN".equals(auth.getAuthority())) {
 					response.sendRedirect("/u/index");
 				} else {
-					response.sendRedirect("/problemDashboard");
+					response.sendRedirect("/pageFeedback");
 				}
 			}
 			return;

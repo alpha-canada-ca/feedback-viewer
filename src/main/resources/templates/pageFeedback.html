@@ -1,8 +1,48 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{wide}" lang="en">
-
 <th:block layout:fragment="content">
-    <div class="row"></div>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+    <style>
+        th {
+            font-size: 13px;
+        }
+        
+        td {
+            font-size: 13px;
+        }
+        
+        .table.dataTable {
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+            font-size: 13px;
+        }
+        
+        .dataTables_filter input {
+            height: 35px;
+            width: 150px;
+        }
+        
+        .dataTables_filter {
+            font-size: 15px;
+        }
+        
+        .dataTables_length {
+            font-size: 13px;
+        }
+        
+        .dataTables_info {
+            font-size: 13px;
+        }
+        
+        .dataTables_paginate {
+            font-size: 13px;
+        }
+        
+        .dt-button {
+            text-align: center;
+            font-size: 13px;
+        }
+    </style>
     <div class="col-md-3">
         <h4 class="wb-inv">Filtering options</h4>
         <details open>
@@ -10,14 +50,15 @@
                 <h4 class="h4">Filter options</h4>
             </summary>
             <p class="mrgn-tp-md">Use filters to change your results in the data table</p>
-            <form class="wb-tables-filter" data-bind-to="topTaskTable">
+            <form class="wb-tables-filter" data-bind-to="problemTable">
                 <div class="form-group">
                     <label for="Institution">Institution</label> <select class="form-control" id="Institution" name="Institution" data-column="0">
 							<option value="">All</option>
-							<option value="FIN">Department of Finance</option>
+                            <option value="FIN">Department of Finance</option>
 							<option value="Health Canada">Health Canada</option>
 							<option value="Public Health Agency of Canada">Public Health Agency of Canada</option>
-							<option value="CRA">Canada Revenue Agency</option>
+                            <option value="CRA">Canada Revenue Agency</option>
+                            <option value="ISED">Innovation, Science and Economic Development Canada</option>
 							
 							<!-- DEPARTMENTS -->
 						</select>
@@ -36,14 +77,13 @@
 
                 <div class="form-group">
                     <label for="date">Date</label>
-                    <!-- <input type="date" class="form-control" id="min" name="min"> -->
+                    <input type="date" class="form-control" id="min" name="min">
                     <input type="date" class="form-control" id="max" name="max">
                 </div>
 
                 <div class="btn-group">
-                    <button type="submit" class="btn btn-primary" aria-controls="topTaskTable">Filter</button>
-                    <button type="reset" class="btn btn-primary">Reset to
-							defaults</button>
+                    <button type="submit" class="btn btn-primary" aria-controls="problemTable">Filter</button>
+                    <button type="reset" class="btn btn-primary">Reset to defaults</button>
                 </div>
             </form>
         </details>
@@ -51,39 +91,19 @@
 
     <div class="col-md-9">
         <div class="table-responsive">
-            <table id="topTaskTable" class="small table">
+            <table id="problemTable" class="small table" style=''>
                 <thead>
                     <tr>
-                        <th>Date</th>
-                        <th>Survey Referrer</th>
+                        <th>Institution</th>
+                        <th>Section</th>
+                        <th>Theme</th>
                         <th>Language</th>
-                        <th>Device</th>
-                        <th>Screener</th>
-                        <th>Department 1</th>
-                        <th>Theme 1</th>
-                        <th>Grouping 1</th>
-                        <th>Task 1</th>
-                        <th>Task 1 Other</th>
-                        <th>Department 2</th>
-                        <th>Theme 2</th>
-                        <th>Grouping 2</th>
-                        <th>Task 2</th>
-                        <th>Task 2 Other</th>
-                        <th>Task Satisfaction</th>
-                        <th>Task Ease</th>
-                        <th>Task Completion</th>
-                        <th>Task Improve</th>
-                        <th>Task Improve Comment</th>
-                        <th>Task Why Not</th>
-                        <th>Task Why Not Comment</th>
-                        <th>Sampling</th>
-                        <th>Sampling Invitation</th>
-                        <th>Sampling GC</th>
-                        <th>Sampling Canada</th>
-                        <th>Sampling Theme</th>
-                        <th>Sampling Institution</th>
-                        <th>Sampling Group</th>
-                        <th>Sampling Task</th>
+                        <th>URL</th>
+                        <th>Problem</th>
+                        <th>Problem Details</th>
+                        <th>Date Entered</th>
+                        <th>Tags</th>
+
                     </tr>
                 </thead>
                 <tbody>
@@ -143,72 +163,17 @@
     <script src="https://cdn.datatables.net/buttons/1.6.1/js/buttons.html5.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/1.6.1/js/buttons.print.min.js"></script>
     <script src="https://cdn.datatables.net/colreorder/1.5.2/js/dataTables.colReorder.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/busy-load@0.1.2/src/index.min.js"></script>
 
     <script type="text/javascript" src="js/spring-friendly.min.js"></script>
 
 
     <script th:inline="javascript">
-        // $.fn.dataTableExt.afnFiltering.push(
-        //     function(oSettings, aData, iDataIndex) {
-        //         var iMin = $('#min').val().replaceAll("-", "") * 1;
-        //         var iMax = $('#max').val().replaceAll("-", "") * 1;
-        //         var iVersion = aData[7].replaceAll("-", "") * 1;
-        //         if (iMin == "" && iMax == "") {
-        //             console.log("empty")
-        //             return true;
-        //         } else if (iMin == "" && iVersion <= iMax) {
-        //             return true;
-        //         } else if (iMin <= iVersion && "" == iMax) {
-        //             return true;
-        //         } else if (iMin <= iVersion && iVersion <= iMax) {
-        //             return true;
-        //         }
-        //         return false;
-        //     }
-        // );
-        // $.fn.dataTableExt.afnFiltering.push(
-        //     function(oSettings, aData, iDataIndex) {
-        //         var iMin = $('#min').val().split("-");
-        //         iMin[1] = monthDict[iMin[1]];
-        //         var ret = [iMin[1], iMin[2], iMin[0]];
-        //         var ret = ret.join(" ");
-
-
-        //         var iMax = $('#min').val().split("-");
-        //         iMax[1] = monthDict[iMax[1]];
-        //         var ret2 = [iMax[1], iMax[2], iMax[0]];
-        //         var ret2 = ret2.join(" ");
-
-        //         if (ret == "" && ret2 == "") {
-        //             return true;
-        //         } else if (ret == "" && iVersion <= ret2) {
-        //             return true;
-        //         } else if (ret <= iVersion && "" == ret2) {
-        //             return true;
-        //         } else if (ret <= iVersion && iVersion <= ret2) {
-        //             return true;
-        //         }
-        //         return false;
-        //     }
-        // );
-        /*  $.fn.dataTableExt.afnFiltering.push(
-              function(oSettings, aData, iDataIndex) {
-                  var iMin = Date.parse($('#min').val());
-                  var iMax = Date.parse($('#max').val());
-                  var iVersion = Date.parse(aData[7]);
-                  if (iMin == "" && iMax == "") {
-                      return true;
-                  } else if (iMin == "" && iVersion <= iMax) {
-                      return true;
-                  } else if (iMin <= iVersion && "" == iMax) {
-                      return true;
-                  } else if (iMin <= iVersion && iVersion <= iMax) {
-                      return true;
-                  }
-                  return false;
-              }
-          ); */
         $(document).ready(function() {
+
+
+
+
 
 
 
@@ -254,81 +219,52 @@
                 dt.ajax.reload();
             };
 
-            $('#topTaskTable').find('thead th').append('<span class="sorting-cnt"><span class="sorting-icons"></span></span>')
+            $('#problemTable').find('thead th').append('<span class="sorting-cnt"><span class="sorting-icons"></span></span>')
 
 
+            var table = $('table#problemTable').DataTable({
+                processing: true,
+                ajax: {},
+                "language": {
+                    processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading..n.</span> '
+                },
 
-            var table = $('table#topTaskTable').DataTable({
                 "lengthMenu": [10, 25, 50, -1],
                 retrieve: true,
-                'ajax': '/topTaskData',
+                'ajax': '/problemData',
                 'serverSide': true,
                 columns: [{
-                    data: 'dateTime'
+                    data: 'institution'
                 }, {
-                    data: 'surveyReferrer'
+                    data: 'section'
+                }, {
+                    data: 'theme'
                 }, {
                     data: 'language'
                 }, {
-                    data: 'device'
+                    data: 'url'
                 }, {
-                    data: 'dept1'
+                    data: 'problem'
                 }, {
-                    data: 'theme1'
+                    data: 'problemDetails'
                 }, {
-                    data: 'grouping1'
+                    data: 'problemDate'
                 }, {
-                    data: 'task1'
-                }, {
-                    data: 'task1other'
-                }, {
-                    data: 'dept2'
-                }, {
-                    data: 'theme2'
-                }, {
-                    data: 'grouping2'
-                }, {
-                    data: 'task2'
-                }, {
-                    data: 'task2other'
-                }, {
-                    data: 'taskSatisfaction'
-                }, {
-                    data: 'taskEase'
-                }, {
-                    data: 'taskCompletion'
-                }, {
-                    data: 'taskImprove'
-                }, {
-                    data: 'taskImproveComment'
-                }, {
-                    data: 'taskWhyNot'
-                }, {
-                    data: 'taskWhyNotComment'
-                }, {
-                    data: 'sampling'
-                }, {
-                    data: 'samplingInvitation'
-                }, {
-                    data: 'samplingGC'
-                }, {
-                    data: 'samplingCanada'
-                }, {
-                    data: 'samplingTheme'
-                }, {
-                    data: 'samplingInstitution'
-                }, {
-                    data: 'samplingGrouping'
-                }, {
-                    data: 'samplingTask'
-                }, ],
+                    data: 'tags'
+                }],
                 orderCellsTop: true,
                 fixedHeader: true,
                 dom: 'fBr<"table-responsive"t>ltip',
                 buttons: [{
                     "extend": 'csv',
+                    "text": 'Download CSV',
                     className: 'btn btn-default',
-                    "action": newexportaction
+                    "action": newexportaction,
+                }, {
+                    "extend": 'excel',
+                    "text": "Download Excel",
+                    className: 'btn btn-default',
+                    "action": newexportaction,
                 }]
             });
 
@@ -337,8 +273,9 @@
 
 
 
-            $('#topTaskTable thead tr').clone(true).appendTo('#topTaskTable thead');
-            $('#topTaskTable thead tr:eq(1) th').each(function(i) {
+
+            $('#problemTable thead tr').clone(true).appendTo('#problemTable thead');
+            $('#problemTable thead tr:eq(1) th').each(function(i) {
                 var title = $(this).text();
                 $(this).html('<input type="text" placeholder="Search ' + title + '" />');
 
@@ -351,30 +288,62 @@
                     }
                 });
             });
-            /*  $('#min', this).on('keyup change', function() {
-                if (this.value != "") {
-                    var minDate = (this.value).split("-");
-                    var minSearch = monthDict[minDate[1]] + " " + minDate[2] + " " + minDate[0]
+
+
+
+            var flag = false;
+            var flag2 = false;
+            $('#min', this).on('keyup change', function() {
+                if (this.value != "" && $('#max').val() != "") {
+                    flag = true;
                     table
                         .column(7)
-                        .search(minSearch)
+                        .search(this.value + ":" + $('#max').val())
                         .draw();
                 }
+                if ($('#dt_theme').val() != "" && flag) {
+                    table
+                        .column(2)
+                        .search($('#dt_theme').val())
+                        .draw()
+                }
+                if ($('#Institution').val() != "" && flag) {
+                    table
+                        .column(0)
+                        .search($('#Institution').val())
+                        .draw()
+                }
             });
-*/
 
             $('#max', this).on('keyup change', function() {
-                if (this.value != "") {
-                    var date = (this.value).split("-");
-                    var search = monthDict[date[1]] + " " + date[2] + " " + date[0]
+                if (this.value != "" && $('#min').val() != "") {
+                    flag2 = true;
                     table
-                        .column(1)
-                        .search(search)
+                        .column(7)
+                        .search($('#min').val() + ":" + this.value)
                         .draw();
+                }
+                if ($('#dt_theme').val() != "" && flag2) {
+                    table
+                        .column(2)
+                        .search($('#dt_theme').val())
+                        .draw()
+                }
+                if ($('#Institution').val() != "" && flag2) {
+                    table
+                        .column(0)
+                        .search($('#Institution').val())
+                        .draw()
                 }
             });
 
 
+            // $('#min').keyup(function() {
+            //     table.fnDraw();
+            // });
+            // $('#max').keyup(function() {
+            //     table.fnDraw();
+            // });
 
         });
 
@@ -382,7 +351,7 @@
 
 
 
-            $("#topTaskTable").on("click", ".resolveBtn", function(e) {
+            $("#problemTable").on("click", ".resolveBtn", function(e) {
                 var id = $(e.target).attr("id").replace("resolve", "");
                 var items = $("#resolve" + id).parent().parent().parent().find("td");
                 $("#notes").val($(items.get(columns.RESOLUTION)).text());
@@ -428,7 +397,7 @@
             });
 
 
-            $("#topTaskTable").on("click", ".deleteBtn", function(e) {
+            $("#problemTable").on("click", ".deleteBtn", function(e) {
                 var id = $(e.target).parent().attr("id").replace("delete", "");
                 $.ajax({
                     type: "get",
@@ -443,14 +412,14 @@
                     },
                     success: function() {
                         var tr = $(e.target).parent().parent().parent().parent();
-                        //	var row = ($('#topTaskTable').DataTable().row($(tr))).remove();
+                        //	var row = ($('#problemTable').DataTable().row($(tr))).remove();
                         //	row.remove();
-                        //	$('#topTaskTable').DataTable().draw("full-hold");
+                        //	$('#problemTable').DataTable().draw("full-hold");
                     }
                 });
             });
 
-            $("#topTaskTable").on("click", ".tagBtn", function(e) {
+            $("#problemTable").on("click", ".tagBtn", function(e) {
                 var id = $(e.target).attr("id").replace("tag", "");
                 var items = $("#tag" + id).parent().parent().parent().find("td");
                 var tags = $(items.get(columns.TAGS)).text().replace(/\s*\(x\)\s*/g, ",").replace(/.$/, "");
@@ -488,7 +457,7 @@
 
             });
 
-            $("#topTaskTable").on("click", ".tagDeleteBtn", function(e) {
+            $("#problemTable").on("click", ".tagDeleteBtn", function(e) {
                 var id = $(e.target).attr("id").replace("tagDelete", "");
                 var tag = $(e.target).text().replace(/\s*\(x\)\s*/g, "");
                 var obj = {
@@ -514,5 +483,6 @@
         });
     </script>
 </th:block>
+
 
 </html>

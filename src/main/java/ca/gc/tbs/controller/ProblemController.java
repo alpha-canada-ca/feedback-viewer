@@ -30,10 +30,10 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
-import ca.gc.tbs.domain.OriginalProblem;
+
 import ca.gc.tbs.domain.Problem;
 import ca.gc.tbs.domain.User;
-import ca.gc.tbs.repository.OriginalProblemRepository;
+
 import ca.gc.tbs.repository.ProblemRepository;
 import ca.gc.tbs.service.UserService;
 
@@ -54,8 +54,7 @@ public class ProblemController {
 	@Autowired
 	private ProblemRepository problemRepository;
 
-	@Autowired
-	private OriginalProblemRepository originalProblemRepository;
+
 
 	@Autowired
 	private UserService userService;
@@ -73,7 +72,7 @@ public class ProblemController {
 			problem.setProblemDate(INPUT_FORMAT.format(new Date()));
 			problem.setProcessed("true");
 			problemRepository.save(problem);
-			return new RedirectView("/problemDashboard");
+			return new RedirectView("/pageFeedback");
 		} catch (Exception e) {
 			return new RedirectView("/error");
 		}
@@ -266,44 +265,17 @@ public class ProblemController {
 		return returnData;
 	}
 
-	public String getBackupData() {
-		String returnData = "";
-		StringBuilder finalBuilder = new StringBuilder();
-		List<OriginalProblem> problems = this.originalProblemRepository.findAll();
-		for (Problem problem : problems) {
-			try {
-				StringBuilder builder = new StringBuilder();
-				builder.append("<tr>");
-				builder.append("<td>" + problem.getLanguage() + "</td>");
-				builder.append("<td>" + problem.getUrl() + "</td>");
-				builder.append("<td>" + problem.getProblem() + "</td>");
-				builder.append("<td>" + problem.getProblemDetails() + "</td>");
-				builder.append("<td>" + (DATE_FORMAT.format(INPUT_FORMAT.parse(problem.getProblemDate())))+ "</td>");
-				builder.append("</tr>");
-				finalBuilder.append(builder);
-			} catch (Exception e) {
-				LOG.error(e.getMessage());
-			}
-		}
-		returnData = finalBuilder.toString();
-		return returnData;
-	}
+	
 
-	@GetMapping(value = "/problemDashboard")
-	public ModelAndView problemDashboard() throws Exception {
+	@GetMapping(value = "/pageFeedback")
+	public ModelAndView pageFeedback() throws Exception {
 		ModelAndView mav = new ModelAndView();
 		//mav.addObject("data", this.getProblemData());
-		mav.setViewName("problemDashboard");
+		mav.setViewName("pageFeedback");
 		return mav;
 	}
 
-	@GetMapping(value = "/backupDashboard")
-	public ModelAndView backupDashboard() throws Exception {
-		ModelAndView mav = new ModelAndView();
-		mav.addObject("data", this.getBackupData());
-		mav.setViewName("backupDashboard");
-		return mav;
-	}
+
 
 	@GetMapping(value = "/testForm")
 	public String testForm() {

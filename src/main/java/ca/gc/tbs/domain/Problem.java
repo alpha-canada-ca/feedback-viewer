@@ -35,9 +35,7 @@ public class Problem {
 	private String personalInfoProcessed;
 	private String autoTagProcessed;
 	
-	public Problem() {
-
-	}
+	public Problem() {}
 
 	public Problem(String id, String url, String problemDate, String problem, String problemDetails, String language,
 			String resolutionDate, String resolution, String topic, String title, String institution,
