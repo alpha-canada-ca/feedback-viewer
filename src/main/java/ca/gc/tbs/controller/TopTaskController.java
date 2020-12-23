@@ -82,6 +82,22 @@ public class TopTaskController {
     	Criteria findProcessed = where("processed").is("false");
     	return topTaskRepository.findAll(input, findProcessed);
 	}
+    
+    @RequestMapping(value = "/topTaskSurvey/tasks")
+    @ResponseBody
+	public String paginationProblemData(HttpServletRequest request) {
+    	return "AAFC,ACOA,AECL,APA,ATSSC,BDC,BWB,CA,CAFC,CanNor,CANSOFCOM,CART,CAS,CATSA,CB,CBC,CBSA,CCC,CCG,CCI,"
+    			+ "CCOHS,CDC,CDEV,CDIC,CED,CEIC,CER,CFIA,CGC,CHIN,CHRC,CIB,CICS,CIEC,CIHR,CIPO,CIRB,CIRNAC,CITT,CJC,CLC,"
+    			+ "CMAC,CMH,CMHC,CMHR,CMIP,CMN,CNSC,COBU,CPC,CPMA,CPPIB,CRA,CRC,CRCC,CRRF,CRTC,CSA,CSC,CSEC,CSIS,CSPS,CTA,"
+    			+ "DC,DCC,DFO,DND,DRDC,ECCC,EDC,Elections,EPRC,ERC,ESDC,FBCL,FC,FCA,FCAC,FCC,FedDev,FFMC,FIN,FINTRAC,FJA,FPCC,"
+    			+ "GAC,GLPA,HC,HRTC,HSMBC,IAAC,IDRC,IGA,INAC,INFC,Investments,IRB,IRCC,IRPDA,ISC,ISED,ITO,JCCBI,JUS,LAC,LPA,"
+    			+ "MarineAtlantic,MC,MGERC,Mint,MPCC,NAC,NBC,NCC,NFB,NGC,NPA,NRC,NRCan,NSERC,NSICOP,NSIRA,OAG,OCI,OCL,OCMJ,OCOL,"
+    			+ "OFOVC,OHSTC,OIC,Ontario,OPC,OPO,OSB,OSFI,OSGG,OTO,PBC,PC,PCH,PCO,PHAC,PMPRB,POLAR,PPA,PPSC,PS,PSC,PSDPTC,PSIC,"
+    			+ "PSLREB,PSP,PSPC,Rail,RCAF,RCMP,RCN,RMCC,SCC,SCC-CCN,SCT,ServCan,SSC,SSHRC,SST,StatCan,TATC,TBS,TC,TCC,TCS,TSB,VAC,"
+    			+ "VIA,VMC,VRAB,WAGE,WD,WDBA,YOUTH";
+    }
+
+  
    
 	@GetMapping(value = "/topTaskSurvey")
 	public ModelAndView topTaskSurvey() throws Exception {

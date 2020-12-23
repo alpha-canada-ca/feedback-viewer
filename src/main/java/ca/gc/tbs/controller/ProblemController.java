@@ -112,15 +112,7 @@ public class ProblemController {
 	
     
     
-    
-    @RequestMapping(value = "/excelProblemData") 
-    @ResponseBody
-    public DataTablesOutput<Problem> excel(@Valid DataTablesInput input)  {
-    	input.setStart(0);
-    	input.setLength(-1);
-    	System.out.println(problemRepository.findAll(input));
-    	return problemRepository.findAll(input);
-	}
+
     
     
     /*
@@ -133,8 +125,7 @@ public class ProblemController {
     */
     
     
-
-
+    
 	@PostMapping(value = "/deleteTag")
 	public @ResponseBody String deleteTag(HttpServletRequest request) {
 		try {

@@ -25,26 +25,35 @@
     <h2 class="mrgn-lft-md h3">Filter options</h2>
     <div class="row">
         <form class="wb-tables-filter col-md-10" data-bind-to="topTaskTable">
-            <div class="form-group col-md-5">
+            <div class="form-horizontal col-md-5">
                 <label for="Department">Department</label> <select class="form-control" id="Department" name="Department" data-column="5">
                         <option value="">All</option>
-                        <option value="FIN">Department of Finance</option>
-                        <option value="Health Canada">Health Canada</option>
-                        <option value="Public Health Agency of Canada">Public Health Agency of Canada</option>
-                        <option value="CRA">Canada Revenue Agency</option>
-                        <option value="ISED">Innovation, Science and Economic Development Canada</option>
-                        
+                      
                         <!-- DEPARTMENTS -->
                     </select>
-            </div>
-
-            <div class="form-group col-md-2">
+                <h2 class="mrgn-lft h3">OR</h2>
+                <br>
                 <label for="dt_theme">Theme</label> <select class="form-control" id="dt_theme" name="dt_theme" data-column="6">
                         <option value="">All</option>
-                        <option value="COVID">COVID</option>
-                        <option value="Taxes">Taxes</option>
+                        <option value="AboutGov">AboutGov</option>
+                        <option value="Benefits">Benefits</option>
+                        <option value="Business">Business</option>
+                        <option value="CanadaTheWorld">CanadaTheWorld</option>
+                        <option value="Defence">Defence</option>
+                        <option value="Environment">Environment</option>
                         <option value="Health">Health</option>
+                        <option value="History">History</option>
+                        <option value="Immigration">Immigration</option>
+                        <option value="Indigenous">Indigenous</option>
+                        <option value="Jobs">Jobs</option>
+                        <option value="Money">Money</option>
+                        <option value="Policing">Policing</option>
+                        <option value="PublicService">PublicService</option>
+                        <option value="Science">Science</option>
+                        <option value="Taxes">Taxes</option>
+                        <option value="Transport">Transport</option>
                         <option value="Travel">Travel</option>
+                        <option value="Veterans">Veterans</option>
                         <!-- THEMES -->
                     </select>
             </div>
@@ -60,7 +69,7 @@
                 </div>
             </div>
             <div class="clearfix"></div>
-            <div class="btn-group-lg mrgn-bttm-lg col-md-12">
+            <div class="btn-group-lg mrgn-bttm-lg mrgn-tp-lg col-md-12">
                 <button type="submit" class="btn btn-primary" aria-controls="topTaskTable" id="filter">Filter</button>
                 <button type="reset" class="btn btn-default" id="reset">Reset to defaults</button>
             </div>
@@ -248,7 +257,23 @@
 
 
 
+            fetch('/topTaskSurvey/tasks').then(function(response) {
+                // The API call was successful!
+                return response.text();
+            }).then(function(html) {
+                // This is the HTML from our response as a text string
+                data = html;
+                data = data.split(",");
+                for (i = 0; i < data.length; i++) {
+                    optionValue = data[i];
+                    optionText = data[i];
+                    $('#Department').append(`<option value="${optionValue}"> ${optionText} </option>`);
+                }
 
+            }).catch(function(err) {
+                // There was an error
+                console.warn('Something went wrong.', err);
+            });
 
 
             // $('#topTaskTable thead tr').clone(true).appendTo('#topTaskTable thead');
