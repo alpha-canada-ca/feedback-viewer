@@ -86,7 +86,7 @@ public class ProblemController {
 
     	String dateSearchVal = input.getColumn("problemDate").get().getSearch().getValue();
 
-
+    	
     	if(dateSearchVal.contains(":")) {
     		
     		String[] ret = dateSearchVal.split(":");
@@ -97,16 +97,22 @@ public class ProblemController {
 	    		
 	    		String dateSearchValB = ret[1];
 	    		
+	    	
+	    		
 	    		input.getColumn("problemDate").get().getSearch().setValue("");
 	
 	        	Criteria dateCriteria = where("problemDate").gte(dateSearchValA).lte(dateSearchValB);
+	        	
 	    		if(dateSearchValA != "" && dateSearchValB != "") {
+	    			
 	    			return problemRepository.findAll(input, dateCriteria);
 	    		}
+	    	
     		}
     	}
     	
-    	Criteria findProcessed = where("processed").is("true") ;
+    	Criteria findProcessed = where("processed").is("true");
+    	
     	return problemRepository.findAll(input, findProcessed);
 	}
 	
