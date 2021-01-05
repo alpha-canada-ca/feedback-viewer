@@ -16,7 +16,6 @@ public class ContentService {
 			content = newContent;
 			System.out.println("Postal code cleaned" + content);
 		}
-		System.out.println("Checking phone number...");
 		newContent = this.cleanPhoneNumber(content);
 		if (!newContent.contentEquals(content)) {
 			content = newContent;
