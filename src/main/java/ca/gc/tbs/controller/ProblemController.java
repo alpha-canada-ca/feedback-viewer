@@ -108,7 +108,7 @@ public class ProblemController {
 	    			return problemRepository.findAll(input, dateCriteria);
 	    		}
 	    	
-    		}
+    		} 
     	}
     	
     	Criteria findProcessed = where("processed").is("true");
