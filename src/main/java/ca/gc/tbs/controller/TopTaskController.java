@@ -39,13 +39,7 @@ import ca.gc.tbs.service.UserService;
 @Controller
 public class TopTaskController {
 
-	public static final SimpleDateFormat INPUT_FORMAT = new SimpleDateFormat("EEE MMM dd yyyy");
-	public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 	private static final Logger LOG = LoggerFactory.getLogger(TopTaskController.class);
-	public static final String COLLECTION_PROBLEM = "problem";
-	public String[] OUTPUT_HEADERS_EN = { "Institution", "Section", "Theme", "Language", "URL",
-			"Problem", "Problem Details", "Date Entered", "Tags", "Resolution", "Resolution Date",
-			"Action" };
 
 	@Autowired
 	private TopTaskRepository topTaskRepository;
@@ -86,6 +80,7 @@ public class TopTaskController {
     @RequestMapping(value = "/topTaskSurvey/tasks")
     @ResponseBody
 	public String paginationProblemData(HttpServletRequest request) {
+    	String lang = request.getParameter("language");
     	return "AAFC,ACOA,AECL,APA,ATSSC,BDC,BWB,CA,CAFC,CanNor,CANSOFCOM,CART,CAS,CATSA,CB,CBC,CBSA,CCC,CCG,CCI,"
     			+ "CCOHS,CDC,CDEV,CDIC,CED,CEIC,CER,CFIA,CGC,CHIN,CHRC,CIB,CICS,CIEC,CIHR,CIPO,CIRB,CIRNAC,CITT,CJC,CLC,"
     			+ "CMAC,CMH,CMHC,CMHR,CMIP,CMN,CNSC,COBU,CPC,CPMA,CPPIB,CRA,CRC,CRCC,CRRF,CRTC,CSA,CSC,CSEC,CSIS,CSPS,CTA,"
@@ -97,13 +92,11 @@ public class TopTaskController {
     			+ "VIA,VMC,VRAB,WAGE,WD,WDBA,YOUTH";
     }
 
-  
-   
 	@GetMapping(value = "/topTaskSurvey")
-	public ModelAndView topTaskSurvey() throws Exception {
+	public ModelAndView topTaskSurvey(HttpServletRequest request) throws Exception {
 		ModelAndView mav = new ModelAndView();
-		//mav.addObject("data", this.getProblemData());
-		mav.setViewName("topTaskSurvey");
+		String lang = request.getParameter("lang");
+		mav.setViewName("topTaskSurvey_"+lang);
 		return mav;
 	}
 

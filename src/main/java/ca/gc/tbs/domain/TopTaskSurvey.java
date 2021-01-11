@@ -18,6 +18,7 @@ public class TopTaskSurvey {
 	private String screener;
 	private String dept;
 	private String theme;
+	private String themeOther;
 	private String grouping;
 	private String task;
 	private String taskOther;
@@ -46,7 +47,7 @@ public class TopTaskSurvey {
 	public TopTaskSurvey() {}
 	
 	public TopTaskSurvey(String id, String dateTime, String surveyReferrer, String language, String device,
-			String screener, String dept, String theme, String grouping, String task, String taskOther,
+			String screener, String dept, String theme, String themeOther, String grouping, String task, String taskOther,
 			String taskSatisfaction,
 			String taskEase, String taskCompletion, String taskImprove, String taskImproveComment, String taskWhyNot,
 			String taskWhyNotComment, String taskSampling, String samplingInvitation, String samplingGC,
@@ -61,6 +62,7 @@ public class TopTaskSurvey {
 		this.screener = screener;
 		this.dept = dept;
 		this.theme = theme;
+		this.themeOther = themeOther;
 		this.grouping = grouping;
 		this.task = task;
 		this.taskOther = taskOther;
@@ -133,8 +135,16 @@ public class TopTaskSurvey {
 		return dept;
 	}
 
-	public void setDept1(String dept) {
+	public void setDept(String dept) {
 		this.dept = dept;
+	}
+
+	public String getThemeOther() {
+		return themeOther;
+	}
+
+	public void setThemeOther(String themeOther) {
+		this.themeOther = themeOther;
 	}
 
 	public String getTheme() {
