@@ -5,16 +5,16 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
     <style>
         th {
-            font-size: 13px;
+            font-size: 12px;
         }
         
         td {
-            font-size: 13px;
+            font-size: 12px;
         }
         
         .table.dataTable {
             font-family: Verdana, Geneva, Tahoma, sans-serif;
-            font-size: 13px;
+            font-size: 12px;
         }
         
         .dataTables_filter input {
@@ -27,82 +27,90 @@
         }
         
         .dataTables_length {
-            font-size: 13px;
+            font-size: 12px;
         }
         
         .dataTables_info {
-            font-size: 13px;
+            font-size: 12px;
         }
         
         .dataTables_paginate {
-            font-size: 13px;
+            font-size: 12px;
         }
         
         .dt-button {
             text-align: center;
-            font-size: 13px;
+            font-size: 12px;
         }
     </style>
-    <div class="col-md-3">
+
+    <div class="container">
         <h4 class="wb-inv">Filtering options</h4>
-        <details open>
-            <summary>
-                <h4 class="h4">Filter options</h4>
-            </summary>
+
+        <form class="wb-tables-filter" data-bind-to="problemTable">
+            <h4 class="h4">Filter options</h4>
             <p class="mrgn-tp-md">Use filters to change your results in the data table</p>
-            <form class="wb-tables-filter" data-bind-to="problemTable">
-                <div class="form-group">
-                    <label for="Institution">Institution</label> <select class="form-control" id="Institution" name="Institution" data-column="0">
-							<option value="">All</option>
-                            <option value="FIN">Department of Finance</option>
-							<option value="Health Canada">Health Canada</option>
-							<option value="Public Health Agency of Canada">Public Health Agency of Canada</option>
-                            <option value="CRA">Canada Revenue Agency</option>
-                            <option value="ISED">Innovation, Science and Economic Development Canada</option>
-							
-							<!-- DEPARTMENTS -->
-						</select>
+            <div class="row">
+                <div class="form-group col-sm-5">
+                    <label for="Institution">Institution</label>
+                    <select class="form-control" id="Institution" name="Institution" data-column="6">
+                                        <option value="">All</option>
+                                        <option value="FIN">Department of Finance</option>
+                                        <option value="Health Canada">Health Canada</option>
+                                        <option value="Public Health Agency of Canada">Public Health Agency of Canada</option>
+                                        <option value="CRA">Canada Revenue Agency</option>
+                                        <option value="ISED">Innovation, Science and Economic Development Canada</option>
+                                        <!-- DEPARTMENTS -->
+                    </select>
                 </div>
 
-                <div class="form-group">
-                    <label for="dt_theme">Theme</label> <select class="form-control" id="dt_theme" name="dt_theme" data-column="2">
-							<option value="">All</option>
-							<option value="COVID">COVID</option>
-							<option value="Taxes">Taxes</option>
-							<option value="Health">Health</option>
-							<option value="Travel">Travel</option>
-							<!-- THEMES -->
-						</select>
+                <div class="form-group col-sm-2">
+                    <label for="dt_theme">Theme</label> <select class="form-control" id="dt_theme" name="dt_theme" data-column="8">
+                                        <option value="">All</option>
+                                        <option value="COVID">COVID</option>
+                                        <option value="Taxes">Taxes</option>
+                                        <option value="Health">Health</option>
+                                        <option value="Travel">Travel</option>
+                                        <!-- THEMES -->
+                                    </select>
                 </div>
 
-                <div class="form-group">
-                    <label for="date">Date</label>
-                    <input type="date" class="form-control" id="min" name="min">
-                    <input type="date" class="form-control" id="max" name="max">
+                <div class="col-sm-5">
+                    <label for="min">Date Range <span class="wb-inv">from start date</span></label>
+                    <div class="form-inline">
+                        <div class="form-group">
+                            <input type="date" class="form-control" id="min" name="min">
+                        </div>
+                        <label for="max">To <span class="wb-inv">end date</span></label>
+                        <div class="form-group">
+                            <input type="date" class="form-control" id="max" name="max">
+                        </div>
+                    </div>
                 </div>
-
-                <div class="btn-group">
-                    <button type="submit" class="btn btn-primary" aria-controls="problemTable">Filter</button>
-                    <button type="reset" class="btn btn-primary">Reset to defaults</button>
-                </div>
-            </form>
-        </details>
+            </div>
+            <div class="mrgn-lft-sm row">
+                <!-- <button type="submit" class="btn btn-primary" aria-controls="problemTable">Filter</button> -->
+                <button type="reset" class="btn btn-primary">Reset to defaults</button>
+            </div>
+            <br>
+        </form>
     </div>
 
-    <div class="col-md-9">
+    <div class="col-md-12">
         <div class="table-responsive">
-            <table id="problemTable" class="small table" style=''>
+            <table id="problemTable" class="small table hover display compact">
                 <thead>
                     <tr>
+
+                        <th>Date</th>
+                        <th>Problem Details</th>
+                        <th>Problem</th>
+                        <th>Tags</th>
+                        <th>URL</th>
+                        <th>Language</th>
                         <th>Institution</th>
                         <th>Section</th>
                         <th>Theme</th>
-                        <th>Language</th>
-                        <th>URL</th>
-                        <th>Problem</th>
-                        <th>Problem Details</th>
-                        <th>Date Entered</th>
-                        <th>Tags</th>
 
                     </tr>
                 </thead>
@@ -223,6 +231,9 @@
 
 
             var table = $('table#problemTable').DataTable({
+                "order": [
+                    [0, "desc"]
+                ],
                 processing: true,
                 ajax: {},
                 "language": {
@@ -234,27 +245,28 @@
                 'ajax': '/problemData',
                 'serverSide': true,
                 columns: [{
+                    data: 'problemDate'
+                }, {
+                    data: 'problemDetails'
+                }, {
+                    data: 'problem'
+                }, {
+                    data: 'tags'
+                }, {
+                    data: 'url'
+                }, {
+                    data: 'language'
+                }, {
                     data: 'institution'
                 }, {
                     data: 'section'
                 }, {
                     data: 'theme'
-                }, {
-                    data: 'language'
-                }, {
-                    data: 'url'
-                }, {
-                    data: 'problem'
-                }, {
-                    data: 'problemDetails'
-                }, {
-                    data: 'problemDate'
-                }, {
-                    data: 'tags'
                 }],
+
                 orderCellsTop: true,
                 fixedHeader: true,
-                dom: 'fBr<"table-responsive"t>ltip',
+                dom: 'fBr<"table-responsive"t>tip',
                 buttons: [{
                     "extend": 'csv',
                     "text": 'Download CSV',
@@ -297,19 +309,19 @@
                 if (this.value != "" && $('#max').val() != "") {
                     flag = true;
                     table
-                        .column(7)
+                        .column(0)
                         .search(this.value + ":" + $('#max').val())
                         .draw();
                 }
                 if ($('#dt_theme').val() != "" && flag) {
                     table
-                        .column(2)
+                        .column(8)
                         .search($('#dt_theme').val())
                         .draw()
                 }
                 if ($('#Institution').val() != "" && flag) {
                     table
-                        .column(0)
+                        .column(6)
                         .search($('#Institution').val())
                         .draw()
                 }
@@ -319,19 +331,19 @@
                 if (this.value != "" && $('#min').val() != "") {
                     flag2 = true;
                     table
-                        .column(7)
+                        .column(0)
                         .search($('#min').val() + ":" + this.value)
                         .draw();
                 }
                 if ($('#dt_theme').val() != "" && flag2) {
                     table
-                        .column(2)
+                        .column(8)
                         .search($('#dt_theme').val())
                         .draw()
                 }
                 if ($('#Institution').val() != "" && flag2) {
                     table
-                        .column(0)
+                        .column(6)
                         .search($('#Institution').val())
                         .draw()
                 }
