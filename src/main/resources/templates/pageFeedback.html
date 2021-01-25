@@ -303,6 +303,8 @@
 
 
 
+
+
             var flag = false;
             var flag2 = false;
             $('#min', this).on('keyup change', function() {
@@ -345,6 +347,59 @@
                     table
                         .column(6)
                         .search($('#Institution').val())
+                        .draw()
+                }
+            });
+
+            $('#dt_theme', this).on('keyup change', function() {
+                if (this.value == "") {
+                    table
+                        .column(8)
+                        .search("")
+                        .draw()
+                }
+                if (this.value != "") {
+                    table
+                        .column(8)
+                        .search(this.value)
+                        .draw()
+                }
+                if (flag && flag2) {
+                    table
+                        .column(0)
+                        .search($('#min').val() + ":" + $('#max').val())
+                        .draw();
+                }
+                if ($('#Institution').val()) {
+                    table
+                        .column(6)
+                        .search($('#Institution').val())
+                        .draw()
+                }
+            });
+            $('#Institution', this).on('keyup change', function() {
+                if (this.value == "") {
+                    table
+                        .column(6)
+                        .search("")
+                        .draw()
+                }
+                if (this.value != "") {
+                    table
+                        .column(6)
+                        .search(this.value)
+                        .draw()
+                }
+                if (flag && flag2) {
+                    table
+                        .column(0)
+                        .search($('#min').val() + ":" + $('#max').val())
+                        .draw();
+                }
+                if ($('#dt_theme').val() != "") {
+                    table
+                        .column(8)
+                        .search($('#dt_theme').val())
                         .draw()
                 }
             });

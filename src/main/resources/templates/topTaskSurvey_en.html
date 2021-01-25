@@ -342,6 +342,12 @@
             });
 
             $('#dt_theme', this).on('keyup change', function() {
+                if (this.value == "") {
+                    table
+                        .column(6)
+                        .search("")
+                        .draw()
+                }
                 if (this.value != "") {
                     table
                         .column(6)
@@ -362,6 +368,12 @@
                 }
             });
             $('#Department', this).on('keyup change', function() {
+                if (this.value == "") {
+                    table
+                        .column(5)
+                        .search("")
+                        .draw()
+                }
                 if (this.value != "") {
                     table
                         .column(5)
