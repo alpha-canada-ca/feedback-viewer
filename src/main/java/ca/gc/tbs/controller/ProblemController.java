@@ -265,14 +265,12 @@ public class ProblemController {
 	
 
 	@GetMapping(value = "/pageFeedback")
-	public ModelAndView pageFeedback() throws Exception {
+	public ModelAndView pageFeedback(HttpServletRequest request) throws Exception {
 		ModelAndView mav = new ModelAndView();
-		//mav.addObject("data", this.getProblemData());
-		mav.setViewName("pageFeedback");
+		String lang = request.getParameter("lang");
+		mav.setViewName("pageFeedback_" + lang);
 		return mav;
 	}
-
-
 
 	@GetMapping(value = "/testForm")
 	public String testForm() {
