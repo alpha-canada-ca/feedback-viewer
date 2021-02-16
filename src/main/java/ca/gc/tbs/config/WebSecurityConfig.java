@@ -45,7 +45,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.hasAnyAuthority("ADMIN").antMatchers("/python/**").hasAnyAuthority("USER,ADMIN")
 				.antMatchers("/reports/**").hasAnyAuthority("USER,ADMIN").antMatchers("/dashboard/**")
 				.hasAnyAuthority("USER,ADMIN").anyRequest().authenticated().and().csrf().disable().formLogin()
-				.successHandler(customizeAuthenticationSuccessHandler).loginPage("/login")
+				.successHandler(customizeAuthenticationSuccessHandler).loginPage("/login").loginPage("/login?lang=en")
 				.failureUrl("/login?error=true").usernameParameter("email").passwordParameter("password").and().logout()
 				.logoutRequestMatcher(new AntPathRequestMatcher("/logout")).logoutSuccessUrl("/").and()
 				.exceptionHandling();
