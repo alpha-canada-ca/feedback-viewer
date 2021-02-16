@@ -18,6 +18,7 @@ import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import org.springframework.security.web.savedrequest.RequestCache;
 import org.springframework.security.web.savedrequest.SavedRequest;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.GetMapping;
 
 @Component
 public class CustomizeAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
@@ -25,24 +26,26 @@ public class CustomizeAuthenticationSuccessHandler extends SimpleUrlAuthenticati
 	private RequestCache requestCache = new HttpSessionRequestCache();
 
 	@Override
+	@GetMapping(value = "/login")
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
 			Authentication authentication) throws IOException, ServletException {
-		
-		
 
 		SavedRequest savedRequest = requestCache.getRequest(request, response);
-
+		//String lang = request.getParameter("lang");
+		//System.out.println(lang);
+		
 		if (savedRequest == null || savedRequest.getRedirectUrl().contains("signin")) {
 			for (GrantedAuthority auth : authentication.getAuthorities()) {
 				if ("ADMIN".equals(auth.getAuthority())) {
 					response.sendRedirect("/u/index");
 				} else {
-					response.sendRedirect("/pageFeedback");
+					response.sendRedirect("/pageFeedback?lang=en");
+					
 				}
 			}
 			return;
 		}
-		clearAuthenticationAttributes(request);
+		//clearAuthenticationAttributes(request);
 
 		// Use the DefaultSavedRequest URL
 		String targetUrl = savedRequest.getRedirectUrl();
