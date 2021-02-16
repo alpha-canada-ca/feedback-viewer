@@ -5,6 +5,8 @@ import ca.gc.tbs.service.EmailService;
 import ca.gc.tbs.service.UserService;
 
 import java.text.SimpleDateFormat;
+
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -30,11 +32,14 @@ public class LoginController {
 	private EmailService emailService;
 
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
-	public ModelAndView login() {
+	public ModelAndView login(HttpServletRequest request) throws Exception {
 		ModelAndView modelAndView = new ModelAndView();
-		modelAndView.setViewName("login");
+		String lang = request.getParameter("lang");
+		//System.out.println(lang);
+		modelAndView.setViewName("login_" + lang);
 		return modelAndView;
 	}
+	
 
 	@RequestMapping(value = "/signup", method = RequestMethod.GET)
 	public ModelAndView signup() {
