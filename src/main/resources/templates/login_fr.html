@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{default}">
+
+<div layout:fragment="content" class="wb-frmvld">
+
+    <form th:action="@{/login}" method="post">
+        <h2>Veuillez vous connecter</h2>
+        <div th:if="${param.error}">Invalid email and password.</div>
+        <div th:if="${param.logout}">You have been logged out.</div>
+        <div class="form-group">
+            <label for="inputEmail" class="sr-only">Courriel</label> <input type="email" name="email" id="inputEmail" class="form-control" placeholder="Courriel" required="required" />
+        </div>
+        <div class="form-group">
+            <label for="inputPassword" class="sr-only">Mot de passe</label> <input type="password" name="password" id="inputPassword" class="form-control" placeholder="Mot de passe" required="required" />
+        </div>
+        <div class="form-group">
+            <button class="btn btn-primary" type="submit">Se connecter</button>
+            <a th:href="@{/signup}" class="btn btn-success">S'enregistrer</a>
+        </div>
+    </form>
+</div>
+
+
+</html>
