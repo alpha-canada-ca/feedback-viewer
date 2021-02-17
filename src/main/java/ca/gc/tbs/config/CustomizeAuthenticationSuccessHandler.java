@@ -45,7 +45,7 @@ public class CustomizeAuthenticationSuccessHandler extends SimpleUrlAuthenticati
 			}
 			return;
 		}
-		//clearAuthenticationAttributes(request);
+		clearAuthenticationAttributes(request);
 
 		// Use the DefaultSavedRequest URL
 		String targetUrl = savedRequest.getRedirectUrl();
