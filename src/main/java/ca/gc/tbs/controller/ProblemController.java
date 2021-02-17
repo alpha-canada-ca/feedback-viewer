@@ -4,11 +4,8 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URL;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -21,25 +18,17 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.datatables.DataTablesInput;
-import org.springframework.data.mongodb.datatables.DataTablesInput.Column;
 import org.springframework.data.mongodb.datatables.DataTablesOutput;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.View;
-import org.springframework.web.servlet.view.RedirectView;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 
 import ca.gc.tbs.domain.Problem;
-import ca.gc.tbs.domain.User;
 
 import ca.gc.tbs.repository.ProblemRepository;
 import ca.gc.tbs.service.UserService;
@@ -51,21 +40,138 @@ public class ProblemController {
 	public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 	private static final Logger LOG = LoggerFactory.getLogger(ProblemController.class);
 	public static final String COLLECTION_PROBLEM = "problem";
-	public String[] OUTPUT_HEADERS_EN = { "Institution", "Section", "Theme", "Language", "URL",
-			"Problem", "Problem Details", "Date Entered", "Tags", "Resolution", "Resolution Date",
-			"Action" };
+	
+	String[][] translations = {/* ENGLISH, FRENCH*/{"The answer I need is missing","La réponse dont j’ai besoin n’est pas là"},{"The information isn't clear","L'information n'est pas claire"},{"The information isn’t clear","L'information n'est pas claire"},{"I’m not in the right place","Je ne suis pas au bon endroit"},{"I'm not in the right place","Je ne suis pas au bon endroit"},{"Something is broken or incorrect","Quelque chose est brisé ou incorrect"}
+	,{"Other reason","Autre raison"},{"Health","Santé"},{"Taxes","Impôt"},{"Travel","Voyage"},{"Public Health Agency of Canada","Agence de santé publique du Canada"},{"Health Canada","Santé Canada"},{"CRA","ARC"},{"ISED","ISDE"},{"Example","Exemple"},{"CEWS","SSUC"},{"CRSB","PCMRE"},{"CRB","PCRE"},{"CRCB","PCREPA"},{"CERS","SUCL"}
+	,{"Vaccines","Vaccins"},{"Business","Entreprises"},{"WFHE","DTDE"},{"travel-wizard","assistant-voyage"},{"PTR","DRP"},{"COVID Alert","Alerte COVID"}};
 
 	private HashMap<String, String> tagTranslations = new HashMap<String, String>();
+	private HashMap<String, String> translationsMap = new HashMap<String, String>(translations.length);
 	
 	@Autowired
 	private ProblemRepository problemRepository;
 
-
-
 	@Autowired
 	private UserService userService;
 
-	@CrossOrigin(origins = "*")
+	
+	public void populateTranslationsMap() {
+		for (String[] translation : translations) {
+		    translationsMap.put(translation[0], translation[1]);
+		}
+	}
+	// This function grabs all the models and associated URLs from the google spreadsheet.
+	public void importTagTranslations() throws Exception {
+		final Reader reader = new InputStreamReader(new URL(
+				"https://docs.google.com/spreadsheets/d/1xcoSXKwH0-_N_t056pfeEXzAXseZhpFMnvUsvmF0OBw/export?format=csv")
+						.openConnection().getInputStream(),
+				"UTF-8");
+		final CSVParser parser = new CSVParser(reader, CSVFormat.DEFAULT.withHeader());
+		try {
+			for (final CSVRecord record : parser) {
+				try {
+					if(!record.get("FRENCH_TAG").equals(""))
+						tagTranslations.put(record.get("ENGLISH_TAG"), record.get("FRENCH_TAG"));			
+				} catch (Exception e) {
+					System.out.println(e.getMessage());
+					e.printStackTrace();
+				}
+			}
+		} finally {
+			parser.close();
+			reader.close();
+		}
+	}
+	
+			
+	String lang = "";
+
+	@GetMapping(value = "/pageFeedback")
+	public ModelAndView pageFeedback(HttpServletRequest request) throws Exception {
+		ModelAndView mav = new ModelAndView();
+		lang = request.getParameter("lang");
+		importTagTranslations();
+		populateTranslationsMap();
+		//uniqueValues();
+		//System.out.println(tagTranslations.size());
+		mav.setViewName("pageFeedback_" + lang);
+		return mav;
+	}
+	
+    @RequestMapping(value = "/problemData") 
+    @ResponseBody
+    public DataTablesOutput<Problem> list(@Valid DataTablesInput input, HttpServletRequest request)  {
+    	
+    	Criteria findProcessed = where("processed").is("true");
+    	
+		if(lang.equals("en")) {
+			
+			String dateSearchVal = input.getColumn("problemDate").get().getSearch().getValue();
+
+	    	if(dateSearchVal.contains(":")) {
+	    		
+	    		String[] ret = dateSearchVal.split(":");
+	    
+	    		if(ret.length == 2) {
+	    		
+		    		String dateSearchValA = ret[0];
+		    		
+		    		String dateSearchValB = ret[1];
+		    		
+		    		input.getColumn("problemDate").get().getSearch().setValue("");
+		
+		        	Criteria dateCriteria = where("problemDate").gte(dateSearchValA).lte(dateSearchValB);
+		        	
+		    		if(dateSearchValA != "" && dateSearchValB != "") {
+		    			return problemRepository.findAll(input, dateCriteria);
+		    		}
+	    		} 
+	    	}
+	    	return problemRepository.findAll(input, findProcessed);
+		}
+		if(lang.equals("fr")) {
+			String dateSearchVal = input.getColumn("problemDate").get().getSearch().getValue();
+
+	    	if(dateSearchVal.contains(":")) {
+	    		
+	    		String[] ret = dateSearchVal.split(":");
+	    
+	    		if(ret.length == 2) {
+	    		
+		    		String dateSearchValA = ret[0];
+		    		
+		    		String dateSearchValB = ret[1];
+		    		
+		    		input.getColumn("problemDate").get().getSearch().setValue("");
+		
+		        	Criteria dateCriteria = where("problemDate").gte(dateSearchValA).lte(dateSearchValB);
+		        	
+		    		if(dateSearchValA != "" && dateSearchValB != "") {
+		    			return problemRepository.findAll(input, dateCriteria);
+		    		}
+	    		} 
+	    	}
+	    	DataTablesOutput<Problem> problems = problemRepository.findAll(input, findProcessed);
+	    	for(int i = 0; i < 10; i++) {
+	    		problems.getData().get(i).setInstitution(translationsMap.get(problems.getData().get(i).getInstitution()));
+	    		problems.getData().get(i).setProblem(translationsMap.get(problems.getData().get(i).getProblem()));
+	    		problems.getData().get(i).setTheme(translationsMap.get(problems.getData().get(i).getTheme()));
+	    		problems.getData().get(i).setSection(translationsMap.get(problems.getData().get(i).getSection()));
+	    		
+	    		List<String> tags = problems.getData().get(i).getTags();
+	    		for(int j = 0; j < tags.size(); j++) {
+	    			if(tagTranslations.containsKey(tags.get(j)))
+	    				tags.set(j, tagTranslations.get(tags.get(j)));
+	    		}
+	    	}
+	    	return problems;
+		}
+		return null;
+	}
+	
+    /*
+    
+    @CrossOrigin(origins = "*")
 	@PostMapping(value = "/addProblem")
 	public View addProblem(HttpServletRequest request) {
 
@@ -84,232 +190,17 @@ public class ProblemController {
 		}
 	}
 	
-	// This function grabs all the models and associated URLs from the google spreadsheet.
-			public void importTagTranslations() throws Exception {
-				final Reader reader = new InputStreamReader(new URL(
-						"https://docs.google.com/spreadsheets/d/1xcoSXKwH0-_N_t056pfeEXzAXseZhpFMnvUsvmF0OBw/export?format=csv")
-								.openConnection().getInputStream(),
-						"UTF-8");
-				final CSVParser parser = new CSVParser(reader, CSVFormat.DEFAULT.withHeader());
-				try {
-					for (final CSVRecord record : parser) {
-						try {
-							if(!record.get("FRENCH_TAG").equals(""))
-								tagTranslations.put(record.get("ENGLISH_TAG"), record.get("FRENCH_TAG"));			
-						} catch (Exception e) {
-							System.out.println(e.getMessage());
-							e.printStackTrace();
-						}
-					}
-				} finally {
-					parser.close();
-					reader.close();
-				}
-			}
-	
-	String lang = "";
-
-	@GetMapping(value = "/pageFeedback")
-	public ModelAndView pageFeedback(HttpServletRequest request) throws Exception {
-		ModelAndView mav = new ModelAndView();
-		lang = request.getParameter("lang");
-		importTagTranslations();
-		System.out.println(tagTranslations.size());
-		mav.setViewName("pageFeedback_" + lang);
-		return mav;
+	public void uniqueValues() {
+		List<Problem> problems = problemRepository.findAll();
+     	for(Problem p: problems) {
+    			sections.add(p.getSection());
+    			institutions.add(p.getInstitution());
+    			themes.add(p.getTheme());
+     	}
+     	System.out.println(sections.toString());
+     	System.out.println(institutions.toString());
+     	System.out.println(themes.toString());
 	}
-	
-	
-	
-	
-    @RequestMapping(value = "/problemData") 
-    @ResponseBody
-    public DataTablesOutput<Problem> list(@Valid DataTablesInput input, HttpServletRequest request)  {
-
-		if(lang.equals("en")) {
-			String dateSearchVal = input.getColumn("problemDate").get().getSearch().getValue();
-
-	    	
-	    	if(dateSearchVal.contains(":")) {
-	    		
-	    		String[] ret = dateSearchVal.split(":");
-	    
-	    		if(ret.length == 2) {
-	    		
-		    		String dateSearchValA = ret[0];
-		    		
-		    		String dateSearchValB = ret[1];
-		    		
-		    	
-		    		
-		    		input.getColumn("problemDate").get().getSearch().setValue("");
-		
-		        	Criteria dateCriteria = where("problemDate").gte(dateSearchValA).lte(dateSearchValB);
-		        	
-		    		if(dateSearchValA != "" && dateSearchValB != "") {
-		    			
-		    			return problemRepository.findAll(input, dateCriteria);
-		    		}
-		    	
-	    		} 
-	    	}
-	    	
-	    	Criteria findProcessed = where("processed").is("true");
-	    	
-	    	return problemRepository.findAll(input, findProcessed);
-		}
-		if(lang.equals("fr")) {
-			String dateSearchVal = input.getColumn("problemDate").get().getSearch().getValue();
-
-	    	
-	    	if(dateSearchVal.contains(":")) {
-	    		
-	    		String[] ret = dateSearchVal.split(":");
-	    
-	    		if(ret.length == 2) {
-	    		
-		    		String dateSearchValA = ret[0];
-		    		
-		    		String dateSearchValB = ret[1];
-		    		
-		    	
-		    		
-		    		input.getColumn("problemDate").get().getSearch().setValue("");
-		
-		        	Criteria dateCriteria = where("problemDate").gte(dateSearchValA).lte(dateSearchValB);
-		        	
-		    		if(dateSearchValA != "" && dateSearchValB != "") {
-		    			
-		    			return problemRepository.findAll(input, dateCriteria);
-		    		}
-		    	
-	    		} 
-	    	}
-	    	Criteria findProcessed = where("processed").is("true");
-	    	
-	    	DataTablesOutput<Problem> problems = problemRepository.findAll(input, findProcessed);
-	    	
-	    	for(int i = 0; i < 10; i++) {
-	    		String problem = problems.getData().get(i).getProblem();
-	    		switch(problem) {
-	    			case "The answer I need is missing":
-	    				problems.getData().get(i).setProblem("La réponse dont j’ai besoin n’est pas là");
-	    				break;
-	    			case "The information isn't clear":
-	    			case "The information isn’t clear":
-	    				problems.getData().get(i).setProblem("L'information n'est pas claire"); 
-	    				break;
-	    			case "I’m not in the right place":
-	    			case "I'm not in the right place":
-	    				problems.getData().get(i).setProblem("Je ne suis pas au bon endroit"); 
-	    				break;
-	    			case "Something is broken or incorrect":
-	    				problems.getData().get(i).setProblem("Quelque chose est brisé ou incorrect");
-	    				break;
-	    			case "Other reason":
-	    				problems.getData().get(i).setProblem("Autre raison"); 
-	    				break;
-	    		}
-	    		String theme = problems.getData().get(i).getTheme();
-	    		switch(theme) {
-	    			case "Health":
-	    				problems.getData().get(i).setTheme("Santé");
-	    				break;
-	    			case "Taxes":
-	    				problems.getData().get(i).setTheme("Impôt");
-	    				break;
-	    			case "Travel":
-	    				problems.getData().get(i).setTheme("Voyage");
-	    				break;
-	    		}
-	    		String inst = problems.getData().get(i).getInstitution();
-	    		switch(inst) {
-	    			case "Public Health Agency of Canada":
-	    				problems.getData().get(i).setInstitution("Agence de santé publique du Canada");
-	    				break;
-	    			case "Health Canada":
-	    				problems.getData().get(i).setInstitution("Santé Canada");
-	    				break;
-	    			case "CRA":
-	    				problems.getData().get(i).setInstitution("ARC");
-	    				break;
-	    			case "ISED":
-	    				problems.getData().get(i).setInstitution("ISDE");
-	    				break;
-	    		}
-	    		String section = problems.getData().get(i).getSection();
-	    		switch(section) {
-	    			case "Example":
-	    				problems.getData().get(i).setSection("Exemple");
-	    				break;
-	    			case "CEWS":
-	    				problems.getData().get(i).setSection("SSUC");
-	    				break;
-	    			case "CRSB":
-	    				problems.getData().get(i).setSection("PCMRE");
-	    				break;
-	    			case "CRB":
-	    				problems.getData().get(i).setSection("PCRE");
-	    				break;
-	    			case "CRCB":
-	    				problems.getData().get(i).setSection("PCREPA");
-	    				break;
-	    			case "CERS":
-	    				problems.getData().get(i).setSection("SUCL");
-	    				break;
-	    			case "Vaccines":
-	    				problems.getData().get(i).setSection("Vaccins");
-	    				break;
-	    			case "Business":
-	    				problems.getData().get(i).setSection("Entreprises");
-	    				break;
-	    			case "WFHE":
-	    				problems.getData().get(i).setSection("DTDE");
-	    				break;
-	    			case "travel-wizard":
-	    				problems.getData().get(i).setSection("assistant-voyage");
-	    				break;
-	    			case "PTR":
-	    				problems.getData().get(i).setSection("DRP");
-	    				break;
-	    			case "COVID Alert":
-	    				problems.getData().get(i).setSection("Alerte COVID");
-	    				break;
-	    				
-	    		}
-
-	    		List<String> tags = problems.getData().get(i).getTags();
-	    		for(int j = 0; j < tags.size(); j++) {
-	    			if(tagTranslations.containsKey(tags.get(j)))
-	    				tags.set(j, tagTranslations.get(tags.get(j)));
-	    		}
-	    		
-	    	
-				
-	    	}
-	    	
-	    	return problems;
-		}
-	
-		return null;
-  
-	}
-	
-    
-    
-
-    
-    
-    /*
-    @PostMapping(value = "/csv") 
-    @ResponseBody
-    public DataTablesOutput<Problem> csv(@Valid DataTablesInput input)  {
-    	Criteria findProcessed = where("processed").is("false");
-    	return problemRepository.findAll(input, findProcessed);
-	}
-    */
-    
-    
     
 	@PostMapping(value = "/deleteTag")
 	public @ResponseBody String deleteTag(HttpServletRequest request) {
@@ -366,6 +257,7 @@ public class ProblemController {
 		}
 	}
 
+
 	public String generateTagHtml(Problem problem) {
 		StringBuilder builder = new StringBuilder();
 		for (String tag : problem.getTags()) {
@@ -374,77 +266,9 @@ public class ProblemController {
 		}
 		return builder.toString();
 	}
-	public void parseDates() {
-		List<Problem> problems = null;
-		problems = this.problemRepository.findByProcessed("true");
-		for (Problem problem : problems) {
-			try {
-				if(problem.getProblemDate().contains("GMT")) {
-					System.out.println("before parse Date for: " + problem.getProblemDate());
-					problem.setProblemDate(DATE_FORMAT.format(INPUT_FORMAT.parse(problem.getProblemDate())));
-					this.problemRepository.save(problem);
-					System.out.println("parsed Date for: " + problem.getProblemDate());
-				}
-			}
-			catch (Exception e) {
-				LOG.error("Could not parse date because:" + problem.getId() + " " + e.getMessage());
-			}
-		}
-	}
 
-	public String getProblemData() {
-
-		String returnData = "";
-
-		StringBuilder finalBuilder = new StringBuilder();
-		User user = this.userService.getCurrentUser();
-		List<Problem> problems = null;
-		if (this.userService.isAdmin(user)) {
-			problems = this.problemRepository.findByProcessed("true");
-		} else {
-			problems = this.problemRepository.findByProcessedAndInstitution("true", user.getInstitution());
-		}
-		for (Problem problem : problems) {
-			try {
-				StringBuilder builder = new StringBuilder();
-				builder.append("<tr>");
-				builder.append("<td>" + problem.getInstitution() + "</td>");
-				builder.append("<td>" + problem.getSection() + "</td>");
-				builder.append("<td>" + problem.getTheme() + "</td>");
-				builder.append("<td>" + problem.getLanguage() + "</td>");
-				builder.append("<td>" + problem.getUrl() + "</td>");
-				builder.append("<td>" + problem.getProblem() + "</td>");
-				builder.append("<td>" + problem.getProblemDetails() + "</td>");
-				builder.append("<td>" + problem.getProblemDate() + "</td>");
-				builder.append("<td class='tagCol'>");
-				builder.append(this.generateTagHtml(problem));
-				builder.append("</td>");
-				try {
-					builder.append("<td>" + problem.getResolution() + "</td>");
-					builder.append("<td>" + problem.getResolutionDate() + "</td>");
-				} catch (Exception e) {
-					builder.append("<td></td>");
-					builder.append("<td></td>");
-				}
-				builder.append("<td><div class='btn-group'><button id='tag" + problem.getId()
-						+ "' class='btn btn-xs tagBtn'>Tag</button><button id='resolve" + problem.getId()
-						+ "' class='btn btn-xs resolveBtn'>Resolve</button><button id='delete" + problem.getId()
-						+ "' class='btn btn-xs deleteBtn'><span class='fas fa-trash-alt'></span><span class='wb-inv'>Delete</span></button></div></td>");
-				builder.append("</tr>");
-				finalBuilder.append(builder);
-			} catch (Exception e) {
-				LOG.error("Could not display row because:" + problem.getId() + " " + e.getMessage());
-			}
-		}
-		returnData = finalBuilder.toString();
-
-		return returnData;
-	}
-
+*/
 	
-
-
-
 	@GetMapping(value = "/testForm")
 	public String testForm() {
 		return "testForm";
