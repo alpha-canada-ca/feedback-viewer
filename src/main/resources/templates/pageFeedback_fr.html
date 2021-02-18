@@ -55,11 +55,11 @@
                     <label for="Institution">Institution</label>
                     <select class="form-control" id="Institution" name="Institution" data-column="6">
                                         <option value="">Tous</option>
-                                        <option value="FIN">Department of Finance</option>
-                                        <option value="Health Canada">Health Canada</option>
-                                        <option value="Public Health Agency of Canada">Public Health Agency of Canada</option>
-                                        <option value="CRA">Canada Revenue Agency</option>
-                                        <option value="ISED">Innovation, Science and Economic Development Canada</option>
+                                        <option value="FIN">Ministère des Finances</option>
+                                        <option value="Health Canada">Santé Canada</option>
+                                        <option value="Public Health Agency of Canada">Agence de santé publique du Canada</option>
+                                        <option value="CRA">Agence du revenu du Canada</option>
+                                        <option value="ISED">Innovation, Sciences et Développement économique Canada</option>
                                         <!-- DEPARTMENTS -->
                     </select>
                 </div>
@@ -68,22 +68,22 @@
                     <label for="dt_theme">Thème</label> <select class="form-control" id="dt_theme" name="dt_theme" data-column="8">
                                         <option value="">Tous</option>
                                         <option value="COVID">COVID</option>
-                                        <option value="Taxes">Taxes</option>
-                                        <option value="Health">Health</option>
-                                        <option value="Travel">Travel</option>
+                                        <option value="Taxes">Impôt</option>
+                                        <option value="Health">Santé</option>
+                                        <option value="Travel">Voyage</option>
                                         <!-- THEMES -->
                                     </select>
                 </div>
 
                 <div class="col-sm-5">
-                    <label for="min">Dates <span class="wb-inv">from start date</span></label>
+                    <label for="min">Dates <span class="wb-inv">Date de début</span></label>
                     <div class="form-inline">
                         <div class="form-group">
-                            <input type="date" class="form-control" id="min" name="min">
+                            <input type="date" placeholder="aaaa-mm-jj" class="form-control" id="min" name="min">
                         </div>
-                        <label for="max">à <span class="wb-inv">end date</span></label>
+                        <label for="max">à <span class="wb-inv">date de fin</span></label>
                         <div class="form-group">
-                            <input type="date" class="form-control" id="max" name="max">
+                            <input type="date" placeholder="aaaa-mm-jj" class="form-control" id="max" name="max">
                         </div>
                     </div>
                 </div>
@@ -237,9 +237,9 @@
                 processing: true,
                 ajax: {},
                 "oLanguage": {
-                    "sUrl": "static/json/french.json"
+                    "sProcessing": '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span> ',
+                    "sUrl": "static/json/fr.json"
                 },
-
                 "lengthMenu": [10, 25, 50, -1],
                 retrieve: true,
                 'ajax': '/problemData',
@@ -266,7 +266,7 @@
 
                 orderCellsTop: true,
                 fixedHeader: true,
-                dom: 'fBr<"table-responsive"t>tip',
+                dom: 'Br<"table-responsive"t>tip',
                 buttons: [{
                     "extend": 'csv',
                     "text": 'Télécharger CSV',
@@ -286,20 +286,6 @@
 
 
 
-            $('#problemTable thead tr').clone(true).appendTo('#problemTable thead');
-            $('#problemTable thead tr:eq(1) th').each(function(i) {
-                var title = $(this).text();
-                $(this).html('<input type="text" placeholder="Recherche ' + title + '" />');
-
-                $('input', this).on('keyup change', function() {
-                    if (table.column(i).search() !== this.value) {
-                        table
-                            .column(i)
-                            .search(this.value)
-                            .draw();
-                    }
-                });
-            });
 
 
 
