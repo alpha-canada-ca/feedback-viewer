@@ -10,26 +10,26 @@ public class ContentService {
 	}
 
 	public String cleanContent(String content) {
-		System.out.println("Before clean:" + content);
+		System.out.println("Before clean: " + content);
 		String newContent = this.cleanPostalCode(content);
 		if (!newContent.contentEquals(content)) {
 			content = newContent;
-			System.out.println("Postal code cleaned" + content);
+			System.out.println("Postal code cleaned: " + content);
 		}
 		newContent = this.cleanPhoneNumber(content);
 		if (!newContent.contentEquals(content)) {
 			content = newContent;
-			System.out.println("Phone number cleaned" + content);
+			System.out.println("Phone number cleaned: " + content);
 		}
 		newContent = this.cleanSIN(content);
 		if (!newContent.contentEquals(content)) {
 			content = newContent;
-			System.out.println("SIN number cleaned" + content);
+			System.out.println("SIN number cleaned: " + content);
 		}
 		newContent = this.cleanEmailAddress(content);
 		if (!newContent.contentEquals(content)) {
 			content = newContent;
-			System.out.println("Email Address cleaned" + content);
+			System.out.println("Email Address cleaned: " + content);
 		}
 		return content;
 	}
