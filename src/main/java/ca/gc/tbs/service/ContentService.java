@@ -21,6 +21,11 @@ public class ContentService {
 			content = newContent;
 			System.out.println("Phone number cleaned: " + content);
 		}
+		newContent = BadWords.censor(content);
+		if (!newContent.contentEquals(content)) {
+			content = newContent;
+			System.out.println("curse words cleaned: " + content);
+		}
 		newContent = this.cleanSIN(content);
 		if (!newContent.contentEquals(content)) {
 			content = newContent;
