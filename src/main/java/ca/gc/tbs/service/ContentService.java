@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 public class ContentService {
 
 	public ContentService() {
-		//BadWords.loadConfigs();
+		BadWords.loadConfigs();
 	}
 
 	public String cleanContent(String content) {
