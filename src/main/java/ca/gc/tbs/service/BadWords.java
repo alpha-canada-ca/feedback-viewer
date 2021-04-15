@@ -81,23 +81,23 @@ public class BadWords {
 
 	}
 
-	public static String removeLeetSpeak(String input) {
-		input = input.replaceAll("1", "i");
-		input = input.replaceAll("!", "i");
-		input = input.replaceAll("3", "e");
-		input = input.replaceAll("4", "a");
-		input = input.replaceAll("@", "a");
-		input = input.replaceAll("5", "s");
-		input = input.replaceAll("7", "t");
-		input = input.replaceAll("0", "o");
-		input = input.replaceAll("9", "g");
-		input = input.replaceAll("\\$", "s");
-		return input;
-	}
+//	public static String removeLeetSpeak(String input) {
+//		input = input.replaceAll("1", "i");
+//		input = input.replaceAll("!", "i");
+//		input = input.replaceAll("3", "e");
+//		input = input.replaceAll("4", "a");
+//		input = input.replaceAll("@", "a");
+//		input = input.replaceAll("5", "s");
+//		input = input.replaceAll("7", "t");
+//		input = input.replaceAll("0", "o");
+//		input = input.replaceAll("9", "g");
+//		input = input.replaceAll("\\$", "s");
+//		return input;
+//	}
 
 	static String censor(String text) {
 
-		text = removeLeetSpeak(text);
+		//text = removeLeetSpeak(text);
 		// Break down sentence by ' ' spaces
 		// and store each individual word in
 		// a different list
@@ -111,7 +111,7 @@ public class BadWords {
 		int index = 0;
 		for (String i : word_list) {
 			String wordToCheckOrig = i;
-			String wordToCheck = removeLeetSpeak(wordToCheckOrig);
+			String wordToCheck = wordToCheckOrig;
 			wordToCheck = wordToCheck.toLowerCase().replaceAll("[^a-zA-Z]", "");
 			if (words.contains(wordToCheck)) {
 				// changing the censored word to
