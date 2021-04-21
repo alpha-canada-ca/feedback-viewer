@@ -153,7 +153,7 @@ public class ProblemController {
 	    		} 
 	    	}
 	    	DataTablesOutput<Problem> problems = problemRepository.findAll(input, findProcessed);
-	    	for(int i = 0; i < 10; i++) {
+	    	for(int i = 0; i < problems.getData().size(); i++) {
 	    		problems.getData().get(i).setInstitution(translationsMap.get(problems.getData().get(i).getInstitution()));
 	    		problems.getData().get(i).setProblem(translationsMap.get(problems.getData().get(i).getProblem()));
 	    		problems.getData().get(i).setTheme(translationsMap.get(problems.getData().get(i).getTheme()));
