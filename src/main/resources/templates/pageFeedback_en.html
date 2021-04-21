@@ -191,7 +191,21 @@
 
 
 
+            var options = $("#dt_theme option"); // Collect options         
+            options.detach().sort(function(a, b) { // Detach from select, then Sort
+                var at = $(a).text();
+                var bt = $(b).text();
+                return (at > bt) ? 1 : ((at < bt) ? -1 : 0); // Tell the sort function how to order
+            });
+            options.appendTo("#dt_theme"); // Re-attach to select
 
+            var options = $("#Institution option");
+            options.detach().sort(function(a, b) {
+                var at = $(a).text();
+                var bt = $(b).text();
+                return (at > bt) ? 1 : ((at < bt) ? -1 : 0);
+            });
+            options.appendTo("#Institution");
 
 
             function newexportaction(e, dt, button, config) {
