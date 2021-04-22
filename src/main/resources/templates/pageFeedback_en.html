@@ -213,8 +213,8 @@
                     }
                 });
             }
-            $("Institution").sortSelect();
-            $("dt_theme").sortSelect();
+            sortSelectOptions('#Institution', true);
+            sortSelectOptions('#dt_theme', true);
 
 
             function newexportaction(e, dt, button, config) {
@@ -313,11 +313,6 @@
             });
 
 
-
-
-
-
-
             $('#problemTable thead tr').clone(true).appendTo('#problemTable thead');
             $('#problemTable thead tr:eq(1) th').each(function(i) {
                 var title = $(this).text();
@@ -335,10 +330,6 @@
                     });
 
             });
-
-
-
-
 
             var flag = false;
             var flag2 = false;
