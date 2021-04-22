@@ -188,25 +188,33 @@
     <script th:inline="javascript">
         $(document).ready(function() {
 
-
-            var options = $("#dt_theme option"); // Collect options         
-            options.detach().sort(function(a, b) { // Detach from select, then Sort
-                var at = $(a).text();
-                var bt = $(b).text();
-                return (at > bt) ? 1 : ((at < bt) ? -1 : 0); // Tell the sort function how to order
-            });
-            options.appendTo("#dt_theme"); // Re-attach to select
-
-            var options = $("#Institution option");
-            options.detach().sort(function(a, b) {
-                var at = $(a).text();
-                var bt = $(b).text();
-                return (at > bt) ? 1 : ((at < bt) ? -1 : 0);
-            });
-            options.appendTo("#Institution");
-
-
-
+            function sortSelectOptions(selector, skip_first) {
+                var options = (skip_first) ? $(selector + ' option:not(:first)') : $(selector + ' option');
+                var arr = options.map(function(_, o) {
+                    return {
+                        t: $(o).text(),
+                        v: o.value,
+                        s: $(o).prop('selected')
+                    };
+                }).get();
+                arr.sort(function(o1, o2) {
+                    var t1 = o1.t.toLowerCase(),
+                        t2 = o2.t.toLowerCase();
+                    return t1 > t2 ? 1 : t1 < t2 ? -1 : 0;
+                });
+                options.each(function(i, o) {
+                    o.value = arr[i].v;
+                    $(o).text(arr[i].t);
+                    if (arr[i].s) {
+                        $(o).attr('selected', 'selected').prop('selected', true);
+                    } else {
+                        $(o).removeAttr('selected');
+                        $(o).prop('selected', false);
+                    }
+                });
+            }
+            sortSelectOptions('#Institution', true);
+            sortSelectOptions('#dt_theme', true);
 
             function newexportaction(e, dt, button, config) {
                 var self = this;
