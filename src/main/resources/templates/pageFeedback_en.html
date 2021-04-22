@@ -99,7 +99,7 @@
             </div>
             <div class="mrgn-lft-sm row">
                 <!-- <button type="submit" class="btn btn-primary" aria-controls="problemTable">Filter</button> -->
-                <button type="reset" class="btn btn-primary">Reset to defaults</button>
+                <button type="reset" class="btn btn-primary" onclick="clearText()">Reset to defaults</button>
             </div>
             <br>
         </form>
@@ -184,7 +184,19 @@
 
     <script type="text/javascript" src="js/spring-friendly.min.js"></script>
 
-
+    <script type="text/javascript">
+        function clearText() {
+            $("#searchCol0").val("");
+            $("#searchCol1").val("");
+            $("#searchCol2").val("");
+            $("#searchCol3").val("");
+            $("#searchCol4").val("");
+            $("#searchCol5").val("");
+            $("#searchCol6").val("");
+            $("#searchCol7").val("");
+            $("#searchCol8").val("");
+        }
+    </script>
     <script th:inline="javascript">
         $(document).ready(function() {
 
@@ -316,7 +328,7 @@
             $('#problemTable thead tr').clone(true).appendTo('#problemTable thead');
             $('#problemTable thead tr:eq(1) th').each(function(i) {
                 var title = $(this).text();
-                $(this).html('<input type="text" placeholder="Search ' + title + '" />');
+                $(this).html('<input type="text" id="searchCol' + i + '" placeholder="Search ' + title + '" />');
 
                 $('input', this)
                     .unbind()
@@ -330,6 +342,8 @@
                     });
 
             });
+
+
 
             var flag = false;
             var flag2 = false;
