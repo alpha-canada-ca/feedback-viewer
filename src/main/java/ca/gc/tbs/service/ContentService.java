@@ -21,7 +21,9 @@ public class ContentService {
 			content = newContent;
 			System.out.println("Phone number cleaned: " + content);
 		}
+		System.out.println("test if bad words being cleaned.");
 		newContent = BadWords.censor(content);
+		System.out.println("BadWords config loaded.");
 		if (!newContent.contentEquals(content)) {
 			content = newContent;
 			System.out.println("curse words cleaned: " + content);
