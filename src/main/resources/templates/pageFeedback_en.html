@@ -50,55 +50,99 @@
         <form class="wb-tables-filter" data-bind-to="problemTable">
             <h4 class="h4">Filter options</h4>
             <p class="mrgn-tp-md">Use filters to change your results in the data table</p>
+
             <div class="row">
-                <div class="form-group col-sm-5">
-                    <label for="Institution">Institution</label>
-                    <select class="form-control" id="Institution" name="Institution" data-column="6">
-                                        <option value="">All</option>
-                                        <option value="CRA">Canada Revenue Agency</option>
-                                        <option value="DFO">Department of Fisheries and Oceans</option>
-                                        <option value="Employment and Social Development Canada">Employment and Social Development Canada</option>
-                                        <option value="FCAC">Financial Consumer Agency of Canada</option>
-                                        <option value="FIN">Department of Finance</option>
-                                        <option value="Health Canada">Health Canada</option>
-                                        <option value="ISED">Innovation, Science and Economic Development Canada</option>
-                                        <option value="NRC">National Research Council</option>
-                                        <option value="Public Health Agency of Canada">Public Health Agency of Canada</option>
-                                        <option value="PSPC">Public Services and Procurement Canada</option>
-                                        <option value="TBS">Treasury Board of Canada Secretariat</option>
-                                        <!-- DEPARTMENTS -->
-                    </select>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label for="Department">Department</label>
+                        <select class="form-control" id="Department" name="Department" data-column="5">
+                            <option value="">All</option>
+                            <option value="CRA">Canada Revenue Agency</option>
+                            <option value="DFO">Department of Fisheries and Oceans</option>
+                            <option value="Employment and Social Development Canada">Employment and Social Development
+                                Canada</option>
+                            <option value="FCAC">Financial Consumer Agency of Canada</option>
+                            <option value="FIN">Department of Finance</option>
+                            <option value="Health Canada">Health Canada</option>
+                            <option value="ISED">Innovation, Science and Economic Development Canada</option>
+                            <option value="NRC">National Research Council</option>
+                            <option value="Public Health Agency of Canada">Public Health Agency of Canada</option>
+                            <option value="PSPC">Public Services and Procurement Canada</option>
+                            <option value="TBS">Treasury Board of Canada Secretariat</option>
+                            <!-- DEPARTMENTS -->
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="section">Section</label>
+                        <select class="form-control" id="section" name="section" data-column="6">
+                            <option value="">All</option>
+                            <option value="travel-wizard">travel-wizard</option>
+                            <option value="COVID">COVID</option>
+                            <option value="CRB">CRB</option>
+                            <option value="Vaccines">Vaccines</option>
+                            <option value="CRSB">CRSB</option>
+                            <option value="PTR">PTR</option>
+                            <option value="COVID Alert">COVID Alert</option>
+                            <option value="CRSB">CRSB</option>
+                            <option value="CEWS">CEWS</option>
+                            <option value="CERS">CERS</option>
+                            <option value="Business">Business</option>
+                            <option value="WFHE">WFHE</option>
+                            <option value="ITB">ITB</option>
+                            <option value="ECM">ECM</option>
+                            <option value="Health">Health</option>
+                            <option value="Pay">Pay</option>
+                            <option value="CIG">CIG</option>
+                            <option value="Sign in">Sign in</option>
+                            <option value="PIT">PIT</option>
+                            <option value="GST/HST">GST/HST</option>
+                            <option value="CERB">CERB</option>
+                            <option value="Design system">Design system</option>
+                            <option value="Retirement planning">Retirement planning</option>
+                            <option value="Skills for Success">Skills for Success</option>
+                            <option value="COVID-19 data trends">COVID-19 data trends</option>
+                            <option value="Social Development Partnerships Program">Social Development Partnerships
+                                Program</option>
+                            <option value="OBJ">OBJ</option>
+                            <option value="Mortgages">Mortgages</option>
+                            <option value="CEWS-CRHP">CEWS-CRHP</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="dt_theme">Theme</label>
+                        <select class="form-control" id="dt_theme" name="dt_theme" data-column="7">
+                            <option value="">All</option>
+                            <option value="Business">Business</option>
+                            <option value="COVID">COVID</option>
+                            <option value="Environment and natural resources">Environment and Natural Resources</option>
+                            <option value="Health">Health</option>
+                            <option value="Money and finances">Money and Finances</option>
+                            <option value="Public Service">Public Service</option>
+                            <option value="Science and innovation">Science and Innovation</option>
+                            <option value="Travel">Travel</option>
+                            <option value="Taxes">Taxes</option>
+                            <!-- THEMES -->
+                        </select>
+                    </div>
                 </div>
-
-                <div class="form-group col-sm-2">
-                    <label for="dt_theme">Theme</label> <select class="form-control" id="dt_theme" name="dt_theme" data-column="8">
-                                        <option value="">All</option>
-                                        <option value="Business">Business</option>
-                                        <option value="COVID">COVID</option>
-                                        <option value="Environment and natural resources">Environment and Natural Resources</option>
-                                        <option value="Health">Health</option>
-                                        <option value="Money and finances">Money and Finances</option>
-                                        <option value="Public Service">Public Service</option>
-                                        <option value="Science and innovation">Science and Innovation</option>
-                                        <option value="Travel">Travel</option>
-                                        <option value="Taxes">Taxes</option>
-                                        <!-- THEMES -->
-                                    </select>
-                </div>
-
-                <div class="col-sm-5">
-                    <label for="min">Date Range <span class="wb-inv">from start date</span></label>
-                    <div class="form-inline">
-                        <div class="form-group">
-                            <input type="date" class="form-control" id="min" name="min">
-                        </div>
-                        <label for="max">To <span class="wb-inv">end date</span></label>
-                        <div class="form-group">
-                            <input type="date" class="form-control" id="max" name="max">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label for="min">Date Range
+                            <span class="wb-inv">from start date</span></label>
+                        <div class="form-inline">
+                            <div class="form-group">
+                                <input type="date" class="form-control" id="min" name="min">
+                            </div>
+                            <label for="max">To
+                                <span class="wb-inv">end date</span></label>
+                            <div class="form-group">
+                                <input type="date" class="form-control" id="max" name="max">
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+
             <div class="mrgn-lft-sm row">
                 <!-- <button type="submit" class="btn btn-primary" aria-controls="problemTable">Filter</button> -->
                 <button type="reset" class="btn btn-primary" onclick="clearText()">Reset to defaults</button>
@@ -112,62 +156,21 @@
             <table id="problemTable" class="small table hover display compact">
                 <thead>
                     <tr>
-
                         <th>Date</th>
                         <th>Comment</th>
                         <th>Problem</th>
-                        <th>Tags</th>
                         <th>URL</th>
                         <th>Language</th>
-                        <th>Institution</th>
+                        <th>Department</th>
                         <th>Section</th>
                         <th>Theme</th>
-
                     </tr>
                 </thead>
                 <tbody>
-                    <!--<tr th:remove="tag" th:utext="${data}"></tr> -->
                 </tbody>
-
             </table>
         </div>
-
     </div>
-    </div>
-    <section id="submitWindow" class="mfp-hide modal-dialog modal-content overlay-def">
-        <header class="modal-header">
-            <h1 class="modal-title">Resolution</h1>
-        </header>
-        <div class="modal-body">
-            <div class="wb-frmvld">
-                <form id="resolutionForm" name="resolutionForm" method="post">
-                    <div class="form-group">
-                        <label for="comments" class="control-label required">
-							Notes: </label>
-                        <textarea id="notes" name="notes" class="form-control" required="required" rows="10" cols="47"></textarea>
-                    </div>
-                    <input type="submit" class="btn" name="submit" id="submit" value="Submit" />
-                </form>
-            </div>
-        </div>
-    </section>
-    <section id="tagWindow" class="mfp-hide modal-dialog modal-content overlay-def">
-        <header class="modal-header">
-            <h1 class="modal-title">Tags</h1>
-        </header>
-        <div class="modal-body">
-            <div class="wb-frmvld">
-                <form id="tagsForm" name="tagsForm" method="post">
-                    <div class="form-group">
-                        <label for="tags" class="control-label required"> Tags: </label>
-                        <textarea id="tags" name="tags" class="form-control" required="required" rows="10" cols="47"></textarea>
-                    </div>
-                    <input type="submit" class="btn" name="submit" id="submit" value="Submit" />
-                </form>
-            </div>
-        </div>
-    </section>
-
 
 
 
@@ -196,44 +199,59 @@
             $("#searchCol5").val("");
             $("#searchCol6").val("");
             $("#searchCol7").val("");
-            $("#searchCol8").val("");
         }
     </script>
     <script th:inline="javascript">
         $(document).ready(function() {
 
             function sortSelectOptions(selector, skip_first) {
-                var options = (skip_first) ? $(selector + ' option:not(:first)') : $(selector + ' option');
-                var arr = options.map(function(_, o) {
-                    return {
-                        t: $(o).text(),
-                        v: o.value,
-                        s: $(o).prop('selected')
-                    };
-                }).get();
+                var options = (skip_first) ?
+                    $(selector + ' option:not(:first)') :
+                    $(selector + ' option');
+                var arr = options
+                    .map(function(_, o) {
+                        return {
+                            t: $(o).text(),
+                            v: o.value,
+                            s: $(o).prop('selected')
+                        };
+                    })
+                    .get();
                 arr.sort(function(o1, o2) {
-                    var t1 = o1.t.toLowerCase(),
-                        t2 = o2.t.toLowerCase();
-                    return t1 > t2 ? 1 : t1 < t2 ? -1 : 0;
+                    var t1 = o1
+                        .t
+                        .toLowerCase(),
+                        t2 = o2
+                        .t
+                        .toLowerCase();
+                    return t1 > t2 ?
+                        1 :
+                        t1 < t2 ?
+                        -1 :
+                        0;
                 });
                 options.each(function(i, o) {
                     o.value = arr[i].v;
                     $(o).text(arr[i].t);
                     if (arr[i].s) {
-                        $(o).attr('selected', 'selected').prop('selected', true);
+                        $(o)
+                            .attr('selected', 'selected')
+                            .prop('selected', true);
                     } else {
                         $(o).removeAttr('selected');
                         $(o).prop('selected', false);
                     }
                 });
             }
-            sortSelectOptions('#Institution', true);
+            sortSelectOptions('#Department', true);
             sortSelectOptions('#dt_theme', true);
-
+            //sortSelectOptions('#section', true);
 
             function newexportaction(e, dt, button, config) {
                 var self = this;
-                var oldStart = dt.settings()[0]._iDisplayStart;
+                var oldStart = dt
+                    .settings()[0]
+                    ._iDisplayStart;
                 dt.one('preXhr', function(e, s, data) {
                     // Just this once, load all data from the server...
                     data.start = 0;
@@ -241,21 +259,94 @@
                     dt.one('preDraw', function(e, settings) {
                         // Call the original action function
                         if (button[0].className.indexOf('buttons-copy') >= 0) {
-                            $.fn.dataTable.ext.buttons.copyHtml5.action.call(self, e, dt, button, config);
+                            $
+                                .fn
+                                .dataTable
+                                .ext
+                                .buttons
+                                .copyHtml5
+                                .action
+                                .call(self, e, dt, button, config);
                         } else if (button[0].className.indexOf('buttons-excel') >= 0) {
-                            $.fn.dataTable.ext.buttons.excelHtml5.available(dt, config) ?
-                                $.fn.dataTable.ext.buttons.excelHtml5.action.call(self, e, dt, button, config) :
-                                $.fn.dataTable.ext.buttons.excelFlash.action.call(self, e, dt, button, config);
+                            $
+                                .fn
+                                .dataTable
+                                .ext
+                                .buttons
+                                .excelHtml5
+                                .available(dt, config) ?
+                                $
+                                .fn
+                                .dataTable
+                                .ext
+                                .buttons
+                                .excelHtml5
+                                .action
+                                .call(self, e, dt, button, config) :
+                                $
+                                .fn
+                                .dataTable
+                                .ext
+                                .buttons
+                                .excelFlash
+                                .action
+                                .call(self, e, dt, button, config);
                         } else if (button[0].className.indexOf('buttons-csv') >= 0) {
-                            $.fn.dataTable.ext.buttons.csvHtml5.available(dt, config) ?
-                                $.fn.dataTable.ext.buttons.csvHtml5.action.call(self, e, dt, button, config) :
-                                $.fn.dataTable.ext.buttons.csvFlash.action.call(self, e, dt, button, config);
+                            $
+                                .fn
+                                .dataTable
+                                .ext
+                                .buttons
+                                .csvHtml5
+                                .available(dt, config) ?
+                                $
+                                .fn
+                                .dataTable
+                                .ext
+                                .buttons
+                                .csvHtml5
+                                .action
+                                .call(self, e, dt, button, config) :
+                                $
+                                .fn
+                                .dataTable
+                                .ext
+                                .buttons
+                                .csvFlash
+                                .action
+                                .call(self, e, dt, button, config);
                         } else if (button[0].className.indexOf('buttons-pdf') >= 0) {
-                            $.fn.dataTable.ext.buttons.pdfHtml5.available(dt, config) ?
-                                $.fn.dataTable.ext.buttons.pdfHtml5.action.call(self, e, dt, button, config) :
-                                $.fn.dataTable.ext.buttons.pdfFlash.action.call(self, e, dt, button, config);
+                            $
+                                .fn
+                                .dataTable
+                                .ext
+                                .buttons
+                                .pdfHtml5
+                                .available(dt, config) ?
+                                $
+                                .fn
+                                .dataTable
+                                .ext
+                                .buttons
+                                .pdfHtml5
+                                .action
+                                .call(self, e, dt, button, config) :
+                                $
+                                .fn
+                                .dataTable
+                                .ext
+                                .buttons
+                                .pdfFlash
+                                .action
+                                .call(self, e, dt, button, config);
                         } else if (button[0].className.indexOf('buttons-print') >= 0) {
-                            $.fn.dataTable.ext.buttons.print.action(e, dt, button, config);
+                            $
+                                .fn
+                                .dataTable
+                                .ext
+                                .buttons
+                                .print
+                                .action(e, dt, button, config);
                         }
                         dt.one('preXhr', function(e, s, data) {
                             // DataTables thinks the first item displayed is index 0, but we're not drawing that.
@@ -270,26 +361,29 @@
                     });
                 });
                 // Requery the server with the new one-time export settings
-                dt.ajax.reload();
+                dt
+                    .ajax
+                    .reload();
             };
 
-            $('#problemTable').find('thead th').append('<span class="sorting-cnt"><span class="sorting-icons"></span></span>')
-
+            $('#problemTable')
+                .find('thead th')
+                .append('<span class="sorting-cnt"><span class="sorting-icons"></span></span>')
 
             var table = $('table#problemTable').DataTable({
                 "order": [
                     [0, "desc"]
                 ],
                 processing: true,
-                ajax: {},
-                "language": {
+                language: {
                     processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading..n.</span> '
                 },
-
-                "lengthMenu": [10, 25, 50],
+                lengthMenu: [
+                    10, 25, 50
+                ],
                 retrieve: true,
-                'ajax': '/problemData',
-                'serverSide': true,
+                ajax: '/problemData',
+                serverSide: true,
                 columns: [{
                     data: 'problemDate'
                 }, {
@@ -297,17 +391,18 @@
                 }, {
                     data: 'problem'
                 }, {
-                    data: 'tags'
-                }, {
                     data: 'url'
                 }, {
                     data: 'language'
                 }, {
-                    data: 'institution'
+                    data: 'institution',
+                    visible: false
                 }, {
-                    data: 'section'
+                    data: 'section',
+                    visible: false
                 }, {
-                    data: 'theme'
+                    data: 'theme',
+                    visible: false
                 }],
 
                 orderCellsTop: true,
@@ -317,12 +412,12 @@
                     "extend": 'csv',
                     "text": 'Download CSV',
                     className: 'btn btn-default',
-                    "action": newexportaction,
+                    "action": newexportaction
                 }, {
                     "extend": 'excel',
                     "text": "Download Excel",
                     className: 'btn btn-default',
-                    "action": newexportaction,
+                    "action": newexportaction
                 }]
             });
 
@@ -331,7 +426,9 @@
                 return string;
             }
 
-            $('#problemTable thead tr').clone(true).appendTo('#problemTable thead');
+            $('#problemTable thead tr')
+                .clone(true)
+                .appendTo('#problemTable thead');
             $('#problemTable thead tr:eq(1) th').each(function(i) {
                 var title = $(this).text();
                 $(this).html('<input type="text" id="searchCol' + i + '" placeholder="Search ' + title + '" />');
@@ -349,50 +446,67 @@
 
             });
 
+            const ThemeColumnIndex = 7;
+            const SectionColumnIndex = 6;
+            const DepColumnIndex = 5;
+            const DateColumnIndex = 0;
 
+            var minMaxDateChosen = false;
 
-            var flag = false;
-            var flag2 = false;
             $('#min', this).on('keyup change', function() {
+                minMaxDateChosen = false;
                 if (this.value != "" && $('#max').val() != "") {
-                    flag = true;
+                    minMaxDateChosen = true;
                     table
                         .column(0)
                         .search(this.value + ":" + $('#max').val())
                         .draw();
                 }
-                if ($('#dt_theme').val() != "" && flag) {
+                if ($('#dt_theme').val() != "" && minMaxDateChosen) {
                     table
-                        .column(8)
+                        .column(ThemeColumnIndex)
                         .search($('#dt_theme').val())
                         .draw()
                 }
-                if ($('#Institution').val() != "" && flag) {
+                if ($('#Department').val() != "" && minMaxDateChosen) {
                     table
-                        .column(6)
-                        .search($('#Institution').val())
+                        .column(DepColumnIndex)
+                        .search($('#Department').val())
+                        .draw()
+                }
+                if ($('#section').val() != "" && minMaxDateChosen) {
+                    table
+                        .column(SectionColumnIndex)
+                        .search($('#section').val())
                         .draw()
                 }
             });
 
             $('#max', this).on('keyup change', function() {
+                minMaxDateChosen = false;
                 if (this.value != "" && $('#min').val() != "") {
-                    flag2 = true;
+                    minMaxDateChosen = true;
                     table
-                        .column(0)
+                        .column(DateColumnIndex)
                         .search($('#min').val() + ":" + this.value)
                         .draw();
                 }
-                if ($('#dt_theme').val() != "" && flag2) {
+                if ($('#dt_theme').val() != "" && minMaxDateChosen) {
                     table
-                        .column(8)
+                        .column(ThemeColumnIndex)
                         .search($('#dt_theme').val())
                         .draw()
                 }
-                if ($('#Institution').val() != "" && flag2) {
+                if ($('#Department').val() != "" && minMaxDateChosen) {
                     table
-                        .column(6)
-                        .search($('#Institution').val())
+                        .column(DepColumnIndex)
+                        .search($('#Department').val())
+                        .draw()
+                }
+                if ($('#section').val() != "" && minMaxDateChosen) {
+                    table
+                        .column(SectionColumnIndex)
+                        .search($('#section').val())
                         .draw()
                 }
             });
@@ -400,56 +514,100 @@
             $('#dt_theme', this).on('keyup change', function() {
                 if (this.value == "") {
                     table
-                        .column(8)
+                        .column(ThemeColumnIndex)
                         .search("")
                         .draw()
                 }
                 if (this.value != "") {
                     table
-                        .column(8)
+                        .column(ThemeColumnIndex)
                         .search(this.value)
                         .draw()
                 }
-                if (flag && flag2) {
+                if (minMaxDateChosen) {
                     table
-                        .column(0)
+                        .column(DateColumnIndex)
                         .search($('#min').val() + ":" + $('#max').val())
                         .draw();
                 }
-                if ($('#Institution').val()) {
+                if ($('#Department').val()) {
                     table
-                        .column(6)
-                        .search($('#Institution').val())
+                        .column(DepColumnIndex) //change these to const values
+                        .search($('#Department').val())
+                        .draw()
+                }
+                if ($('#section').val()) {
+                    table
+                        .column(SectionColumnIndex)
+                        .search($('#section').val())
                         .draw()
                 }
             });
-            $('#Institution', this).on('keyup change', function() {
+            $('#Department', this).on('keyup change', function() {
                 if (this.value == "") {
                     table
-                        .column(6)
+                        .column(DepColumnIndex)
                         .search("")
                         .draw()
                 }
                 if (this.value != "") {
                     table
-                        .column(6)
+                        .column(DepColumnIndex)
                         .search(this.value)
                         .draw()
                 }
-                if (flag && flag2) {
+                if (minMaxDateChosen) {
                     table
-                        .column(0)
+                        .column(DateColumnIndex)
                         .search($('#min').val() + ":" + $('#max').val())
                         .draw();
                 }
                 if ($('#dt_theme').val() != "") {
                     table
-                        .column(8)
+                        .column(ThemeColumnIndex)
                         .search($('#dt_theme').val())
+                        .draw()
+                }
+                if ($('#section').val() != "") {
+                    table
+                        .column(SectionColumnIndex)
+                        .search($('#section').val())
                         .draw()
                 }
             });
 
+            $('#section', this).on('keyup change', function() {
+                if (this.value == "") {
+                    table
+                        .column(SectionColumnIndex)
+                        .search("")
+                        .draw()
+                }
+                if (this.value != "") {
+                    table
+                        .column(SectionColumnIndex)
+                        .search(this.value)
+                        .draw()
+                }
+                if (minMaxDateChosen) {
+                    table
+                        .column(DateColumnIndex)
+                        .search($('#min').val() + ":" + $('#max').val())
+                        .draw();
+                }
+                if ($('#Department').val()) {
+                    table
+                        .column(DepColumnIndex) //change these to const values
+                        .search($('#Department').val())
+                        .draw()
+                }
+                if ($('#dt_theme').val() != "") {
+                    table
+                        .column(ThemeColumnIndex)
+                        .search($('#dt_theme').val())
+                        .draw()
+                }
+            });
 
             // $('#min').keyup(function() {
             //     table.fnDraw();
@@ -462,56 +620,67 @@
 
         $(document).on("wb-ready.wb", function() {
 
-
-
             $("#problemTable").on("click", ".resolveBtn", function(e) {
-                var id = $(e.target).attr("id").replace("resolve", "");
-                var items = $("#resolve" + id).parent().parent().parent().find("td");
+                var id = $(e.target)
+                    .attr("id")
+                    .replace("resolve", "");
+                var items = $("#resolve" + id)
+                    .parent()
+                    .parent()
+                    .parent()
+                    .find("td");
                 $("#notes").val($(items.get(columns.RESOLUTION)).text());
                 //alert($('#submitWindow').find('input#submit').length);
-                $('#submitWindow').find('input#submit').off().on("click", function(e) {
-                    e.preventDefault();
-                    e.stopImmediatePropagation();
-                    var obj = {
-                        "department": $(items.get(columns.DEPARMENT)).text(),
-                        "language": $(items.get(columns.LANGUAGE)).text(),
-                        "url": $(items.get(columns.URL)).text(),
-                        "problem": $(items.get(columns.PROBLEM)).text(),
-                        "problemDetails": $(items.get(columns.PROBLEM_DETAILS)).text(),
-                        "problemDate": $(items.get(columns.PROBLEM_DATE)).text(),
-                        "resolution": $("#notes").val(),
-                        "id": id
-                    };
-                    $.ajax({
-                        type: "post",
-                        data: obj,
-                        cache: false,
-                        url: "updateProblem",
-                        dataType: "text",
-                        error: function(xhr, status, error) {
-                            console.log(xhr.responseText);
-                        },
-                        success: function(date) {
-                            $(items.get(columns.RESOLUTION)).text($("#notes").val());
-                            $("#notes").val("");
-                            $(items.get(columns.RESOLUTION_DATE)).text(date);
-                            $(".popup-modal-dismiss").click();
-                        }
-                    });
+                $('#submitWindow')
+                    .find('input#submit')
+                    .off()
+                    .on("click", function(e) {
+                        e.preventDefault();
+                        e.stopImmediatePropagation();
+                        var obj = {
+                            "department": $(items.get(columns.DEPARMENT)).text(),
+                            "language": $(items.get(columns.LANGUAGE)).text(),
+                            "url": $(items.get(columns.URL)).text(),
+                            "problem": $(items.get(columns.PROBLEM)).text(),
+                            "problemDetails": $(items.get(columns.PROBLEM_DETAILS)).text(),
+                            "problemDate": $(items.get(columns.PROBLEM_DATE)).text(),
+                            "resolution": $("#notes").val(),
+                            "id": id
+                        };
+                        $.ajax({
+                            type: "post",
+                            data: obj,
+                            cache: false,
+                            url: "updateProblem",
+                            dataType: "text",
+                            error: function(xhr, status, error) {
+                                console.log(xhr.responseText);
+                            },
+                            success: function(date) {
+                                $(items.get(columns.RESOLUTION)).text($("#notes").val());
+                                $("#notes").val("");
+                                $(items.get(columns.RESOLUTION_DATE)).text(date);
+                                $(".popup-modal-dismiss").click();
+                            }
+                        });
 
-                });
-                wb.doc.trigger("open.wb-lbx", [
-                    [{
-                        src: "#submitWindow",
-                        type: "inline"
-                    }]
-                ]);
+                    });
+                wb
+                    .doc
+                    .trigger("open.wb-lbx", [
+                        [{
+                            src: "#submitWindow",
+                            type: "inline"
+                        }]
+                    ]);
 
             });
 
-
             $("#problemTable").on("click", ".deleteBtn", function(e) {
-                var id = $(e.target).parent().attr("id").replace("delete", "");
+                var id = $(e.target)
+                    .parent()
+                    .attr("id")
+                    .replace("delete", "");
                 $.ajax({
                     type: "get",
                     data: {
@@ -524,7 +693,11 @@
                         console.log(xhr.responseText);
                     },
                     success: function() {
-                        var tr = $(e.target).parent().parent().parent().parent();
+                        var tr = $(e.target)
+                            .parent()
+                            .parent()
+                            .parent()
+                            .parent();
                         //	var row = ($('#problemTable').DataTable().row($(tr))).remove();
                         //	row.remove();
                         //	$('#problemTable').DataTable().draw("full-hold");
@@ -533,46 +706,64 @@
             });
 
             $("#problemTable").on("click", ".tagBtn", function(e) {
-                var id = $(e.target).attr("id").replace("tag", "");
-                var items = $("#tag" + id).parent().parent().parent().find("td");
-                var tags = $(items.get(columns.TAGS)).text().replace(/\s*\(x\)\s*/g, ",").replace(/.$/, "");
+                var id = $(e.target)
+                    .attr("id")
+                    .replace("tag", "");
+                var items = $("#tag" + id)
+                    .parent()
+                    .parent()
+                    .parent()
+                    .find("td");
+                var tags = $(items.get(columns.TAGS))
+                    .text()
+                    .replace(/\s*\(x\)\s*/g, ",")
+                    .replace(/.$/, "");
                 $("#tags").val(tags);
-                $('#tagWindow').find('input#submit').off().on("click", function(e) {
-                    e.preventDefault();
-                    e.stopImmediatePropagation();
-                    var obj = {
-                        "tags": $("#tags").val(),
-                        "id": id
-                    };
-                    $.ajax({
-                        type: "post",
-                        data: obj,
-                        cache: false,
-                        url: "updateTags",
-                        dataType: "text",
-                        error: function(xhr, status, error) {
-                            console.log(xhr.responseText);
-                        },
-                        success: function(tags) {
-                            $(items.get(columns.TAGS)).html(tags);
-                            $("#tags").val("");
-                            $(".popup-modal-dismiss").click();
-                        }
-                    });
+                $('#tagWindow')
+                    .find('input#submit')
+                    .off()
+                    .on("click", function(e) {
+                        e.preventDefault();
+                        e.stopImmediatePropagation();
+                        var obj = {
+                            "tags": $("#tags").val(),
+                            "id": id
+                        };
+                        $.ajax({
+                            type: "post",
+                            data: obj,
+                            cache: false,
+                            url: "updateTags",
+                            dataType: "text",
+                            error: function(xhr, status, error) {
+                                console.log(xhr.responseText);
+                            },
+                            success: function(tags) {
+                                $(items.get(columns.TAGS)).html(tags);
+                                $("#tags").val("");
+                                $(".popup-modal-dismiss").click();
+                            }
+                        });
 
-                });
-                wb.doc.trigger("open.wb-lbx", [
-                    [{
-                        src: "#tagWindow",
-                        type: "inline"
-                    }]
-                ]);
+                    });
+                wb
+                    .doc
+                    .trigger("open.wb-lbx", [
+                        [{
+                            src: "#tagWindow",
+                            type: "inline"
+                        }]
+                    ]);
 
             });
 
             $("#problemTable").on("click", ".tagDeleteBtn", function(e) {
-                var id = $(e.target).attr("id").replace("tagDelete", "");
-                var tag = $(e.target).text().replace(/\s*\(x\)\s*/g, "");
+                var id = $(e.target)
+                    .attr("id")
+                    .replace("tagDelete", "");
+                var tag = $(e.target)
+                    .text()
+                    .replace(/\s*\(x\)\s*/g, "");
                 var obj = {
                     "tag": tag,
                     "id": id
@@ -592,10 +783,127 @@
                 });
             });
 
-
         });
     </script>
-</th:block>
+    <!-- START SCRIPT PAGE FEEDBACK WIDGET -->
+    <script>
+        (function($, windows, wb) {
+            "use strict";
+            var componentName = "gc-pg-hlpfl",
+                selector = "." + componentName,
+                initEvent = "wb-init" + selector,
+                $document = wb.doc,
+                regex = {
+                    phoneNumber: /(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}/im,
+                    sin: /(\d{3}\s*\d{3}\s*\d{3}|\d{3}\D*\d{3}\D*\d{3})/im,
+                    postalCode: /[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d/im,
+                    email: /([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})/im
+                },
+                init = function(event) {
+                    var elm = wb.init(event, componentName, selector),
+                        $elm;
+                    if (elm) {
+                        $elm = $(elm);
+                        $elm.trigger("keyup");
+                        wb.ready($elm, componentName);
+                    }
+                };
+            $document.on("click", selector + " #btnno", function() {
+                $(".gc-pg-hlpfl-no").removeClass("nojs-show");
+                $(".gc-pg-hlpfl-btn").addClass("hide");
+                $("#helpful").val("No");
+            })
+            $document.on("submit", selector + " #gc-pg-hlpfl-frm", function(event) {
+                var elm = event.currentTarget,
+                    $elm = $(elm);
+                event.preventDefault();
+                $(".gc-pg-hlpfl-thnk").removeClass("hide");
+                $elm.addClass("hide nojs-show");
+                $.ajax({
+                    url: "https://pagesuccessemailqueue.azurewebsites.net/api/QueueProblemForm",
+                    type: "POST",
+                    dataType: "text",
+                    data: $elm.serialize(),
+                    success: function(data) {},
+                    error: function(xhr, status, err) {
+                        console.log(xhr.responseText);
+                    }
+                });
+            });
 
+            $document.on("keyup", selector + " textarea", function(event) {
+                var textValue = event.target.value;
+                if (textValue.match(regex.phoneNumber) || textValue.match(regex.sin) || textValue.match(regex.postalCode) || textValue.match(regex.email)) {
+                    $("#warning").removeClass("hidden").animate();
+                } else {
+                    $("#warning").addClass("hidden");
+                }
+            });
+            $document.on("timerpoke.wb " + initEvent, selector, init);
+            wb.add(selector);
+        })(jQuery, window, wb);
+
+        // (function($, windows, wb) {
+        //         "use strict";
+        //         var componentName = "gc-pg-hlpfl",
+        //             selector = "." + componentName,
+        //             initEvent = "wb-init" + selector,
+        //             $document = wb.doc,
+        //             regex = {
+        //                 phoneNumber: /(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}/im,
+        //                 sin: /(\d{3}\s*\d{3}\s*\d{3}|\d{3}\D*\d{3}\D*\d{3})/im,
+        //                 postalCode: /[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d/im,
+        //                 email: /([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})/im
+        //             },
+        //             init = function(event) {
+        //                 var elm = wb.init(event, componentName, selector),
+        //                     $elm;
+        //                 if (elm) {
+        //                     $elm = $(elm);
+        //                     $elm.trigger("keyup");
+        //                     $elm.trigger("submit");
+        //                     $elm.trigger("click");
+        //                     wb.ready($elm, componentName);
+        //                 }
+        //             };
+        //         $document.on("keyup", selector + " textarea", function(event) {
+        //             var textValue = event.target.value,
+        //                 $warning = $("#warning");
+        //             if (textValue.match(regex.phoneNumber) || textValue.match(regex.sin) || textValue.match(regex.postalCode) || textValue.match(regex.email)) {
+        //                 $warning.removeClass("hidden").animate();
+        //             } else {
+        //                 $warning.addClass("hidden");
+        //             }
+        //         });
+        //         $document.on("click", selector + " #btnno", function() {
+        //             $(".gc-pg-hlpfl-no").removeClass("nojs-show");
+        //             $(".gc-pg-hlpfl-btn").addClass("hide");
+        //             $("#helpful").val("No");
+        //         });
+        //         $document.on("submit", selector + " #gc-pg-hlpfl-frm", function(event) {
+        //             var elm = event.currentTarget,
+        //                 $elm = $(elm);
+        //             event.preventDefault();
+        //             $(".gc-pg-hlpfl-thnk").removeClass("hide");
+        //             $elm.addClass("hide nojs-show");
+        //             $.ajax({
+        //                 url: "https://pagesuccessemailqueue.azurewebsites.net/api/QueueProblemForm",
+        //                 type: "POST",
+        //                 dataType: "text",
+        //                 data: $elm.serialize(),
+        //                 success: function(data) {},
+        //                 error: function(xhr, status, err) {
+        //                     console.log(xhr.responseText);
+        //                 }
+        //             });
+        //         });
+        //         $document.on("timerpoke.wb " + initEvent, selector, init);
+        //         wb.add(selector);
+    </script>
+
+
+    <!-- END SCRIPT PAGE FEEDBACK WIDGET -->
+
+</th:block>
 
 </html>
