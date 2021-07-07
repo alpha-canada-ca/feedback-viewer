@@ -43,17 +43,18 @@
             font-size: 12px;
         }
     </style>
-
     <div class="container">
-        <h4 class="wb-inv">Filtre</h4>
+        <h4 class="wb-inv">Filtering options</h4>
 
         <form class="wb-tables-filter" data-bind-to="problemTable">
-            <h4 class="h4">Options de filtrage</h4>
-            <p class="mrgn-tp-md">Utilisez des filtres pour modifier vos résultats dans le tableau de données</p>
+            <h4 class="h4">Filter options</h4>
+            <p class="mrgn-tp-md">Use filters to change your results in the data table</p>
+
             <div class="row">
-                <div class="form-group col-sm-5">
-                    <label for="Institution">Institution</label>
-                    <select class="form-control" id="Institution" name="Institution" data-column="6">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label for="Department">Département</label>
+                        <select class="form-control" id="Department" name="Département" data-column="6">
                                         <option value="">Tous</option>
                                         <option value="FCAC">Agence de la consommation en matière financière du Canada</option>
                                         <option value="CRA">Agence du revenu du Canada</option>
@@ -67,41 +68,79 @@
                                         <option value="TBS">Secrétariat du Conseil du Trésor du Canada</option>
                                         <option value="PSPC">Services publics et Approvisionnement Canada</option>
                                         <!-- DEPARTMENTS -->
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="section">Section</label>
+                        <select class="form-control" id="section" name="section" data-column="6">
+                        <option value="">All</option>
+                        <option value="travel-wizard">travel-wizard</option>
+                        <option value="COVID">COVID</option>
+                        <option value="CRB">CRB</option>
+                        <option value="Vaccines">Vaccines</option>
+                        <option value="CRSB">CRSB</option>
+                        <option value="PTR">PTR</option>
+                        <option value="COVID Alert">COVID Alert</option>
+                        <option value="CRSB">CRSB</option>
+                        <option value="CEWS">CEWS</option>
+                        <option value="CERS">CERS</option>
+                        <option value="Business">Business</option>
+                        <option value="WFHE">WFHE</option>
+                        <option value="ITB">ITB</option>
+                        <option value="ECM">ECM</option>
+                        <option value="Health">Health</option>
+                        <option value="Pay">Pay</option>
+                        <option value="CIG">CIG</option>
+                        <option value="Sign in">Sign in</option>
+                        <option value="PIT">PIT</option>
+                        <option value="GST/HST">GST/HST</option>
+                        <option value="CERB">CERB</option>
+                        <option value="Design system">Design system</option>
+                        <option value="Retirement planning">Retirement planning</option>
+                        <option value="Skills for Success">Skills for Success</option>
+                        <option value="COVID-19 data trends">COVID-19 data trends</option>
+                        <option value="Social Development Partnerships Program">Social Development Partnerships Program</option>
+                        <option value="OBJ">OBJ</option>
+                        <option value="Mortgages">Mortgages</option>
+                        <option value="CEWS-CRHP">CEWS-CRHP</option>
                     </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="dt_theme">Thème</label>
+                        <select class="form-control" id="dt_theme" name="dt_theme" data-column="8">
+                            <option value="">Tous</option>
+                            <option value="Money and finances">Argent et finances</option>
+                            <option value="COVID">COVID</option>
+                            <option value="Environment and natural resources">Environnement et Ressources Naturelles</option>
+                            <option value="Taxes">Impôt</option>
+                            <option value="Health">Santé</option>
+                            <option value="Travel">Voyage</option>
+                            <option value="Public Service">Service Public</option>
+                            <option value="Science and innovation">Science et Innovation</option>
+                            <option value="Business">Entreprise</option>
+                            <!-- THEMES -->
+                        </select>
+                    </div>
                 </div>
-
-                <div class="form-group col-sm-2">
-                    <label for="dt_theme">Thème</label> <select class="form-control" id="dt_theme" name="dt_theme" data-column="8">
-                                        <option value="">Tous</option>
-                                        <option value="Money and finances">Argent et finances</option>
-                                        <option value="COVID">COVID</option>
-                                        <option value="Environment and natural resources">Environnement et Ressources Naturelles</option>
-                                        <option value="Taxes">Impôt</option>
-                                        <option value="Health">Santé</option>
-                                        <option value="Travel">Voyage</option>
-                                        <option value="Public Service">Service Public</option>
-                                        <option value="Science and innovation">Science et Innovation</option>
-                                        <option value="Business">Entreprise</option>
-                                        <!-- THEMES -->
-                                    </select>
-                </div>
-
-                <div class="col-sm-5">
-                    <label for="min">Dates <span class="wb-inv">Date de début</span></label>
-                    <div class="form-inline">
-                        <div class="form-group">
-                            <input type="date" placeholder="aaaa-mm-jj" class="form-control" id="min" name="min">
-                        </div>
-                        <label for="max">à <span class="wb-inv">date de fin</span></label>
-                        <div class="form-group">
-                            <input type="date" placeholder="aaaa-mm-jj" class="form-control" id="max" name="max">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label for="min">Dates <span class="wb-inv">Date de début</span></label>
+                        <div class="form-inline">
+                            <div class="form-group">
+                                <input type="date" placeholder="aaaa-mm-jj" class="form-control" id="min" name="min">
+                            </div>
+                            <label for="max">à <span class="wb-inv">date de fin</span></label>
+                            <div class="form-group">
+                                <input type="date" placeholder="aaaa-mm-jj" class="form-control" id="max" name="max">
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+
             <div class="mrgn-lft-sm row">
                 <!-- <button type="submit" class="btn btn-primary" aria-controls="problemTable">Filter</button> -->
-                <button type="reset" class="btn btn-primary">réinitialisation</button>
+                <button type="reset" class="btn btn-primary" onclick="clearText()">Reset to defaults</button>
             </div>
             <br>
         </form>
@@ -112,61 +151,21 @@
             <table id="problemTable" class="small table hover display compact">
                 <thead>
                     <tr>
-
                         <th>Date</th>
                         <th>Commentaire</th>
                         <th>Problème</th>
-                        <th>Étiquettes</th>
                         <th>URL</th>
                         <th>Langue</th>
                         <th>Institution</th>
                         <th>Section</th>
                         <th>Thème</th>
-
                     </tr>
                 </thead>
                 <tbody>
-                    <!--<tr th:remove="tag" th:utext="${data}"></tr> -->
                 </tbody>
-
             </table>
         </div>
-
     </div>
-    </div>
-    <section id="submitWindow" class="mfp-hide modal-dialog modal-content overlay-def">
-        <header class="modal-header">
-            <h1 class="modal-title">Resolution</h1>
-        </header>
-        <div class="modal-body">
-            <div class="wb-frmvld">
-                <form id="resolutionForm" name="resolutionForm" method="post">
-                    <div class="form-group">
-                        <label for="comments" class="control-label required">
-							Notes: </label>
-                        <textarea id="notes" name="notes" class="form-control" required="required" rows="10" cols="47"></textarea>
-                    </div>
-                    <input type="submit" class="btn" name="submit" id="submit" value="Submit" />
-                </form>
-            </div>
-        </div>
-    </section>
-    <section id="tagWindow" class="mfp-hide modal-dialog modal-content overlay-def">
-        <header class="modal-header">
-            <h1 class="modal-title">Tags</h1>
-        </header>
-        <div class="modal-body">
-            <div class="wb-frmvld">
-                <form id="tagsForm" name="tagsForm" method="post">
-                    <div class="form-group">
-                        <label for="tags" class="control-label required"> Tags: </label>
-                        <textarea id="tags" name="tags" class="form-control" required="required" rows="10" cols="47"></textarea>
-                    </div>
-                    <input type="submit" class="btn" name="submit" id="submit" value="Submit" />
-                </form>
-            </div>
-        </div>
-    </section>
 
 
 
@@ -284,18 +283,20 @@
                 }, {
                     data: 'problem'
                 }, {
-                    data: 'tags'
-                }, {
                     data: 'url'
                 }, {
                     data: 'language'
                 }, {
-                    data: 'institution'
+                    data: 'institution',
+                    visible: false
                 }, {
-                    data: 'section'
+                    data: 'section',
+                    visible: false
                 }, {
-                    data: 'theme'
+                    data: 'theme',
+                    visible: false
                 }],
+
 
                 orderCellsTop: true,
                 fixedHeader: true,
@@ -313,59 +314,67 @@
                 }]
             });
 
+            const ThemeColumnIndex = 7;
+            const SectionColumnIndex = 6;
+            const DepColumnIndex = 5;
+            const DateColumnIndex = 0;
 
+            var minMaxDateChosen = false;
 
-
-
-
-
-
-
-
-
-
-            var flag = false;
-            var flag2 = false;
             $('#min', this).on('keyup change', function() {
+                minMaxDateChosen = false;
                 if (this.value != "" && $('#max').val() != "") {
-                    flag = true;
+                    minMaxDateChosen = true;
                     table
                         .column(0)
                         .search(this.value + ":" + $('#max').val())
                         .draw();
                 }
-                if ($('#dt_theme').val() != "" && flag) {
+                if ($('#dt_theme').val() != "" && minMaxDateChosen) {
                     table
-                        .column(8)
+                        .column(ThemeColumnIndex)
                         .search($('#dt_theme').val())
                         .draw()
                 }
-                if ($('#Institution').val() != "" && flag) {
+                if ($('#Department').val() != "" && minMaxDateChosen) {
                     table
-                        .column(6)
-                        .search($('#Institution').val())
+                        .column(DepColumnIndex)
+                        .search($('#Department').val())
+                        .draw()
+                }
+                if ($('#section').val() != "" && minMaxDateChosen) {
+                    table
+                        .column(SectionColumnIndex)
+                        .search($('#section').val())
                         .draw()
                 }
             });
 
             $('#max', this).on('keyup change', function() {
+                minMaxDateChosen = false;
                 if (this.value != "" && $('#min').val() != "") {
-                    flag2 = true;
+                    minMaxDateChosen = true;
                     table
-                        .column(0)
+                        .column(DateColumnIndex)
                         .search($('#min').val() + ":" + this.value)
                         .draw();
                 }
-                if ($('#dt_theme').val() != "" && flag2) {
+                if ($('#dt_theme').val() != "" && minMaxDateChosen) {
                     table
-                        .column(8)
+                        .column(ThemeColumnIndex)
                         .search($('#dt_theme').val())
                         .draw()
                 }
-                if ($('#Institution').val() != "" && flag2) {
+                if ($('#Department').val() != "" && minMaxDateChosen) {
                     table
-                        .column(6)
-                        .search($('#Institution').val())
+                        .column(DepColumnIndex)
+                        .search($('#Department').val())
+                        .draw()
+                }
+                if ($('#section').val() != "" && minMaxDateChosen) {
+                    table
+                        .column(SectionColumnIndex)
+                        .search($('#section').val())
                         .draw()
                 }
             });
@@ -373,198 +382,101 @@
             $('#dt_theme', this).on('keyup change', function() {
                 if (this.value == "") {
                     table
-                        .column(8)
+                        .column(ThemeColumnIndex)
                         .search("")
                         .draw()
                 }
                 if (this.value != "") {
                     table
-                        .column(8)
+                        .column(ThemeColumnIndex)
                         .search(this.value)
                         .draw()
                 }
-                if (flag && flag2) {
+                if (minMaxDateChosen) {
                     table
-                        .column(0)
+                        .column(DateColumnIndex)
                         .search($('#min').val() + ":" + $('#max').val())
                         .draw();
                 }
-                if ($('#Institution').val()) {
+                if ($('#Department').val()) {
                     table
-                        .column(6)
-                        .search($('#Institution').val())
+                        .column(DepColumnIndex) //change these to const values
+                        .search($('#Department').val())
+                        .draw()
+                }
+                if ($('#section').val()) {
+                    table
+                        .column(SectionColumnIndex)
+                        .search($('#section').val())
                         .draw()
                 }
             });
-            $('#Institution', this).on('keyup change', function() {
+
+            $('#Department', this).on('keyup change', function() {
                 if (this.value == "") {
                     table
-                        .column(6)
+                        .column(DepColumnIndex)
                         .search("")
                         .draw()
                 }
                 if (this.value != "") {
                     table
-                        .column(6)
+                        .column(DepColumnIndex)
                         .search(this.value)
                         .draw()
                 }
-                if (flag && flag2) {
+                if (minMaxDateChosen) {
                     table
-                        .column(0)
+                        .column(DateColumnIndex)
                         .search($('#min').val() + ":" + $('#max').val())
                         .draw();
                 }
                 if ($('#dt_theme').val() != "") {
                     table
-                        .column(8)
+                        .column(ThemeColumnIndex)
                         .search($('#dt_theme').val())
+                        .draw()
+                }
+                if ($('#section').val() != "") {
+                    table
+                        .column(SectionColumnIndex)
+                        .search($('#section').val())
                         .draw()
                 }
             });
 
-
-            // $('#min').keyup(function() {
-            //     table.fnDraw();
-            // });
-            // $('#max').keyup(function() {
-            //     table.fnDraw();
-            // });
-
-        });
-
-        $(document).on("wb-ready.wb", function() {
-
-
-
-            $("#problemTable").on("click", ".resolveBtn", function(e) {
-                var id = $(e.target).attr("id").replace("resolve", "");
-                var items = $("#resolve" + id).parent().parent().parent().find("td");
-                $("#notes").val($(items.get(columns.RESOLUTION)).text());
-                //alert($('#submitWindow').find('input#submit').length);
-                $('#submitWindow').find('input#submit').off().on("click", function(e) {
-                    e.preventDefault();
-                    e.stopImmediatePropagation();
-                    var obj = {
-                        "department": $(items.get(columns.DEPARMENT)).text(),
-                        "language": $(items.get(columns.LANGUAGE)).text(),
-                        "url": $(items.get(columns.URL)).text(),
-                        "problem": $(items.get(columns.PROBLEM)).text(),
-                        "problemDetails": $(items.get(columns.PROBLEM_DETAILS)).text(),
-                        "problemDate": $(items.get(columns.PROBLEM_DATE)).text(),
-                        "resolution": $("#notes").val(),
-                        "id": id
-                    };
-                    $.ajax({
-                        type: "post",
-                        data: obj,
-                        cache: false,
-                        url: "updateProblem",
-                        dataType: "text",
-                        error: function(xhr, status, error) {
-                            console.log(xhr.responseText);
-                        },
-                        success: function(date) {
-                            $(items.get(columns.RESOLUTION)).text($("#notes").val());
-                            $("#notes").val("");
-                            $(items.get(columns.RESOLUTION_DATE)).text(date);
-                            $(".popup-modal-dismiss").click();
-                        }
-                    });
-
-                });
-                wb.doc.trigger("open.wb-lbx", [
-                    [{
-                        src: "#submitWindow",
-                        type: "inline"
-                    }]
-                ]);
-
+            $('#section', this).on('keyup change', function() {
+                if (this.value == "") {
+                    table
+                        .column(SectionColumnIndex)
+                        .search("")
+                        .draw()
+                }
+                if (this.value != "") {
+                    table
+                        .column(SectionColumnIndex)
+                        .search(this.value)
+                        .draw()
+                }
+                if (minMaxDateChosen) {
+                    table
+                        .column(DateColumnIndex)
+                        .search($('#min').val() + ":" + $('#max').val())
+                        .draw();
+                }
+                if ($('#Department').val()) {
+                    table
+                        .column(DepColumnIndex) //change these to const values
+                        .search($('#Department').val())
+                        .draw()
+                }
+                if ($('#dt_theme').val() != "") {
+                    table
+                        .column(ThemeColumnIndex)
+                        .search($('#dt_theme').val())
+                        .draw()
+                }
             });
-
-
-            $("#problemTable").on("click", ".deleteBtn", function(e) {
-                var id = $(e.target).parent().attr("id").replace("delete", "");
-                $.ajax({
-                    type: "get",
-                    data: {
-                        "id": id
-                    },
-                    cache: false,
-                    url: "deleteProblem",
-                    dataType: "text",
-                    error: function(xhr, status, error) {
-                        console.log(xhr.responseText);
-                    },
-                    success: function() {
-                        var tr = $(e.target).parent().parent().parent().parent();
-                        //	var row = ($('#problemTable').DataTable().row($(tr))).remove();
-                        //	row.remove();
-                        //	$('#problemTable').DataTable().draw("full-hold");
-                    }
-                });
-            });
-
-            $("#problemTable").on("click", ".tagBtn", function(e) {
-                var id = $(e.target).attr("id").replace("tag", "");
-                var items = $("#tag" + id).parent().parent().parent().find("td");
-                var tags = $(items.get(columns.TAGS)).text().replace(/\s*\(x\)\s*/g, ",").replace(/.$/, "");
-                $("#tags").val(tags);
-                $('#tagWindow').find('input#submit').off().on("click", function(e) {
-                    e.preventDefault();
-                    e.stopImmediatePropagation();
-                    var obj = {
-                        "tags": $("#tags").val(),
-                        "id": id
-                    };
-                    $.ajax({
-                        type: "post",
-                        data: obj,
-                        cache: false,
-                        url: "updateTags",
-                        dataType: "text",
-                        error: function(xhr, status, error) {
-                            console.log(xhr.responseText);
-                        },
-                        success: function(tags) {
-                            $(items.get(columns.TAGS)).html(tags);
-                            $("#tags").val("");
-                            $(".popup-modal-dismiss").click();
-                        }
-                    });
-
-                });
-                wb.doc.trigger("open.wb-lbx", [
-                    [{
-                        src: "#tagWindow",
-                        type: "inline"
-                    }]
-                ]);
-
-            });
-
-            $("#problemTable").on("click", ".tagDeleteBtn", function(e) {
-                var id = $(e.target).attr("id").replace("tagDelete", "");
-                var tag = $(e.target).text().replace(/\s*\(x\)\s*/g, "");
-                var obj = {
-                    "tag": tag,
-                    "id": id
-                };
-                $.ajax({
-                    type: "post",
-                    data: obj,
-                    cache: false,
-                    url: "deleteTag",
-                    dataType: "text",
-                    error: function(xhr, status, error) {
-                        console.log(xhr.responseText);
-                    },
-                    success: function(tags) {
-                        $(e.target).remove();
-                    }
-                });
-            });
-
 
         });
     </script>
