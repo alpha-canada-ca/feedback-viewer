@@ -41,8 +41,8 @@ public class ProblemController {
 	private static final Logger LOG = LoggerFactory.getLogger(ProblemController.class);
 	public static final String COLLECTION_PROBLEM = "problem";
 	
-	String[][] translations = {/* ENGLISH, FRENCH*/{"The answer I need is missing","La réponse dont j’ai besoin n’est pas là"},{"The information isn't clear","L'information n'est pas claire"},{"The information isn’t clear","L'information n'est pas claire"},{"I’m not in the right place","Je ne suis pas au bon endroit"},{"I'm not in the right place","Je ne suis pas au bon endroit"},{"Something is broken or incorrect","Quelque chose est brisé ou incorrect"}
-	,{"Other reason","Autre raison"},{"Health","Santé"},{"Taxes","Impôt"},{"Travel","Voyage"},{"Public Health Agency of Canada","Agence de santé publique du Canada"},{"Health Canada","Santé Canada"},{"CRA","ARC"},{"ISED","ISDE"},{"Example","Exemple"},{"CEWS","SSUC"},{"CRSB","PCMRE"},{"CRB","PCRE"},{"CRCB","PCREPA"},{"CERS","SUCL"}
+	String[][] translations = {/* ENGLISH, FRENCH*/{"The answer I need is missing","La réponse dont j’ai besoin n’est pas là"},{"The information isn't clear","L'information n'est pas claire"},{"I can't find the information","Je ne peux pas trouver l'information"},{"The information isn’t clear","L'information n'est pas claire"},{"I’m not in the right place","Je ne suis pas au bon endroit"},{"I'm not in the right place","Je ne suis pas au bon endroit"},{"Something is broken or incorrect","Quelque chose est brisé ou incorrect"}
+	,{"Other reason","Autre raison"},{"The information is hard to understand","l'information est difficile à comprendre"},{"Health","Santé"},{"Taxes","Impôt"},{"Travel","Voyage"},{"Public Health Agency of Canada","Agence de santé publique du Canada"},{"Health Canada","Santé Canada"},{"CRA","ARC"},{"ISED","ISDE"},{"Example","Exemple"},{"CEWS","SSUC"},{"CRSB","PCMRE"},{"CRB","PCRE"},{"CRCB","PCREPA"},{"CERS","SUCL"}
 	,{"Vaccines","Vaccins"},{"Business","Entreprises"},{"WFHE","DTDE"},{"travel-wizard","assistant-voyage"},{"PTR","DRP"},{"COVID Alert","Alerte COVID"},{"Financial Consumer Agency of Canada", "Agence de la consommation en matière financière du Canada"},{"National Research Council","Conseil national de recherches"},{"Department of Fisheries and Oceans","Pêches et Océans Canada"}
 	,{"Money and finances","Argent et finances"},{"Science and innovation","Science et innovation"},{"Environment and natural resources","Environnement et ressources naturelles"}};
 
@@ -148,7 +148,8 @@ public class ProblemController {
 		        	Criteria dateCriteria = where("problemDate").gte(dateSearchValA).lte(dateSearchValB);
 		        	
 		    		if(dateSearchValA != "" && dateSearchValB != "") {
-		    			return problemRepository.findAll(input, dateCriteria);
+		    			return problemRepository.findAll(input, dateCriteria); // this part checks date range and returns without translations
+		    			//add a way to return translations.
 		    		}
 	    		} 
 	    	}
