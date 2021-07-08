@@ -148,8 +148,20 @@ public class ProblemController {
 		        	Criteria dateCriteria = where("problemDate").gte(dateSearchValA).lte(dateSearchValB);
 		        	
 		    		if(dateSearchValA != "" && dateSearchValB != "") {
-		    			return problemRepository.findAll(input, dateCriteria); // this part checks date range and returns without translations
-		    			//add a way to return translations.
+		    			DataTablesOutput<Problem> problems = problemRepository.findAll(input, dateCriteria, findProcessed); // this part checks date range and returns without translations
+		    			for(int i = 0; i < problems.getData().size(); i++) {
+		    	    		problems.getData().get(i).setInstitution(translationsMap.get(problems.getData().get(i).getInstitution()));
+		    	    		problems.getData().get(i).setProblem(translationsMap.get(problems.getData().get(i).getProblem()));
+		    	    		problems.getData().get(i).setTheme(translationsMap.get(problems.getData().get(i).getTheme()));
+		    	    		problems.getData().get(i).setSection(translationsMap.get(problems.getData().get(i).getSection()));
+		    	    		
+		    	    		List<String> tags = problems.getData().get(i).getTags();
+		    	    		for(int j = 0; j < tags.size(); j++) {
+		    	    			if(tagTranslations.containsKey(tags.get(j)))
+		    	    				tags.set(j, tagTranslations.get(tags.get(j)));
+		    	    		}
+		    	    	}
+		    	    	return problems;
 		    		}
 	    		} 
 	    	}
