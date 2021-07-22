@@ -33,8 +33,7 @@
                     </select>
                 <h2 class="mrgn-lft h3">OR</h2>
                 <br>
-                <label for="dt_theme">Theme</label>
-                <select class="form-control" id="dt_theme" name="dt_theme" data-column="6">
+                <label for="dt_theme">Theme</label> <select class="form-control" id="dt_theme" name="dt_theme" data-column="6">
                         <option value="">All</option>
                         <option value="AboutGov">AboutGov</option>
                         <option value="Benefits">Benefits</option>
@@ -77,10 +76,6 @@
                 </div>
             </div>
             <div class="clearfix"></div>
-            <!-- <div class="row mrgn-lft">
-                <br>
-                
-            </div> -->
             <div class="btn-group-lg mrgn-bttm-lg mrgn-tp-lg col-md-12">
                 <!-- <button type="submit" class="btn btn-primary" aria-controls="topTaskTable" id="filter">Filter</button> -->
                 <button type="reset" class="btn btn-default" id="reset">Reset to defaults</button>
@@ -88,7 +83,7 @@
         </form>
 
         <div class="col-md-2 mrgn-tp-lg">
-            <table id="topTaskTable" class="small table hover display compact">
+            <table id="topTaskTable" class="hidden">
                 <thead>
                     <tr>
                         <th>Date</th>
@@ -143,7 +138,6 @@
 
     <script th:inline="javascript">
         $(document).ready(function() {
-
             function newexportaction(e, dt, button, config) {
                 var self = this;
                 var oldStart = dt.settings()[0]._iDisplayStart;
@@ -188,15 +182,13 @@
 
             $('#topTaskTable').find('thead th').append('<span class="sorting-cnt"><span class="sorting-icons"></span></span>')
 
-
-
             var table = $('table#topTaskTable').DataTable({
-                'ajax': '/topTaskData',
                 processing: true,
+                'ajax': '/topTaskData',
                 "language": {
                     processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span> '
                 },
-                "lengthMenu": [10, -1],
+                "lengthMenu": [50, -1],
                 retrieve: true,
                 'serverSide': true,
                 columns: [{
@@ -254,7 +246,7 @@
                 }, ],
                 orderCellsTop: true,
                 fixedHeader: true,
-                dom: 'Britp',
+                dom: 'Br',
                 buttons: [{
                     "extend": 'csv',
                     "text": 'Download CSV',
@@ -266,10 +258,7 @@
                     className: 'btn btn-default',
                     "action": newexportaction,
                 }]
-
             });
-
-
 
             fetch('/topTaskSurvey/tasks').then(function(response) {
                 // The API call was successful!
@@ -288,9 +277,6 @@
                 // There was an error
                 console.warn('Something went wrong.', err);
             });
-
-
-
 
             var flag = false;
             var flag2 = false;
@@ -381,7 +367,7 @@
                     table
                         .column(0)
                         .search($('#min').val() + ":" + $('#max').val())
-                        .draw()
+                        .draw();
                 }
                 if ($('#dt_theme').val() != "") {
                     table
@@ -392,7 +378,10 @@
             });
             $('#dataSet', this).on('keyup change', function() {
                 if (this.value == "") {
-                    table.search("").draw();
+                    table
+                        .column(10)
+                        .search("")
+                        .draw()
                 } else {
                     table
                         .column(10)
@@ -400,13 +389,6 @@
                         .draw()
                 }
             });
-        });
-
-        $(document).on("wb-ready.wb", function() {
-
-
-
-
 
         });
     </script>
