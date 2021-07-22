@@ -26,43 +26,44 @@
     <div class="row">
         <form class="wb-tables-filter col-md-10" data-bind-to="topTaskTable">
             <div class="form-horizontal col-md-5">
-                <label for="Department">Department</label> <select class="form-control" id="Department" name="Department" data-column="5">
-                        <option value="">All</option>
-                      
-                        <!-- DEPARTMENTS -->
-                    </select>
+                <label for="Department">Department</label>
+                <select class="form-control" id="Department" name="Department" data-column="5">
+            <option value="">All</option>
+
+            <!-- DEPARTMENTS -->
+          </select>
                 <h2 class="mrgn-lft h3">OR</h2>
                 <br>
-                <label for="dt_theme">Theme</label> <select class="form-control" id="dt_theme" name="dt_theme" data-column="6">
-                        <option value="">All</option>
-                        <option value="AboutGov">AboutGov</option>
-                        <option value="Benefits">Benefits</option>
-                        <option value="Business">Business</option>
-                        <option value="World">CanadaTheWorld</option>
-                        <option value="COVID-19">COVID-19</option>
-                        <option value="Defence">Defence</option>
-                        <option value="Environment">Environment</option>
-                        <option value="Health">Health</option>
-                        <option value="History">History</option>
-                        <option value="Immigration">Immigration</option>
-                        <option value="Indigenous">Indigenous</option>
-                        <option value="Jobs">Jobs</option>
-                        <option value="Money">Money</option>
-                        <option value="Policing">Policing</option>
-                        <option value="PublicService">PublicService</option>
-                        <option value="Science">Science</option>
-                        <option value="Taxes">Taxes</option>
-                        <option value="Transport">Transport</option>
-                        <option value="Travel">Travel</option>
-                        <option value="Veterans">Veterans</option>
-                        <!-- THEMES -->
-                    </select>
+                <label for="dt_theme">Theme</label>
+                <select class="form-control" id="dt_theme" name="dt_theme" data-column="6">
+            <option value="">All</option>
+            <option value="AboutGov">AboutGov</option>
+            <option value="Benefits">Benefits</option>
+            <option value="Business">Business</option>
+            <option value="World">CanadaTheWorld</option>
+            <option value="COVID-19">COVID-19</option>
+            <option value="Defence">Defence</option>
+            <option value="Environment">Environment</option>
+            <option value="Health">Health</option>
+            <option value="History">History</option>
+            <option value="Immigration">Immigration</option>
+            <option value="Indigenous">Indigenous</option>
+            <option value="Jobs">Jobs</option>
+            <option value="Money">Money</option>
+            <option value="Policing">Policing</option>
+            <option value="PublicService">PublicService</option>
+            <option value="Science">Science</option>
+            <option value="Taxes">Taxes</option>
+            <option value="Transport">Transport</option>
+            <option value="Travel">Travel</option>
+            <option value="Veterans">Veterans</option>
+            <!-- THEMES -->
+          </select>
                 <label for="dataSet">dataSet</label>
                 <select class="form-control" id="dataSet" name="dataSet" data-column="10">
-                        <option value="">choose</option>
-                        <option value="true">write in comments</option>
-                        
-                </select>
+            <option value="">choose</option>
+            <option value="true">write in comments</option>
+          </select>
             </div>
             <div class="form-horizontal col-md-5">
                 <label for="date">Date range</label>
@@ -135,12 +136,13 @@
 
     <script type="text/javascript" src="js/spring-friendly.min.js"></script>
 
-
     <script th:inline="javascript">
         $(document).ready(function() {
             function newexportaction(e, dt, button, config) {
                 var self = this;
-                var oldStart = dt.settings()[0]._iDisplayStart;
+                var oldStart = dt
+                    .settings()[0]
+                    ._iDisplayStart;
                 dt.one('preXhr', function(e, s, data) {
                     // Just this once, load all data from the server...
                     data.start = 0;
@@ -148,21 +150,94 @@
                     dt.one('preDraw', function(e, settings) {
                         // Call the original action function
                         if (button[0].className.indexOf('buttons-copy') >= 0) {
-                            $.fn.dataTable.ext.buttons.copyHtml5.action.call(self, e, dt, button, config);
+                            $
+                                .fn
+                                .dataTable
+                                .ext
+                                .buttons
+                                .copyHtml5
+                                .action
+                                .call(self, e, dt, button, config);
                         } else if (button[0].className.indexOf('buttons-excel') >= 0) {
-                            $.fn.dataTable.ext.buttons.excelHtml5.available(dt, config) ?
-                                $.fn.dataTable.ext.buttons.excelHtml5.action.call(self, e, dt, button, config) :
-                                $.fn.dataTable.ext.buttons.excelFlash.action.call(self, e, dt, button, config);
+                            $
+                                .fn
+                                .dataTable
+                                .ext
+                                .buttons
+                                .excelHtml5
+                                .available(dt, config) ?
+                                $
+                                .fn
+                                .dataTable
+                                .ext
+                                .buttons
+                                .excelHtml5
+                                .action
+                                .call(self, e, dt, button, config) :
+                                $
+                                .fn
+                                .dataTable
+                                .ext
+                                .buttons
+                                .excelFlash
+                                .action
+                                .call(self, e, dt, button, config);
                         } else if (button[0].className.indexOf('buttons-csv') >= 0) {
-                            $.fn.dataTable.ext.buttons.csvHtml5.available(dt, config) ?
-                                $.fn.dataTable.ext.buttons.csvHtml5.action.call(self, e, dt, button, config) :
-                                $.fn.dataTable.ext.buttons.csvFlash.action.call(self, e, dt, button, config);
+                            $
+                                .fn
+                                .dataTable
+                                .ext
+                                .buttons
+                                .csvHtml5
+                                .available(dt, config) ?
+                                $
+                                .fn
+                                .dataTable
+                                .ext
+                                .buttons
+                                .csvHtml5
+                                .action
+                                .call(self, e, dt, button, config) :
+                                $
+                                .fn
+                                .dataTable
+                                .ext
+                                .buttons
+                                .csvFlash
+                                .action
+                                .call(self, e, dt, button, config);
                         } else if (button[0].className.indexOf('buttons-pdf') >= 0) {
-                            $.fn.dataTable.ext.buttons.pdfHtml5.available(dt, config) ?
-                                $.fn.dataTable.ext.buttons.pdfHtml5.action.call(self, e, dt, button, config) :
-                                $.fn.dataTable.ext.buttons.pdfFlash.action.call(self, e, dt, button, config);
+                            $
+                                .fn
+                                .dataTable
+                                .ext
+                                .buttons
+                                .pdfHtml5
+                                .available(dt, config) ?
+                                $
+                                .fn
+                                .dataTable
+                                .ext
+                                .buttons
+                                .pdfHtml5
+                                .action
+                                .call(self, e, dt, button, config) :
+                                $
+                                .fn
+                                .dataTable
+                                .ext
+                                .buttons
+                                .pdfFlash
+                                .action
+                                .call(self, e, dt, button, config);
                         } else if (button[0].className.indexOf('buttons-print') >= 0) {
-                            $.fn.dataTable.ext.buttons.print.action(e, dt, button, config);
+                            $
+                                .fn
+                                .dataTable
+                                .ext
+                                .buttons
+                                .print
+                                .action(e, dt, button, config);
                         }
                         dt.one('preXhr', function(e, s, data) {
                             // DataTables thinks the first item displayed is index 0, but we're not drawing that.
@@ -177,10 +252,14 @@
                     });
                 });
                 // Requery the server with the new one-time export settings
-                dt.ajax.reload();
+                dt
+                    .ajax
+                    .reload();
             };
 
-            $('#topTaskTable').find('thead th').append('<span class="sorting-cnt"><span class="sorting-icons"></span></span>')
+            $('#topTaskTable')
+                .find('thead th')
+                .append('<span class="sorting-cnt"><span class="sorting-icons"></span></span>')
 
             var table = $('table#topTaskTable').DataTable({
                 processing: true,
@@ -188,7 +267,9 @@
                 "language": {
                     processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span> '
                 },
-                "lengthMenu": [50, -1],
+                "lengthMenu": [
+                    50, -1
+                ],
                 retrieve: true,
                 'serverSide': true,
                 columns: [{
@@ -243,7 +324,7 @@
                     data: 'samplingGrouping'
                 }, {
                     data: 'samplingTask'
-                }, ],
+                }],
                 orderCellsTop: true,
                 fixedHeader: true,
                 dom: 'Br',
@@ -251,32 +332,35 @@
                     "extend": 'csv',
                     "text": 'Download CSV',
                     className: 'btn btn-default mrgn-bttm-md',
-                    "action": newexportaction,
+                    "action": newexportaction
                 }, {
                     "extend": 'excel',
                     "text": "Download Excel",
                     className: 'btn btn-default',
-                    "action": newexportaction,
+                    "action": newexportaction
                 }]
             });
 
-            fetch('/topTaskSurvey/tasks').then(function(response) {
-                // The API call was successful!
-                return response.text();
-            }).then(function(html) {
-                // This is the HTML from our response as a text string
-                data = html;
-                data = data.split(",");
-                for (i = 0; i < data.length; i++) {
-                    optionValue = data[i];
-                    optionText = data[i];
-                    $('#Department').append(`<option value="${optionValue}"> ${optionText} </option>`);
-                }
+            fetch('/topTaskSurvey/tasks')
+                .then(function(response) {
+                    // The API call was successful!
+                    return response.text();
+                })
+                .then(function(html) {
+                    // This is the HTML from our response as a text string
+                    data = html;
+                    data = data.split(",");
+                    for (i = 0; i < data.length; i++) {
+                        optionValue = data[i];
+                        optionText = data[i];
+                        $('#Department').append(`<option value="${optionValue}"> ${optionText} </option>`);
+                    }
 
-            }).catch(function(err) {
-                // There was an error
-                console.warn('Something went wrong.', err);
-            });
+                })
+                .catch(function(err) {
+                    // There was an error
+                    console.warn('Something went wrong.', err);
+                });
 
             var flag = false;
             var flag2 = false;
