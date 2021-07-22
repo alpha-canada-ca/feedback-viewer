@@ -33,7 +33,8 @@
                     </select>
                 <h2 class="mrgn-lft h3">OR</h2>
                 <br>
-                <label for="dt_theme">Theme</label> <select class="form-control" id="dt_theme" name="dt_theme" data-column="6">
+                <label for="dt_theme">Theme</label>
+                <select class="form-control" id="dt_theme" name="dt_theme" data-column="6">
                         <option value="">All</option>
                         <option value="AboutGov">AboutGov</option>
                         <option value="Benefits">Benefits</option>
@@ -57,6 +58,12 @@
                         <option value="Veterans">Veterans</option>
                         <!-- THEMES -->
                     </select>
+                <label for="dataSet">dataSet</label>
+                <select class="form-control" id="dataSet" name="dataSet" data-column="10">
+                        <option value="">choose</option>
+                        <option value="true">write in comments</option>
+                        
+                </select>
             </div>
             <div class="form-horizontal col-md-5">
                 <label for="date">Date range</label>
@@ -70,6 +77,10 @@
                 </div>
             </div>
             <div class="clearfix"></div>
+            <!-- <div class="row mrgn-lft">
+                <br>
+                
+            </div> -->
             <div class="btn-group-lg mrgn-bttm-lg mrgn-tp-lg col-md-12">
                 <!-- <button type="submit" class="btn btn-primary" aria-controls="topTaskTable" id="filter">Filter</button> -->
                 <button type="reset" class="btn btn-default" id="reset">Reset to defaults</button>
@@ -77,7 +88,7 @@
         </form>
 
         <div class="col-md-2 mrgn-tp-lg">
-            <table id="topTaskTable" class="hidden">
+            <table id="topTaskTable" class="small table hover display compact">
                 <thead>
                     <tr>
                         <th>Date</th>
@@ -133,8 +144,6 @@
     <script th:inline="javascript">
         $(document).ready(function() {
 
-
-
             function newexportaction(e, dt, button, config) {
                 var self = this;
                 var oldStart = dt.settings()[0]._iDisplayStart;
@@ -182,14 +191,13 @@
 
 
             var table = $('table#topTaskTable').DataTable({
+                'ajax': '/topTaskData',
                 processing: true,
-                ajax: {},
                 "language": {
                     processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span> '
                 },
-                "lengthMenu": [10, 25, 50, -1],
+                "lengthMenu": [10, -1],
                 retrieve: true,
-                'ajax': '/topTaskData',
                 'serverSide': true,
                 columns: [{
                     data: 'dateTime'
@@ -246,7 +254,7 @@
                 }, ],
                 orderCellsTop: true,
                 fixedHeader: true,
-                dom: 'Br',
+                dom: 'Britp',
                 buttons: [{
                     "extend": 'csv',
                     "text": 'Download CSV',
@@ -258,6 +266,7 @@
                     className: 'btn btn-default',
                     "action": newexportaction,
                 }]
+
             });
 
 
@@ -281,20 +290,7 @@
             });
 
 
-            // $('#topTaskTable thead tr').clone(true).appendTo('#topTaskTable thead');
-            // $('#topTaskTable thead tr:eq(1) th').each(function(i) {
-            //     var title = $(this).text();
-            //     $(this).html('<input type="text" placeholder="Search ' + title + '" />');
 
-            //     $('input', this).on('keyup change', function() {
-            //         if (table.column(i).search() !== this.value) {
-            //             table
-            //                 .column(i)
-            //                 .search(this.value)
-            //                 .draw();
-            //         }
-            //     });
-            // });
 
             var flag = false;
             var flag2 = false;
@@ -385,7 +381,7 @@
                     table
                         .column(0)
                         .search($('#min').val() + ":" + $('#max').val())
-                        .draw();
+                        .draw()
                 }
                 if ($('#dt_theme').val() != "") {
                     table
@@ -394,140 +390,22 @@
                         .draw()
                 }
             });
-
+            $('#dataSet', this).on('keyup change', function() {
+                if (this.value == "") {
+                    table.search("").draw();
+                } else {
+                    table
+                        .column(10)
+                        .search("nonEmpty")
+                        .draw()
+                }
+            });
         });
 
         $(document).on("wb-ready.wb", function() {
 
 
 
-            // $("#topTaskTable").on("click", ".resolveBtn", function(e) {
-            //     var id = $(e.target).attr("id").replace("resolve", "");
-            //     var items = $("#resolve" + id).parent().parent().parent().find("td");
-            //     $("#notes").val($(items.get(columns.RESOLUTION)).text());
-            //     //alert($('#submitWindow').find('input#submit').length);
-            //     $('#submitWindow').find('input#submit').off().on("click", function(e) {
-            //         e.preventDefault();
-            //         e.stopImmediatePropagation();
-            //         var obj = {
-            //             "department": $(items.get(columns.DEPARMENT)).text(),
-            //             "language": $(items.get(columns.LANGUAGE)).text(),
-            //             "url": $(items.get(columns.URL)).text(),
-            //             "problem": $(items.get(columns.PROBLEM)).text(),
-            //             "problemDetails": $(items.get(columns.PROBLEM_DETAILS)).text(),
-            //             "problemDate": $(items.get(columns.PROBLEM_DATE)).text(),
-            //             "resolution": $("#notes").val(),
-            //             "id": id
-            //         };
-            //         $.ajax({
-            //             type: "post",
-            //             data: obj,
-            //             cache: false,
-            //             url: "updateProblem",
-            //             dataType: "text",
-            //             error: function(xhr, status, error) {
-            //                 console.log(xhr.responseText);
-            //             },
-            //             success: function(date) {
-            //                 $(items.get(columns.RESOLUTION)).text($("#notes").val());
-            //                 $("#notes").val("");
-            //                 $(items.get(columns.RESOLUTION_DATE)).text(date);
-            //                 $(".popup-modal-dismiss").click();
-            //             }
-            //         });
-
-            //     });
-            //     wb.doc.trigger("open.wb-lbx", [
-            //         [{
-            //             src: "#submitWindow",
-            //             type: "inline"
-            //         }]
-            //     ]);
-
-            // });
-
-
-            // $("#topTaskTable").on("click", ".deleteBtn", function(e) {
-            //     var id = $(e.target).parent().attr("id").replace("delete", "");
-            //     $.ajax({
-            //         type: "get",
-            //         data: {
-            //             "id": id
-            //         },
-            //         cache: false,
-            //         url: "deleteProblem",
-            //         dataType: "text",
-            //         error: function(xhr, status, error) {
-            //             console.log(xhr.responseText);
-            //         },
-            //         success: function() {
-            //             var tr = $(e.target).parent().parent().parent().parent();
-            //             //	var row = ($('#topTaskTable').DataTable().row($(tr))).remove();
-            //             //	row.remove();
-            //             //	$('#topTaskTable').DataTable().draw("full-hold");
-            //         }
-            //     });
-            // });
-
-            // $("#topTaskTable").on("click", ".tagBtn", function(e) {
-            //     var id = $(e.target).attr("id").replace("tag", "");
-            //     var items = $("#tag" + id).parent().parent().parent().find("td");
-            //     var tags = $(items.get(columns.TAGS)).text().replace(/\s*\(x\)\s*/g, ",").replace(/.$/, "");
-            //     $("#tags").val(tags);
-            //     $('#tagWindow').find('input#submit').off().on("click", function(e) {
-            //         e.preventDefault();
-            //         e.stopImmediatePropagation();
-            //         var obj = {
-            //             "tags": $("#tags").val(),
-            //             "id": id
-            //         };
-            //         $.ajax({
-            //             type: "post",
-            //             data: obj,
-            //             cache: false,
-            //             url: "updateTags",
-            //             dataType: "text",
-            //             error: function(xhr, status, error) {
-            //                 console.log(xhr.responseText);
-            //             },
-            //             success: function(tags) {
-            //                 $(items.get(columns.TAGS)).html(tags);
-            //                 $("#tags").val("");
-            //                 $(".popup-modal-dismiss").click();
-            //             }
-            //         });
-
-            //     });
-            //     wb.doc.trigger("open.wb-lbx", [
-            //         [{
-            //             src: "#tagWindow",
-            //             type: "inline"
-            //         }]
-            //     ]);
-
-            // });
-
-            // $("#topTaskTable").on("click", ".tagDeleteBtn", function(e) {
-            //     var id = $(e.target).attr("id").replace("tagDelete", "");
-            //     var tag = $(e.target).text().replace(/\s*\(x\)\s*/g, "");
-            //     var obj = {
-            //         "tag": tag,
-            //         "id": id
-            //     };
-            //     $.ajax({
-            //         type: "post",
-            //         data: obj,
-            //         cache: false,
-            //         url: "deleteTag",
-            //         dataType: "text",
-            //         error: function(xhr, status, error) {
-            //             console.log(xhr.responseText);
-            //         },
-            //         success: function(tags) {
-            //             $(e.target).remove();
-            //         }
-            //     });
-            // });
 
 
         });

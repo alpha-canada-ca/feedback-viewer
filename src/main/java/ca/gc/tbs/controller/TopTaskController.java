@@ -1,6 +1,7 @@
 package ca.gc.tbs.controller;
 
 import java.text.SimpleDateFormat;
+import static org.springframework.util.StringUtils.hasText;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -13,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.datatables.DataTablesInput;
 import org.springframework.data.mongodb.datatables.DataTablesOutput;
 import org.springframework.stereotype.Controller;
@@ -52,8 +54,35 @@ public class TopTaskController {
     public DataTablesOutput<TopTaskSurvey> list(@Valid DataTablesInput input)  {
     	
     	String dateSearchVal = input.getColumn("dateTime").get().getSearch().getValue();
+    	
+    	String dataSetVal = input.getColumn("taskOther").get().getSearch().getValue();
 
+    	if(dataSetVal.contains("nonEmpty") && dateSearchVal.contains(":")) {
+    		String[] ret = dateSearchVal.split(":");
+    	    
+    		if(ret.length == 2) {
+    			
 
+        		input.getColumn("taskOther").get().getSearch().setValue("");
+
+	    		String dateSearchValA = ret[0];
+	    		
+	    		String dateSearchValB = ret[1];
+	    		
+	    		input.getColumn("dateTime").get().getSearch().setValue("");
+	
+	        	Criteria dateCriteria = where("dateTime").gte(dateSearchValA).lte(dateSearchValB);
+
+	    		if(dateSearchValA != "" && dateSearchValB != "") {
+	    			return topTaskRepository.findAll(input, dateCriteria, new Criteria().orOperator(
+	        				Criteria.where("taskOther").exists(true).ne(""),
+	        				Criteria.where("taskWhyNotComment").exists(true).ne(""),
+	        				Criteria.where("taskImproveComment").exists(true).ne("")));
+	    		}
+    		}
+    		
+    	}
+    	
     	if(dateSearchVal.contains(":")) {
     		
     		String[] ret = dateSearchVal.split(":");
@@ -67,15 +96,28 @@ public class TopTaskController {
 	    		input.getColumn("dateTime").get().getSearch().setValue("");
 	
 	        	Criteria dateCriteria = where("dateTime").gte(dateSearchValA).lte(dateSearchValB);
+	        	
 	    		if(dateSearchValA != "" && dateSearchValB != "") {
 	    			return topTaskRepository.findAll(input, dateCriteria);
 	    		}
     		}
     	}
+    	if(dataSetVal.contains("nonEmpty")) {
+    		
+    		input.getColumn("taskOther").get().getSearch().setValue("");
+    		
+    		return topTaskRepository.findAll(input, new Criteria().orOperator(
+    				Criteria.where("taskOther").exists(true).ne(""),
+    				Criteria.where("taskWhyNotComment").exists(true).ne(""),
+    				Criteria.where("taskImproveComment").exists(true).ne("")));
+    		
+
+    	}
     	
-    	Criteria findProcessed = where("processed").is("false");
+    	Criteria findProcessed = where("processed").is("true");
     	return topTaskRepository.findAll(input, findProcessed);
 	}
+    
     
     @RequestMapping(value = "/topTaskSurvey/tasks")
     @ResponseBody
