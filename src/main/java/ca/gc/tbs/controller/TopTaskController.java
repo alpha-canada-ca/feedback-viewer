@@ -57,12 +57,12 @@ public class TopTaskController {
     	
     	String dataSetVal = input.getColumn("taskOther").get().getSearch().getValue();
 
+    	Criteria findProcessed = where("processed").is("true");
+    	
     	if(dataSetVal.contains("nonEmpty") && dateSearchVal.contains(":")) {
     		String[] ret = dateSearchVal.split(":");
     	    
     		if(ret.length == 2) {
-    			
-
         		input.getColumn("taskOther").get().getSearch().setValue("");
 
 	    		String dateSearchValA = ret[0];
@@ -71,7 +71,7 @@ public class TopTaskController {
 	    		
 	    		input.getColumn("dateTime").get().getSearch().setValue("");
 	
-	        	Criteria dateCriteria = where("dateTime").gte(dateSearchValA).lte(dateSearchValB);
+	        	Criteria dateCriteria = where("dateTime").gte(dateSearchValA).lte(dateSearchValB).and("processed").is("true");
 
 	    		if(dateSearchValA != "" && dateSearchValB != "") {
 	    			return topTaskRepository.findAll(input, dateCriteria, new Criteria().orOperator(
@@ -84,9 +84,7 @@ public class TopTaskController {
     	}
     	
     	if(dateSearchVal.contains(":")) {
-    		
     		String[] ret = dateSearchVal.split(":");
-    
     		if(ret.length == 2) {
     		
 	    		String dateSearchValA = ret[0];
@@ -98,7 +96,7 @@ public class TopTaskController {
 	        	Criteria dateCriteria = where("dateTime").gte(dateSearchValA).lte(dateSearchValB);
 	        	
 	    		if(dateSearchValA != "" && dateSearchValB != "") {
-	    			return topTaskRepository.findAll(input, dateCriteria);
+	    			return topTaskRepository.findAll(input, findProcessed, dateCriteria);
 	    		}
     		}
     	}
@@ -106,15 +104,11 @@ public class TopTaskController {
     		
     		input.getColumn("taskOther").get().getSearch().setValue("");
     		
-    		return topTaskRepository.findAll(input, new Criteria().orOperator(
+    		return topTaskRepository.findAll(input, findProcessed, new Criteria().orOperator(
     				Criteria.where("taskOther").exists(true).ne(""),
     				Criteria.where("taskWhyNotComment").exists(true).ne(""),
     				Criteria.where("taskImproveComment").exists(true).ne("")));
-    		
-
     	}
-    	
-    	Criteria findProcessed = where("processed").is("true");
     	return topTaskRepository.findAll(input, findProcessed);
 	}
     
