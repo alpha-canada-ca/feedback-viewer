@@ -77,7 +77,8 @@ public class TopTaskController {
 	    			return topTaskRepository.findAll(input, new Criteria().orOperator(
 	        				Criteria.where("taskOther").exists(true).ne(""),
 	        				Criteria.where("taskWhyNotComment").exists(true).ne(""),
-	        				Criteria.where("taskImproveComment").exists(true).ne("")
+	        				Criteria.where("taskImproveComment").exists(true).ne(""),
+	        				Criteria.where("taskThemeOther").exists(true).ne("")
 	        				), dateCriteria);
 	    		}
     		}
@@ -108,7 +109,8 @@ public class TopTaskController {
     		return topTaskRepository.findAll(input, findProcessed, new Criteria().orOperator(
     				Criteria.where("taskOther").exists(true).ne(""),
     				Criteria.where("taskWhyNotComment").exists(true).ne(""),
-    				Criteria.where("taskImproveComment").exists(true).ne("")));
+    				Criteria.where("taskImproveComment").exists(true).ne(""),
+    				Criteria.where("taskThemeOther").exists(true).ne("")));
     	}
     	return topTaskRepository.findAll(input, findProcessed);
 	}
