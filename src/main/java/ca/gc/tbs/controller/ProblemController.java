@@ -124,7 +124,7 @@ public class ProblemController {
 		        	Criteria dateCriteria = where("problemDate").gte(dateSearchValA).lte(dateSearchValB);
 		        	
 		    		if(dateSearchValA != "" && dateSearchValB != "") {
-		    			return problemRepository.findAll(input, dateCriteria);
+		    			return problemRepository.findAll(input, dateCriteria, findProcessed);
 		    		}
 	    		} 
 	    	}
