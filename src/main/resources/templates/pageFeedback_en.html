@@ -160,8 +160,8 @@
                 </div>
                 <div class="col-sm-6">
                     <div class="form-group">
-                        <label for="Department">Department</label>
-                        <select class="form-control" id="Department" name="Department" data-column="5">
+                        <label for="deptINV">Department</label>
+                        <select class="form-control" id="deptINV" name="deptINV" data-column="5">
                             <option value="">All</option>
                             <option value="CRA">Canada Revenue Agency</option>
                             <option value="DFO">Department of Fisheries and Oceans</option>
@@ -182,8 +182,8 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="section">Section</label>
-                        <select class="form-control" id="section" name="section" data-column="6">
+                        <label for="sectionINV">Section</label>
+                        <select class="form-control" id="sectionINV" name="sectionINV" data-column="6">
                             <option value="">All</option>
                             <option value="travel-wizard">travel-wizard</option>
                             <option value="COVID">COVID</option>
@@ -217,8 +217,8 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="dt_theme">Theme</label>
-                        <select class="form-control" id="dt_theme" name="dt_theme" data-column="7">
+                        <label for="themeINV">Theme</label>
+                        <select class="form-control" id="themeINV" name="themeINV" data-column="7">
                             <option value="">All</option>
                             <option value="Business">Business</option>
                             <option value="COVID">COVID</option>
@@ -253,6 +253,8 @@
                         <th>Comment</th>
                         <th>Problem</th>
                         <th>URL</th>
+                        <th># comments</th>
+                        <th>Page Title</th>
                         <th>Language</th>
                         <th>Department</th>
                         <th>Section</th>
@@ -485,6 +487,12 @@
                     data: 'problem'
                 }, {
                     data: 'url'
+                }, {
+                    data: 'commentsForUrl',
+                    defaultContent: "",
+                    visible: false
+                }, {
+                    data: 'title'
                 }, {
                     data: 'language'
                 }, {
