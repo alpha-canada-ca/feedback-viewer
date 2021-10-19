@@ -492,7 +492,8 @@
                     defaultContent: "",
                     visible: false
                 }, {
-                    data: 'title'
+                    data: 'title',
+                    visible: false
                 }, {
                     data: 'language'
                 }, {
@@ -547,10 +548,17 @@
 
             });
 
-            const ThemeColumnIndex = 7;
-            const SectionColumnIndex = 6;
-            const DepColumnIndex = 5;
-            const DateColumnIndex = 0;
+            const DateColIndex = 0;
+            const CommentColIndex = 1;
+            const ProblemColIndex = 2;
+            const UrlColIndex = 3;
+            const NumCommentsForUrlColIndex = 4;
+            const TitleColIndex = 5;
+            const LangColIndex = 6;
+            const InstitutionColIndex = 7;
+            const SectionColIndex = 8;
+            const ThemeColIndex = 9;
+
 
             var minMaxDateChosen = false;
 
@@ -559,25 +567,25 @@
                 if (this.value != "" && $('#max').val() != "") {
                     minMaxDateChosen = true;
                     table
-                        .column(0)
+                        .column(DateColIndex)
                         .search(this.value + ":" + $('#max').val())
                         .draw();
                 }
                 if ($('#dt_theme').val() != "" && minMaxDateChosen) {
                     table
-                        .column(ThemeColumnIndex)
+                        .column(ThemeColIndex)
                         .search($('#dt_theme').val())
                         .draw()
                 }
                 if ($('#Department').val() != "" && minMaxDateChosen) {
                     table
-                        .column(DepColumnIndex)
+                        .column(InstitutionColIndex)
                         .search($('#Department').val())
                         .draw()
                 }
                 if ($('#section').val() != "" && minMaxDateChosen) {
                     table
-                        .column(SectionColumnIndex)
+                        .column(SectionColIndex)
                         .search($('#section').val())
                         .draw()
                 }
@@ -588,25 +596,25 @@
                 if (this.value != "" && $('#min').val() != "") {
                     minMaxDateChosen = true;
                     table
-                        .column(DateColumnIndex)
+                        .column(DateColIndex)
                         .search($('#min').val() + ":" + this.value)
                         .draw();
                 }
                 if ($('#dt_theme').val() != "" && minMaxDateChosen) {
                     table
-                        .column(ThemeColumnIndex)
+                        .column(ThemeColIndex)
                         .search($('#dt_theme').val())
                         .draw()
                 }
                 if ($('#Department').val() != "" && minMaxDateChosen) {
                     table
-                        .column(DepColumnIndex)
+                        .column(InstitutionColIndex)
                         .search($('#Department').val())
                         .draw()
                 }
                 if ($('#section').val() != "" && minMaxDateChosen) {
                     table
-                        .column(SectionColumnIndex)
+                        .column(SectionColIndex)
                         .search($('#section').val())
                         .draw()
                 }
@@ -615,63 +623,64 @@
             $('#dt_theme', this).on('keyup change', function() {
                 if (this.value == "") {
                     table
-                        .column(ThemeColumnIndex)
+                        .column(ThemeColIndex)
                         .search("")
                         .draw()
                 }
                 if (this.value != "") {
                     table
-                        .column(ThemeColumnIndex)
+                        .column(ThemeColIndex)
                         .search(this.value)
                         .draw()
                 }
                 if (minMaxDateChosen) {
                     table
-                        .column(DateColumnIndex)
+                        .column(DateColIndex)
                         .search($('#min').val() + ":" + $('#max').val())
                         .draw();
                 }
                 if ($('#Department').val()) {
                     table
-                        .column(DepColumnIndex) //change these to const values
+                        .column(InstitutionColIndex) //change these to const values
                         .search($('#Department').val())
                         .draw()
                 }
                 if ($('#section').val()) {
                     table
-                        .column(SectionColumnIndex)
+                        .column(SectionColIndex)
                         .search($('#section').val())
                         .draw()
                 }
             });
+
             $('#Department', this).on('keyup change', function() {
                 if (this.value == "") {
                     table
-                        .column(DepColumnIndex)
+                        .column(InstitutionColIndex)
                         .search("")
                         .draw()
                 }
                 if (this.value != "") {
                     table
-                        .column(DepColumnIndex)
+                        .column(InstitutionColIndex)
                         .search(this.value)
                         .draw()
                 }
                 if (minMaxDateChosen) {
                     table
-                        .column(DateColumnIndex)
+                        .column(DateColIndex)
                         .search($('#min').val() + ":" + $('#max').val())
                         .draw();
                 }
                 if ($('#dt_theme').val() != "") {
                     table
-                        .column(ThemeColumnIndex)
+                        .column(ThemeColIndex)
                         .search($('#dt_theme').val())
                         .draw()
                 }
                 if ($('#section').val() != "") {
                     table
-                        .column(SectionColumnIndex)
+                        .column(SectionColIndex)
                         .search($('#section').val())
                         .draw()
                 }
@@ -680,32 +689,70 @@
             $('#section', this).on('keyup change', function() {
                 if (this.value == "") {
                     table
-                        .column(SectionColumnIndex)
+                        .column(SectionColIndex)
                         .search("")
                         .draw()
                 }
                 if (this.value != "") {
                     table
-                        .column(SectionColumnIndex)
+                        .column(SectionColIndex)
                         .search(this.value)
                         .draw()
                 }
                 if (minMaxDateChosen) {
                     table
-                        .column(DateColumnIndex)
+                        .column(DateColIndex)
                         .search($('#min').val() + ":" + $('#max').val())
                         .draw();
                 }
                 if ($('#Department').val()) {
                     table
-                        .column(DepColumnIndex) //change these to const values
+                        .column(InstitutionColIndex) //change these to const values
                         .search($('#Department').val())
                         .draw()
                 }
                 if ($('#dt_theme').val() != "") {
                     table
-                        .column(ThemeColumnIndex)
+                        .column(ThemeColIndex)
                         .search($('#dt_theme').val())
+                        .draw()
+                }
+            });
+
+            $('#deptINV', this).on('keyup change', function() {
+                if (this.value == "") {
+                    table
+                        .column(InstitutionColIndex)
+                        .search("")
+                        .column(CommentColIndex)
+                        .visible(false)
+                        .draw()
+                }
+                if (this.value != "") {
+                    table
+                        .column(InstitutionColIndex)
+                        .search(this.value + " ~")
+                        .column(CommentColIndex)
+                        .visible(false)
+                        .column(ProblemColIndex)
+                        .visible(false)
+                        .column(DateColIndex)
+                        .visible(false)
+                        .draw()
+                    $('#searchCol0').closest('th').hide()
+                    $('#searchCol1').closest('th').hide()
+                    $('#searchCol2').closest('th').hide()
+                }
+                if ($('#dt_theme').val() != "") {
+                    table
+                        .column(ThemeColIndex)
+                        .search($('#dt_theme').val())
+                        .draw()
+                }
+                if ($('#section').val() != "") {
+                    table
+                        .column(SectionColIndex)
+                        .search($('#section').val())
                         .draw()
                 }
             });
