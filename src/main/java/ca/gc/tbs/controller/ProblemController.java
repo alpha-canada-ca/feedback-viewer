@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.datatables.DataTablesInput;
+import org.springframework.data.mongodb.datatables.DataTablesInput.Column;
 import org.springframework.data.mongodb.datatables.DataTablesOutput;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -108,7 +109,13 @@ public class ProblemController {
 		if(lang.equals("en")) {
 			
 			String dateSearchVal = input.getColumn("problemDate").get().getSearch().getValue();
-
+			String deptSearchVal = input.getColumn("institution").get().getSearch().getValue();
+			List<Column> columns = input.getColumns();
+			
+			for(Column col: columns) {
+				System.out.println(col);
+			}
+			System.out.println("---------------------");
 	    	if(dateSearchVal.contains(":")) {
 	    		
 	    		String[] ret = dateSearchVal.split(":");
@@ -127,6 +134,11 @@ public class ProblemController {
 		    			return problemRepository.findAll(input, dateCriteria, findProcessed);
 		    		}
 	    		} 
+	    	}
+	    	if(deptSearchVal.contains("~")) {
+	    		Criteria urlCriteria = where("url").is("https://www.canada.ca/en/financial-consumer-agency/services/mortgages/preparing-mortgage.html");
+	    		DataTablesOutput<Problem> urls = problemRepository.findAll(input,urlCriteria);
+	    		System.out.println("");
 	    	}
 	    	return problemRepository.findAll(input, findProcessed);
 		}
