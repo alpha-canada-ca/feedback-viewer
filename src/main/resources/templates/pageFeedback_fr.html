@@ -77,6 +77,7 @@
                                         <option value="PSPC">Services publics et Approvisionnement Canada</option>
                                         <option value="SC">Service Canada</option>
                                         <option value="DND">Défense nationale</option>
+                                        <option value="IRCC">Immigration, Réfugiés et Citoyenneté Canada</option>
                                         <!-- DEPARTMENTS -->
                         </select>
                     </div>
@@ -224,8 +225,9 @@
                     }
                 });
             }
-            sortSelectOptions('#Institution', true);
+            sortSelectOptions('#Department', true);
             sortSelectOptions('#dt_theme', true);
+            sortSelectOptions('#section', true);
 
             function newexportaction(e, dt, button, config) {
                 var self = this;
