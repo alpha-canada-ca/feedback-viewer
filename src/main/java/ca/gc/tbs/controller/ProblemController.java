@@ -4,8 +4,12 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Stream;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -100,11 +104,13 @@ public class ProblemController {
 		return mav;
 	}
 	
-    @RequestMapping(value = "/problemData") 
+    @SuppressWarnings("unchecked")
+	@RequestMapping(value = "/problemData") 
     @ResponseBody
     public DataTablesOutput<Problem> list(@Valid DataTablesInput input, HttpServletRequest request)  {
     	
     	Criteria findProcessed = where("processed").is("true");
+    	Criteria urlCriteria = where("url").regex("travel");
     	
 		if(lang.equals("en")) {
 			
@@ -136,9 +142,43 @@ public class ProblemController {
 	    		} 
 	    	}
 	    	if(deptSearchVal.contains("~")) {
-	    		Criteria urlCriteria = where("url").is("https://www.canada.ca/en/financial-consumer-agency/services/mortgages/preparing-mortgage.html");
-	    		DataTablesOutput<Problem> urls = problemRepository.findAll(input,urlCriteria);
-	    		System.out.println("");
+	    		String value = deptSearchVal.substring(0, deptSearchVal.length() - 2);
+	    		input.getColumn("institution").get().getSearch().setValue(value);
+	    		
+	    		input.setStart(0);
+	    		input.setLength(-1);
+	    		
+	    		DataTablesOutput<Problem> urls = problemRepository.findAll(input);
+	    		
+	    		Set<String> problemSet = new HashSet<String>();
+	    		
+
+	    		for(int i = 0; i < urls.getData().size(); i++) {
+	    			problemSet.add(urls.getData().get(i).getUrl());
+	    			System.out.println(i);
+	    		}
+
+	    		System.out.println("size: " + problemSet.size() + "  ---- " + problemSet.toString());
+	    		//List<Problem> returnUrls =  urls.getData().subList(0, problemSet.size());
+	    		
+	    		//urls.setRecordsFiltered(problemSet.size());
+	    		
+	    		String[] geeks = problemSet.toArray(new String[problemSet.size()]);
+	    		
+	    		ArrayList<Problem> urlList = new ArrayList<Problem>();
+	    		
+	    		
+	    		for(int i = 0; i < (problemSet.size());i++) {
+	    			System.out.println(i);
+	    			urls.getData().get(i).setUrl(geeks[i]);
+	    			urlList.add(urls.getData().get(i));
+	    			System.out.println(urls.getData().get(i).getUrl());
+	    		}
+	    		
+	    		urls.setRecordsFiltered(problemSet.size());
+	    		urls.setData(urlList);
+	    		
+	    		return urls;
 	    	}
 	    	return problemRepository.findAll(input, findProcessed);
 		}
@@ -195,6 +235,9 @@ public class ProblemController {
 		return null;
 	}
 	
+    public DataTablesOutput<Problem> getDistinctUrls(@Valid DataTablesInput input) {
+        return problemRepository.findDistinctUrls(input);
+      }
     /*
     
     @CrossOrigin(origins = "*")
