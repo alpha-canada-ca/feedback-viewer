@@ -41,7 +41,7 @@ public class ContentService {
 	}
 
 	private String cleanPostalCode(String content) {
-		return content.replaceAll("[A-Za-z]\\d[A-Za-z][ -]?\\d[A-Za-z]\\d", "### ###");
+		return content.replaceAll("[A-Za-z]\\s*\\d\\s*[A-Za-z]\\s*[ -]?\\s*\\d\\s*[A-Za-z]\\s*\\d", "### ###");
 	}
 
 	private String cleanSIN(String content) {
