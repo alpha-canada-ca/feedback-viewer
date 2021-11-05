@@ -7,8 +7,12 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.servlet.http.HttpServletRequest;
@@ -46,6 +50,9 @@ public class ProblemController {
 	private static final Logger LOG = LoggerFactory.getLogger(ProblemController.class);
 	public static final String COLLECTION_PROBLEM = "problem";
 	
+	private static boolean ASC = true;
+    private static boolean DESC = false;
+	
 	String[][] translations = {/* ENGLISH, FRENCH*/{"The answer I need is missing","La réponse dont j’ai besoin n’est pas là"},{"The information isn't clear","L'information n'est pas claire"},{"I can't find the information","Je ne peux pas trouver l'information"},{"The information isn’t clear","L'information n'est pas claire"},{"I’m not in the right place","Je ne suis pas au bon endroit"},{"I'm not in the right place","Je ne suis pas au bon endroit"},{"Something is broken or incorrect","Quelque chose est brisé ou incorrect"}
 	,{"Other reason","Autre raison"},{"The information is hard to understand","l'information est difficile à comprendre"},{"Health","Santé"},{"Taxes","Impôt"},{"Travel","Voyage"},{"Public Health Agency of Canada","Agence de santé publique du Canada"},{"Health Canada","Santé Canada"},{"CRA","ARC"},{"ISED","ISDE"},{"Example","Exemple"},{"CEWS","SSUC"},{"CRSB","PCMRE"},{"CRB","PCRE"},{"CRCB","PCREPA"},{"CERS","SUCL"}
 	,{"Vaccines","Vaccins"},{"Business","Entreprises"},{"WFHE","DTDE"},{"travel-wizard","assistant-voyage"},{"PTR","DRP"},{"COVID Alert","Alerte COVID"},{"Financial Consumer Agency of Canada", "Agence de la consommation en matière financière du Canada"},{"National Research Council","Conseil national de recherches"},{"Department of Fisheries and Oceans","Pêches et Océans Canada"}
@@ -53,6 +60,7 @@ public class ProblemController {
 
 	private HashMap<String, String> tagTranslations = new HashMap<String, String>();
 	private HashMap<String, String> translationsMap = new HashMap<String, String>(translations.length);
+	
 	
 	@Autowired
 	private ProblemRepository problemRepository;
@@ -150,32 +158,31 @@ public class ProblemController {
 	    		
 	    		DataTablesOutput<Problem> urls = problemRepository.findAll(input);
 	    		
-	    		Set<String> problemSet = new HashSet<String>();
+	    		HashMap<String, Integer> urlCountMap = new HashMap<>();
 	    		
+	    		//Convert for loop to stream for efficiency.
 
 	    		for(int i = 0; i < urls.getData().size(); i++) {
-	    			problemSet.add(urls.getData().get(i).getUrl());
+	    			int count = urlCountMap.containsKey(urls.getData().get(i).getUrl()) ? urlCountMap.get(urls.getData().get(i).getUrl()) : 0;
+	    			urlCountMap.put(urls.getData().get(i).getUrl(), count + 1);
 	    			System.out.println(i);
 	    		}
 
-	    		System.out.println("size: " + problemSet.size() + "  ---- " + problemSet.toString());
-	    		//List<Problem> returnUrls =  urls.getData().subList(0, problemSet.size());
+	    		System.out.println("size: " + urlCountMap.size() + "  ---- " + urlCountMap.toString());
 	    		
-	    		//urls.setRecordsFiltered(problemSet.size());
-	    		
-	    		String[] geeks = problemSet.toArray(new String[problemSet.size()]);
+	    		//sort Map
+	    		HashMap<String, Integer> sortedurlCountMap = sortByValue(urlCountMap, DESC);
 	    		
 	    		ArrayList<Problem> urlList = new ArrayList<Problem>();
-	    		
-	    		
-	    		for(int i = 0; i < (problemSet.size());i++) {
-	    			System.out.println(i);
-	    			urls.getData().get(i).setUrl(geeks[i]);
-	    			urlList.add(urls.getData().get(i));
-	    			System.out.println(urls.getData().get(i).getUrl());
+	    		int index = 0;
+	    		for ( String key : sortedurlCountMap.keySet() ) {
+	    		    urls.getData().get(index).setUrl(key);
+	    		    urls.getData().get(index).setUrlEntries(sortedurlCountMap.get(key));
+	    		    urlList.add(urls.getData().get(index));
+	    		    index++;
 	    		}
 	    		
-	    		urls.setRecordsFiltered(problemSet.size());
+	    		urls.setRecordsFiltered(sortedurlCountMap.size());
 	    		urls.setData(urlList);
 	    		
 	    		return urls;
@@ -235,9 +242,27 @@ public class ProblemController {
 		return null;
 	}
 	
-    public DataTablesOutput<Problem> getDistinctUrls(@Valid DataTablesInput input) {
-        return problemRepository.findDistinctUrls(input);
-      }
+   
+    private static HashMap<String, Integer> sortByValue(HashMap<String, Integer> unsortMap, final boolean order)
+    {
+        List<Entry<String, Integer>> list = new LinkedList<>(unsortMap.entrySet());
+
+        // Sorting the list based on values
+        list.sort((o1, o2) -> order ? o1.getValue().compareTo(o2.getValue()) == 0
+                ? o1.getKey().compareTo(o2.getKey())
+                : o1.getValue().compareTo(o2.getValue()) : o2.getValue().compareTo(o1.getValue()) == 0
+                ? o2.getKey().compareTo(o1.getKey())
+                : o2.getValue().compareTo(o1.getValue()));
+        return list.stream().collect(Collectors.toMap(Entry::getKey, Entry::getValue, (a, b) -> b, LinkedHashMap::new));
+
+    }
+
+    private static void printMap(HashMap<String, Integer> map)
+    {
+        map.forEach((key, value) -> System.out.println("Key : " + key + " Value : " + value));
+    }
+    
+    
     /*
     
     @CrossOrigin(origins = "*")
