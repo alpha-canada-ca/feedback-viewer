@@ -488,8 +488,7 @@
                 }, {
                     data: 'url'
                 }, {
-                    data: 'commentsForUrl',
-                    defaultContent: "",
+                    data: 'urlEntries',
                     visible: false
                 }, {
                     data: 'title',
@@ -552,7 +551,7 @@
             const CommentColIndex = 1;
             const ProblemColIndex = 2;
             const UrlColIndex = 3;
-            const NumCommentsForUrlColIndex = 4;
+            const urlEntriesColIndex = 4;
             const TitleColIndex = 5;
             const LangColIndex = 6;
             const InstitutionColIndex = 7;
@@ -738,12 +737,12 @@
                         .visible(false)
                         .column(DateColIndex)
                         .visible(false)
-                        .column(NumCommentsForUrlColIndex)
+                        .column(urlEntriesColIndex)
                         .visible(true)
                         .draw()
                     $('#searchCol0').closest('th').hide()
                     $('#searchCol1').closest('th').hide()
-                    $('#searchCol2').closest('th').hide()
+                    $('#searchCol4').closest('th').show()
                 }
                 if ($('#dt_theme').val() != "") {
                     table
