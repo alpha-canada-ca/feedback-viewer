@@ -54,7 +54,7 @@ public class ContentService {
 		return content;
 	}
 	private String cleanEmailAddress(String content) {
-		return content.replaceAll("([a-zA-Z0-9_\\-\\.]+)\\s+@([\\sa-zA-Z0-9_\\-\\.]+)[\\.\\,]([a-zA-Z]{1,5})", "####@####.####");
+		return content.replaceAll("([a-zA-Z0-9_\\-\\.]+)\\s*@([\\sa-zA-Z0-9_\\-\\.]+)[\\.\\,]([a-zA-Z]{1,5})", "####@####.####");
 	}
 
 }
