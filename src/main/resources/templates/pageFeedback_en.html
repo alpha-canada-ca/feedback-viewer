@@ -12,6 +12,10 @@
             font-size: 12px;
         }
         
+        .hidden {
+            display: none;
+        }
+        
         .table.dataTable {
             font-family: Verdana, Geneva, Tahoma, sans-serif;
             font-size: 12px;
@@ -253,7 +257,7 @@
                         <th>Comment</th>
                         <th>Problem</th>
                         <th>URL</th>
-                        <th># comments</th>
+                        <th>Total Comments</th>
                         <th>Page Title</th>
                         <th>Language</th>
                         <th>Department</th>
@@ -469,6 +473,10 @@
                 "order": [
                     [0, "desc"]
                 ],
+                "search": {
+                    "smart": true
+                },
+
                 processing: true,
                 language: {
                     processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading..n.</span> '
@@ -488,11 +496,11 @@
                 }, {
                     data: 'url'
                 }, {
-                    data: 'urlEntries',
-                    visible: false
+                    data: 'urlEntries'
+
                 }, {
-                    data: 'title',
-                    visible: false
+                    data: 'title'
+
                 }, {
                     data: 'language'
                 }, {
@@ -557,7 +565,6 @@
             const InstitutionColIndex = 7;
             const SectionColIndex = 8;
             const ThemeColIndex = 9;
-
 
             var minMaxDateChosen = false;
 
@@ -727,6 +734,18 @@
                         .visible(false)
                         .draw()
                 }
+                /*
+                const DateColIndex = 0;
+                const CommentColIndex = 1;
+                const ProblemColIndex = 2;
+                const UrlColIndex = 3;
+                const urlEntriesColIndex = 4;
+                const TitleColIndex = 5;
+                const LangColIndex = 6;
+                const InstitutionColIndex = 7;
+                const SectionColIndex = 8;
+                const ThemeColIndex = 9;
+                */
                 if (this.value != "") {
                     table
                         .column(InstitutionColIndex)
@@ -739,10 +758,15 @@
                         .visible(false)
                         .column(urlEntriesColIndex)
                         .visible(true)
+                        .column(TitleColIndex)
+                        .visible(true)
                         .draw()
                     $('#searchCol0').closest('th').hide()
                     $('#searchCol1').closest('th').hide()
-                    $('#searchCol4').closest('th').show()
+                    $('#searchCol2').closest('th').hide()
+                    $('#searchCol4').hide()
+
+                    $(".sorting-cnt").addClass("hidden");
                 }
                 if ($('#dt_theme').val() != "") {
                     table
