@@ -5,6 +5,7 @@ import java.io.Reader;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -121,9 +122,10 @@ public class ProblemController {
     	Criteria urlCriteria = where("url").regex("travel");
     	
 		if(lang.equals("en")) {
-			
+		
 			String dateSearchVal = input.getColumn("problemDate").get().getSearch().getValue();
 			String deptSearchVal = input.getColumn("institution").get().getSearch().getValue();
+			
 			List<Column> columns = input.getColumns();
 			
 			for(Column col: columns) {
@@ -149,6 +151,7 @@ public class ProblemController {
 		    		}
 	    		} 
 	    	}
+	    	
 	    	if(deptSearchVal.contains("~")) {
 	    		String value = deptSearchVal.substring(0, deptSearchVal.length() - 2);
 	    		input.getColumn("institution").get().getSearch().setValue(value);
@@ -159,6 +162,7 @@ public class ProblemController {
 	    		DataTablesOutput<Problem> urls = problemRepository.findAll(input);
 	    		
 	    		HashMap<String, Integer> urlCountMap = new HashMap<>();
+	    		HashMap<String, List<String>> urlCountMap2 = new HashMap<String, List<String>>();
 	    		
 	    		//Convert for loop to stream for efficiency.
 
@@ -166,6 +170,7 @@ public class ProblemController {
 	    			int count = urlCountMap.containsKey(urls.getData().get(i).getUrl()) ? urlCountMap.get(urls.getData().get(i).getUrl()) : 0;
 	    			urlCountMap.put(urls.getData().get(i).getUrl(), count + 1);
 	    			System.out.println(i);
+	    			urlCountMap2.put(urls.getData().get(i).getUrl(), Arrays.asList(urls.getData().get(i).getTitle(), urls.getData().get(i).getLanguage()));
 	    		}
 
 	    		System.out.println("size: " + urlCountMap.size() + "  ---- " + urlCountMap.toString());
@@ -178,12 +183,17 @@ public class ProblemController {
 	    		for ( String key : sortedurlCountMap.keySet() ) {
 	    		    urls.getData().get(index).setUrl(key);
 	    		    urls.getData().get(index).setUrlEntries(sortedurlCountMap.get(key));
+	    		    urls.getData().get(index).setLanguage(urlCountMap2.get(key).get(1));
+	    		    urls.getData().get(index).setTitle(urlCountMap2.get(key).get(0));
 	    		    urlList.add(urls.getData().get(index));
 	    		    index++;
 	    		}
 	    		
 	    		urls.setRecordsFiltered(sortedurlCountMap.size());
 	    		urls.setData(urlList);
+	    		
+	    		
+	    	
 	    		
 	    		return urls;
 	    	}
