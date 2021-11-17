@@ -119,12 +119,13 @@ public class ProblemController {
     public DataTablesOutput<Problem> list(@Valid DataTablesInput input, HttpServletRequest request)  {
     	
     	Criteria findProcessed = where("processed").is("true");
-    	Criteria urlCriteria = where("url").regex("travel");
     	
 		if(lang.equals("en")) {
 		
-			String dateSearchVal = input.getColumn("problemDate").get().getSearch().getValue();
-			String deptSearchVal = input.getColumn("institution").get().getSearch().getValue();
+			String dateSearchVal 	= input.getColumn("problemDate").get().getSearch().getValue();
+			String deptSearchVal 	= input.getColumn("institution").get().getSearch().getValue();
+			String sectionSearchVal = input.getColumn("section").get().getSearch().getValue();
+			String themeSearchVal 	= input.getColumn("theme").get().getSearch().getValue();
 			
 			List<Column> columns = input.getColumns();
 			
@@ -152,9 +153,15 @@ public class ProblemController {
 	    		} 
 	    	}
 	    	
-	    	if(deptSearchVal.contains("~")) {
-	    		String value = deptSearchVal.substring(0, deptSearchVal.length() - 2);
-	    		input.getColumn("institution").get().getSearch().setValue(value);
+	    	if(deptSearchVal.contains("~") || sectionSearchVal.contains("~") || themeSearchVal.contains("~")) {
+	    		 //ternary operator for if it exists to set the value.
+	    		String deptValue = deptSearchVal.equals("") ? "" : deptSearchVal.substring(0, deptSearchVal.length() - 2);
+	    		String sectionValue = sectionSearchVal.equals("") ? "" : sectionSearchVal.substring(0, sectionSearchVal.length() - 2);
+	    		String themeValue = themeSearchVal.equals("") ? "" : themeSearchVal.substring(0, themeSearchVal.length() - 2);
+	    		
+	    		input.getColumn("institution").get().getSearch().setValue(deptValue);
+	    		input.getColumn("section").get().getSearch().setValue(sectionValue);
+	    		input.getColumn("theme").get().getSearch().setValue(themeValue);
 	    		
 	    		input.setStart(0);
 	    		input.setLength(-1);
