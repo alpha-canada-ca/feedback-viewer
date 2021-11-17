@@ -496,13 +496,14 @@
                 }, {
                     data: 'url'
                 }, {
-                    data: 'urlEntries'
-
+                    data: 'urlEntries',
+                    "width": "5%"
                 }, {
                     data: 'title'
 
                 }, {
-                    data: 'language'
+                    data: 'language',
+                    "width": "5%"
                 }, {
                     data: 'institution',
                     visible: false
@@ -562,7 +563,7 @@
             const urlEntriesColIndex = 4;
             const TitleColIndex = 5;
             const LangColIndex = 6;
-            const InstitutionColIndex = 7;
+            const DeptColIndex = 7;
             const SectionColIndex = 8;
             const ThemeColIndex = 9;
 
@@ -585,7 +586,7 @@
                 }
                 if ($('#Department').val() != "" && minMaxDateChosen) {
                     table
-                        .column(InstitutionColIndex)
+                        .column(DeptColIndex)
                         .search($('#Department').val())
                         .draw()
                 }
@@ -614,7 +615,7 @@
                 }
                 if ($('#Department').val() != "" && minMaxDateChosen) {
                     table
-                        .column(InstitutionColIndex)
+                        .column(DeptColIndex)
                         .search($('#Department').val())
                         .draw()
                 }
@@ -647,7 +648,7 @@
                 }
                 if ($('#Department').val()) {
                     table
-                        .column(InstitutionColIndex) //change these to const values
+                        .column(DeptColIndex) //change these to const values
                         .search($('#Department').val())
                         .draw()
                 }
@@ -662,13 +663,13 @@
             $('#Department', this).on('keyup change', function() {
                 if (this.value == "") {
                     table
-                        .column(InstitutionColIndex)
+                        .column(DeptColIndex)
                         .search("")
                         .draw()
                 }
                 if (this.value != "") {
                     table
-                        .column(InstitutionColIndex)
+                        .column(DeptColIndex)
                         .search(this.value)
                         .draw()
                 }
@@ -713,7 +714,7 @@
                 }
                 if ($('#Department').val()) {
                     table
-                        .column(InstitutionColIndex) //change these to const values
+                        .column(DeptColIndex) //change these to const values
                         .search($('#Department').val())
                         .draw()
                 }
@@ -728,28 +729,20 @@
             $('#deptINV', this).on('keyup change', function() {
                 if (this.value == "") {
                     table
-                        .column(InstitutionColIndex)
+                        .column(DeptColIndex)
                         .search("")
                         .column(CommentColIndex)
                         .visible(false)
                         .draw()
                 }
-                /*
-                const DateColIndex = 0;
-                const CommentColIndex = 1;
-                const ProblemColIndex = 2;
-                const UrlColIndex = 3;
-                const urlEntriesColIndex = 4;
-                const TitleColIndex = 5;
-                const LangColIndex = 6;
-                const InstitutionColIndex = 7;
-                const SectionColIndex = 8;
-                const ThemeColIndex = 9;
-                */
                 if (this.value != "") {
                     table
-                        .column(InstitutionColIndex)
+                        .column(DeptColIndex)
                         .search(this.value + " ~")
+                        .column(ThemeColIndex)
+                        .search($('#themeINV').val())
+                        .column(SectionColIndex)
+                        .search($('#sectionINV').val())
                         .column(CommentColIndex)
                         .visible(false)
                         .column(ProblemColIndex)
@@ -768,17 +761,77 @@
 
                     $(".sorting-cnt").addClass("hidden");
                 }
-                if ($('#dt_theme').val() != "") {
-                    table
-                        .column(ThemeColIndex)
-                        .search($('#dt_theme').val())
-                        .draw()
-                }
-                if ($('#section').val() != "") {
+            });
+            $('#sectionINV', this).on('keyup change', function() {
+                if (this.value == "") {
                     table
                         .column(SectionColIndex)
-                        .search($('#section').val())
+                        .search("")
+                        .column(CommentColIndex)
+                        .visible(false)
                         .draw()
+                }
+                if (this.value != "") {
+                    table
+                        .column(SectionColIndex)
+                        .search(this.value + " ~")
+                        .column(ThemeColIndex)
+                        .search($('#themeINV').val())
+                        .column(DeptColIndex)
+                        .search($('#deptINV').val())
+                        .column(CommentColIndex)
+                        .visible(false)
+                        .column(ProblemColIndex)
+                        .visible(false)
+                        .column(DateColIndex)
+                        .visible(false)
+                        .column(urlEntriesColIndex)
+                        .visible(true)
+                        .column(TitleColIndex)
+                        .visible(true)
+                        .draw()
+                    $('#searchCol0').closest('th').hide()
+                    $('#searchCol1').closest('th').hide()
+                    $('#searchCol2').closest('th').hide()
+                    $('#searchCol4').hide()
+
+                    $(".sorting-cnt").addClass("hidden");
+                }
+            });
+            $('#themeINV', this).on('keyup change', function() {
+                if (this.value == "") {
+                    table
+                        .column(ThemeColIndex)
+                        .search("")
+                        .column(CommentColIndex)
+                        .visible(false)
+                        .draw()
+                }
+                if (this.value != "") {
+                    table
+                        .column(ThemeColIndex)
+                        .search(this.value + " ~")
+                        .column(SectionColIndex)
+                        .search($('#sectionINV').val())
+                        .column(DeptColIndex)
+                        .search($('#deptINV').val())
+                        .column(CommentColIndex)
+                        .visible(false)
+                        .column(ProblemColIndex)
+                        .visible(false)
+                        .column(DateColIndex)
+                        .visible(false)
+                        .column(urlEntriesColIndex)
+                        .visible(true)
+                        .column(TitleColIndex)
+                        .visible(true)
+                        .draw()
+                    $('#searchCol0').closest('th').hide()
+                    $('#searchCol1').closest('th').hide()
+                    $('#searchCol2').closest('th').hide()
+                    $('#searchCol4').hide()
+
+                    $(".sorting-cnt").addClass("hidden");
                 }
             });
         });
