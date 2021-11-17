@@ -159,6 +159,8 @@ public class ProblemController {
 	    		String sectionValue = sectionSearchVal.equals("") ? "" : sectionSearchVal.substring(0, sectionSearchVal.length() - 2);
 	    		String themeValue = themeSearchVal.equals("") ? "" : themeSearchVal.substring(0, themeSearchVal.length() - 2);
 	    		
+	    		
+	    		
 	    		input.getColumn("institution").get().getSearch().setValue(deptValue);
 	    		input.getColumn("section").get().getSearch().setValue(sectionValue);
 	    		input.getColumn("theme").get().getSearch().setValue(themeValue);
@@ -176,7 +178,7 @@ public class ProblemController {
 	    		for(int i = 0; i < urls.getData().size(); i++) {
 	    			int count = urlCountMap.containsKey(urls.getData().get(i).getUrl()) ? urlCountMap.get(urls.getData().get(i).getUrl()) : 0;
 	    			urlCountMap.put(urls.getData().get(i).getUrl(), count + 1);
-	    			System.out.println(i);
+	    			System.out.println(i+1);
 	    			urlCountMap2.put(urls.getData().get(i).getUrl(), Arrays.asList(urls.getData().get(i).getTitle(), urls.getData().get(i).getLanguage()));
 	    		}
 
