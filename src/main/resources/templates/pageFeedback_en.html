@@ -730,9 +730,11 @@
                 if (this.value == "") {
                     table
                         .column(DeptColIndex)
-                        .search("")
-                        .column(CommentColIndex)
-                        .visible(false)
+                        .search(this.value + " ~")
+                        .column(ThemeColIndex)
+                        .search($('#themeINV').val())
+                        .column(SectionColIndex)
+                        .search($('#sectionINV').val())
                         .draw()
                 }
                 if (this.value != "") {
@@ -766,9 +768,11 @@
                 if (this.value == "") {
                     table
                         .column(SectionColIndex)
-                        .search("")
-                        .column(CommentColIndex)
-                        .visible(false)
+                        .search(this.value + " ~")
+                        .column(ThemeColIndex)
+                        .search($('#themeINV').val())
+                        .column(DeptColIndex)
+                        .search($('#deptINV').val())
                         .draw()
                 }
                 if (this.value != "") {
@@ -802,9 +806,11 @@
                 if (this.value == "") {
                     table
                         .column(ThemeColIndex)
-                        .search("")
-                        .column(CommentColIndex)
-                        .visible(false)
+                        .search(this.value + " ~")
+                        .column(SectionColIndex)
+                        .search($('#sectionINV').val())
+                        .column(DeptColIndex)
+                        .search($('#deptINV').val())
                         .draw()
                 }
                 if (this.value != "") {
