@@ -185,20 +185,23 @@ public class ProblemController {
 	    		System.out.println("size: " + urlCountMap.size() + "  ---- " + urlCountMap.toString());
 	    		
 	    		//sort Map
-	    		HashMap<String, Integer> sortedurlCountMap = sortByValue(urlCountMap, DESC);
+	    		HashMap<String, Integer> sortedUrlCountMap = sortByValue(urlCountMap, DESC);
+	    		
+	    		int total = 0;
 	    		
 	    		ArrayList<Problem> urlList = new ArrayList<Problem>();
 	    		int index = 0;
-	    		for ( String key : sortedurlCountMap.keySet() ) {
+	    		for ( String key : sortedUrlCountMap.keySet() ) {
+	    			total += sortedUrlCountMap.get(key);
 	    		    urls.getData().get(index).setUrl(key);
-	    		    urls.getData().get(index).setUrlEntries(sortedurlCountMap.get(key));
+	    		    urls.getData().get(index).setUrlEntries(sortedUrlCountMap.get(key));
 	    		    urls.getData().get(index).setLanguage(urlCountMap2.get(key).get(1));
 	    		    urls.getData().get(index).setTitle(urlCountMap2.get(key).get(0));
 	    		    urlList.add(urls.getData().get(index));
 	    		    index++;
 	    		}
 	    		
-	    		urls.setRecordsFiltered(sortedurlCountMap.size());
+	    		urls.setRecordsFiltered(sortedUrlCountMap.size());
 	    		urls.setData(urlList);
 	    		
 	    		
