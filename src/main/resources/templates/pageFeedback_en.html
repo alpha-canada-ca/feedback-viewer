@@ -79,10 +79,11 @@
                             <option value="">All</option>
                             <option value="CRA">Canada Revenue Agency</option>
                             <option value="DFO">Department of Fisheries and Oceans</option>
-                            <option value="Employment and Social Development Canada">Employment and Social Development
-                                Canada</option>
+                            <option value="Employment and Social Development Canada">Employment and Social Development Canada</option>
                             <option value="FCAC">Financial Consumer Agency of Canada</option>
                             <option value="FIN">Department of Finance</option>
+                            <option value="IRCC">Immigration, Refugees and Citizenship Canada</option>
+                            <option value="CCG">Canadian Coast Guard</option>
                             <option value="Health Canada">Health Canada</option>
                             <option value="ISED">Innovation, Science and Economic Development Canada</option>
                             <option value="ISC">Indigenous Services Canada</option>
@@ -144,6 +145,13 @@
                             <option value="Travel">Travel</option>
                             <option value="Taxes">Taxes</option>
                             <option value="Youth">Youth</option>
+                            <option value="Policies">Policies</option>
+                            <option value="Top tasks">Top tasks</option>
+                            <option value="Jobs">Jobs</option>
+                            <option value="Funding">Funding</option>
+                            <option value="Employment Insurance">Employment Insurance</option>
+                            <option value="Education/Research">Education/Research</option>
+
                             <!-- THEMES -->
                         </select>
                     </div>
@@ -166,7 +174,7 @@
                     <div class="form-group">
                         <label for="deptINV">Department</label>
                         <select class="form-control" id="deptINV" name="deptINV" data-column="5">
-                            <option value="">All</option>
+                            <option value="">Choose a Department</option>
                             <option value="CRA">Canada Revenue Agency</option>
                             <option value="DFO">Department of Fisheries and Oceans</option>
                             <option value="Employment and Social Development Canada">Employment and Social Development
@@ -344,7 +352,10 @@
             }
             sortSelectOptions('#Department', true);
             sortSelectOptions('#dt_theme', true);
-            //sortSelectOptions('#section', true);
+            sortSelectOptions('#section', true);
+            sortSelectOptions('#sectionINV', true);
+            sortSelectOptions('#deptINV', true);
+            sortSelectOptions('#themeINV', true);
 
             function newexportaction(e, dt, button, config) {
                 var self = this;
@@ -497,13 +508,13 @@
                     data: 'url'
                 }, {
                     data: 'urlEntries',
-                    "width": "5%"
+                    "width": "10%"
                 }, {
-                    data: 'title'
-
+                    data: 'title',
+                    "width": "35%"
                 }, {
                     data: 'language',
-                    "width": "5%"
+                    "width": "10%"
                 }, {
                     data: 'institution',
                     visible: false
@@ -536,6 +547,7 @@
                 return string;
             }
 
+
             $('#problemTable thead tr')
                 .clone(true)
                 .appendTo('#problemTable thead');
@@ -566,6 +578,11 @@
             const DeptColIndex = 7;
             const SectionColIndex = 8;
             const ThemeColIndex = 9;
+
+            table.column(urlEntriesColIndex).visible(false);
+            table.column(TitleColIndex).visible(false);
+            $('#searchCol4').closest('th').hide()
+            $('#searchCol5').closest('th').hide()
 
             var minMaxDateChosen = false;
 
@@ -712,7 +729,7 @@
                         .search($('#min').val() + ":" + $('#max').val())
                         .draw();
                 }
-                if ($('#Department').val()) {
+                if ($('#Department').val() != "") {
                     table
                         .column(DeptColIndex) //change these to const values
                         .search($('#Department').val())
@@ -727,24 +744,14 @@
             });
 
             $('#deptINV', this).on('keyup change', function() {
-                if (this.value == "") {
-                    table
-                        .column(DeptColIndex)
-                        .search(this.value + " ~")
-                        .column(ThemeColIndex)
-                        .search($('#themeINV').val())
-                        .column(SectionColIndex)
-                        .search($('#sectionINV').val())
-                        .draw()
-                }
                 if (this.value != "") {
                     table
                         .column(DeptColIndex)
                         .search(this.value + " ~")
                         .column(ThemeColIndex)
-                        .search($('#themeINV').val())
+                        .search($('#themeINV').val() + " ~")
                         .column(SectionColIndex)
-                        .search($('#sectionINV').val())
+                        .search($('#sectionINV').val() + " ~")
                         .column(CommentColIndex)
                         .visible(false)
                         .column(ProblemColIndex)
@@ -756,23 +763,33 @@
                         .column(TitleColIndex)
                         .visible(true)
                         .draw()
+                    $('#searchCol4').closest('th').show()
+                    $('#searchCol5').closest('th').show()
                     $('#searchCol0').closest('th').hide()
                     $('#searchCol1').closest('th').hide()
                     $('#searchCol2').closest('th').hide()
                     $('#searchCol4').hide()
 
                     $(".sorting-cnt").addClass("hidden");
+                }
+                if ($('#sectionINV').val() != "") {
+                    table
+                        .column(SectionColIndex) //change these to const values
+                        .search($('#sectionINV').val() + " ~")
+                        .draw()
+                }
+                if ($('#themeINV').val() != "") {
+                    table
+                        .column(ThemeColIndex) //change these to const values
+                        .search($('#themeINV').val() + " ~")
+                        .draw()
                 }
             });
             $('#sectionINV', this).on('keyup change', function() {
                 if (this.value == "") {
                     table
                         .column(SectionColIndex)
-                        .search(this.value + " ~")
-                        .column(ThemeColIndex)
-                        .search($('#themeINV').val())
-                        .column(DeptColIndex)
-                        .search($('#deptINV').val())
+                        .search("")
                         .draw()
                 }
                 if (this.value != "") {
@@ -780,9 +797,9 @@
                         .column(SectionColIndex)
                         .search(this.value + " ~")
                         .column(ThemeColIndex)
-                        .search($('#themeINV').val())
+                        .search($('#themeINV').val() + " ~")
                         .column(DeptColIndex)
-                        .search($('#deptINV').val())
+                        .search($('#deptINV').val() + " ~")
                         .column(CommentColIndex)
                         .visible(false)
                         .column(ProblemColIndex)
@@ -800,17 +817,25 @@
                     $('#searchCol4').hide()
 
                     $(".sorting-cnt").addClass("hidden");
+                }
+                if ($('#deptINV').val() != "") {
+                    table
+                        .column(DeptColIndex) //change these to const values
+                        .search($('#deptINV').val() + " ~")
+                        .draw()
+                }
+                if ($('#themeINV').val() != "") {
+                    table
+                        .column(ThemeColIndex) //change these to const values
+                        .search($('#themeINV').val() + " ~")
+                        .draw()
                 }
             });
             $('#themeINV', this).on('keyup change', function() {
                 if (this.value == "") {
                     table
                         .column(ThemeColIndex)
-                        .search(this.value + " ~")
-                        .column(SectionColIndex)
-                        .search($('#sectionINV').val())
-                        .column(DeptColIndex)
-                        .search($('#deptINV').val())
+                        .search("")
                         .draw()
                 }
                 if (this.value != "") {
@@ -818,9 +843,9 @@
                         .column(ThemeColIndex)
                         .search(this.value + " ~")
                         .column(SectionColIndex)
-                        .search($('#sectionINV').val())
+                        .search($('#sectionINV').val() + " ~")
                         .column(DeptColIndex)
-                        .search($('#deptINV').val())
+                        .search($('#deptINV').val() + " ~")
                         .column(CommentColIndex)
                         .visible(false)
                         .column(ProblemColIndex)
@@ -838,6 +863,18 @@
                     $('#searchCol4').hide()
 
                     $(".sorting-cnt").addClass("hidden");
+                }
+                if ($('#deptINV').val() != "") {
+                    table
+                        .column(DeptColIndex) //change these to const values
+                        .search($('#deptINV').val() + " ~")
+                        .draw()
+                }
+                if ($('#sectionINV').val() != "") {
+                    table
+                        .column(SectionColIndex) //change these to const values
+                        .search($('#sectionINV').val() + " ~")
+                        .draw()
                 }
             });
         });
