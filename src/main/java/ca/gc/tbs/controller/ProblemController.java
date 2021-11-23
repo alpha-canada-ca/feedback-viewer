@@ -53,6 +53,8 @@ public class ProblemController {
 	
 	private static boolean ASC = true;
     private static boolean DESC = false;
+    
+    private int totalComments = 0;
 	
 	String[][] translations = {/* ENGLISH, FRENCH*/{"The answer I need is missing","La réponse dont j’ai besoin n’est pas là"},{"The information isn't clear","L'information n'est pas claire"},{"I can't find the information","Je ne peux pas trouver l'information"},{"The information isn’t clear","L'information n'est pas claire"},{"I’m not in the right place","Je ne suis pas au bon endroit"},{"I'm not in the right place","Je ne suis pas au bon endroit"},{"Something is broken or incorrect","Quelque chose est brisé ou incorrect"}
 	,{"Other reason","Autre raison"},{"The information is hard to understand","l'information est difficile à comprendre"},{"Health","Santé"},{"Taxes","Impôt"},{"Travel","Voyage"},{"Public Health Agency of Canada","Agence de santé publique du Canada"},{"Health Canada","Santé Canada"},{"CRA","ARC"},{"ISED","ISDE"},{"Example","Exemple"},{"CEWS","SSUC"},{"CRSB","PCMRE"},{"CRB","PCRE"},{"CRCB","PCREPA"},{"CERS","SUCL"}
@@ -187,12 +189,12 @@ public class ProblemController {
 	    		//sort Map
 	    		HashMap<String, Integer> sortedUrlCountMap = sortByValue(urlCountMap, DESC);
 	    		
-	    		int total = 0;
+	    		totalComments = 0;
 	    		
 	    		ArrayList<Problem> urlList = new ArrayList<Problem>();
 	    		int index = 0;
 	    		for ( String key : sortedUrlCountMap.keySet() ) {
-	    			total += sortedUrlCountMap.get(key);
+	    			totalComments += sortedUrlCountMap.get(key);
 	    		    urls.getData().get(index).setUrl(key);
 	    		    urls.getData().get(index).setUrlEntries(sortedUrlCountMap.get(key));
 	    		    urls.getData().get(index).setLanguage(urlCountMap2.get(key).get(1));
@@ -284,6 +286,11 @@ public class ProblemController {
         map.forEach((key, value) -> System.out.println("Key : " + key + " Value : " + value));
     }
     
+    @RequestMapping(value = "/pageFeedback/totalCommentsCount")
+    @ResponseBody
+	public String totalCommentsCount() {
+    	return  String.valueOf(totalComments);
+    }
     
     /*
     
