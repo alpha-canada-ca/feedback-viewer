@@ -542,6 +542,26 @@
                 }]
             });
 
+            function fetchTotalCommentsCount() {
+                fetch('/pageFeedback/totalCommentsCount')
+                    .then(function(response) {
+                        // The API call was successful!
+                        return response.text();
+                    })
+                    .then(function(totalCommentsCount) {
+                        // This is the HTML from our response as a text string
+                        data = totalCommentsCount;
+                        console.log("data: " + data)
+                        var child = $('#problemTable thead tr:last th:eq(4)')
+                        child.textContent = String(data);
+                    })
+                    .catch(function(err) {
+                        // There was an error
+                        console.warn('Something went wrong.', err);
+                    });
+            }
+
+
             function replaceSpecialChars(string) {
                 var string = string.replace(/[.?]/g, '\\$&');
                 return string;
@@ -565,7 +585,6 @@
                                 .draw();
                         }
                     });
-
             });
 
             const DateColIndex = 0;
@@ -744,6 +763,7 @@
             });
 
             $('#deptINV', this).on('keyup change', function() {
+                fetchTotalCommentsCount();
                 if (this.value != "") {
                     table
                         .column(DeptColIndex)
@@ -768,7 +788,6 @@
                     $('#searchCol0').closest('th').hide()
                     $('#searchCol1').closest('th').hide()
                     $('#searchCol2').closest('th').hide()
-                    $('#searchCol4').hide()
 
                     $(".sorting-cnt").addClass("hidden");
                 }
@@ -815,6 +834,7 @@
                     $('#searchCol1').closest('th').hide()
                     $('#searchCol2').closest('th').hide()
                     $('#searchCol4').hide()
+                    fetchTotalCommentsCount();
 
                     $(".sorting-cnt").addClass("hidden");
                 }
@@ -861,6 +881,7 @@
                     $('#searchCol1').closest('th').hide()
                     $('#searchCol2').closest('th').hide()
                     $('#searchCol4').hide()
+                    fetchTotalCommentsCount();
 
                     $(".sorting-cnt").addClass("hidden");
                 }
