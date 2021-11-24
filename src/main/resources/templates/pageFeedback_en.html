@@ -293,7 +293,6 @@
     <script src="https://cdn.datatables.net/buttons/1.6.1/js/buttons.print.min.js"></script>
     <script src="https://cdn.datatables.net/colreorder/1.5.2/js/dataTables.colReorder.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/busy-load@0.1.2/src/index.min.js"></script>
-
     <script type="text/javascript" src="js/spring-friendly.min.js"></script>
 
     <script type="text/javascript">
@@ -495,6 +494,9 @@
                 lengthMenu: [
                     10, 25, 50
                 ],
+                "drawCallback": function(settings) {
+                    fetchTotalCommentsCount();
+                },
                 retrieve: true,
                 ajax: '/problemData',
                 serverSide: true,
@@ -542,6 +544,8 @@
                 }]
             });
 
+
+
             function fetchTotalCommentsCount() {
                 fetch('/pageFeedback/totalCommentsCount')
                     .then(function(response) {
@@ -550,23 +554,13 @@
                     })
                     .then(function(totalCommentsCount) {
                         // This is the HTML from our response as a text string
-                        data = totalCommentsCount;
-                        console.log("data: " + data)
-                        var child = $('#problemTable thead tr:last th:eq(4)')
-                        child.textContent = String(data);
+                        $('#test123').text(String(totalCommentsCount));
                     })
                     .catch(function(err) {
                         // There was an error
                         console.warn('Something went wrong.', err);
                     });
             }
-
-
-            function replaceSpecialChars(string) {
-                var string = string.replace(/[.?]/g, '\\$&');
-                return string;
-            }
-
 
             $('#problemTable thead tr')
                 .clone(true)
@@ -586,6 +580,7 @@
                         }
                     });
             });
+            $('#problemTable thead tr:eq(1) th:eq(4)').attr('id', 'test123');
 
             const DateColIndex = 0;
             const CommentColIndex = 1;
@@ -763,7 +758,6 @@
             });
 
             $('#deptINV', this).on('keyup change', function() {
-                fetchTotalCommentsCount();
                 if (this.value != "") {
                     table
                         .column(DeptColIndex)
@@ -788,8 +782,13 @@
                     $('#searchCol0').closest('th').hide()
                     $('#searchCol1').closest('th').hide()
                     $('#searchCol2').closest('th').hide()
+                    $('#searchCol4').hide()
+                    $('#test123').show()
+
+
 
                     $(".sorting-cnt").addClass("hidden");
+
                 }
                 if ($('#sectionINV').val() != "") {
                     table
