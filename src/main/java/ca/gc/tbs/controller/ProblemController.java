@@ -183,18 +183,22 @@ public class ProblemController {
 	    			System.out.println(i+1);
 	    			urlCountMap2.put(urls.getData().get(i).getUrl(), Arrays.asList(urls.getData().get(i).getTitle(), urls.getData().get(i).getLanguage()));
 	    		}
+	    		totalComments = 0;
+
+	    		for ( String key : urlCountMap.keySet() ) {
+	    			totalComments += urlCountMap.get(key);
+	    		}
 
 	    		System.out.println("size: " + urlCountMap.size() + "  ---- " + urlCountMap.toString());
 	    		
 	    		//sort Map
 	    		HashMap<String, Integer> sortedUrlCountMap = sortByValue(urlCountMap, DESC);
 	    		
-	    		totalComments = 0;
 	    		
 	    		ArrayList<Problem> urlList = new ArrayList<Problem>();
 	    		int index = 0;
+
 	    		for ( String key : sortedUrlCountMap.keySet() ) {
-	    			totalComments += sortedUrlCountMap.get(key);
 	    		    urls.getData().get(index).setUrl(key);
 	    		    urls.getData().get(index).setUrlEntries(sortedUrlCountMap.get(key));
 	    		    urls.getData().get(index).setLanguage(urlCountMap2.get(key).get(1));
@@ -205,9 +209,6 @@ public class ProblemController {
 	    		
 	    		urls.setRecordsFiltered(sortedUrlCountMap.size());
 	    		urls.setData(urlList);
-	    		
-	    		
-	    	
 	    		
 	    		return urls;
 	    	}
@@ -266,6 +267,7 @@ public class ProblemController {
 		return null;
 	}
 	
+
    
     private static HashMap<String, Integer> sortByValue(HashMap<String, Integer> unsortMap, final boolean order)
     {
@@ -289,6 +291,7 @@ public class ProblemController {
     @RequestMapping(value = "/pageFeedback/totalCommentsCount")
     @ResponseBody
 	public String totalCommentsCount() {
+
     	return  String.valueOf(totalComments);
     }
     
