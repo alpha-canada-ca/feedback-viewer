@@ -291,7 +291,6 @@ public class ProblemController {
     @RequestMapping(value = "/pageFeedback/totalCommentsCount")
     @ResponseBody
 	public String totalCommentsCount() {
-
     	return  String.valueOf(totalComments);
     }
     
