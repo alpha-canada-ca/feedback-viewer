@@ -183,12 +183,7 @@ public class ProblemController {
 	    			System.out.println(i+1);
 	    			urlCountMap2.put(urls.getData().get(i).getUrl(), Arrays.asList(urls.getData().get(i).getTitle(), urls.getData().get(i).getLanguage()));
 	    		}
-	    		totalComments = 0;
-
-	    		for ( String key : urlCountMap.keySet() ) {
-	    			totalComments += urlCountMap.get(key);
-	    		}
-
+	    		
 	    		System.out.println("size: " + urlCountMap.size() + "  ---- " + urlCountMap.toString());
 	    		
 	    		//sort Map
@@ -197,8 +192,9 @@ public class ProblemController {
 	    		
 	    		ArrayList<Problem> urlList = new ArrayList<Problem>();
 	    		int index = 0;
-
+	    		totalComments = 0;
 	    		for ( String key : sortedUrlCountMap.keySet() ) {
+	    			totalComments += urlCountMap.get(key);
 	    		    urls.getData().get(index).setUrl(key);
 	    		    urls.getData().get(index).setUrlEntries(sortedUrlCountMap.get(key));
 	    		    urls.getData().get(index).setLanguage(urlCountMap2.get(key).get(1));
