@@ -181,9 +181,10 @@ public class ProblemController {
 	    			int count = urlCountMap.containsKey(urls.getData().get(i).getUrl()) ? urlCountMap.get(urls.getData().get(i).getUrl()) : 0;
 	    			urlCountMap.put(urls.getData().get(i).getUrl(), count + 1);
 	    			System.out.println(i+1);
-	    			urlCountMap2.put(urls.getData().get(i).getUrl(), Arrays.asList(urls.getData().get(i).getTitle(), urls.getData().get(i).getLanguage()));
+	    			urlCountMap2.put(urls.getData().get(i).getUrl(), Arrays.asList(urls.getData().get(i).getTitle(), 
+	    					urls.getData().get(i).getLanguage(), urls.getData().get(i).getInstitution(),
+	    					urls.getData().get(i).getTheme(), urls.getData().get(i).getSection()));
 	    		}
-	    		
 	    		System.out.println("size: " + urlCountMap.size() + "  ---- " + urlCountMap.toString());
 	    		
 	    		//sort Map
@@ -197,8 +198,11 @@ public class ProblemController {
 	    			totalComments += urlCountMap.get(key);
 	    		    urls.getData().get(index).setUrl(key);
 	    		    urls.getData().get(index).setUrlEntries(sortedUrlCountMap.get(key));
-	    		    urls.getData().get(index).setLanguage(urlCountMap2.get(key).get(1));
 	    		    urls.getData().get(index).setTitle(urlCountMap2.get(key).get(0));
+	    		    urls.getData().get(index).setLanguage(urlCountMap2.get(key).get(1));
+	    		    urls.getData().get(index).setInstitution(urlCountMap2.get(key).get(2));
+	    		    urls.getData().get(index).setTheme(urlCountMap2.get(key).get(3));
+	    		    urls.getData().get(index).setSection(urlCountMap2.get(key).get(4));
 	    		    urlList.add(urls.getData().get(index));
 	    		    index++;
 	    		}
