@@ -777,15 +777,13 @@
                         .column(TitleColIndex)
                         .visible(true)
                         .draw()
-                    $('#searchCol4').closest('th').show()
-                    $('#searchCol5').closest('th').show()
+
                     $('#searchCol0').closest('th').hide()
                     $('#searchCol1').closest('th').hide()
                     $('#searchCol2').closest('th').hide()
-                    $('#searchCol4').hide()
+                    $('#searchCol4').closest('th').show()
+                    $('#searchCol5').closest('th').show()
                     $('#test123').show()
-
-
 
                     $(".sorting-cnt").addClass("hidden");
 
@@ -816,7 +814,7 @@
                         .search(this.value + " ~")
                         .column(ThemeColIndex)
                         .search($('#themeINV').val() + " ~")
-                        .column(DeptColIndex)
+                        .column(deptINV)
                         .search($('#deptINV').val() + " ~")
                         .column(CommentColIndex)
                         .visible(false)
@@ -829,11 +827,13 @@
                         .column(TitleColIndex)
                         .visible(true)
                         .draw()
+
                     $('#searchCol0').closest('th').hide()
                     $('#searchCol1').closest('th').hide()
                     $('#searchCol2').closest('th').hide()
-                    $('#searchCol4').hide()
-                    fetchTotalCommentsCount();
+                    $('#searchCol4').closest('th').show()
+                    $('#searchCol5').closest('th').show()
+                    $('#test123').show()
 
                     $(".sorting-cnt").addClass("hidden");
                 }
@@ -863,7 +863,7 @@
                         .search(this.value + " ~")
                         .column(SectionColIndex)
                         .search($('#sectionINV').val() + " ~")
-                        .column(DeptColIndex)
+                        .column(deptINV)
                         .search($('#deptINV').val() + " ~")
                         .column(CommentColIndex)
                         .visible(false)
@@ -876,11 +876,13 @@
                         .column(TitleColIndex)
                         .visible(true)
                         .draw()
+
                     $('#searchCol0').closest('th').hide()
                     $('#searchCol1').closest('th').hide()
                     $('#searchCol2').closest('th').hide()
-                    $('#searchCol4').hide()
-                    fetchTotalCommentsCount();
+                    $('#searchCol4').closest('th').show()
+                    $('#searchCol5').closest('th').show()
+                    $('#test123').show()
 
                     $(".sorting-cnt").addClass("hidden");
                 }
