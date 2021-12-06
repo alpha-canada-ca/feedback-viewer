@@ -250,7 +250,7 @@
 
             <div class="mrgn-lft-sm row">
                 <!-- <button type="submit" class="btn btn-primary" aria-controls="problemTable">Filter</button> -->
-                <button type="reset" class="btn btn-primary" onclick="clearText()">Reset to defaults</button>
+                <button type="reset" class="btn btn-primary" id="clear-text">Reset to defaults</button>
             </div>
             <br>
         </form>
@@ -295,18 +295,7 @@
     <script src="https://cdn.jsdelivr.net/npm/busy-load@0.1.2/src/index.min.js"></script>
     <script type="text/javascript" src="js/spring-friendly.min.js"></script>
 
-    <script type="text/javascript">
-        function clearText() {
-            $("#searchCol0").val("");
-            $("#searchCol1").val("");
-            $("#searchCol2").val("");
-            $("#searchCol3").val("");
-            $("#searchCol4").val("");
-            $("#searchCol5").val("");
-            $("#searchCol6").val("");
-            $("#searchCol7").val("");
-        }
-    </script>
+
     <script th:inline="javascript">
         $(document).ready(function() {
 
@@ -483,10 +472,6 @@
                 "order": [
                     [0, "desc"]
                 ],
-                "search": {
-                    "smart": true
-                },
-
                 processing: true,
                 language: {
                     processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading..n.</span> '
@@ -544,7 +529,10 @@
                 }]
             });
 
-
+            function replaceSpecialChars(string) {
+                var string = string.replace(/[.?]/g, '\\$&');
+                return string;
+            }
 
             function fetchTotalCommentsCount() {
                 fetch('/pageFeedback/totalCommentsCount')
@@ -599,6 +587,40 @@
             $('#searchCol5').closest('th').hide()
 
             var minMaxDateChosen = false;
+
+            function clearText() {
+                $("#searchCol0").val("");
+                $("#searchCol1").val("");
+                $("#searchCol2").val("");
+                $("#searchCol3").val("");
+                $("#searchCol4").val("");
+                $("#searchCol5").val("");
+                $("#searchCol6").val("");
+                $("#searchCol7").val("");
+
+                table
+                    .column(CommentColIndex)
+                    .visible(true)
+                    .column(ProblemColIndex)
+                    .visible(true)
+                    .column(DateColIndex)
+                    .visible(true)
+                    .column(urlEntriesColIndex)
+                    .visible(false)
+                    .column(TitleColIndex)
+                    .visible(false)
+                    .draw()
+
+                $('#searchCol0').closest('th').show()
+                $('#searchCol1').closest('th').show()
+                $('#searchCol2').closest('th').show()
+                $('#test123').closest('th').hide()
+                $('#searchCol5').closest('th').hide()
+                $('#test123').hide()
+                $(".sorting-cnt").removeClass("hidden");
+            }
+            $("#clear-text").click(clearText);
+
 
             $('#min', this).on('keyup change', function() {
                 minMaxDateChosen = false;
@@ -758,6 +780,14 @@
             });
 
             $('#deptINV', this).on('keyup change', function() {
+                if (this.value == "") {
+                    if ($('#sectionINV').val() != "" || $('#themeINV').val() != "") {
+                        table
+                            .column(DeptColIndex)
+                            .search("")
+                            .draw()
+                    }
+                }
                 if (this.value != "") {
                     table
                         .column(DeptColIndex)
