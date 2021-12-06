@@ -12,6 +12,10 @@
             font-size: 12px;
         }
         
+        .hidden {
+            display: none;
+        }
+        
         .table.dataTable {
             font-family: Verdana, Geneva, Tahoma, sans-serif;
             font-size: 12px;
@@ -50,34 +54,46 @@
             transform: translate(-50%, -50%);
         }
     </style>
+
     <div class="container">
-        <h4 class="wb-inv">Filtering options</h4>
+        <h4 class="wb-inv">Options de filtrage</h4>
 
         <form class="wb-tables-filter" data-bind-to="problemTable">
-            <h4 class="h4">Filter options</h4>
-            <p class="mrgn-tp-md">Use filters to change your results in the data table</p>
+            <div class="row">
+                <div class="col-sm-6">
+                    <h4 class="h4">Options de filtre</h4>
+                    <p class="mrgn-tp-md">Utilisez ces filtres pour obtenir des commentaires sur les pages</p>
+                </div>
+                <div class="col-sm-6">
+                    <h4 class="h4">Feedback admin</h4>
+                    <p class="mrgn-tp-md">Utilisez ces filtres pour obtenir une liste des pages utilisant l'outil de feedback</p>
+                </div>
+            </div>
+
 
             <div class="row">
                 <div class="col-sm-6">
                     <div class="form-group">
                         <label for="Department">Département</label>
-                        <select class="form-control" id="Department" name="Département" data-column="6">
-                                        <option value="">Tous</option>
-                                        <option value="FCAC">Agence de la consommation en matière financière du Canada</option>
-                                        <option value="CRA">Agence du revenu du Canada</option>
-                                        <option value="NRC">Conseil national de recherches Canada</option>
-                                        <option value="Employment and Social Development Canada">Emploi et Développement social Canada</option>
-                                        <option value="FIN">Ministère des Finances</option>
-                                        <option value="Health Canada">Santé Canada</option>
-                                        <option value="ISED">Innovation, Sciences et Développement économique Canada</option>
-                                        <option value="DFO">Pêches et Océans Canada</option>
-                                        <option value="Public Health Agency of Canada">Agence de santé publique du Canada</option>
-                                        <option value="TBS">Secrétariat du Conseil du Trésor du Canada</option>
-                                        <option value="ISC">Services aux Autochtones Canada</option>
-                                        <option value="PSPC">Services publics et Approvisionnement Canada</option>
-                                        <option value="SC">Service Canada</option>
-                                        <option value="DND">Défense nationale</option>
-                                        <!-- DEPARTMENTS -->
+                        <select class="form-control" id="Department" name="Department" data-column="5">
+                            <option value="">Tous</option>
+                            <option value="CRA">Agence du revenu du Canada</option>
+                            <option value="DFO">Pêches et Océans Canada</option>
+                            <option value="Employment and Social Development Canada">Emploi et Développement social Canada</option>
+                            <option value="FCAC">Agence de la consommation en matière financière du Canada</option>
+                            <option value="FIN">Ministère des Finances</option>
+                            <option value="IRCC">Immigration, Réfugiés et Citoyenneté Canada</option>
+                            <option value="CCG">Garde côtière canadienne</option>
+                            <option value="Health Canada">Santé Canada</option>
+                            <option value="ISED">Innovation, Sciences et Développement économique Canada</option>
+                            <option value="ISC">Services aux Autochtones Canada</option>
+                            <option value="NRC">Conseil national de recherches Canada</option>
+                            <option value="Public Health Agency of Canada">Agence de santé publique du Canada</option>
+                            <option value="PSPC">Services publics et Approvisionnement Canada</option>
+                            <option value="TBS">Secrétariat du Conseil du Trésor du Canada</option>
+                            <option value="SC">Service Canada</option>
+                            <option value="DND">Défense nationale</option>
+                            <!-- DEPARTMENTS -->
                         </select>
                     </div>
                     <div class="form-group">
@@ -128,11 +144,16 @@
                             <option value="Science and innovation">Science et Innovation</option>
                             <option value="Business">Entreprise</option>
                             <option value="Youth">Jeunesse</option>
+                            <option value="Policies">Politiques</option>
+                            <option value="Top tasks">Tâches principales</option>
+                            <option value="Jobs">Emplois</option>
+                            <option value="Funding">Financement</option>
+                            <option value="Employment Insurance">Assurance Emploi</option>
+                            <option value="Education/Research">Éducation/Recherche</option>
+
                             <!-- THEMES -->
                         </select>
                     </div>
-                </div>
-                <div class="col-sm-6">
                     <div class="form-group">
                         <label for="min">Dates <span class="wb-inv">Date de début</span></label>
                         <div class="form-inline">
@@ -146,11 +167,87 @@
                         </div>
                     </div>
                 </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label for="deptINV">Department</label>
+                        <select class="form-control" id="deptINV" name="deptINV" data-column="5">
+                            <option value="">Choose a Department</option>
+                            <option value="CRA">Canada Revenue Agency</option>
+                            <option value="DFO">Department of Fisheries and Oceans</option>
+                            <option value="Employment and Social Development Canada">Employment and Social Development
+                                Canada</option>
+                            <option value="FCAC">Financial Consumer Agency of Canada</option>
+                            <option value="FIN">Department of Finance</option>
+                            <option value="Health Canada">Health Canada</option>
+                            <option value="ISED">Innovation, Science and Economic Development Canada</option>
+                            <option value="ISC">Indigenous Services Canada</option>
+                            <option value="NRC">National Research Council</option>
+                            <option value="Public Health Agency of Canada">Public Health Agency of Canada</option>
+                            <option value="PSPC">Public Services and Procurement Canada</option>
+                            <option value="TBS">Treasury Board of Canada Secretariat</option>
+                            <option value="SC">Service Canada</option>
+                            <option value="DND">Department of National Defence</option>
+                            <!-- DEPARTMENTS -->
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="sectionINV">Section</label>
+                        <select class="form-control" id="sectionINV" name="sectionINV" data-column="6">
+                            <option value="">All</option>
+                            <option value="travel-wizard">travel-wizard</option>
+                            <option value="COVID">COVID</option>
+                            <option value="CRB">CRB</option>
+                            <option value="Vaccines">Vaccines</option>
+                            <option value="PTR">PTR</option>
+                            <option value="COVID Alert">COVID Alert</option>
+                            <option value="CRSB">CRSB</option>
+                            <option value="CEWS">CEWS</option>
+                            <option value="CERS">CERS</option>
+                            <option value="Business">Business</option>
+                            <option value="WFHE">WFHE</option>
+                            <option value="ITB">ITB</option>
+                            <option value="ECM">ECM</option>
+                            <option value="Health">Health</option>
+                            <option value="Pay">Pay</option>
+                            <option value="CIG">CIG</option>
+                            <option value="Sign in">Sign in</option>
+                            <option value="PIT">PIT</option>
+                            <option value="GST/HST">GST/HST</option>
+                            <option value="CERB">CERB</option>
+                            <option value="Design system">Design system</option>
+                            <option value="Retirement planning">Retirement planning</option>
+                            <option value="Skills for Success">Skills for Success</option>
+                            <option value="COVID-19 data trends">COVID-19 data trends</option>
+                            <option value="Social Development Partnerships Program">Social Development Partnerships
+                                Program</option>
+                            <option value="OBJ">OBJ</option>
+                            <option value="Mortgages">Mortgages</option>
+                            <option value="CEWS-CRHP">CEWS-CRHP</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="themeINV">Theme</label>
+                        <select class="form-control" id="themeINV" name="themeINV" data-column="7">
+                            <option value="">All</option>
+                            <option value="Business">Business</option>
+                            <option value="COVID">COVID</option>
+                            <option value="Environment and natural resources">Environment and Natural Resources</option>
+                            <option value="Health">Health</option>
+                            <option value="Money and finances">Money and Finances</option>
+                            <option value="Public Service">Public Service</option>
+                            <option value="Science and innovation">Science and Innovation</option>
+                            <option value="Travel">Travel</option>
+                            <option value="Taxes">Taxes</option>
+                            <option value="Youth">Youth</option>
+                            <!-- THEMES -->
+                        </select>
+                    </div>
+                </div>
             </div>
 
             <div class="mrgn-lft-sm row">
                 <!-- <button type="submit" class="btn btn-primary" aria-controls="problemTable">Filter</button> -->
-                <button type="reset" class="btn btn-primary" onclick="clearText()">Reset to defaults</button>
+                <button type="reset" class="btn btn-primary" id="clear-text">Reset to defaults</button>
             </div>
             <br>
         </form>
@@ -162,13 +259,15 @@
                 <thead>
                     <tr>
                         <th>Date</th>
-                        <th>Commentaire</th>
-                        <th>Problème</th>
+                        <th>Comment</th>
+                        <th>Problem</th>
                         <th>URL</th>
-                        <th>Langue</th>
-                        <th>Institution</th>
+                        <th>Total Comments</th>
+                        <th>Page Title</th>
+                        <th>Language</th>
+                        <th>Department</th>
                         <th>Section</th>
-                        <th>Thème</th>
+                        <th>Theme</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -176,7 +275,6 @@
             </table>
         </div>
     </div>
-
 
 
 
@@ -192,7 +290,6 @@
     <script src="https://cdn.datatables.net/buttons/1.6.1/js/buttons.print.min.js"></script>
     <script src="https://cdn.datatables.net/colreorder/1.5.2/js/dataTables.colReorder.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/busy-load@0.1.2/src/index.min.js"></script>
-
     <script type="text/javascript" src="js/spring-friendly.min.js"></script>
 
 
@@ -200,36 +297,56 @@
         $(document).ready(function() {
 
             function sortSelectOptions(selector, skip_first) {
-                var options = (skip_first) ? $(selector + ' option:not(:first)') : $(selector + ' option');
-                var arr = options.map(function(_, o) {
-                    return {
-                        t: $(o).text(),
-                        v: o.value,
-                        s: $(o).prop('selected')
-                    };
-                }).get();
+                var options = (skip_first) ?
+                    $(selector + ' option:not(:first)') :
+                    $(selector + ' option');
+                var arr = options
+                    .map(function(_, o) {
+                        return {
+                            t: $(o).text(),
+                            v: o.value,
+                            s: $(o).prop('selected')
+                        };
+                    })
+                    .get();
                 arr.sort(function(o1, o2) {
-                    var t1 = o1.t.toLowerCase(),
-                        t2 = o2.t.toLowerCase();
-                    return t1 > t2 ? 1 : t1 < t2 ? -1 : 0;
+                    var t1 = o1
+                        .t
+                        .toLowerCase(),
+                        t2 = o2
+                        .t
+                        .toLowerCase();
+                    return t1 > t2 ?
+                        1 :
+                        t1 < t2 ?
+                        -1 :
+                        0;
                 });
                 options.each(function(i, o) {
                     o.value = arr[i].v;
                     $(o).text(arr[i].t);
                     if (arr[i].s) {
-                        $(o).attr('selected', 'selected').prop('selected', true);
+                        $(o)
+                            .attr('selected', 'selected')
+                            .prop('selected', true);
                     } else {
                         $(o).removeAttr('selected');
                         $(o).prop('selected', false);
                     }
                 });
             }
-            sortSelectOptions('#Institution', true);
+            sortSelectOptions('#Department', true);
             sortSelectOptions('#dt_theme', true);
+            sortSelectOptions('#section', true);
+            sortSelectOptions('#sectionINV', true);
+            sortSelectOptions('#deptINV', true);
+            sortSelectOptions('#themeINV', true);
 
             function newexportaction(e, dt, button, config) {
                 var self = this;
-                var oldStart = dt.settings()[0]._iDisplayStart;
+                var oldStart = dt
+                    .settings()[0]
+                    ._iDisplayStart;
                 dt.one('preXhr', function(e, s, data) {
                     // Just this once, load all data from the server...
                     data.start = 0;
@@ -237,21 +354,94 @@
                     dt.one('preDraw', function(e, settings) {
                         // Call the original action function
                         if (button[0].className.indexOf('buttons-copy') >= 0) {
-                            $.fn.dataTable.ext.buttons.copyHtml5.action.call(self, e, dt, button, config);
+                            $
+                                .fn
+                                .dataTable
+                                .ext
+                                .buttons
+                                .copyHtml5
+                                .action
+                                .call(self, e, dt, button, config);
                         } else if (button[0].className.indexOf('buttons-excel') >= 0) {
-                            $.fn.dataTable.ext.buttons.excelHtml5.available(dt, config) ?
-                                $.fn.dataTable.ext.buttons.excelHtml5.action.call(self, e, dt, button, config) :
-                                $.fn.dataTable.ext.buttons.excelFlash.action.call(self, e, dt, button, config);
+                            $
+                                .fn
+                                .dataTable
+                                .ext
+                                .buttons
+                                .excelHtml5
+                                .available(dt, config) ?
+                                $
+                                .fn
+                                .dataTable
+                                .ext
+                                .buttons
+                                .excelHtml5
+                                .action
+                                .call(self, e, dt, button, config) :
+                                $
+                                .fn
+                                .dataTable
+                                .ext
+                                .buttons
+                                .excelFlash
+                                .action
+                                .call(self, e, dt, button, config);
                         } else if (button[0].className.indexOf('buttons-csv') >= 0) {
-                            $.fn.dataTable.ext.buttons.csvHtml5.available(dt, config) ?
-                                $.fn.dataTable.ext.buttons.csvHtml5.action.call(self, e, dt, button, config) :
-                                $.fn.dataTable.ext.buttons.csvFlash.action.call(self, e, dt, button, config);
+                            $
+                                .fn
+                                .dataTable
+                                .ext
+                                .buttons
+                                .csvHtml5
+                                .available(dt, config) ?
+                                $
+                                .fn
+                                .dataTable
+                                .ext
+                                .buttons
+                                .csvHtml5
+                                .action
+                                .call(self, e, dt, button, config) :
+                                $
+                                .fn
+                                .dataTable
+                                .ext
+                                .buttons
+                                .csvFlash
+                                .action
+                                .call(self, e, dt, button, config);
                         } else if (button[0].className.indexOf('buttons-pdf') >= 0) {
-                            $.fn.dataTable.ext.buttons.pdfHtml5.available(dt, config) ?
-                                $.fn.dataTable.ext.buttons.pdfHtml5.action.call(self, e, dt, button, config) :
-                                $.fn.dataTable.ext.buttons.pdfFlash.action.call(self, e, dt, button, config);
+                            $
+                                .fn
+                                .dataTable
+                                .ext
+                                .buttons
+                                .pdfHtml5
+                                .available(dt, config) ?
+                                $
+                                .fn
+                                .dataTable
+                                .ext
+                                .buttons
+                                .pdfHtml5
+                                .action
+                                .call(self, e, dt, button, config) :
+                                $
+                                .fn
+                                .dataTable
+                                .ext
+                                .buttons
+                                .pdfFlash
+                                .action
+                                .call(self, e, dt, button, config);
                         } else if (button[0].className.indexOf('buttons-print') >= 0) {
-                            $.fn.dataTable.ext.buttons.print.action(e, dt, button, config);
+                            $
+                                .fn
+                                .dataTable
+                                .ext
+                                .buttons
+                                .print
+                                .action(e, dt, button, config);
                         }
                         dt.one('preXhr', function(e, s, data) {
                             // DataTables thinks the first item displayed is index 0, but we're not drawing that.
@@ -266,26 +456,32 @@
                     });
                 });
                 // Requery the server with the new one-time export settings
-                dt.ajax.reload();
+                dt
+                    .ajax
+                    .reload();
             };
 
-            $('#problemTable').find('thead th').append('<span class="sorting-cnt"><span class="sorting-icons"></span></span>')
-
+            $('#problemTable')
+                .find('thead th')
+                .append('<span class="sorting-cnt"><span class="sorting-icons"></span></span>')
 
             var table = $('table#problemTable').DataTable({
                 "order": [
                     [0, "desc"]
                 ],
                 processing: true,
-                ajax: {},
-                "oLanguage": {
-                    "sProcessing": '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span> ',
-                    "sUrl": "static/json/fr.json"
+                language: {
+                    processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading..n.</span> '
                 },
-                "lengthMenu": [10, 25, 50],
+                lengthMenu: [
+                    10, 25, 50
+                ],
+                "drawCallback": function(settings) {
+                    fetchTotalCommentsCount();
+                },
                 retrieve: true,
-                'ajax': '/problemData',
-                'serverSide': true,
+                ajax: '/problemData',
+                serverSide: true,
                 columns: [{
                     data: 'problemDate'
                 }, {
@@ -295,7 +491,14 @@
                 }, {
                     data: 'url'
                 }, {
-                    data: 'language'
+                    data: 'urlEntries',
+                    "width": "10%"
+                }, {
+                    data: 'title',
+                    "width": "35%"
+                }, {
+                    data: 'language',
+                    "width": "10%"
                 }, {
                     data: 'institution',
                     visible: false
@@ -307,54 +510,139 @@
                     visible: false
                 }],
 
-
                 orderCellsTop: true,
                 fixedHeader: true,
-                dom: 'Br<"table-responsive"t>tipl',
+                dom: 'fBr<"table-responsive"t>tipl',
                 buttons: [{
                     "extend": 'csv',
-                    "text": 'Télécharger CSV',
+                    "text": 'Download CSV',
                     className: 'btn btn-default',
-                    "action": newexportaction,
+                    "action": newexportaction
                 }, {
                     "extend": 'excel',
-                    "text": "Télécharger Excel",
+                    "text": "Download Excel",
                     className: 'btn btn-default',
-                    "action": newexportaction,
+                    "action": newexportaction
                 }]
             });
 
-            const ThemeColumnIndex = 7;
-            const SectionColumnIndex = 6;
-            const DepColumnIndex = 5;
-            const DateColumnIndex = 0;
+            function replaceSpecialChars(string) {
+                var string = string.replace(/[.?]/g, '\\$&');
+                return string;
+            }
+
+            function fetchTotalCommentsCount() {
+                fetch('/pageFeedback/totalCommentsCount')
+                    .then(function(response) {
+                        // The API call was successful!
+                        return response.text();
+                    })
+                    .then(function(totalCommentsCount) {
+                        // This is the HTML from our response as a text string
+                        $('#test123').text(String(totalCommentsCount));
+                    })
+                    .catch(function(err) {
+                        // There was an error
+                        console.warn('Something went wrong.', err);
+                    });
+            }
+
+            $('#problemTable thead tr')
+                .clone(true)
+                .appendTo('#problemTable thead');
+            $('#problemTable thead tr:eq(1) th').each(function(i) {
+                var title = $(this).text();
+                $(this).html('<input type="text" id="searchCol' + i + '" placeholder="Search ' + title + '" />');
+
+                $('input', this)
+                    .unbind()
+                    .bind('keyup change', function(e) {
+                        if (e.keyCode == 13 || this.value == "") {
+                            table
+                                .column(i)
+                                .search(replaceSpecialChars(this.value))
+                                .draw();
+                        }
+                    });
+            });
+            $('#problemTable thead tr:eq(1) th:eq(4)').attr('id', 'test123');
+
+            const DateColIndex = 0;
+            const CommentColIndex = 1;
+            const ProblemColIndex = 2;
+            const UrlColIndex = 3;
+            const urlEntriesColIndex = 4;
+            const TitleColIndex = 5;
+            const LangColIndex = 6;
+            const DeptColIndex = 7;
+            const SectionColIndex = 8;
+            const ThemeColIndex = 9;
+
+            table.column(urlEntriesColIndex).visible(false);
+            table.column(TitleColIndex).visible(false);
+            $('#searchCol4').closest('th').hide()
+            $('#searchCol5').closest('th').hide()
 
             var minMaxDateChosen = false;
+
+            function clearText() {
+                $("#searchCol0").val("");
+                $("#searchCol1").val("");
+                $("#searchCol2").val("");
+                $("#searchCol3").val("");
+                $("#searchCol4").val("");
+                $("#searchCol5").val("");
+                $("#searchCol6").val("");
+                $("#searchCol7").val("");
+
+                table
+                    .column(CommentColIndex)
+                    .visible(true)
+                    .column(ProblemColIndex)
+                    .visible(true)
+                    .column(DateColIndex)
+                    .visible(true)
+                    .column(urlEntriesColIndex)
+                    .visible(false)
+                    .column(TitleColIndex)
+                    .visible(false)
+                    .draw()
+
+                $('#searchCol0').closest('th').show()
+                $('#searchCol1').closest('th').show()
+                $('#searchCol2').closest('th').show()
+                $('#test123').closest('th').hide()
+                $('#searchCol5').closest('th').hide()
+                $('#test123').hide()
+                $(".sorting-cnt").removeClass("hidden");
+            }
+            $("#clear-text").click(clearText);
+
 
             $('#min', this).on('keyup change', function() {
                 minMaxDateChosen = false;
                 if (this.value != "" && $('#max').val() != "") {
                     minMaxDateChosen = true;
                     table
-                        .column(0)
+                        .column(DateColIndex)
                         .search(this.value + ":" + $('#max').val())
                         .draw();
                 }
                 if ($('#dt_theme').val() != "" && minMaxDateChosen) {
                     table
-                        .column(ThemeColumnIndex)
+                        .column(ThemeColIndex)
                         .search($('#dt_theme').val())
                         .draw()
                 }
                 if ($('#Department').val() != "" && minMaxDateChosen) {
                     table
-                        .column(DepColumnIndex)
+                        .column(DeptColIndex)
                         .search($('#Department').val())
                         .draw()
                 }
                 if ($('#section').val() != "" && minMaxDateChosen) {
                     table
-                        .column(SectionColumnIndex)
+                        .column(SectionColIndex)
                         .search($('#section').val())
                         .draw()
                 }
@@ -365,25 +653,25 @@
                 if (this.value != "" && $('#min').val() != "") {
                     minMaxDateChosen = true;
                     table
-                        .column(DateColumnIndex)
+                        .column(DateColIndex)
                         .search($('#min').val() + ":" + this.value)
                         .draw();
                 }
                 if ($('#dt_theme').val() != "" && minMaxDateChosen) {
                     table
-                        .column(ThemeColumnIndex)
+                        .column(ThemeColIndex)
                         .search($('#dt_theme').val())
                         .draw()
                 }
                 if ($('#Department').val() != "" && minMaxDateChosen) {
                     table
-                        .column(DepColumnIndex)
+                        .column(DeptColIndex)
                         .search($('#Department').val())
                         .draw()
                 }
                 if ($('#section').val() != "" && minMaxDateChosen) {
                     table
-                        .column(SectionColumnIndex)
+                        .column(SectionColIndex)
                         .search($('#section').val())
                         .draw()
                 }
@@ -392,31 +680,31 @@
             $('#dt_theme', this).on('keyup change', function() {
                 if (this.value == "") {
                     table
-                        .column(ThemeColumnIndex)
+                        .column(ThemeColIndex)
                         .search("")
                         .draw()
                 }
                 if (this.value != "") {
                     table
-                        .column(ThemeColumnIndex)
+                        .column(ThemeColIndex)
                         .search(this.value)
                         .draw()
                 }
                 if (minMaxDateChosen) {
                     table
-                        .column(DateColumnIndex)
+                        .column(DateColIndex)
                         .search($('#min').val() + ":" + $('#max').val())
                         .draw();
                 }
                 if ($('#Department').val()) {
                     table
-                        .column(DepColumnIndex) //change these to const values
+                        .column(DeptColIndex) //change these to const values
                         .search($('#Department').val())
                         .draw()
                 }
                 if ($('#section').val()) {
                     table
-                        .column(SectionColumnIndex)
+                        .column(SectionColIndex)
                         .search($('#section').val())
                         .draw()
                 }
@@ -425,31 +713,31 @@
             $('#Department', this).on('keyup change', function() {
                 if (this.value == "") {
                     table
-                        .column(DepColumnIndex)
+                        .column(DeptColIndex)
                         .search("")
                         .draw()
                 }
                 if (this.value != "") {
                     table
-                        .column(DepColumnIndex)
+                        .column(DeptColIndex)
                         .search(this.value)
                         .draw()
                 }
                 if (minMaxDateChosen) {
                     table
-                        .column(DateColumnIndex)
+                        .column(DateColIndex)
                         .search($('#min').val() + ":" + $('#max').val())
                         .draw();
                 }
                 if ($('#dt_theme').val() != "") {
                     table
-                        .column(ThemeColumnIndex)
+                        .column(ThemeColIndex)
                         .search($('#dt_theme').val())
                         .draw()
                 }
                 if ($('#section').val() != "") {
                     table
-                        .column(SectionColumnIndex)
+                        .column(SectionColIndex)
                         .search($('#section').val())
                         .draw()
                 }
@@ -458,39 +746,189 @@
             $('#section', this).on('keyup change', function() {
                 if (this.value == "") {
                     table
-                        .column(SectionColumnIndex)
+                        .column(SectionColIndex)
                         .search("")
                         .draw()
                 }
                 if (this.value != "") {
                     table
-                        .column(SectionColumnIndex)
+                        .column(SectionColIndex)
                         .search(this.value)
                         .draw()
                 }
                 if (minMaxDateChosen) {
                     table
-                        .column(DateColumnIndex)
+                        .column(DateColIndex)
                         .search($('#min').val() + ":" + $('#max').val())
                         .draw();
                 }
-                if ($('#Department').val()) {
+                if ($('#Department').val() != "") {
                     table
-                        .column(DepColumnIndex) //change these to const values
+                        .column(DeptColIndex) //change these to const values
                         .search($('#Department').val())
                         .draw()
                 }
                 if ($('#dt_theme').val() != "") {
                     table
-                        .column(ThemeColumnIndex)
+                        .column(ThemeColIndex)
                         .search($('#dt_theme').val())
                         .draw()
                 }
             });
 
+            $('#deptINV', this).on('keyup change', function() {
+                if (this.value == "") {
+                    if ($('#sectionINV').val() != "" || $('#themeINV').val() != "") {
+                        table
+                            .column(DeptColIndex)
+                            .search("")
+                            .draw()
+                    }
+                }
+                if (this.value != "") {
+                    table
+                        .column(DeptColIndex)
+                        .search(this.value + " ~")
+                        .column(ThemeColIndex)
+                        .search($('#themeINV').val() + " ~")
+                        .column(SectionColIndex)
+                        .search($('#sectionINV').val() + " ~")
+                        .column(CommentColIndex)
+                        .visible(false)
+                        .column(ProblemColIndex)
+                        .visible(false)
+                        .column(DateColIndex)
+                        .visible(false)
+                        .column(urlEntriesColIndex)
+                        .visible(true)
+                        .column(TitleColIndex)
+                        .visible(true)
+                        .draw()
+
+                    $('#searchCol0').closest('th').hide()
+                    $('#searchCol1').closest('th').hide()
+                    $('#searchCol2').closest('th').hide()
+                    $('#searchCol4').closest('th').show()
+                    $('#searchCol5').closest('th').show()
+                    $('#test123').show()
+
+                    $(".sorting-cnt").addClass("hidden");
+
+                }
+                if ($('#sectionINV').val() != "") {
+                    table
+                        .column(SectionColIndex) //change these to const values
+                        .search($('#sectionINV').val() + " ~")
+                        .draw()
+                }
+                if ($('#themeINV').val() != "") {
+                    table
+                        .column(ThemeColIndex) //change these to const values
+                        .search($('#themeINV').val() + " ~")
+                        .draw()
+                }
+            });
+            $('#sectionINV', this).on('keyup change', function() {
+                if (this.value == "") {
+                    table
+                        .column(SectionColIndex)
+                        .search("")
+                        .draw()
+                }
+                if (this.value != "") {
+                    table
+                        .column(SectionColIndex)
+                        .search(this.value + " ~")
+                        .column(ThemeColIndex)
+                        .search($('#themeINV').val() + " ~")
+                        .column(deptINV)
+                        .search($('#deptINV').val() + " ~")
+                        .column(CommentColIndex)
+                        .visible(false)
+                        .column(ProblemColIndex)
+                        .visible(false)
+                        .column(DateColIndex)
+                        .visible(false)
+                        .column(urlEntriesColIndex)
+                        .visible(true)
+                        .column(TitleColIndex)
+                        .visible(true)
+                        .draw()
+
+                    $('#searchCol0').closest('th').hide()
+                    $('#searchCol1').closest('th').hide()
+                    $('#searchCol2').closest('th').hide()
+                    $('#searchCol4').closest('th').show()
+                    $('#searchCol5').closest('th').show()
+                    $('#test123').show()
+
+                    $(".sorting-cnt").addClass("hidden");
+                }
+                if ($('#deptINV').val() != "") {
+                    table
+                        .column(DeptColIndex) //change these to const values
+                        .search($('#deptINV').val() + " ~")
+                        .draw()
+                }
+                if ($('#themeINV').val() != "") {
+                    table
+                        .column(ThemeColIndex) //change these to const values
+                        .search($('#themeINV').val() + " ~")
+                        .draw()
+                }
+            });
+            $('#themeINV', this).on('keyup change', function() {
+                if (this.value == "") {
+                    table
+                        .column(ThemeColIndex)
+                        .search("")
+                        .draw()
+                }
+                if (this.value != "") {
+                    table
+                        .column(ThemeColIndex)
+                        .search(this.value + " ~")
+                        .column(SectionColIndex)
+                        .search($('#sectionINV').val() + " ~")
+                        .column(deptINV)
+                        .search($('#deptINV').val() + " ~")
+                        .column(CommentColIndex)
+                        .visible(false)
+                        .column(ProblemColIndex)
+                        .visible(false)
+                        .column(DateColIndex)
+                        .visible(false)
+                        .column(urlEntriesColIndex)
+                        .visible(true)
+                        .column(TitleColIndex)
+                        .visible(true)
+                        .draw()
+
+                    $('#searchCol0').closest('th').hide()
+                    $('#searchCol1').closest('th').hide()
+                    $('#searchCol2').closest('th').hide()
+                    $('#searchCol4').closest('th').show()
+                    $('#searchCol5').closest('th').show()
+                    $('#test123').show()
+
+                    $(".sorting-cnt").addClass("hidden");
+                }
+                if ($('#deptINV').val() != "") {
+                    table
+                        .column(DeptColIndex) //change these to const values
+                        .search($('#deptINV').val() + " ~")
+                        .draw()
+                }
+                if ($('#sectionINV').val() != "") {
+                    table
+                        .column(SectionColIndex) //change these to const values
+                        .search($('#sectionINV').val() + " ~")
+                        .draw()
+                }
+            });
         });
     </script>
-</th:block>
 
+</th:block>
 
 </html>
