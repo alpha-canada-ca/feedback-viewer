@@ -15,6 +15,7 @@ public class Problem {
 	@Id
 	private String id="";
 	private String url="";
+	private int urlEntries=0;
 	private String problem="";
 	private String problemDetails="";
 	private String language="";
@@ -37,12 +38,13 @@ public class Problem {
 	
 	public Problem() {}
 
-	public Problem(String id, String url, String problemDate, String problem, String problemDetails, String language,
+	public Problem(String id, String url, int urlEntries, String problemDate, String problem, String problemDetails, String language,
 			String resolutionDate, String resolution, String topic, String title, String institution,
 			String theme, String section) {
 		super();
 		this.id = id;
 		this.url = url;
+		this.urlEntries = urlEntries;
 		this.problem = problem;
 		this.problemDetails = problemDetails;
 		this.problemDate = problemDate;
@@ -70,6 +72,13 @@ public class Problem {
 
 	public void setUrl(String url) {
 		this.url = url;
+	}
+	public int getUrlEntries() {
+		return urlEntries;
+	}
+
+	public void setUrlEntries(int urlEntries) {
+		this.urlEntries = urlEntries;
 	}
 
 	public String getProblem() {

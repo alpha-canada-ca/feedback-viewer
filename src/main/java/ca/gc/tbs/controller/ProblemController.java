@@ -4,8 +4,17 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -18,6 +27,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.datatables.DataTablesInput;
+import org.springframework.data.mongodb.datatables.DataTablesInput.Column;
 import org.springframework.data.mongodb.datatables.DataTablesOutput;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,6 +51,11 @@ public class ProblemController {
 	private static final Logger LOG = LoggerFactory.getLogger(ProblemController.class);
 	public static final String COLLECTION_PROBLEM = "problem";
 	
+	private static boolean ASC = true;
+    private static boolean DESC = false;
+    
+    private int totalComments = 0;
+	
 	String[][] translations = {/* ENGLISH, FRENCH*/{"The answer I need is missing","La réponse dont j’ai besoin n’est pas là"},{"The information isn't clear","L'information n'est pas claire"},{"I can't find the information","Je ne peux pas trouver l'information"},{"The information isn’t clear","L'information n'est pas claire"},{"I’m not in the right place","Je ne suis pas au bon endroit"},{"I'm not in the right place","Je ne suis pas au bon endroit"},{"Something is broken or incorrect","Quelque chose est brisé ou incorrect"}
 	,{"Other reason","Autre raison"},{"The information is hard to understand","l'information est difficile à comprendre"},{"Health","Santé"},{"Taxes","Impôt"},{"Travel","Voyage"},{"Public Health Agency of Canada","Agence de santé publique du Canada"},{"Health Canada","Santé Canada"},{"CRA","ARC"},{"ISED","ISDE"},{"Example","Exemple"},{"CEWS","SSUC"},{"CRSB","PCMRE"},{"CRB","PCRE"},{"CRCB","PCREPA"},{"CERS","SUCL"}
 	,{"Vaccines","Vaccins"},{"Business","Entreprises"},{"WFHE","DTDE"},{"travel-wizard","assistant-voyage"},{"PTR","DRP"},{"COVID Alert","Alerte COVID"},{"Financial Consumer Agency of Canada", "Agence de la consommation en matière financière du Canada"},{"National Research Council","Conseil national de recherches"},{"Department of Fisheries and Oceans","Pêches et Océans Canada"}
@@ -48,6 +63,7 @@ public class ProblemController {
 
 	private HashMap<String, String> tagTranslations = new HashMap<String, String>();
 	private HashMap<String, String> translationsMap = new HashMap<String, String>(translations.length);
+	
 	
 	@Autowired
 	private ProblemRepository problemRepository;
@@ -99,16 +115,26 @@ public class ProblemController {
 		return mav;
 	}
 	
-    @RequestMapping(value = "/problemData") 
+    @SuppressWarnings("unchecked")
+	@RequestMapping(value = "/problemData") 
     @ResponseBody
     public DataTablesOutput<Problem> list(@Valid DataTablesInput input, HttpServletRequest request)  {
     	
     	Criteria findProcessed = where("processed").is("true");
     	
 		if(lang.equals("en")) {
+		
+			String dateSearchVal 	= input.getColumn("problemDate").get().getSearch().getValue();
+			String deptSearchVal 	= input.getColumn("institution").get().getSearch().getValue();
+			String sectionSearchVal = input.getColumn("section").get().getSearch().getValue();
+			String themeSearchVal 	= input.getColumn("theme").get().getSearch().getValue();
 			
-			String dateSearchVal = input.getColumn("problemDate").get().getSearch().getValue();
-
+			List<Column> columns = input.getColumns();
+			
+			for(Column col: columns) {
+				System.out.println(col);
+			}
+			System.out.println("---------------------");
 	    	if(dateSearchVal.contains(":")) {
 	    		
 	    		String[] ret = dateSearchVal.split(":");
@@ -128,10 +154,72 @@ public class ProblemController {
 		    		}
 	    		} 
 	    	}
+	    	
+	    	if(deptSearchVal.contains("~") || sectionSearchVal.contains("~") || themeSearchVal.contains("~")) {
+	    		 //ternary operator for if it exists to set the value.
+	    		String deptValue = deptSearchVal.equals("") ? "" : deptSearchVal.substring(0, deptSearchVal.length() - 2);
+	    		String sectionValue = sectionSearchVal.equals("") ? "" : sectionSearchVal.substring(0, sectionSearchVal.length() - 2);
+	    		String themeValue = themeSearchVal.equals("") ? "" : themeSearchVal.substring(0, themeSearchVal.length() - 2);
+	    		
+	    		
+	    		
+	    		input.getColumn("institution").get().getSearch().setValue(deptValue);
+	    		input.getColumn("section").get().getSearch().setValue(sectionValue);
+	    		input.getColumn("theme").get().getSearch().setValue(themeValue);
+	    		
+	    		input.setStart(0);
+	    		input.setLength(-1);
+	    		
+	    		DataTablesOutput<Problem> urls = problemRepository.findAll(input);
+	    		
+	    		HashMap<String, Integer> urlCountMap = new HashMap<>();
+	    		HashMap<String, List<String>> urlCountMap2 = new HashMap<String, List<String>>();
+	    		
+	    		//Convert for loop to stream for efficiency.
+
+	    		for(int i = 0; i < urls.getData().size(); i++) {
+	    			int count = urlCountMap.containsKey(urls.getData().get(i).getUrl()) ? urlCountMap.get(urls.getData().get(i).getUrl()) : 0;
+	    			urlCountMap.put(urls.getData().get(i).getUrl(), count + 1);
+	    			System.out.println(i+1);
+	    			urlCountMap2.put(urls.getData().get(i).getUrl(), Arrays.asList(urls.getData().get(i).getTitle(), 
+	    					urls.getData().get(i).getLanguage(), urls.getData().get(i).getInstitution(),
+	    					urls.getData().get(i).getTheme(), urls.getData().get(i).getSection()));
+	    		}
+	    		System.out.println("size: " + urlCountMap.size() + "  ---- " + urlCountMap.toString());
+	    		
+	    		//sort Map
+	    		HashMap<String, Integer> sortedUrlCountMap = sortByValue(urlCountMap, DESC);
+	    		
+	    		
+	    		ArrayList<Problem> urlList = new ArrayList<Problem>();
+	    		int index = 0;
+	    		totalComments = 0;
+	    		for ( String key : sortedUrlCountMap.keySet() ) {
+	    			totalComments += urlCountMap.get(key);
+	    		    urls.getData().get(index).setUrl(key);
+	    		    urls.getData().get(index).setUrlEntries(sortedUrlCountMap.get(key));
+	    		    urls.getData().get(index).setTitle(urlCountMap2.get(key).get(0));
+	    		    urls.getData().get(index).setLanguage(urlCountMap2.get(key).get(1));
+	    		    urls.getData().get(index).setInstitution(urlCountMap2.get(key).get(2));
+	    		    urls.getData().get(index).setTheme(urlCountMap2.get(key).get(3));
+	    		    urls.getData().get(index).setSection(urlCountMap2.get(key).get(4));
+	    		    urlList.add(urls.getData().get(index));
+	    		    index++;
+	    		}
+	    		
+	    		urls.setRecordsFiltered(sortedUrlCountMap.size());
+	    		urls.setData(urlList);
+	    		
+	    		return urls;
+	    	}
 	    	return problemRepository.findAll(input, findProcessed);
 		}
 		if(lang.equals("fr")) {
-			String dateSearchVal = input.getColumn("problemDate").get().getSearch().getValue();
+			String dateSearchVal 	= input.getColumn("problemDate").get().getSearch().getValue();
+			String deptSearchVal 	= input.getColumn("institution").get().getSearch().getValue();
+			String sectionSearchVal = input.getColumn("section").get().getSearch().getValue();
+			String themeSearchVal 	= input.getColumn("theme").get().getSearch().getValue();
+			
 
 	    	if(dateSearchVal.contains(":")) {
 	    		
@@ -165,6 +253,76 @@ public class ProblemController {
 		    		}
 	    		} 
 	    	}
+	    	if(deptSearchVal.contains("~") || sectionSearchVal.contains("~") || themeSearchVal.contains("~")) {
+	    		 //ternary operator for if it exists to set the value.
+	    		String deptValue = deptSearchVal.equals("") ? "" : deptSearchVal.substring(0, deptSearchVal.length() - 2);
+	    		String sectionValue = sectionSearchVal.equals("") ? "" : sectionSearchVal.substring(0, sectionSearchVal.length() - 2);
+	    		String themeValue = themeSearchVal.equals("") ? "" : themeSearchVal.substring(0, themeSearchVal.length() - 2);
+	    		
+	    		
+	    		
+	    		input.getColumn("institution").get().getSearch().setValue(deptValue);
+	    		input.getColumn("section").get().getSearch().setValue(sectionValue);
+	    		input.getColumn("theme").get().getSearch().setValue(themeValue);
+	    		
+	    		input.setStart(0);
+	    		input.setLength(-1);
+	    		
+	    		DataTablesOutput<Problem> urls = problemRepository.findAll(input);
+	    		
+	    		HashMap<String, Integer> urlCountMap = new HashMap<>();
+	    		HashMap<String, List<String>> urlCountMap2 = new HashMap<String, List<String>>();
+	    		
+	    		//Convert for loop to stream for efficiency.
+
+	    		for(int i = 0; i < urls.getData().size(); i++) {
+	    			int count = urlCountMap.containsKey(urls.getData().get(i).getUrl()) ? urlCountMap.get(urls.getData().get(i).getUrl()) : 0;
+	    			urlCountMap.put(urls.getData().get(i).getUrl(), count + 1);
+	    			System.out.println(i+1);
+	    			urlCountMap2.put(urls.getData().get(i).getUrl(), Arrays.asList(urls.getData().get(i).getTitle(), 
+	    					urls.getData().get(i).getLanguage(), urls.getData().get(i).getInstitution(),
+	    					urls.getData().get(i).getTheme(), urls.getData().get(i).getSection()));
+	    		}
+	    		System.out.println("size: " + urlCountMap.size() + "  ---- " + urlCountMap.toString());
+	    		
+	    		//sort Map
+	    		HashMap<String, Integer> sortedUrlCountMap = sortByValue(urlCountMap, DESC);
+	    		
+	    		
+	    		ArrayList<Problem> urlList = new ArrayList<Problem>();
+	    		int index = 0;
+	    		totalComments = 0;
+	    		for ( String key : sortedUrlCountMap.keySet() ) {
+	    			totalComments += urlCountMap.get(key);
+	    		    urls.getData().get(index).setUrl(key);
+	    		    urls.getData().get(index).setUrlEntries(sortedUrlCountMap.get(key));
+	    		    urls.getData().get(index).setTitle(urlCountMap2.get(key).get(0));
+	    		    urls.getData().get(index).setLanguage(urlCountMap2.get(key).get(1));
+	    		    urls.getData().get(index).setInstitution(urlCountMap2.get(key).get(2));
+	    		    urls.getData().get(index).setTheme(urlCountMap2.get(key).get(3));
+	    		    urls.getData().get(index).setSection(urlCountMap2.get(key).get(4));
+	    		    urlList.add(urls.getData().get(index));
+	    		    index++;
+	    		}
+	    		
+	    		urls.setRecordsFiltered(sortedUrlCountMap.size());
+	    		urls.setData(urlList);
+	    		
+	    		for(int i = 0; i < urls.getData().size(); i++) {
+	    			urls.getData().get(i).setInstitution(translationsMap.get(urls.getData().get(i).getInstitution()));
+	    			urls.getData().get(i).setProblem(translationsMap.get(urls.getData().get(i).getProblem()));
+	    			urls.getData().get(i).setTheme(translationsMap.get(urls.getData().get(i).getTheme()));
+	    			urls.getData().get(i).setSection(translationsMap.get(urls.getData().get(i).getSection()));
+   	    		
+   	    		List<String> tags = urls.getData().get(i).getTags();
+   	    		for(int j = 0; j < tags.size(); j++) {
+   	    			if(tagTranslations.containsKey(tags.get(j)))
+   	    				tags.set(j, tagTranslations.get(tags.get(j)));
+   	    		}
+   	    	}
+	    		return urls;
+	    		
+	    	}
 	    	DataTablesOutput<Problem> problems = problemRepository.findAll(input, findProcessed);
 	    	for(int i = 0; i < problems.getData().size(); i++) {
 	    		problems.getData().get(i).setInstitution(translationsMap.get(problems.getData().get(i).getInstitution()));
@@ -179,10 +337,38 @@ public class ProblemController {
 	    		}
 	    	}
 	    	return problems;
+	    	
 		}
 		return null;
 	}
 	
+
+   
+    private static HashMap<String, Integer> sortByValue(HashMap<String, Integer> unsortMap, final boolean order)
+    {
+        List<Entry<String, Integer>> list = new LinkedList<>(unsortMap.entrySet());
+
+        // Sorting the list based on values
+        list.sort((o1, o2) -> order ? o1.getValue().compareTo(o2.getValue()) == 0
+                ? o1.getKey().compareTo(o2.getKey())
+                : o1.getValue().compareTo(o2.getValue()) : o2.getValue().compareTo(o1.getValue()) == 0
+                ? o2.getKey().compareTo(o1.getKey())
+                : o2.getValue().compareTo(o1.getValue()));
+        return list.stream().collect(Collectors.toMap(Entry::getKey, Entry::getValue, (a, b) -> b, LinkedHashMap::new));
+
+    }
+
+    private static void printMap(HashMap<String, Integer> map)
+    {
+        map.forEach((key, value) -> System.out.println("Key : " + key + " Value : " + value));
+    }
+    
+    @RequestMapping(value = "/pageFeedback/totalCommentsCount")
+    @ResponseBody
+	public String totalCommentsCount() {
+    	return  String.valueOf(totalComments);
+    }
+    
     /*
     
     @CrossOrigin(origins = "*")
