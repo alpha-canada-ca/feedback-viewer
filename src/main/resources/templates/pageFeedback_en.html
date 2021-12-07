@@ -85,6 +85,7 @@
                             <option value="IRCC">Immigration, Refugees and Citizenship Canada</option>
                             <option value="CCG">Canadian Coast Guard</option>
                             <option value="Health Canada">Health Canada</option>
+                            <option value="IRCC">Immigration, Refugees and Citizenship Canada</option>
                             <option value="ISED">Innovation, Science and Economic Development Canada</option>
                             <option value="ISC">Indigenous Services Canada</option>
                             <option value="NRC">National Research Council</option>
@@ -93,6 +94,7 @@
                             <option value="TBS">Treasury Board of Canada Secretariat</option>
                             <option value="SC">Service Canada</option>
                             <option value="DND">Department of National Defence</option>
+                            <option value="OMBDNDCAF">OMBDNDCAF</option>
                             <!-- DEPARTMENTS -->
                         </select>
                     </div>
@@ -145,6 +147,7 @@
                             <option value="Travel">Travel</option>
                             <option value="Taxes">Taxes</option>
                             <option value="Youth">Youth</option>
+
                             <option value="Policies">Policies</option>
                             <option value="Top tasks">Top tasks</option>
                             <option value="Jobs">Jobs</option>
@@ -341,9 +344,11 @@
             sortSelectOptions('#Department', true);
             sortSelectOptions('#dt_theme', true);
             sortSelectOptions('#section', true);
+
             sortSelectOptions('#sectionINV', true);
             sortSelectOptions('#deptINV', true);
             sortSelectOptions('#themeINV', true);
+
 
             function newexportaction(e, dt, button, config) {
                 var self = this;

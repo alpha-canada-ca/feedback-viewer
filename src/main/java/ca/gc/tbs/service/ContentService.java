@@ -41,7 +41,7 @@ public class ContentService {
 	}
 
 	private String cleanPostalCode(String content) {
-		return content.replaceAll("[A-Za-z]\\d[A-Za-z][ -]?\\d[A-Za-z]\\d", "### ###");
+		return content.replaceAll("[A-Za-z]\\s*\\d\\s*[A-Za-z]\\s*[ -]?\\s*\\d\\s*[A-Za-z]\\s*\\d", "### ###");
 	}
 
 	private String cleanSIN(String content) {
@@ -54,7 +54,7 @@ public class ContentService {
 		return content;
 	}
 	private String cleanEmailAddress(String content) {
-		return content.replaceAll("([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)[\\.\\,]([a-zA-Z]{2,5})", "####@####.####");
+		return content.replaceAll("([a-zA-Z0-9_\\-\\.]+)\\s*@([\\sa-zA-Z0-9_\\-\\.]+)[\\.\\,]([a-zA-Z]{1,5})", "####@####.####");
 	}
 
 }

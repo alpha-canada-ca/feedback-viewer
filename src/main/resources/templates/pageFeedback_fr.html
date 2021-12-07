@@ -75,6 +75,7 @@
                 <div class="col-sm-6">
                     <div class="form-group">
                         <label for="Department">Département</label>
+
                         <select class="form-control" id="Department" name="Department" data-column="5">
                         <option value="">Tous</option>
                         <option value="CRA">Agence du revenu du Canada</option>
@@ -95,6 +96,7 @@
                         <option value="DND">Défense nationale</option>
                         <!-- DEPARTMENTS -->
                     </select>
+
                     </div>
                     <div class="form-group">
                         <label for="section">Section</label>
@@ -133,6 +135,7 @@
                     <div class="form-group">
                         <label for="dt_theme">Thème</label>
                         <select class="form-control" id="dt_theme" name="dt_theme" data-column="8">
+
                         <option value="">Tous</option>
                         <option value="Money and finances">Argent et finances</option>
                         <option value="COVID">COVID</option>
@@ -152,6 +155,7 @@
                         <option value="Education/Research">Éducation/Recherche</option>
                         <!-- THEMES -->
                     </select>
+
                     </div>
                     <div class="form-group">
                         <label for="min">Dates <span class="wb-inv">Date de début</span></label>
@@ -343,9 +347,11 @@
             sortSelectOptions('#Department', true);
             sortSelectOptions('#dt_theme', true);
             sortSelectOptions('#section', true);
+
             sortSelectOptions('#sectionINV', true);
             sortSelectOptions('#deptINV', true);
             sortSelectOptions('#themeINV', true);
+
 
             function newexportaction(e, dt, button, config) {
                 var self = this;
