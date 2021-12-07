@@ -215,7 +215,11 @@ public class ProblemController {
 	    	return problemRepository.findAll(input, findProcessed);
 		}
 		if(lang.equals("fr")) {
-			String dateSearchVal = input.getColumn("problemDate").get().getSearch().getValue();
+			String dateSearchVal 	= input.getColumn("problemDate").get().getSearch().getValue();
+			String deptSearchVal 	= input.getColumn("institution").get().getSearch().getValue();
+			String sectionSearchVal = input.getColumn("section").get().getSearch().getValue();
+			String themeSearchVal 	= input.getColumn("theme").get().getSearch().getValue();
+			
 
 	    	if(dateSearchVal.contains(":")) {
 	    		
@@ -249,6 +253,76 @@ public class ProblemController {
 		    		}
 	    		} 
 	    	}
+	    	if(deptSearchVal.contains("~") || sectionSearchVal.contains("~") || themeSearchVal.contains("~")) {
+	    		 //ternary operator for if it exists to set the value.
+	    		String deptValue = deptSearchVal.equals("") ? "" : deptSearchVal.substring(0, deptSearchVal.length() - 2);
+	    		String sectionValue = sectionSearchVal.equals("") ? "" : sectionSearchVal.substring(0, sectionSearchVal.length() - 2);
+	    		String themeValue = themeSearchVal.equals("") ? "" : themeSearchVal.substring(0, themeSearchVal.length() - 2);
+	    		
+	    		
+	    		
+	    		input.getColumn("institution").get().getSearch().setValue(deptValue);
+	    		input.getColumn("section").get().getSearch().setValue(sectionValue);
+	    		input.getColumn("theme").get().getSearch().setValue(themeValue);
+	    		
+	    		input.setStart(0);
+	    		input.setLength(-1);
+	    		
+	    		DataTablesOutput<Problem> urls = problemRepository.findAll(input);
+	    		
+	    		HashMap<String, Integer> urlCountMap = new HashMap<>();
+	    		HashMap<String, List<String>> urlCountMap2 = new HashMap<String, List<String>>();
+	    		
+	    		//Convert for loop to stream for efficiency.
+
+	    		for(int i = 0; i < urls.getData().size(); i++) {
+	    			int count = urlCountMap.containsKey(urls.getData().get(i).getUrl()) ? urlCountMap.get(urls.getData().get(i).getUrl()) : 0;
+	    			urlCountMap.put(urls.getData().get(i).getUrl(), count + 1);
+	    			System.out.println(i+1);
+	    			urlCountMap2.put(urls.getData().get(i).getUrl(), Arrays.asList(urls.getData().get(i).getTitle(), 
+	    					urls.getData().get(i).getLanguage(), urls.getData().get(i).getInstitution(),
+	    					urls.getData().get(i).getTheme(), urls.getData().get(i).getSection()));
+	    		}
+	    		System.out.println("size: " + urlCountMap.size() + "  ---- " + urlCountMap.toString());
+	    		
+	    		//sort Map
+	    		HashMap<String, Integer> sortedUrlCountMap = sortByValue(urlCountMap, DESC);
+	    		
+	    		
+	    		ArrayList<Problem> urlList = new ArrayList<Problem>();
+	    		int index = 0;
+	    		totalComments = 0;
+	    		for ( String key : sortedUrlCountMap.keySet() ) {
+	    			totalComments += urlCountMap.get(key);
+	    		    urls.getData().get(index).setUrl(key);
+	    		    urls.getData().get(index).setUrlEntries(sortedUrlCountMap.get(key));
+	    		    urls.getData().get(index).setTitle(urlCountMap2.get(key).get(0));
+	    		    urls.getData().get(index).setLanguage(urlCountMap2.get(key).get(1));
+	    		    urls.getData().get(index).setInstitution(urlCountMap2.get(key).get(2));
+	    		    urls.getData().get(index).setTheme(urlCountMap2.get(key).get(3));
+	    		    urls.getData().get(index).setSection(urlCountMap2.get(key).get(4));
+	    		    urlList.add(urls.getData().get(index));
+	    		    index++;
+	    		}
+	    		
+	    		urls.setRecordsFiltered(sortedUrlCountMap.size());
+	    		urls.setData(urlList);
+	    		
+	    		for(int i = 0; i < urls.getData().size(); i++) {
+	    			urls.getData().get(i).setInstitution(translationsMap.get(urls.getData().get(i).getInstitution()));
+	    			urls.getData().get(i).setProblem(translationsMap.get(urls.getData().get(i).getProblem()));
+	    			urls.getData().get(i).setTheme(translationsMap.get(urls.getData().get(i).getTheme()));
+	    			urls.getData().get(i).setSection(translationsMap.get(urls.getData().get(i).getSection()));
+   	    		
+   	    		List<String> tags = urls.getData().get(i).getTags();
+   	    		for(int j = 0; j < tags.size(); j++) {
+   	    			if(tagTranslations.containsKey(tags.get(j)))
+   	    				tags.set(j, tagTranslations.get(tags.get(j)));
+   	    		}
+   	    	}
+	    		return urls;
+	    		
+	    	}
 	    	DataTablesOutput<Problem> problems = problemRepository.findAll(input, findProcessed);
 	    	for(int i = 0; i < problems.getData().size(); i++) {
 	    		problems.getData().get(i).setInstitution(translationsMap.get(problems.getData().get(i).getInstitution()));
@@ -263,6 +337,7 @@ public class ProblemController {
 	    		}
 	    	}
 	    	return problems;
+	    	
 		}
 		return null;
 	}
