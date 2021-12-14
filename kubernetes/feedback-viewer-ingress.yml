@@ -1,4 +1,4 @@
-apiVersion: networking.k8s.io/v1
+apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
   name: feedback-viewer-ingress
@@ -15,9 +15,7 @@ spec:
     http:
       paths:
       - backend:
-          service:
-            name: feedback-viewer
-            port:
-              number: 8080
-          path: /
-          pathType: Prefix
+          serviceName: feedback-viewer
+          servicePort: 8080
+        path: /
+        pathType: Prefix
