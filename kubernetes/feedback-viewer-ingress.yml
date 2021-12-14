@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: extensions/v1
 kind: Ingress
 metadata:
   name: feedback-viewer-ingress
@@ -15,7 +15,9 @@ spec:
     http:
       paths:
       - backend:
-          serviceName: feedback-viewer
-          servicePort: 8080
-        path: /
-      
+          service:
+            name: feedback-viewer
+            port:
+              number: 8080
+          path: /
+          pathType: Prefix
