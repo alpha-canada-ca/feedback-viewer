@@ -46,6 +46,7 @@ jobs:
         manifests: |
           kubernetes/feedback-viewer-deployment.yml
           kubernetes/feedback-viewer-service.yml
+          kubernetes/feedback-viewer-ingress.yml
         images: |
           tbsacr.azurecr.io/feedback-viewer:${{ github.sha }}
         namespace: |
