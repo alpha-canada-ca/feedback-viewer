@@ -23,6 +23,7 @@ public class Problem {
 	private String resolution="";
 	private String topic="";
 	private String problemDate="";
+	private String timeStamp="";
 	private String title="";
 	private String dataOrigin="";
 	private List<String> tags = new ArrayList<String>();
@@ -38,7 +39,7 @@ public class Problem {
 	
 	public Problem() {}
 
-	public Problem(String id, String url, int urlEntries, String problemDate, String problem, String problemDetails, String language,
+	public Problem(String id, String url, int urlEntries, String problemDate, String timeStamp, String problem, String problemDetails, String language,
 			String resolutionDate, String resolution, String topic, String title, String institution,
 			String theme, String section) {
 		super();
@@ -48,6 +49,7 @@ public class Problem {
 		this.problem = problem;
 		this.problemDetails = problemDetails;
 		this.problemDate = problemDate;
+		this.timeStamp = timeStamp;
 		this.resolutionDate = resolutionDate;
 		this.resolution = resolution;
 		this.topic = topic;
@@ -135,6 +137,13 @@ public class Problem {
 
 	public void setProblemDate(String problemDate) {
 		this.problemDate = problemDate;
+	}
+	public String getTimeStamp() {
+		return timeStamp;
+	}
+
+	public void setTimeStamp(String timeStamp) {
+		this.timeStamp = timeStamp;
 	}
 
 	public List<String> getTags() {
