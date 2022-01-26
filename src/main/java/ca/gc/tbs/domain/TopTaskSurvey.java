@@ -12,6 +12,7 @@ public class TopTaskSurvey {
 
 	
 	private String dateTime;
+	private String timeStamp;
 	private String surveyReferrer;
 	private String language;
 	private String device;
@@ -46,7 +47,7 @@ public class TopTaskSurvey {
 	
 	public TopTaskSurvey() {}
 	
-	public TopTaskSurvey(String id, String dateTime, String surveyReferrer, String language, String device,
+	public TopTaskSurvey(String id, String dateTime, String timeStamp, String surveyReferrer, String language, String device,
 			String screener, String dept, String theme, String themeOther, String grouping, String task, String taskOther,
 			String taskSatisfaction,
 			String taskEase, String taskCompletion, String taskImprove, String taskImproveComment, String taskWhyNot,
@@ -56,6 +57,7 @@ public class TopTaskSurvey {
 		super();
 		this.id = id;
 		this.dateTime = dateTime;
+		this.timeStamp = timeStamp;
 		this.surveyReferrer = surveyReferrer;
 		this.language = language;
 		this.device = device;
@@ -97,6 +99,13 @@ public class TopTaskSurvey {
 
 	public void setDateTime(String dateTime) {
 		this.dateTime = dateTime;
+	}
+	public String getTimeStamp() {
+		return timeStamp;
+	}
+
+	public void setTimeStamp(String timeStamp) {
+		this.timeStamp = timeStamp;
 	}
 
 	public String getSurveyReferrer() {
