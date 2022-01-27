@@ -267,8 +267,8 @@
                         <th>Comment</th>
                         <th>Problem</th>
                         <th>URL</th>
-                        <th>Total Comments</th>
-                        <th>Page Title</th>
+                        <th>Total comments</th>
+                        <th>Page title</th>
                         <th>Language</th>
                         <th>Department</th>
                         <th>Section</th>
@@ -544,7 +544,7 @@
                     })
                     .then(function(totalCommentsCount) {
                         // This is the HTML from our response as a text string
-                        $('#test123').text(String(totalCommentsCount));
+                        $('#total_comments').text(String(totalCommentsCount));
                     })
                     .catch(function(err) {
                         // There was an error
@@ -570,7 +570,7 @@
                         }
                     });
             });
-            $('#problemTable thead tr:eq(1) th:eq(4)').attr('id', 'test123');
+            $('#problemTable thead tr:eq(1) th:eq(4)').attr('id', 'total_comments');
 
             const DateColIndex = 0;
             const CommentColIndex = 1;
@@ -616,9 +616,9 @@
                 $('#searchCol0').closest('th').show()
                 $('#searchCol1').closest('th').show()
                 $('#searchCol2').closest('th').show()
-                $('#test123').closest('th').hide()
+                $('#total_comments').closest('th').hide()
                 $('#searchCol5').closest('th').hide()
-                $('#test123').hide()
+                $('#total_comments').hide()
                 $(".sorting-cnt").removeClass("hidden");
             }
             $("#clear-text").click(clearText);
@@ -815,7 +815,7 @@
                     $('#searchCol2').closest('th').hide()
                     $('#searchCol4').closest('th').show()
                     $('#searchCol5').closest('th').show()
-                    $('#test123').show()
+                    $('#total_comments').show()
 
                     $(".sorting-cnt").addClass("hidden");
 
@@ -865,7 +865,7 @@
                     $('#searchCol2').closest('th').hide()
                     $('#searchCol4').closest('th').show()
                     $('#searchCol5').closest('th').show()
-                    $('#test123').show()
+                    $('#total_comments').show()
 
                     $(".sorting-cnt").addClass("hidden");
                 }
@@ -914,7 +914,7 @@
                     $('#searchCol2').closest('th').hide()
                     $('#searchCol4').closest('th').show()
                     $('#searchCol5').closest('th').show()
-                    $('#test123').show()
+                    $('#total_comments').show()
 
                     $(".sorting-cnt").addClass("hidden");
                 }
