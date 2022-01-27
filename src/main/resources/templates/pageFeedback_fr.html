@@ -268,6 +268,7 @@
                 <thead>
                     <tr>
                         <th>Date</th>
+                        <th>Horodatage</th>
                         <th>Commentaire</th>
                         <th>Problème</th>
                         <th>URL</th>
@@ -493,6 +494,9 @@
                 serverSide: true,
                 columns: [{
                     data: 'problemDate'
+                }, {
+                    data: 'timeStamp',
+                    visible: false
                 }, {
                     data: 'problemDetails'
                 }, {
