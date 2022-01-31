@@ -8,8 +8,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 
-import org.springframework.data.annotation.Id;
 
+import org.springframework.data.annotation.Id;
 //@Entity
 public class Problem {
 	@Id
@@ -26,7 +26,7 @@ public class Problem {
 	private String timeStamp="";
 	private String title="";
 	private String dataOrigin="";
-	private List<String> tags = new ArrayList<String>();
+	private List<String> tags = new ArrayList<>();
 	public String institution="";
 	public String theme="";
 	public String section="";
