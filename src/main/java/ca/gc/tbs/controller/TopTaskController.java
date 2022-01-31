@@ -17,6 +17,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.datatables.DataTablesInput;
 import org.springframework.data.mongodb.datatables.DataTablesOutput;
+import org.springframework.data.mongodb.datatables.DataTablesInput.Column;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -56,6 +57,13 @@ public class TopTaskController {
     	String dateSearchVal = input.getColumn("dateTime").get().getSearch().getValue();
     	
     	String dataSetVal = input.getColumn("taskOther").get().getSearch().getValue();
+    	
+    	List<Column> columns = input.getColumns();
+		
+		for(Column col: columns) {
+			System.out.println(col);
+		}
+		System.out.println("---------------------");
 
     	Criteria findProcessed = where("processed").is("true");
     	
