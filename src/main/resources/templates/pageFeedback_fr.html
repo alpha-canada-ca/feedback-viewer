@@ -496,8 +496,7 @@
                 columns: [{
                     data: 'problemDate'
                 }, {
-                    data: 'timeStamp',
-                    visible: false
+                    data: 'timeStamp'
                 }, {
                     data: 'problemDetails'
                 }, {
@@ -540,6 +539,18 @@
                 }]
             });
 
+            const DateColIndex = 0;
+            const TimestampColIndex = 1;
+            const CommentColIndex = 2;
+            const ProblemColIndex = 3;
+            const UrlColIndex = 4;
+            const urlEntriesColIndex = 5;
+            const TitleColIndex = 6;
+            const LangColIndex = 7;
+            const DeptColIndex = 8;
+            const SectionColIndex = 9;
+            const ThemeColIndex = 10;
+
             function replaceSpecialChars(string) {
                 var string = string.replace(/[.?]/g, '\\$&');
                 return string;
@@ -553,7 +564,7 @@
                     })
                     .then(function(totalCommentsCount) {
                         // This is the HTML from our response as a text string
-                        $('#test123').text(String(totalCommentsCount));
+                        $('#total_comments').text(String(totalCommentsCount));
                     })
                     .catch(function(err) {
                         // There was an error
@@ -579,19 +590,9 @@
                         }
                     });
             });
-            $('#problemTable thead tr:eq(1) th:eq(4)').attr('id', 'test123');
+            $('#problemTable thead tr:eq(1) th:eq(' + urlEntriesColIndex + ')').attr('id', 'total_comments');
 
-            const DateColIndex = 0;
-            const TimestampColIndex = 1;
-            const CommentColIndex = 2;
-            const ProblemColIndex = 3;
-            const UrlColIndex = 4;
-            const urlEntriesColIndex = 5;
-            const TitleColIndex = 6;
-            const LangColIndex = 7;
-            const DeptColIndex = 8;
-            const SectionColIndex = 9;
-            const ThemeColIndex = 10;
+
 
             table.column(urlEntriesColIndex).visible(false);
             table.column(TitleColIndex).visible(false);
@@ -626,9 +627,9 @@
                 $('#searchCol0').closest('th').show()
                 $('#searchCol1').closest('th').show()
                 $('#searchCol2').closest('th').show()
-                $('#test123').closest('th').hide()
+                $('#total_comments').closest('th').hide()
                 $('#searchCol5').closest('th').hide()
-                $('#test123').hide()
+                $('#total_comments').hide()
                 $(".sorting-cnt").removeClass("hidden");
             }
             $("#clear-text").click(clearText);
@@ -825,7 +826,7 @@
                     $('#searchCol2').closest('th').hide()
                     $('#searchCol4').closest('th').show()
                     $('#searchCol5').closest('th').show()
-                    $('#test123').show()
+                    $('#total_comments').show()
 
                     $(".sorting-cnt").addClass("hidden");
 
@@ -875,7 +876,7 @@
                     $('#searchCol2').closest('th').hide()
                     $('#searchCol4').closest('th').show()
                     $('#searchCol5').closest('th').show()
-                    $('#test123').show()
+                    $('#total_comments').show()
 
                     $(".sorting-cnt").addClass("hidden");
                 }
@@ -924,7 +925,7 @@
                     $('#searchCol2').closest('th').hide()
                     $('#searchCol4').closest('th').show()
                     $('#searchCol5').closest('th').show()
-                    $('#test123').show()
+                    $('#total_comments').show()
 
                     $(".sorting-cnt").addClass("hidden");
                 }
