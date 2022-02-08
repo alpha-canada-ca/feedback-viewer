@@ -592,12 +592,14 @@
             });
             $('#problemTable thead tr:eq(1) th:eq(' + urlEntriesColIndex + ')').attr('id', 'total_comments');
 
-
-
             table.column(urlEntriesColIndex).visible(false);
             table.column(TitleColIndex).visible(false);
-            $('#searchCol4').closest('th').hide()
+
+            table.column(TimestampColIndex).visible(false)
+            $('#searchCol1').closest('th').hide()
+
             $('#searchCol5').closest('th').hide()
+            $('#searchCol6').closest('th').hide()
 
             var minMaxDateChosen = false;
 
@@ -620,12 +622,14 @@
                     .visible(true)
                     .column(urlEntriesColIndex)
                     .visible(false)
+                    .column(TimestampColIndex)
+                    .visible(false)
                     .column(TitleColIndex)
                     .visible(false)
                     .draw()
 
                 $('#searchCol0').closest('th').show()
-                $('#searchCol1').closest('th').show()
+                $('#searchCol1').closest('th').hide()
                 $('#searchCol2').closest('th').show()
                 $('#total_comments').closest('th').hide()
                 $('#searchCol5').closest('th').hide()
@@ -824,8 +828,9 @@
                     $('#searchCol0').closest('th').hide()
                     $('#searchCol1').closest('th').hide()
                     $('#searchCol2').closest('th').hide()
-                    $('#searchCol4').closest('th').show()
+                    $('#searchCol3').closest('th').hide()
                     $('#searchCol5').closest('th').show()
+                    $('#searchCol6').closest('th').show()
                     $('#total_comments').show()
 
                     $(".sorting-cnt").addClass("hidden");
@@ -874,8 +879,9 @@
                     $('#searchCol0').closest('th').hide()
                     $('#searchCol1').closest('th').hide()
                     $('#searchCol2').closest('th').hide()
-                    $('#searchCol4').closest('th').show()
+                    $('#searchCol3').closest('th').hide()
                     $('#searchCol5').closest('th').show()
+                    $('#searchCol6').closest('th').show()
                     $('#total_comments').show()
 
                     $(".sorting-cnt").addClass("hidden");
@@ -923,21 +929,22 @@
                     $('#searchCol0').closest('th').hide()
                     $('#searchCol1').closest('th').hide()
                     $('#searchCol2').closest('th').hide()
-                    $('#searchCol4').closest('th').show()
+                    $('#searchCol3').closest('th').hide()
                     $('#searchCol5').closest('th').show()
+                    $('#searchCol6').closest('th').show()
                     $('#total_comments').show()
 
                     $(".sorting-cnt").addClass("hidden");
                 }
                 if ($('#deptINV').val() != "") {
                     table
-                        .column(DeptColIndex) //change these to const values
+                        .column(DeptColIndex)
                         .search($('#deptINV').val() + " ~")
                         .draw()
                 }
                 if ($('#sectionINV').val() != "") {
                     table
-                        .column(SectionColIndex) //change these to const values
+                        .column(SectionColIndex)
                         .search($('#sectionINV').val() + " ~")
                         .draw()
                 }
