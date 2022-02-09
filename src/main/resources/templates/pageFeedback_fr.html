@@ -494,13 +494,15 @@
                 ajax: '/problemData',
                 serverSide: true,
                 columns: [{
-                    data: 'problemDate'
+                    data: 'problemDate',
+                    "width": "10%"
                 }, {
                     data: 'timeStamp'
                 }, {
                     data: 'problemDetails'
                 }, {
-                    data: 'problem'
+                    data: 'problem',
+                    "width": "20%"
                 }, {
                     data: 'url'
                 }, {
@@ -522,7 +524,6 @@
                     data: 'theme',
                     visible: false
                 }],
-                //d
                 orderCellsTop: true,
                 fixedHeader: true,
                 dom: 'fBr<"table-responsive"t>tip',
