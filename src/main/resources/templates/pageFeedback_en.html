@@ -16,6 +16,10 @@
             display: none;
         }
         
+        thead input {
+            width: 75%;
+        }
+        
         .table.dataTable {
             font-family: Verdana, Geneva, Tahoma, sans-serif;
             font-size: 12px;
@@ -495,18 +499,20 @@
                 }, {
                     data: 'timeStamp'
                 }, {
-                    data: 'problemDetails'
+                    data: 'problemDetails',
+                    "width": "30%"
                 }, {
                     data: 'problem',
                     "width": "20%"
                 }, {
-                    data: 'url'
+                    data: 'url',
+                    "width": "30%"
                 }, {
                     data: 'urlEntries',
                     "width": "10%"
                 }, {
                     data: 'title',
-                    "width": "35%"
+                    "width": "50%"
                 }, {
                     data: 'language',
                     "width": "10%"
@@ -635,6 +641,8 @@
                 $('#searchCol5').closest('th').hide()
                 $('#total_comments').hide()
                 $(".sorting-cnt").removeClass("hidden");
+
+                table.columns.adjust().draw();
             }
             $("#clear-text").click(clearText);
 
