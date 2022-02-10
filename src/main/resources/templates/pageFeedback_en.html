@@ -577,7 +577,7 @@
             }
 
             $('#problemTable thead tr')
-                .clone(true)
+                .clone(false)
                 .appendTo('#problemTable thead');
             $('#problemTable thead tr:eq(1) th').each(function(i) {
                 var title = $(this).text();
