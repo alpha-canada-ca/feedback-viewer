@@ -16,10 +16,6 @@
             display: none;
         }
         
-        thead input {
-            width: 75%;
-        }
-        
         .table.dataTable {
             font-family: Verdana, Geneva, Tahoma, sans-serif;
             font-size: 12px;
@@ -292,7 +288,6 @@
         </div>
     </div>
 
-
 </th:block>
 <th:block layout:fragment="script">
     <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
@@ -547,6 +542,10 @@
                 }]
             });
 
+            const COLUMNS = ["Date", "TimeStamp", "Comment", "Problem",
+                "Url", "UrlEntries", "Title", "Lang", "Dept", "Section", "Theme"
+            ]
+
             const DateColIndex = 0;
             const TimestampColIndex = 1;
             const CommentColIndex = 2;
@@ -581,11 +580,11 @@
             }
 
             $('#problemTable thead tr')
-                .clone(true)
+                .clone(false)
                 .appendTo('#problemTable thead');
             $('#problemTable thead tr:eq(1) th').each(function(i) {
                 var title = $(this).text();
-                $(this).html('<input type="text" id="searchCol' + i + '" placeholder="Search ' + title + '" />');
+                $(this).html('<input type="text" id="searchBox' + COLUMNS[i] + '" placeholder="Search ' + title + '" />');
 
                 $('input', this)
                     .unbind()
@@ -603,25 +602,37 @@
 
 
             table.column(urlEntriesColIndex).visible(false);
+            table.column(TimestampColIndex).visible(false);
             table.column(TitleColIndex).visible(false);
 
-            table.column(TimestampColIndex).visible(false)
-            $('#searchCol1').closest('th').hide()
-
-            $('#searchCol5').closest('th').hide()
-            $('#searchCol6').closest('th').hide()
+            $('#searchBoxTimeStamp').closest('th').hide();
+            $('#searchBoxUrlEntries').closest('th').hide();
+            $('#searchBoxTitle').closest('th').hide();
 
             var minMaxDateChosen = false;
 
             function clearText() {
-                $("#searchCol0").val("");
-                $("#searchCol1").val("");
-                $("#searchCol2").val("");
-                $("#searchCol3").val("");
-                $("#searchCol4").val("");
-                $("#searchCol5").val("");
-                $("#searchCol6").val("");
-                $("#searchCol7").val("");
+                $("#searchBoxDate").val("");
+                $("#searchBoxTimeStamp").val("");
+                $("#searchBoxComment").val("");
+                $("#searchBoxProblem").val("");
+                $("#searchBoxURL").val("");
+                $("#searchBoxUrlEntries").val("");
+                $("#searchBoxTitle").val("");
+                $("#searchBoxLang").val("");
+
+                $('#searchBoxDate').closest('th').show()
+                $('#searchBoxComment').closest('th').show()
+                $('#searchBoxProblem').closest('th').show()
+
+                $('#searchBoxUrlEntries').closest('th').hide()
+                $('#searchBoxTimeStamp').closest('th').hide()
+                $('#searchBoxTitle').closest('th').hide()
+
+                $('#total_comments').closest('th').hide()
+                $('#total_comments').hide()
+
+                $(".sorting-cnt").removeClass("hidden");
 
                 table
                     .column(CommentColIndex)
@@ -637,19 +648,9 @@
                     .column(TitleColIndex)
                     .visible(false)
                     .draw()
-
-                $('#searchCol0').closest('th').show()
-                $('#searchCol1').closest('th').hide()
-                $('#searchCol2').closest('th').show()
-                $('#total_comments').closest('th').hide()
-                $('#searchCol5').closest('th').hide()
-                $('#total_comments').hide()
-                $(".sorting-cnt").removeClass("hidden");
-
-                table.columns.adjust().draw();
             }
-            $("#clear-text").click(clearText);
 
+            $("#clear-text").click(clearText);
 
             $('#min', this).on('keyup change', function() {
                 minMaxDateChosen = false;
@@ -837,12 +838,13 @@
                         .visible(true)
                         .draw()
 
-                    $('#searchCol0').closest('th').hide()
-                    $('#searchCol1').closest('th').hide()
-                    $('#searchCol2').closest('th').hide()
-                    $('#searchCol3').closest('th').hide()
-                    $('#searchCol5').closest('th').show()
-                    $('#searchCol6').closest('th').show()
+                    $('#searchBoxDate').closest('th').hide()
+                    $('#searchBoxTimeStamp').closest('th').hide()
+                    $('#searchBoxComment').closest('th').hide()
+                    $('#searchBoxProblem').closest('th').hide()
+                    $('#searchBoxUrlEntries').closest('th').show()
+                    $('#searchBoxTitle').closest('th').show()
+
                     $('#total_comments').show()
 
                     $(".sorting-cnt").addClass("hidden");
@@ -888,12 +890,13 @@
                         .visible(true)
                         .draw()
 
-                    $('#searchCol0').closest('th').hide()
-                    $('#searchCol1').closest('th').hide()
-                    $('#searchCol2').closest('th').hide()
-                    $('#searchCol3').closest('th').hide()
-                    $('#searchCol5').closest('th').show()
-                    $('#searchCol6').closest('th').show()
+                    $('#searchBoxDate').closest('th').hide()
+                    $('#searchBoxTimeStamp').closest('th').hide()
+                    $('#searchBoxComment').closest('th').hide()
+                    $('#searchBoxProblem').closest('th').hide()
+                    $('#searchBoxUrlEntries').closest('th').show()
+                    $('#searchBoxTitle').closest('th').show()
+
                     $('#total_comments').show()
 
                     $(".sorting-cnt").addClass("hidden");
@@ -938,12 +941,13 @@
                         .visible(true)
                         .draw()
 
-                    $('#searchCol0').closest('th').hide()
-                    $('#searchCol1').closest('th').hide()
-                    $('#searchCol2').closest('th').hide()
-                    $('#searchCol3').closest('th').hide()
-                    $('#searchCol5').closest('th').show()
-                    $('#searchCol6').closest('th').show()
+                    $('#searchBoxDate').closest('th').hide()
+                    $('#searchBoxTimeStamp').closest('th').hide()
+                    $('#searchBoxComment').closest('th').hide()
+                    $('#searchBoxProblem').closest('th').hide()
+                    $('#searchBoxUrlEntries').closest('th').show()
+                    $('#searchBoxTitle').closest('th').show()
+
                     $('#total_comments').show()
 
                     $(".sorting-cnt").addClass("hidden");
