@@ -47,6 +47,10 @@
             font-size: 12px;
         }
         
+        #rangeSelection {
+            margin-left: 1rem;
+        }
+        
         .fa {
             position: fixed;
             top: 50%;
@@ -167,6 +171,17 @@
                             <div class="form-group">
                                 <input type="date" placeholder="aaaa-mm-jj" class="form-control" id="max" name="max">
                             </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="form-inline">
+                            <label for="rangeSelection">ou choisir
+                            <span class="wb-inv">Date de début</span></label>
+                            <select class="form-control" id="rangeSelection" name="rangeSelection">
+                                    <option value="seven">7 derniers jours</option>
+                                    <option value="fifteen">15 derniers jours</option>
+                                    <option value="thirty">30 derniers jours</option>
+                            </select>
                         </div>
                     </div>
                 </div>
