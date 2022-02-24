@@ -182,6 +182,7 @@
                             <label for="rangeSelection">or choose
                             <span class="wb-inv">from start date</span></label>
                             <select class="form-control" id="rangeSelection" name="rangeSelection">
+                                    <option value="">Duration</option>
                                     <option value="seven">last 7 days</option>
                                     <option value="fifteen">last 15 days</option>
                                     <option value="thirty">last 30 days</option>
@@ -664,6 +665,41 @@
             }
 
             $("#clear-text").click(clearText);
+
+            $('#rangeSelection', this).on('keyup change', function() {
+                rangeChosen = false;
+                if (this.value == "") {
+                    table
+                        .column(DateColIndex)
+                        .search("")
+                        .draw()
+                }
+                if (this.value != "") {
+                    rangeChosen = true;
+                    table
+                        .column(DateColIndex)
+                        .search(this.value)
+                        .draw()
+                }
+                if ($('#Department').val() && rangeChosen) {
+                    table
+                        .column(ThemeColIndex)
+                        .search($('#dt_theme').val())
+                        .draw();
+                }
+                if ($('#Department').val() && rangeChosen) {
+                    table
+                        .column(DeptColIndex)
+                        .search($('#Department').val())
+                        .draw();
+                }
+                if ($('#section').val() && rangeChosen) {
+                    table
+                        .column(SectionColIndex)
+                        .search($('#section').val())
+                        .draw()
+                }
+            })
 
             $('#min', this).on('keyup change', function() {
                 minMaxDateChosen = false;
