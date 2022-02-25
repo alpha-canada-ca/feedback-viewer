@@ -113,6 +113,7 @@
                         <option value="Vaccines">Vaccins</option>
                         <option value="CRSB">PCMRE</option>
                         <option value="PTR">DFP</option>
+                        <option value="Canada's Parliamentary Precinct">Cité parlementaire du Canada</option>
                         <option value="COVID Alert">Alerte COVID</option>
                         <option value="CEWS">SSUC</option>
                         <option value="CERS">SUCL</option>
@@ -148,6 +149,7 @@
                         <option value="Taxes">Impôt</option>
                         <option value="Health">Santé</option>
                         <option value="Travel">Voyage</option>
+                        <option value="Culture, history and sport">Culture, histoire et sport</option>
                         <option value="Public Service">Service Public</option>
                         <option value="Science and innovation">Science et Innovation</option>
                         <option value="Business">Entreprise</option>
@@ -275,7 +277,7 @@
 
             <div class="mrgn-lft-sm row">
                 <!-- <button type="submit" class="btn btn-primary" aria-controls="problemTable">Filter</button> -->
-                <button type="reset" class="btn btn-primary" id="clear-text">Reset to defaults</button>
+                <button type="reset" class="btn btn-primary" id="clear-text">Réinitialiser</button>
             </div>
             <br>
         </form>
@@ -501,6 +503,80 @@
                 ],
                 processing: true,
                 language: {
+
+                    "emptyTable": "Aucune donnée disponible dans le tableau",
+                    "loadingRecords": "Chargement...",
+                    "processing": "Traitement...",
+                    "aria": {
+                        "sortAscending": ": activer pour trier la colonne par ordre croissant",
+                        "sortDescending": ": activer pour trier la colonne par ordre décroissant"
+                    },
+
+                    "buttons": {
+                        "collection": "Collection",
+                        "copy": "Copier",
+                        "copyTitle": "Copier dans le presse-papier",
+                        "csv": "CSV",
+                        "excel": "Excel",
+                        "pageLength": {
+                            "-1": "Afficher toutes les lignes",
+                            "_": "Afficher %d lignes"
+                        },
+                        "pdf": "PDF",
+                        "print": "Imprimer",
+                        "copyKeys": "Appuyez sur ctrl ou u2318 + C pour copier les données du tableau dans votre presse-papier."
+                    },
+                    "decimal": ",",
+                    "search": "Rechercher:",
+                    "thousands": ".",
+                    "datetime": {
+                        "previous": "Précédent",
+                        "next": "Suivant",
+                        "hours": "Heures",
+                        "minutes": "Minutes",
+                        "seconds": "Secondes",
+                        "unknown": "-",
+                        "amPm": [
+                            "am",
+                            "pm"
+                        ],
+                        "months": {
+                            "0": "Janvier",
+                            "2": "Mars",
+                            "3": "Avril",
+                            "4": "Mai",
+                            "5": "Juin",
+                            "6": "Juillet",
+                            "8": "Septembre",
+                            "9": "Octobre",
+                            "10": "Novembre",
+                            "1": "Février",
+                            "11": "Décembre",
+                            "7": "Août"
+                        },
+                        "weekdays": [
+                            "Dim",
+                            "Lun",
+                            "Mar",
+                            "Mer",
+                            "Jeu",
+                            "Ven",
+                            "Sam"
+                        ]
+                    },
+                    "info": "Affichage de _START_ à _END_ sur _TOTAL_ entrées",
+                    "infoEmpty": "Affichage de 0 à 0 sur 0 entrées",
+                    "infoFiltered": "(filtrées depuis un total de _MAX_ entrées)",
+                    "lengthMenu": "Afficher _MENU_ entrées",
+                    "paginate": {
+                        "first": "Première",
+                        "last": "Dernière",
+                        "next": "Suivante",
+                        "previous": "Précédente"
+                    },
+                    "zeroRecords": "Aucune entrée correspondante trouvée",
+
+                    url: "https://cdn.datatables.net/plug-ins/1.11.4/i18n/fr-FR.json",
                     processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading..n.</span> '
                 },
                 lengthMenu: false,
@@ -622,6 +698,10 @@
             table.column(urlEntriesColIndex).visible(false);
             table.column(TimestampColIndex).visible(false);
             table.column(TitleColIndex).visible(false);
+
+            $('#searchBoxDept').closest('th').hide();
+            $('#searchBoxSection').closest('th').hide();
+            $('#searchBoxTheme').closest('th').hide();
 
             $('#searchBoxTimeStamp').closest('th').hide();
             $('#searchBoxUrlEntries').closest('th').hide();
