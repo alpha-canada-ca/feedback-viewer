@@ -16,6 +16,11 @@
             display: none;
         }
         
+        .container .content {
+            display: none;
+            padding: 5px;
+        }
+        
         .table.dataTable {
             font-family: Verdana, Geneva, Tahoma, sans-serif;
             font-size: 12px;
@@ -58,6 +63,7 @@
             transform: translate(-50%, -50%);
         }
     </style>
+
 
 
     <div class="container">
@@ -229,6 +235,7 @@
                             <option value="CEWS">CEWS</option>
                             <option value="CERS">CERS</option>
                             <option value="Business">Business</option>
+                            <option value="Canada's Parliamentary Precinct">Canada's Parliamentary Precinct</option>
                             <option value="WFHE">WFHE</option>
                             <option value="ITB">ITB</option>
                             <option value="ECM">ECM</option>
@@ -261,6 +268,7 @@
                             <option value="Money and finances">Money and Finances</option>
                             <option value="Public Service">Public Service</option>
                             <option value="Science and innovation">Science and Innovation</option>
+                            <option value="Culture, history and sport">Culture, history and sport</option>
                             <option value="Travel">Travel</option>
                             <option value="Taxes">Taxes</option>
                             <option value="Youth">Youth</option>
@@ -760,6 +768,23 @@
                         .draw()
                 }
             });
+
+            // $(".container").click(function() {
+
+            //     $header = $(this);
+            //     //getting the next element
+            //     $content = $header.next();
+            //     //open up the content needed - toggle the slide- if visible, slide up, if not slidedown.
+            //     $content.slideToggle(500, function() {
+            //         //execute this after slideToggle is done
+            //         //change text of header based on visibility of content div
+            //         $header.text(function() {
+            //             //change text based on condition
+            //             return $content.is(":visible") ? "Collapse" : "Expand";
+            //         });
+            //     });
+
+            // });
 
             $('#dt_theme', this).on('keyup change', function() {
                 if (this.value == "") {
