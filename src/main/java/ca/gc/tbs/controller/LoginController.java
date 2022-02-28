@@ -75,7 +75,8 @@ public class LoginController {
 	public String success() {
 		return "success";
 	}
-
+ 
+    //redirects localhost to sign in page.
 	@RequestMapping(value = { "/" }, method = RequestMethod.GET)
 	public View home() {
 		ModelAndView modelAndView = new ModelAndView();
