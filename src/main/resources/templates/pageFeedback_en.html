@@ -69,26 +69,25 @@
         <h1>Page feedback tool</h1>
         <details open="true">
             <summary>
-                Click here to access the Page feedback tool filters
+                Filter feedback
             </summary>
-            <div class="content">
-                <h4 class="wb-inv">Filtering options</h4>
-                <form class="wb-tables-filter" data-bind-to="problemTable">
-                    <div class="row">
-                        <div class="col-sm-6">
-                            <h4 class="h4">Filter options</h4>
-                            <p class="mrgn-tp-md">Use these filters to get page feedback</p>
-                        </div>
-                        <div class="col-sm-6">
-                            <h4 class="h4">Feedback admin</h4>
-                            <p class="mrgn-tp-md">Use these filters to get a list of pages using the feedback tool</p>
-                        </div>
+            <h4 class="wb-inv">Filtering options</h4>
+            <form class="wb-tables-filter" data-bind-to="problemTable">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <h4 class="h4">Filter options</h4>
+                        <p class="mrgn-tp-md">Use these filters to get page feedback</p>
                     </div>
-                    <div class="row">
-                        <div class="col-sm-6">
-                            <div class="form-group">
-                                <label for="Department">Department</label>
-                                <select class="form-control" id="Department" name="Department" data-column="5">
+                    <div class="col-sm-6">
+                        <h4 class="h4">Feedback admin</h4>
+                        <p class="mrgn-tp-md">Use these filters to get a list of pages using the feedback tool</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="Department">Department</label>
+                            <select class="form-control" id="Department" name="Department" data-column="5">
                                 <option value="">All</option>
                                 <option value="CRA">Canada Revenue Agency</option>
                                 <option value="ECCC">Environment and Climate Change Canada</option>
@@ -110,10 +109,10 @@
                                 <option value="OMBDNDCAF">OMBDNDCAF</option>
                                 <!-- DEPARTMENTS -->
                             </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="section">Section</label>
-                                <select class="form-control" id="section" name="section" data-column="6">
+                        </div>
+                        <div class="form-group">
+                            <label for="section">Section</label>
+                            <select class="form-control" id="section" name="section" data-column="6">
                                 <option value="">All</option>
                                 <option value="travel-wizard">travel-wizard</option>
                                 <option value="COVID">COVID</option>
@@ -146,10 +145,10 @@
                                 <option value="Mortgages">Mortgages</option>
                                 <option value="CEWS-CRHP">CEWS-CRHP</option>
                             </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="dt_theme">Theme</label>
-                                <select class="form-control" id="dt_theme" name="dt_theme" data-column="7">
+                        </div>
+                        <div class="form-group">
+                            <label for="dt_theme">Theme</label>
+                            <select class="form-control" id="dt_theme" name="dt_theme" data-column="7">
                                 <option value="">All</option>
                                 <option value="Business">Business</option>
                                 <option value="COVID">COVID</option>
@@ -171,38 +170,38 @@
 
                                 <!-- THEMES -->
                             </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="min">Date Range
+                        </div>
+                        <div class="form-group">
+                            <label for="min">Date Range
                                 <span class="wb-inv">from start date</span></label>
-                                <div class="form-inline">
-                                    <div class="form-group">
-                                        <input type="date" class="form-control" id="min" name="min">
-                                    </div>
-                                    <label for="max">To
+                            <div class="form-inline">
+                                <div class="form-group">
+                                    <input type="date" class="form-control" id="min" name="min">
+                                </div>
+                                <label for="max">To
                                     <span class="wb-inv">end date</span></label>
-                                    <div class="form-group">
-                                        <input type="date" class="form-control" id="max" name="max">
-                                    </div>
+                                <div class="form-group">
+                                    <input type="date" class="form-control" id="max" name="max">
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <div class="form-inline">
-                                    <label for="rangeSelection">or choose
+                        </div>
+                        <div class="form-group">
+                            <div class="form-inline">
+                                <label for="rangeSelection">or choose
                                 <span class="wb-inv">from start date</span></label>
-                                    <select class="form-control" id="rangeSelection" name="rangeSelection">
+                                <select class="form-control" id="rangeSelection" name="rangeSelection">
                                         <option value="">Duration</option>
                                         <option value="seven">last 7 days</option>
                                         <option value="fifteen">last 15 days</option>
                                         <option value="thirty">last 30 days</option>
                                 </select>
-                                </div>
                             </div>
                         </div>
-                        <div class="col-sm-6">
-                            <div class="form-group">
-                                <label for="deptINV">Department</label>
-                                <select class="form-control" id="deptINV" name="deptINV" data-column="5">
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="deptINV">Department</label>
+                            <select class="form-control" id="deptINV" name="deptINV" data-column="5">
                                 <option value="">Choose a department</option>
                                 <option value="CRA">Canada Revenue Agency</option>
                                 <option value="DFO">Department of Fisheries and Oceans</option>
@@ -221,10 +220,10 @@
                                 <option value="DND">Department of National Defence</option>
                                 <!-- DEPARTMENTS -->
                             </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="sectionINV">Section</label>
-                                <select class="form-control" id="sectionINV" name="sectionINV" data-column="6">
+                        </div>
+                        <div class="form-group">
+                            <label for="sectionINV">Section</label>
+                            <select class="form-control" id="sectionINV" name="sectionINV" data-column="6">
                                 <option value="">All</option>
                                 <option value="travel-wizard">travel-wizard</option>
                                 <option value="COVID">COVID</option>
@@ -257,10 +256,10 @@
                                 <option value="Mortgages">Mortgages</option>
                                 <option value="CEWS-CRHP">CEWS-CRHP</option>
                             </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="themeINV">Theme</label>
-                                <select class="form-control" id="themeINV" name="themeINV" data-column="7">
+                        </div>
+                        <div class="form-group">
+                            <label for="themeINV">Theme</label>
+                            <select class="form-control" id="themeINV" name="themeINV" data-column="7">
                                 <option value="">All</option>
                                 <option value="Business">Business</option>
                                 <option value="COVID">COVID</option>
@@ -275,16 +274,14 @@
                                 <option value="Youth">Youth</option>
                                 <!-- THEMES -->
                         </select>
-                            </div>
                         </div>
                     </div>
-                </form>
-                <div class="mrgn-lft-sm row">
-                    <!-- <button type="submit" class="btn btn-primary" aria-controls="problemTable">Filter</button> -->
-                    <button type="reset" class="btn btn-primary" id="clear-text">Reset to defaults</button>
                 </div>
+            </form>
+            <div class="mrgn-lft-sm row">
+                <!-- <button type="submit" class="btn btn-primary" aria-controls="problemTable">Filter</button> -->
+                <button type="reset" class="btn btn-primary" id="clear-text">Reset to defaults</button>
             </div>
-            <!--  content -->
         </details>
     </div>
     <!--  container -->
@@ -502,6 +499,12 @@
                     .ajax
                     .reload();
             };
+            var today = new Date();
+            var dd = String(today.getDate()).padStart(2, '0');
+            var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+            var yyyy = today.getFullYear();
+
+            today = yyyy + '-' + mm + '-' + dd;
 
             $('#problemTable')
                 .find('thead th')
@@ -514,7 +517,7 @@
                 processing: true,
                 language: {
                     processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading..n.</span> ',
-                    "infoFiltered": "(filtered from _MAX_ total entries - September 2021 to March 2022)",
+                    "infoFiltered": "(filtered from _MAX_ total entries, 2021-09-01 to " + today + ")",
 
                 },
                 lengthMenu: false,

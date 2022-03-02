@@ -61,226 +61,222 @@
 
     <div class="container">
         <h1>Outil de rétroaction</h1>
-        <h4 class="wb-inv">Options de filtrage</h4>
-
-        <form class="wb-tables-filter" data-bind-to="problemTable">
-            <div class="row">
-                <div class="col-sm-6">
-                    <h4 class="h4">Options de filtre</h4>
-                    <p class="mrgn-tp-md">Utilisez ces filtres pour obtenir des commentaires sur les pages</p>
+        <details open="true">
+            <summary>Filtrer les commentaires</summary>
+            <h4 class="wb-inv">Options de filtrage</h4>
+            <form class="wb-tables-filter" data-bind-to="problemTable">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <h4 class="h4">Options de filtre</h4>
+                        <p class="mrgn-tp-md">Utilisez ces filtres pour obtenir des commentaires sur les pages</p>
+                    </div>
+                    <div class="col-sm-6">
+                        <h4 class="h4">Feedback admin</h4>
+                        <p class="mrgn-tp-md">Utilisez ces filtres pour obtenir une liste des pages utilisant l'outil de feedback</p>
+                    </div>
                 </div>
-                <div class="col-sm-6">
-                    <h4 class="h4">Feedback admin</h4>
-                    <p class="mrgn-tp-md">Utilisez ces filtres pour obtenir une liste des pages utilisant l'outil de feedback</p>
-                </div>
-            </div>
-
-
-            <div class="row">
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        <label for="Department">Département</label>
-
-                        <select class="form-control" id="Department" name="Department" data-column="5">
-                        <option value="">Tous</option>
-                        <option value="CRA">Agence du revenu du Canada</option>
-                        <option value="DFO">Pêches et Océans Canada</option>
-                        <option value="Employment and Social Development Canada">Emploi et Développement social Canada</option>
-                        <option value="FCAC">Agence de la consommation en matière financière du Canada</option>
-                        <option value="FIN">Ministère des Finances</option>
-                        <option value="IRCC">Immigration, Réfugiés et Citoyenneté Canada</option>
-                        <option value="CCG">Garde côtière canadienne</option>
-                        <option value="Health Canada">Santé Canada</option>
-                        <option value="ISED">Innovation, Sciences et Développement économique Canada</option>
-                        <option value="ISC">Services aux Autochtones Canada</option>
-                        <option value="NRC">Conseil national de recherches Canada</option>
-                        <option value="Public Health Agency of Canada">Agence de santé publique du Canada</option>
-                        <option value="PSPC">Services publics et Approvisionnement Canada</option>
-                        <option value="TBS">Secrétariat du Conseil du Trésor du Canada</option>
-                        <option value="SC">Service Canada</option>
-                        <option value="DND">Défense nationale</option>
-                        <!-- DEPARTMENTS -->
-                    </select>
-
-                    </div>
-                    <div class="form-group">
-                        <label for="section">Section</label>
-                        <select class="form-control" id="section" name="section" data-column="6">
-                        <option value="">Tous</option>
-                        <option value="travel-wizard">Assistant de voyage</option>
-                        <option value="COVID">COVID</option>
-                        <option value="CRB">PCRE</option>
-                        <option value="Vaccines">Vaccins</option>
-                        <option value="CRSB">PCMRE</option>
-                        <option value="PTR">DFP</option>
-                        <option value="Canada's Parliamentary Precinct">Cité parlementaire du Canada</option>
-                        <option value="COVID Alert">Alerte COVID</option>
-                        <option value="CEWS">SSUC</option>
-                        <option value="CERS">SUCL</option>
-                        <option value="Business">Entreprise</option>
-                        <option value="WFHE">FTD</option>
-                        <option value="ITB">RIT</option>
-                        <option value="ECM">MCE</option>
-                        <option value="Health">Santé</option>
-                        <option value="Pay">Payer</option>
-                        <option value="CIG">CIG</option>
-                        <option value="Sign in">S'identifier</option>
-                        <option value="PIT">IRP</option>
-                        <option value="GST/HST">TPS/TVH</option>
-                        <option value="CERB">PCU</option>
-                        <option value="Design system">Système de conception</option>
-                        <option value="Retirement planning">Planification de la retraite</option>
-                        <option value="Skills for Success">les compétences pour réussir</option>
-                        <option value="COVID-19 data trends">tendances des données COVID-19</option>
-                        <option value="Social Development Partnerships Program">Programmes de partenariat pour le développement social</option>
-                        <option value="OBJ">OBJ</option>
-                        <option value="Mortgages">Hypothèques</option>
-                        <option value="CEWS-CRHP">SSUC-PEREC</option>
-                    </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="dt_theme">Thème</label>
-                        <select class="form-control" id="dt_theme" name="dt_theme" data-column="8">
-
-                        <option value="">Tous</option>
-                        <option value="Money and finances">Argent et finances</option>
-                        <option value="COVID">COVID</option>
-                        <option value="Environment and natural resources">Environnement et Ressources Naturelles</option>
-                        <option value="Taxes">Impôt</option>
-                        <option value="Health">Santé</option>
-                        <option value="Travel">Voyage</option>
-                        <option value="Culture, history and sport">Culture, histoire et sport</option>
-                        <option value="Public Service">Service Public</option>
-                        <option value="Science and innovation">Science et Innovation</option>
-                        <option value="Business">Entreprise</option>
-                        <option value="Youth">Jeunesse</option>
-                        <option value="Policies">Politiques</option>
-                        <option value="Top tasks">Tâches principales</option>
-                        <option value="Jobs">Emplois</option>
-                        <option value="Funding">Financement</option>
-                        <option value="Employment Insurance">Assurance Emploi</option>
-                        <option value="Education/Research">Éducation/Recherche</option>
-                        <!-- THEMES -->
-                    </select>
-
-                    </div>
-                    <div class="form-group">
-                        <label for="min">Dates <span class="wb-inv">Date de début</span></label>
-                        <div class="form-inline">
-                            <div class="form-group">
-                                <input type="date" placeholder="aaaa-mm-jj" class="form-control" id="min" name="min">
-                            </div>
-                            <label for="max">à <span class="wb-inv">date de fin</span></label>
-                            <div class="form-group">
-                                <input type="date" placeholder="aaaa-mm-jj" class="form-control" id="max" name="max">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="Department">Département</label>
+                            <select class="form-control" id="Department" name="Department" data-column="5">
+                                <option value="">Tous</option>
+                                <option value="CRA">Agence du revenu du Canada</option>
+                                <option value="DFO">Pêches et Océans Canada</option>
+                                <option value="Employment and Social Development Canada">Emploi et Développement social Canada</option>
+                                <option value="FCAC">Agence de la consommation en matière financière du Canada</option>
+                                <option value="FIN">Ministère des Finances</option>
+                                <option value="IRCC">Immigration, Réfugiés et Citoyenneté Canada</option>
+                                <option value="CCG">Garde côtière canadienne</option>
+                                <option value="Health Canada">Santé Canada</option>
+                                <option value="ISED">Innovation, Sciences et Développement économique Canada</option>
+                                <option value="ISC">Services aux Autochtones Canada</option>
+                                <option value="NRC">Conseil national de recherches Canada</option>
+                                <option value="Public Health Agency of Canada">Agence de santé publique du Canada</option>
+                                <option value="PSPC">Services publics et Approvisionnement Canada</option>
+                                <option value="TBS">Secrétariat du Conseil du Trésor du Canada</option>
+                                <option value="SC">Service Canada</option>
+                                <option value="DND">Défense nationale</option>
+                                <!-- DEPARTMENTS -->
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="section">Section</label>
+                            <select class="form-control" id="section" name="section" data-column="6">
+                                <option value="">Tous</option>
+                                <option value="travel-wizard">Assistant de voyage</option>
+                                <option value="COVID">COVID</option>
+                                <option value="CRB">PCRE</option>
+                                <option value="Vaccines">Vaccins</option>
+                                <option value="CRSB">PCMRE</option>
+                                <option value="PTR">DFP</option>
+                                <option value="Canada's Parliamentary Precinct">Cité parlementaire du Canada</option>
+                                <option value="COVID Alert">Alerte COVID</option>
+                                <option value="CEWS">SSUC</option>
+                                <option value="CERS">SUCL</option>
+                                <option value="Business">Entreprise</option>
+                                <option value="WFHE">FTD</option>
+                                <option value="ITB">RIT</option>
+                                <option value="ECM">MCE</option>
+                                <option value="Health">Santé</option>
+                                <option value="Pay">Payer</option>
+                                <option value="CIG">CIG</option>
+                                <option value="Sign in">S'identifier</option>
+                                <option value="PIT">IRP</option>
+                                <option value="GST/HST">TPS/TVH</option>
+                                <option value="CERB">PCU</option>
+                                <option value="Design system">Système de conception</option>
+                                <option value="Retirement planning">Planification de la retraite</option>
+                                <option value="Skills for Success">les compétences pour réussir</option>
+                                <option value="COVID-19 data trends">tendances des données COVID-19</option>
+                                <option value="Social Development Partnerships Program">Programmes de partenariat pour le développement social</option>
+                                <option value="OBJ">OBJ</option>
+                                <option value="Mortgages">Hypothèques</option>
+                                <option value="CEWS-CRHP">SSUC-PEREC</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="dt_theme">Thème</label>
+                            <select class="form-control" id="dt_theme" name="dt_theme" data-column="8">
+                                <option value="">Tous</option>
+                                <option value="Money and finances">Argent et finances</option>
+                                <option value="COVID">COVID</option>
+                                <option value="Environment and natural resources">Environnement et Ressources Naturelles</option>
+                                <option value="Taxes">Impôt</option>
+                                <option value="Health">Santé</option>
+                                <option value="Travel">Voyage</option>
+                                <option value="Culture, history and sport">Culture, histoire et sport</option>
+                                <option value="Public Service">Service Public</option>
+                                <option value="Science and innovation">Science et Innovation</option>
+                                <option value="Business">Entreprise</option>
+                                <option value="Youth">Jeunesse</option>
+                                <option value="Policies">Politiques</option>
+                                <option value="Top tasks">Tâches principales</option>
+                                <option value="Jobs">Emplois</option>
+                                <option value="Funding">Financement</option>
+                                <option value="Employment Insurance">Assurance Emploi</option>
+                                <option value="Education/Research">Éducation/Recherche</option>
+                                <!-- THEMES -->
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="min">Dates <span class="wb-inv">Date de début</span></label>
+                            <div class="form-inline">
+                                <div class="form-group">
+                                    <input type="date" placeholder="aaaa-mm-jj" class="form-control" id="min" name="min">
+                                </div>
+                                <label for="max">à <span class="wb-inv">date de fin</span></label>
+                                <div class="form-group">
+                                    <input type="date" placeholder="aaaa-mm-jj" class="form-control" id="max" name="max">
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="form-inline">
-                            <label for="rangeSelection">ou choisir
+                        <div class="form-group">
+                            <div class="form-inline">
+                                <label for="rangeSelection">ou choisir
                             <span class="wb-inv">Date de début</span></label>
-                            <select class="form-control" id="rangeSelection" name="rangeSelection">
+                                <select class="form-control" id="rangeSelection" name="rangeSelection">
                                     <option value="seven">7 derniers jours</option>
                                     <option value="fifteen">15 derniers jours</option>
                                     <option value="thirty">30 derniers jours</option>
                             </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="deptINV">Département</label>
+                            <select class="form-control" id="deptINV" name="deptINV" data-column="5">
+                                <option value="">Choisir un département</option>
+                                <option value="CRA">Agence du revenu du Canada</option>
+                                <option value="DFO">Pêches et Océans Canada</option>
+                                <option value="ECCC">Environnement et Changement climatique Canada</option>
+                                <option value="Employment and Social Development Canada">Emploi et Développement social Canada</option>
+                                <option value="FCAC">Agence de la consommation en matière financière du Canada</option>
+                                <option value="FIN">Ministère des Finances</option>
+                                <option value="IRCC">Immigration, Réfugiés et Citoyenneté Canada</option>
+                                <option value="CCG">Garde côtière canadienne</option>
+                                <option value="Health Canada">Santé Canada</option>
+                                <option value="ISED">Innovation, Sciences et Développement économique Canada</option>
+                                <option value="ISC">Services aux Autochtones Canada</option>
+                                <option value="NRC">Conseil national de recherches Canada</option>
+                                <option value="Public Health Agency of Canada">Agence de santé publique du Canada</option>
+                                <option value="PSPC">Services publics et Approvisionnement Canada</option>
+                                <option value="TBS">Secrétariat du Conseil du Trésor du Canada</option>
+                                <option value="SC">Service Canada</option>
+                                <option value="DND">Défense nationale</option>
+                                <!-- DEPARTMENTS -->
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="sectionINV">Section</label>
+                            <select class="form-control" id="sectionINV" name="sectionINV" data-column="6">
+                                <option value="">Tous</option>
+                                <option value="travel-wizard">Assistant de voyage</option>
+                                <option value="COVID">COVID</option>
+                                <option value="CRB">PCRE</option>
+                                <option value="Vaccines">Vaccins</option>
+                                <option value="CRSB">PCMRE</option>
+                                <option value="PTR">DFP</option>
+                                <option value="COVID Alert">Alerte COVID</option>
+                                <option value="Canada's Parliamentary Precinct">Cité parlementaire du Canada</option>
+                                <option value="CEWS">SSUC</option>
+                                <option value="CERS">SUCL</option>
+                                <option value="Business">Entreprise</option>
+                                <option value="WFHE">FTD</option>
+                                <option value="ITB">RIT</option>
+                                <option value="ECM">MCE</option>
+                                <option value="Health">Santé</option>
+                                <option value="Pay">Payer</option>
+                                <option value="CIG">CIG</option>
+                                <option value="Sign in">S'identifier</option>
+                                <option value="PIT">IRP</option>
+                                <option value="GST/HST">TPS/TVH</option>
+                                <option value="CERB">PCU</option>
+                                <option value="Design system">Système de conception</option>
+                                <option value="Retirement planning">Planification de la retraite</option>
+                                <option value="Skills for Success">les compétences pour réussir</option>
+                                <option value="COVID-19 data trends">tendances des données COVID-19</option>
+                                <option value="Social Development Partnerships Program">Programmes de partenariat pour le développement social</option>
+                                <option value="OBJ">OBJ</option>
+                                <option value="Mortgages">Hypothèques</option>
+                                <option value="CEWS-CRHP">SSUC-PEREC</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="themeINV">Thème</label>
+                            <select class="form-control" id="themeINV" name="themeINV" data-column="8">
+                                <option value="">Tous</option>
+                                <option value="Money and finances">Argent et finances</option>
+                                <option value="COVID">COVID</option>
+                                <option value="Environment and natural resources">Environnement et Ressources Naturelles</option>
+                                <option value="Taxes">Impôt</option>
+                                <option value="Culture, history and sport">Culture, histoire et sport</option>
+                                <option value="Health">Santé</option>
+                                <option value="Travel">Voyage</option>
+                                <option value="Public Service">Service Public</option>
+                                <option value="Science and innovation">Science et Innovation</option>
+                                <option value="Business">Entreprise</option>
+                                <option value="Youth">Jeunesse</option>
+                                <option value="Policies">Politiques</option>
+                                <option value="Top tasks">Tâches principales</option>
+                                <option value="Jobs">Emplois</option>
+                                <option value="Funding">Financement</option>
+                                <option value="Employment Insurance">Assurance Emploi</option>
+                                <option value="Education/Research">Éducation/Recherche</option>
+                                <!-- THEMES -->
+                            </select>
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        <label for="deptINV">Département</label>
-                        <select class="form-control" id="deptINV" name="deptINV" data-column="5">
-                        <option value="">Choisir un département</option>
-                        <option value="CRA">Agence du revenu du Canada</option>
-                        <option value="DFO">Pêches et Océans Canada</option>
-                        <option value="ECCC">Environnement et Changement climatique Canada</option>
-                        <option value="Employment and Social Development Canada">Emploi et Développement social Canada</option>
-                        <option value="FCAC">Agence de la consommation en matière financière du Canada</option>
-                        <option value="FIN">Ministère des Finances</option>
-                        <option value="IRCC">Immigration, Réfugiés et Citoyenneté Canada</option>
-                        <option value="CCG">Garde côtière canadienne</option>
-                        <option value="Health Canada">Santé Canada</option>
-                        <option value="ISED">Innovation, Sciences et Développement économique Canada</option>
-                        <option value="ISC">Services aux Autochtones Canada</option>
-                        <option value="NRC">Conseil national de recherches Canada</option>
-                        <option value="Public Health Agency of Canada">Agence de santé publique du Canada</option>
-                        <option value="PSPC">Services publics et Approvisionnement Canada</option>
-                        <option value="TBS">Secrétariat du Conseil du Trésor du Canada</option>
-                        <option value="SC">Service Canada</option>
-                        <option value="DND">Défense nationale</option>
-                        <!-- DEPARTMENTS -->
-                    </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="sectionINV">Section</label>
-                        <select class="form-control" id="sectionINV" name="sectionINV" data-column="6">
-                        <option value="">Tous</option>
-                        <option value="travel-wizard">Assistant de voyage</option>
-                        <option value="COVID">COVID</option>
-                        <option value="CRB">PCRE</option>
-                        <option value="Vaccines">Vaccins</option>
-                        <option value="CRSB">PCMRE</option>
-                        <option value="PTR">DFP</option>
-                        <option value="COVID Alert">Alerte COVID</option>
-                        <option value="Canada's Parliamentary Precinct">Cité parlementaire du Canada</option>
-                        <option value="CEWS">SSUC</option>
-                        <option value="CERS">SUCL</option>
-                        <option value="Business">Entreprise</option>
-                        <option value="WFHE">FTD</option>
-                        <option value="ITB">RIT</option>
-                        <option value="ECM">MCE</option>
-                        <option value="Health">Santé</option>
-                        <option value="Pay">Payer</option>
-                        <option value="CIG">CIG</option>
-                        <option value="Sign in">S'identifier</option>
-                        <option value="PIT">IRP</option>
-                        <option value="GST/HST">TPS/TVH</option>
-                        <option value="CERB">PCU</option>
-                        <option value="Design system">Système de conception</option>
-                        <option value="Retirement planning">Planification de la retraite</option>
-                        <option value="Skills for Success">les compétences pour réussir</option>
-                        <option value="COVID-19 data trends">tendances des données COVID-19</option>
-                        <option value="Social Development Partnerships Program">Programmes de partenariat pour le développement social</option>
-                        <option value="OBJ">OBJ</option>
-                        <option value="Mortgages">Hypothèques</option>
-                        <option value="CEWS-CRHP">SSUC-PEREC</option>
-                    </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="themeINV">Thème</label>
-                        <select class="form-control" id="themeINV" name="themeINV" data-column="8">
-                        <option value="">Tous</option>
-                        <option value="Money and finances">Argent et finances</option>
-                        <option value="COVID">COVID</option>
-                        <option value="Environment and natural resources">Environnement et Ressources Naturelles</option>
-                        <option value="Taxes">Impôt</option>
-                        <option value="Culture, history and sport">Culture, histoire et sport</option>
-                        <option value="Health">Santé</option>
-                        <option value="Travel">Voyage</option>
-                        <option value="Public Service">Service Public</option>
-                        <option value="Science and innovation">Science et Innovation</option>
-                        <option value="Business">Entreprise</option>
-                        <option value="Youth">Jeunesse</option>
-                        <option value="Policies">Politiques</option>
-                        <option value="Top tasks">Tâches principales</option>
-                        <option value="Jobs">Emplois</option>
-                        <option value="Funding">Financement</option>
-                        <option value="Employment Insurance">Assurance Emploi</option>
-                        <option value="Education/Research">Éducation/Recherche</option>
-                        <!-- THEMES -->
-                    </select>
-                    </div>
-                </div>
-            </div>
 
-            <div class="mrgn-lft-sm row">
-                <!-- <button type="submit" class="btn btn-primary" aria-controls="problemTable">Filter</button> -->
-                <button type="reset" class="btn btn-primary" id="clear-text">Réinitialiser</button>
-            </div>
-            <br>
-        </form>
+                <div class="mrgn-lft-sm row">
+                    <!-- <button type="submit" class="btn btn-primary" aria-controls="problemTable">Filter</button> -->
+                    <button type="reset" class="btn btn-primary" id="clear-text">Réinitialiser</button>
+                </div>
+                <br>
+            </form>
+        </details>
     </div>
 
     <div class="col-md-12">
@@ -493,6 +489,13 @@
                     .reload();
             };
 
+            var today = new Date();
+            var dd = String(today.getDate()).padStart(2, '0');
+            var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+            var yyyy = today.getFullYear();
+
+            today = yyyy + '-' + mm + '-' + dd;
+
             $('#problemTable')
                 .find('thead th')
                 .append('<span class="sorting-cnt"><span class="sorting-icons"></span></span>')
@@ -566,7 +569,8 @@
                     },
                     "info": "Affichage de _START_ à _END_ sur _TOTAL_ entrées",
                     "infoEmpty": "Affichage de 0 à 0 sur 0 entrées",
-                    "infoFiltered": "(filtrées depuis un total de _MAX_ entrées)",
+                    "infoFiltered": "(filtrées depuis un total de _MAX_ entrées, 2021-09-01 à " + today + ")",
+
                     "lengthMenu": "Afficher _MENU_ entrées",
                     "paginate": {
                         "first": "Première",
