@@ -682,7 +682,6 @@
                     .visible(false)
                     .column(TitleColIndex)
                     .visible(false)
-                    .page.len(10)
                     .draw()
             }
 
@@ -701,7 +700,6 @@
                     table
                         .column(DateColIndex)
                         .search(this.value)
-                        .page.len(10)
                         .draw()
                 }
                 if ($('#Department').val() && rangeChosen) {
@@ -731,7 +729,6 @@
                     table
                         .column(DateColIndex)
                         .search(this.value + ":" + $('#max').val())
-                        .page.len(10)
                         .draw();
                 }
                 if ($('#dt_theme').val() != "" && minMaxDateChosen) {
@@ -761,7 +758,6 @@
                     table
                         .column(DateColIndex)
                         .search($('#min').val() + ":" + this.value)
-                        .page.len(10)
                         .draw();
                 }
                 if ($('#dt_theme').val() != "" && minMaxDateChosen) {
@@ -795,7 +791,6 @@
                     table
                         .column(ThemeColIndex)
                         .search(this.value)
-                        .page.len(10)
                         .draw()
                 }
                 if (minMaxDateChosen) {
@@ -829,7 +824,6 @@
                     table
                         .column(DeptColIndex)
                         .search(this.value)
-                        .page.len(10)
                         .draw()
                 }
                 if (minMaxDateChosen) {
@@ -863,7 +857,6 @@
                     table
                         .column(SectionColIndex)
                         .search(this.value)
-                        .page.len(10)
                         .draw()
                 }
                 if (minMaxDateChosen) {
@@ -913,8 +906,6 @@
                         .visible(true)
                         .column(TitleColIndex)
                         .visible(true)
-                        .page
-                        .len(-1)
                         .draw()
 
                     $('#searchBoxDate').closest('th').hide()
@@ -967,8 +958,6 @@
                         .visible(true)
                         .column(TitleColIndex)
                         .visible(true)
-                        .page
-                        .len(-1)
                         .draw()
 
                     $('#searchBoxDate').closest('th').hide()
@@ -1020,8 +1009,6 @@
                         .visible(true)
                         .column(TitleColIndex)
                         .visible(true)
-                        .page
-                        .len(-1)
                         .draw()
 
                     $('#searchBoxDate').closest('th').hide()
