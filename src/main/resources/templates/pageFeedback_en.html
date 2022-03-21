@@ -685,8 +685,8 @@
             $("#clear-text").click(clearText);
 
             $('#rangeSelection', this).on('keyup change', function() {
-                rangeChosen = false;
                 if (this.value == "") {
+                    rangeChosen = false;
                     table
                         .column(DateColIndex)
                         .search("")
@@ -782,12 +782,14 @@
 
             $('#dt_theme', this).on('keyup change', function() {
                 if (this.value == "") {
+                    themeChosen = false;
                     table
                         .column(ThemeColIndex)
                         .search("")
                         .draw()
                 }
                 if (this.value != "") {
+                    themeChosen = true;
                     table
                         .column(ThemeColIndex)
                         .search(this.value)
@@ -816,12 +818,14 @@
 
             $('#Department', this).on('keyup change', function() {
                 if (this.value == "") {
+                    deptChosen = false;
                     table
                         .column(DeptColIndex)
                         .search("")
                         .draw()
                 }
                 if (this.value != "") {
+                    deptChosen = true;
                     table
                         .column(DeptColIndex)
                         .search(this.value)
@@ -850,12 +854,14 @@
 
             $('#section', this).on('keyup change', function() {
                 if (this.value == "") {
+                    sectionChosen = false;
                     table
                         .column(SectionColIndex)
                         .search("")
                         .draw()
                 }
                 if (this.value != "") {
+                    sectionChosen = true;
                     table
                         .column(SectionColIndex)
                         .search(this.value)
@@ -884,6 +890,7 @@
 
             $('#deptINV', this).on('keyup change', function() {
                 if (this.value == "") {
+                    adminDeptChosen = false;
                     if ($('#sectionINV').val() != "" || $('#themeINV').val() != "") {
                         table
                             .column(DeptColIndex)
@@ -892,6 +899,7 @@
                     }
                 }
                 if (this.value != "") {
+                    adminDeptChosen = true;
                     table
                         .column(DeptColIndex)
                         .search(this.value + " ~")
@@ -940,12 +948,14 @@
             });
             $('#sectionINV', this).on('keyup change', function() {
                 if (this.value == "") {
+                    adminSectionChosen = false;
                     table
                         .column(SectionColIndex)
                         .search("")
                         .draw()
                 }
                 if (this.value != "") {
+                    adminSectionChosen = true;
                     table
                         .column(SectionColIndex)
                         .search(this.value + " ~")
@@ -993,12 +1003,14 @@
             });
             $('#themeINV', this).on('keyup change', function() {
                 if (this.value == "") {
+                    adminThemeChosen = false;
                     table
                         .column(ThemeColIndex)
                         .search("")
                         .draw()
                 }
                 if (this.value != "") {
+                    adminSectionChosen = true;
                     table
                         .column(ThemeColIndex)
                         .search(this.value + " ~")
