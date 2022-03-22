@@ -642,6 +642,22 @@
 
             var minMaxDateChosen = false;
 
+            var resetAdmin = false;
+
+            if (resetAdmin) {
+                $('#themeINV').val("");
+                $('#sectionINV').val("");
+                $('#deptINV').val("");
+            } else {
+                $('#Department').val("");
+                $('#dt_theme').val("");
+                $('#section').val("");
+                $('#min').val("");
+                $('#max').val("");
+                $('#rangeSelection').val("");
+            }
+
+
             function clearText() {
                 $("#searchBoxDate").val("");
                 $("#searchBoxTimeStamp").val("");
@@ -684,6 +700,8 @@
 
             $("#clear-text").click(clearText);
 
+
+
             $('#rangeSelection', this).on('keyup change', function() {
                 if (this.value == "") {
                     rangeChosen = false;
@@ -694,6 +712,7 @@
                 }
                 if (this.value != "") {
                     rangeChosen = true;
+                    resetAdmin = true
                     table
                         .column(DateColIndex)
                         .search(this.value)
@@ -723,6 +742,7 @@
             $('#min', this).on('keyup change', function() {
                 minMaxDateChosen = false;
                 if (this.value != "" && $('#max').val() != "") {
+                    resetAdmin = true;
                     minMaxDateChosen = true;
                     table
                         .column(DateColIndex)
@@ -754,6 +774,7 @@
                 minMaxDateChosen = false;
                 if (this.value != "" && $('#min').val() != "") {
                     minMaxDateChosen = true;
+                    resetAdmin = true;
                     table
                         .column(DateColIndex)
                         .search($('#min').val() + ":" + this.value)
@@ -782,14 +803,13 @@
 
             $('#dt_theme', this).on('keyup change', function() {
                 if (this.value == "") {
-                    themeChosen = false;
                     table
                         .column(ThemeColIndex)
                         .search("")
                         .draw()
                 }
                 if (this.value != "") {
-                    themeChosen = true;
+                    resetAdmin = true;
                     table
                         .column(ThemeColIndex)
                         .search(this.value)
@@ -825,6 +845,7 @@
                         .draw()
                 }
                 if (this.value != "") {
+                    resetAdmin = true;
                     deptChosen = true;
                     table
                         .column(DeptColIndex)
@@ -862,6 +883,7 @@
                 }
                 if (this.value != "") {
                     sectionChosen = true;
+                    resetAdmin = true;
                     table
                         .column(SectionColIndex)
                         .search(this.value)
@@ -890,7 +912,6 @@
 
             $('#deptINV', this).on('keyup change', function() {
                 if (this.value == "") {
-                    adminDeptChosen = false;
                     if ($('#sectionINV').val() != "" || $('#themeINV').val() != "") {
                         table
                             .column(DeptColIndex)
@@ -899,7 +920,7 @@
                     }
                 }
                 if (this.value != "") {
-                    adminDeptChosen = true;
+                    resetAdmin = false;
                     table
                         .column(DeptColIndex)
                         .search(this.value + " ~")
@@ -948,14 +969,13 @@
             });
             $('#sectionINV', this).on('keyup change', function() {
                 if (this.value == "") {
-                    adminSectionChosen = false;
                     table
                         .column(SectionColIndex)
                         .search("")
                         .draw()
                 }
                 if (this.value != "") {
-                    adminSectionChosen = true;
+                    resetAdmin = false;
                     table
                         .column(SectionColIndex)
                         .search(this.value + " ~")
@@ -1003,14 +1023,13 @@
             });
             $('#themeINV', this).on('keyup change', function() {
                 if (this.value == "") {
-                    adminThemeChosen = false;
                     table
                         .column(ThemeColIndex)
                         .search("")
                         .draw()
                 }
                 if (this.value != "") {
-                    adminSectionChosen = true;
+                    resetAdmin = false;
                     table
                         .column(ThemeColIndex)
                         .search(this.value + " ~")
