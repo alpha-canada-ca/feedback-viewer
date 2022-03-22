@@ -642,20 +642,8 @@
 
             var minMaxDateChosen = false;
 
-            var resetAdmin = false;
 
-            if (resetAdmin) {
-                $('#themeINV').val("");
-                $('#sectionINV').val("");
-                $('#deptINV').val("");
-            } else {
-                $('#Department').val("");
-                $('#dt_theme').val("");
-                $('#section').val("");
-                $('#min').val("");
-                $('#max').val("");
-                $('#rangeSelection').val("");
-            }
+
 
 
             function clearText() {
@@ -703,6 +691,7 @@
 
 
             $('#rangeSelection', this).on('keyup change', function() {
+                clearText();
                 if (this.value == "") {
                     rangeChosen = false;
                     table
@@ -712,12 +701,14 @@
                 }
                 if (this.value != "") {
                     rangeChosen = true;
-                    resetAdmin = true
                     table
                         .column(DateColIndex)
                         .search(this.value)
                         .page.len(10)
                         .draw()
+                    $('#themeINV').val("");
+                    $('#sectionINV').val("");
+                    $('#deptINV').val("");
                 }
                 if ($('#Department').val() && rangeChosen) {
                     table
@@ -740,15 +731,18 @@
             })
 
             $('#min', this).on('keyup change', function() {
+                clearText();
                 minMaxDateChosen = false;
                 if (this.value != "" && $('#max').val() != "") {
-                    resetAdmin = true;
                     minMaxDateChosen = true;
                     table
                         .column(DateColIndex)
                         .search(this.value + ":" + $('#max').val())
                         .page.len(10)
                         .draw();
+                    $('#themeINV').val("");
+                    $('#sectionINV').val("");
+                    $('#deptINV').val("");
                 }
                 if ($('#dt_theme').val() != "" && minMaxDateChosen) {
                     table
@@ -771,15 +765,18 @@
             });
 
             $('#max', this).on('keyup change', function() {
+                clearText();
                 minMaxDateChosen = false;
                 if (this.value != "" && $('#min').val() != "") {
                     minMaxDateChosen = true;
-                    resetAdmin = true;
                     table
                         .column(DateColIndex)
                         .search($('#min').val() + ":" + this.value)
                         .page.len(10)
                         .draw();
+                    $('#themeINV').val("");
+                    $('#sectionINV').val("");
+                    $('#deptINV').val("");
                 }
                 if ($('#dt_theme').val() != "" && minMaxDateChosen) {
                     table
@@ -802,6 +799,7 @@
             });
 
             $('#dt_theme', this).on('keyup change', function() {
+                clearText();
                 if (this.value == "") {
                     table
                         .column(ThemeColIndex)
@@ -809,12 +807,14 @@
                         .draw()
                 }
                 if (this.value != "") {
-                    resetAdmin = true;
                     table
                         .column(ThemeColIndex)
                         .search(this.value)
                         .page.len(10)
                         .draw()
+                    $('#themeINV').val("");
+                    $('#sectionINV').val("");
+                    $('#deptINV').val("");
                 }
                 if (minMaxDateChosen) {
                     table
@@ -837,6 +837,7 @@
             });
 
             $('#Department', this).on('keyup change', function() {
+                clearText();
                 if (this.value == "") {
                     deptChosen = false;
                     table
@@ -845,13 +846,15 @@
                         .draw()
                 }
                 if (this.value != "") {
-                    resetAdmin = true;
                     deptChosen = true;
                     table
                         .column(DeptColIndex)
                         .search(this.value)
                         .page.len(10)
                         .draw()
+                    $('#themeINV').val("");
+                    $('#sectionINV').val("");
+                    $('#deptINV').val("");
                 }
                 if (minMaxDateChosen) {
                     table
@@ -874,6 +877,7 @@
             });
 
             $('#section', this).on('keyup change', function() {
+                clearText();
                 if (this.value == "") {
                     sectionChosen = false;
                     table
@@ -883,12 +887,14 @@
                 }
                 if (this.value != "") {
                     sectionChosen = true;
-                    resetAdmin = true;
                     table
                         .column(SectionColIndex)
                         .search(this.value)
                         .page.len(10)
                         .draw()
+                    $('#themeINV').val("");
+                    $('#sectionINV').val("");
+                    $('#deptINV').val("");
                 }
                 if (minMaxDateChosen) {
                     table
@@ -920,7 +926,6 @@
                     }
                 }
                 if (this.value != "") {
-                    resetAdmin = false;
                     table
                         .column(DeptColIndex)
                         .search(this.value + " ~")
@@ -941,7 +946,12 @@
                         .page
                         .len(-1)
                         .draw()
-
+                    $('#Department').val("");
+                    $('#dt_theme').val("");
+                    $('#section').val("");
+                    $('#min').val("");
+                    $('#max').val("");
+                    $('#rangeSelection').val("");
                     $('#searchBoxDate').closest('th').hide()
                     $('#searchBoxTimeStamp').closest('th').hide()
                     $('#searchBoxComment').closest('th').hide()
@@ -975,7 +985,6 @@
                         .draw()
                 }
                 if (this.value != "") {
-                    resetAdmin = false;
                     table
                         .column(SectionColIndex)
                         .search(this.value + " ~")
@@ -997,6 +1006,12 @@
                         .len(-1)
                         .draw()
 
+                    $('#Department').val("");
+                    $('#dt_theme').val("");
+                    $('#section').val("");
+                    $('#min').val("");
+                    $('#max').val("");
+                    $('#rangeSelection').val("");
                     $('#searchBoxDate').closest('th').hide()
                     $('#searchBoxTimeStamp').closest('th').hide()
                     $('#searchBoxComment').closest('th').hide()
@@ -1029,7 +1044,6 @@
                         .draw()
                 }
                 if (this.value != "") {
-                    resetAdmin = false;
                     table
                         .column(ThemeColIndex)
                         .search(this.value + " ~")
@@ -1051,6 +1065,12 @@
                         .len(-1)
                         .draw()
 
+                    $('#Department').val("");
+                    $('#dt_theme').val("");
+                    $('#section').val("");
+                    $('#min').val("");
+                    $('#max').val("");
+                    $('#rangeSelection').val("");
                     $('#searchBoxDate').closest('th').hide()
                     $('#searchBoxTimeStamp').closest('th').hide()
                     $('#searchBoxComment').closest('th').hide()
@@ -1075,6 +1095,8 @@
                         .draw()
                 }
             });
+
+
         });
     </script>
 
