@@ -668,20 +668,18 @@
                 $('#total_comments').hide()
 
                 $(".sorting-cnt").removeClass("hidden");
-
                 table
-                    .column(CommentColIndex)
-                    .visible(true)
-                    .column(ProblemColIndex)
-                    .visible(true)
-                    .column(DateColIndex)
-                    .visible(true)
-                    .column(urlEntriesColIndex)
-                    .visible(false)
-                    .column(TimestampColIndex)
-                    .visible(false)
-                    .column(TitleColIndex)
-                    .visible(false)
+                    .column(UrlColIndex).search("")
+                    .column(LangColIndex).search("")
+                    .column(DeptColIndex).search("")
+                    .column(SectionColIndex).search("")
+                    .column(ThemeColIndex).search("")
+                    .column(CommentColIndex).search("").visible(true)
+                    .column(ProblemColIndex).search("").visible(true)
+                    .column(DateColIndex).search("").visible(true)
+                    .column(urlEntriesColIndex).search("").visible(false)
+                    .column(TimestampColIndex).search("").visible(false)
+                    .column(TitleColIndex).search("").visible(false)
                     .page.len(10)
                     .draw()
             }
