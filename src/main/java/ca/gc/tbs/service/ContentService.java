@@ -44,6 +44,9 @@ public class ContentService {
 		return content.replaceAll("[A-Za-z]\\s*\\d\\s*[A-Za-z]\\s*[ -]?\\s*\\d\\s*[A-Za-z]\\s*\\d", "### ###");
 	}
 
+	private String cleanPassportNumber(String content) {
+		return content.replaceAll("\\b([A-Za-z]{2}\\s*\\d{6})\\b", "## ######");
+	}
 	private String cleanSIN(String content) {
 		return content.replaceAll("(\\d{3}\\s*\\d{3}\\s*\\d{3}|\\d{3}\\D*\\d{3}\\D*\\d{3})", "### ### ###");
 	}
