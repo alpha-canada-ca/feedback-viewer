@@ -9,6 +9,7 @@ import java.text.SimpleDateFormat;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,14 +32,14 @@ public class LoginController {
 	@Autowired
 	private EmailService emailService;
 
-	@RequestMapping(value = "/login", method = RequestMethod.GET)
-	public ModelAndView login(HttpServletRequest request) throws Exception {
-		ModelAndView modelAndView = new ModelAndView();
-		String lang = request.getParameter("lang");
-		//System.out.println(lang);
-		modelAndView.setViewName("login_" + lang);
-		return modelAndView;
-	}
+    @RequestMapping(value = "/login", method = RequestMethod.GET)
+    public ModelAndView login(HttpServletRequest request) throws Exception {
+        ModelAndView modelAndView = new ModelAndView();
+        String lang = (String) request.getSession().getAttribute("lang");
+        //System.out.println(lang);
+        modelAndView.setViewName("login_" + lang);
+        return modelAndView;
+    }
 	
 
 	@RequestMapping(value = "/signup", method = RequestMethod.GET)
