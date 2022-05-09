@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{default}">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="en" xml:lang="en" dir="ltr" th:lang="${lang}" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{default}">
 
 <div layout:fragment="content" class="wb-frmvld">
 
     <form th:action="@{/login}" method="post">
         <h2>Please sign in</h2>
-        <div th:if="${param.error}">Invalid email and password.</div>
+        <div th:if="${param.error}">Invalid email or password.</div>
         <div th:if="${param.logout}">You have been logged out.</div>
         <div class="form-group">
             <label for="inputEmail" class="sr-only">Email address</label> <input type="email" name="email" id="inputEmail" class="form-control" placeholder="Email" required="required" />
