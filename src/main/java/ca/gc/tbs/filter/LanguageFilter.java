@@ -7,44 +7,75 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Component;
 
 @Component
 public class LanguageFilter implements Filter {
 
-	@Override
-	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
-			throws IOException, ServletException {
-		HttpServletRequest req = (HttpServletRequest) request;
-		String lang = (String) req.getParameter("lang");
-		String altLang = "fr";
-		String altLangText = "Français";
-		String requestURL = req.getRequestURL().toString();
-		String queryString = req.getQueryString();
+    @Override
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+            throws IOException, ServletException {
 
-		if (lang == null) {
-			lang = LocaleContextHolder.getLocale().getLanguage();
-		}
-		if (queryString != null) {
-			requestURL = requestURL + "?" + queryString;
-		}
-		if (!lang.equals("en")) {
-			lang = "fr";
-			altLang = "en";
-			altLangText = "English";
-		}
-		if (queryString == null) {
-			requestURL = requestURL + "?lang=" + altLang;
-		} else {
-			requestURL = requestURL.replace("lang=" + lang, "lang=" + altLang);
-		}
-		request.setAttribute("langUrl", requestURL);
-		request.setAttribute("lang", lang);
-		request.setAttribute("altLang", altLang);
-		request.setAttribute("altLangText", altLangText);
+        HttpServletRequest req = (HttpServletRequest) request;
+        HttpSession session = req.getSession();
 
-		chain.doFilter(request, response);
+        String lang = getSelectedLang(req);
 
-	}
+        session.setAttribute("lang", lang.equals("en") ? "en" : "fr");
+
+        // build alt lang
+        String altLang;
+        String altLangText;
+        if (lang.equals("en")) {
+            altLang = "fr";
+            altLangText = "Français";
+        } else {
+            altLang = "en";
+            altLangText = "English";
+        }
+
+        String requestURL = req.getRequestURL().toString();
+        String queryString = cleanQueryStringLangParam(req, lang);
+        if (!queryString.equals("")){
+            queryString += "&";
+        }
+        requestURL = requestURL +"?"+ queryString + "lang=" + altLang;
+
+
+        session.setAttribute("langUrl", requestURL);
+        session.setAttribute("altLang", altLang);
+        session.setAttribute("altLangText", altLangText);
+
+        chain.doFilter(request, response);
+    }
+
+    private String cleanQueryStringLangParam(HttpServletRequest req, String lang) {
+        String queryString = req.getQueryString();
+        if (queryString == null) {
+            return "";
+        }
+
+        if (!queryString.contains("lang=")) {
+            return queryString;
+        }
+        return queryString.replace("lang=" + lang, "");
+    }
+
+    private String getSelectedLang(HttpServletRequest req) {
+        String lang = (String) req.getSession().getAttribute("lang");
+
+        // if lang query param set -> set to selected language
+        String langParam = req.getParameter("lang");
+        if (langParam != null) {
+            lang = langParam;
+        }
+        // find default if needed
+        if (lang == null) {
+            lang = LocaleContextHolder.getLocale().getLanguage();
+        }
+        return lang;
+    }
 }
