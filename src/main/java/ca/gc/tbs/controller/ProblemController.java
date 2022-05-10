@@ -108,12 +108,13 @@ public class ProblemController {
 	}
 	
 			
-	String lang = "";
+
 
 	@GetMapping(value = "/pageFeedback")
 	public ModelAndView pageFeedback(HttpServletRequest request) throws Exception {
 		ModelAndView mav = new ModelAndView();
-		lang = request.getParameter("lang");
+		//lang = request.getParameter("lang");
+		String lang = (String) request.getSession().getAttribute("lang");
 		importTagTranslations();
 		populateTranslationsMap();
 		//uniqueValues();
@@ -129,6 +130,7 @@ public class ProblemController {
     	
     	Criteria findProcessed = where("processed").is("true");
     	
+    	String lang = (String) request.getSession().getAttribute("lang");
 		if(lang.equals("en")) {
 		
 			String dateSearchVal 	= input.getColumn("problemDate").get().getSearch().getValue();
