@@ -31,15 +31,13 @@ public class CustomizeAuthenticationSuccessHandler extends SimpleUrlAuthenticati
 			Authentication authentication) throws IOException, ServletException {
 
 		SavedRequest savedRequest = requestCache.getRequest(request, response);
-		//String lang = request.getParameter("lang");
-		//System.out.println(lang);
 		
 		if (savedRequest == null || savedRequest.getRedirectUrl().contains("signin")) {
 			for (GrantedAuthority auth : authentication.getAuthorities()) {
 				if ("ADMIN".equals(auth.getAuthority())) {
 					response.sendRedirect("/u/index");
 				} else {
-					response.sendRedirect("/pageFeedback?lang=en");
+					response.sendRedirect("/pageFeedback");
 					
 				}
 			}
