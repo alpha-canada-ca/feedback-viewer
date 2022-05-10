@@ -127,7 +127,7 @@ public class TopTaskController {
     @RequestMapping(value = "/topTaskSurvey/tasks")
     @ResponseBody
 	public String paginationProblemData(HttpServletRequest request) {
-    	String lang = request.getParameter("language");
+    	String lang = (String) request.getSession().getAttribute("lang");
 //    	return "AAFC,ACOA,AECL,APA,ATSSC,BDC,BWB,CA,CAFC,CanNor,CANSOFCOM,CART,CAS,CATSA,CB,CBC,CBSA,CCC,CCG,CCI,"
 //    			+ "CCOHS,CDC,CDEV,CDIC,CED,CEIC,CER,CFIA,CGC,CHIN,CHRC,CIB,CICS,CIEC,CIHR,CIPO,CIRB,CIRNAC,CITT,CJC,CLC,"
 //    			+ "CMAC,CMH,CMHC,CMHR,CMIP,CMN,CNSC,COBU,CPC,CPMA,CPPIB,CRA,CRC,CRCC,CRRF,CRTC,CSA,CSC,CSEC,CSIS,CSPS,CTA,"
@@ -148,7 +148,7 @@ public class TopTaskController {
 	@GetMapping(value = "/topTaskSurvey")
 	public ModelAndView topTaskSurvey(HttpServletRequest request) throws Exception {
 		ModelAndView mav = new ModelAndView();
-		String lang = request.getParameter("lang");
+		String lang = (String) request.getSession().getAttribute("lang");
 		mav.setViewName("topTaskSurvey_"+lang);
 		return mav;
 	}
