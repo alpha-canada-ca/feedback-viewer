@@ -10,12 +10,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -79,10 +83,18 @@ public class LoginController {
  
     //redirects localhost to sign in page.
 	@RequestMapping(value = { "/" }, method = RequestMethod.GET)
-	public View home() {
+	public View home(@Valid User user) {
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("home");
-		RedirectView view = new RedirectView("signin");
+		
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		RedirectView view = new RedirectView("/pageFeedback");
+		
+		//if user is not logged in, redirect to signin
+		if(auth.getName().equals("anonymousUser")) {
+			view = new RedirectView("signin");
+		}
+		
 		return view;
 	}
 
