@@ -318,7 +318,7 @@ public class ProblemController {
 	    		//Convert for loop to stream for efficiency.
 
 	    		for(int i = 0; i < urls.getData().size(); i++) {
-	    			int count = urlCountMap.containsKey(urls.getData().get(i).getUrl()) ? urlCountMap.get(urls.getData().get(i).getUrl()) : 0;
+	    			int count = urlCountMap.getOrDefault(urls.getData().get(i).getUrl(), 0);
 	    			urlCountMap.put(urls.getData().get(i).getUrl(), count + 1);
 	    			System.out.println(i+1);
 	    			urlCountMap2.put(urls.getData().get(i).getUrl(), Arrays.asList(urls.getData().get(i).getTitle(), 
