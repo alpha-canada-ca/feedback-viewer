@@ -1,23 +1,19 @@
 package ca.gc.tbs.controller;
 
 import java.io.InputStreamReader;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.io.Reader;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -25,8 +21,6 @@ import javax.validation.Valid;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,15 +45,12 @@ import ca.gc.tbs.service.UserService;
 @Controller
 public class ProblemController {
 
-	public static final SimpleDateFormat INPUT_FORMAT = new SimpleDateFormat("EEE MMM dd yyyy");
-	public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 	private static final Logger LOG = LoggerFactory.getLogger(ProblemController.class);
-	public static final String COLLECTION_PROBLEM = "problem";
-	
+
 	public static final long DAY_IN_MS = 1000 * 60 * 60 * 24;
 	
-	private static boolean ASC = true;
-    private static boolean DESC = false;
+	private static final boolean ASC = true;
+    private static final boolean DESC = false;
     
     private int totalComments = 0;
 	
@@ -68,8 +59,8 @@ public class ProblemController {
 	,{"Vaccines","Vaccins"},{"Business","Entreprises"},{"WFHE","DTDE"},{"travel-wizard","assistant-voyage"},{"PTR","DRP"},{"COVID Alert","Alerte COVID"},{"Financial Consumer Agency of Canada", "Agence de la consommation en matière financière du Canada"},{"National Research Council","Conseil national de recherches"},{"Department of Fisheries and Oceans","Pêches et Océans Canada"}
 	,{"Money and finances","Argent et finances"},{"Science and innovation","Science et innovation"},{"Environment and natural resources","Environnement et ressources naturelles"}};
 
-	private HashMap<String, String> tagTranslations = new HashMap<String, String>();
-	private HashMap<String, String> translationsMap = new HashMap<String, String>(translations.length);
+	private HashMap<String, String> tagTranslations = new HashMap<>();
+	private HashMap<String, String> translationsMap = new HashMap<>(translations.length);
 	
 	
 	@Autowired
@@ -89,7 +80,7 @@ public class ProblemController {
 		final Reader reader = new InputStreamReader(new URL(
 				"https://docs.google.com/spreadsheets/d/1xcoSXKwH0-_N_t056pfeEXzAXseZhpFMnvUsvmF0OBw/export?format=csv")
 						.openConnection().getInputStream(),
-				"UTF-8");
+				StandardCharsets.UTF_8);
 		final CSVParser parser = new CSVParser(reader, CSVFormat.DEFAULT.withHeader());
 		try {
 			for (final CSVRecord record : parser) {
@@ -123,8 +114,7 @@ public class ProblemController {
 		return mav;
 	}
 	
-    @SuppressWarnings("unchecked")
-	@RequestMapping(value = "/problemData") 
+	@RequestMapping(value = "/problemData")
     @ResponseBody
     public DataTablesOutput<Problem> list(@Valid DataTablesInput input, HttpServletRequest request)  {
     	
@@ -158,7 +148,7 @@ public class ProblemController {
 		
 		        	Criteria dateCriteria = where("problemDate").gte(dateSearchValA).lte(dateSearchValB);
 		        	
-		    		if(dateSearchValA != "" && dateSearchValB != "") {
+		    		if(!dateSearchValA.equals("") && !dateSearchValB.equals("")) {
 		    			return problemRepository.findAll(input, dateCriteria, findProcessed);
 		    		}
 	    		} 
@@ -215,25 +205,25 @@ public class ProblemController {
 	    		DataTablesOutput<Problem> urls = problemRepository.findAll(input);
 	    		
 	    		HashMap<String, Integer> urlCountMap = new HashMap<>();
-	    		HashMap<String, List<String>> urlCountMap2 = new HashMap<String, List<String>>();
+	    		HashMap<String, List<String>> urlCountMap2 = new HashMap<>();
 	    		
 	    		//Convert for loop to stream for efficiency.
 
 	    		for(int i = 0; i < urls.getData().size(); i++) {
-	    			int count = urlCountMap.containsKey(urls.getData().get(i).getUrl()) ? urlCountMap.get(urls.getData().get(i).getUrl()) : 0;
+	    			int count = urlCountMap.getOrDefault(urls.getData().get(i).getUrl(), 0);
 	    			urlCountMap.put(urls.getData().get(i).getUrl(), count + 1);
 	    			System.out.println(i+1);
 	    			urlCountMap2.put(urls.getData().get(i).getUrl(), Arrays.asList(urls.getData().get(i).getTitle(), 
 	    					urls.getData().get(i).getLanguage(), urls.getData().get(i).getInstitution(),
 	    					urls.getData().get(i).getTheme(), urls.getData().get(i).getSection()));
 	    		}
-	    		System.out.println("size: " + urlCountMap.size() + "  ---- " + urlCountMap.toString());
+	    		System.out.println("size: " + urlCountMap.size() + "  ---- " + urlCountMap);
 	    		
 	    		//sort Map
 	    		HashMap<String, Integer> sortedUrlCountMap = sortByValue(urlCountMap, DESC);
 	    		
 	    		
-	    		ArrayList<Problem> urlList = new ArrayList<Problem>();
+	    		ArrayList<Problem> urlList = new ArrayList<>();
 	    		int index = 0;
 	    		totalComments = 0;
 	    		for ( String key : sortedUrlCountMap.keySet() ) {
@@ -277,7 +267,7 @@ public class ProblemController {
 		
 		        	Criteria dateCriteria = where("problemDate").gte(dateSearchValA).lte(dateSearchValB);
 		        	
-		    		if(dateSearchValA != "" && dateSearchValB != "") {
+		    		if(!dateSearchValA.equals("") && !dateSearchValB.equals("")) {
 		    			DataTablesOutput<Problem> problems = problemRepository.findAll(input, dateCriteria, findProcessed); // this part checks date range and returns without translations
 		    			for(int i = 0; i < problems.getData().size(); i++) {
 		    	    		problems.getData().get(i).setInstitution(translationsMap.get(problems.getData().get(i).getInstitution()));
@@ -313,7 +303,7 @@ public class ProblemController {
 	    		DataTablesOutput<Problem> urls = problemRepository.findAll(input);
 	    		
 	    		HashMap<String, Integer> urlCountMap = new HashMap<>();
-	    		HashMap<String, List<String>> urlCountMap2 = new HashMap<String, List<String>>();
+	    		HashMap<String, List<String>> urlCountMap2 = new HashMap<>();
 	    		
 	    		//Convert for loop to stream for efficiency.
 
@@ -325,13 +315,13 @@ public class ProblemController {
 	    					urls.getData().get(i).getLanguage(), urls.getData().get(i).getInstitution(),
 	    					urls.getData().get(i).getTheme(), urls.getData().get(i).getSection()));
 	    		}
-	    		System.out.println("size: " + urlCountMap.size() + "  ---- " + urlCountMap.toString());
+	    		System.out.println("size: " + urlCountMap.size() + "  ---- " + urlCountMap);
 	    		
 	    		//sort Map
 	    		HashMap<String, Integer> sortedUrlCountMap = sortByValue(urlCountMap, DESC);
 	    		
 	    		
-	    		ArrayList<Problem> urlList = new ArrayList<Problem>();
+	    		ArrayList<Problem> urlList = new ArrayList<>();
 	    		int index = 0;
 	    		totalComments = 0;
 	    		for ( String key : sortedUrlCountMap.keySet() ) {
