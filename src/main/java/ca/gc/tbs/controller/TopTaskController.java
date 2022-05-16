@@ -1,11 +1,6 @@
 package ca.gc.tbs.controller;
 
-import java.text.SimpleDateFormat;
-import static org.springframework.util.StringUtils.hasText;
-import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -14,27 +9,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.datatables.DataTablesInput;
 import org.springframework.data.mongodb.datatables.DataTablesOutput;
 import org.springframework.data.mongodb.datatables.DataTablesInput.Column;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.View;
-import org.springframework.web.servlet.view.RedirectView;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 
 import ca.gc.tbs.domain.TopTaskSurvey;
-import ca.gc.tbs.domain.User;
 
 import ca.gc.tbs.repository.TopTaskRepository;
 import ca.gc.tbs.service.UserService;
@@ -81,7 +68,7 @@ public class TopTaskController {
 	
 	        	Criteria dateCriteria = where("dateTime").gte(dateSearchValA).lte(dateSearchValB).and("processed").is("true");
 
-	    		if(dateSearchValA != "" && dateSearchValB != "") {
+	    		if(!dateSearchValA.equals("") && !dateSearchValB.equals("")) {
 	    			return topTaskRepository.findAll(input, new Criteria().orOperator(
 	        				Criteria.where("taskOther").exists(true).ne(""),
 	        				Criteria.where("themeOther").exists(true).ne(""),
@@ -105,7 +92,7 @@ public class TopTaskController {
 	
 	        	Criteria dateCriteria = where("dateTime").gte(dateSearchValA).lte(dateSearchValB);
 	        	
-	    		if(dateSearchValA != "" && dateSearchValB != "") {
+	    		if(!dateSearchValA.equals("") && !dateSearchValB.equals("")) {
 	    			return topTaskRepository.findAll(input, findProcessed, dateCriteria);
 	    		}
     		}
@@ -127,7 +114,6 @@ public class TopTaskController {
     @RequestMapping(value = "/topTaskSurvey/tasks")
     @ResponseBody
 	public String paginationProblemData(HttpServletRequest request) {
-    	String lang = (String) request.getSession().getAttribute("lang");
 //    	return "AAFC,ACOA,AECL,APA,ATSSC,BDC,BWB,CA,CAFC,CanNor,CANSOFCOM,CART,CAS,CATSA,CB,CBC,CBSA,CCC,CCG,CCI,"
 //    			+ "CCOHS,CDC,CDEV,CDIC,CED,CEIC,CER,CFIA,CGC,CHIN,CHRC,CIB,CICS,CIEC,CIHR,CIPO,CIRB,CIRNAC,CITT,CJC,CLC,"
 //    			+ "CMAC,CMH,CMHC,CMHR,CMIP,CMN,CNSC,COBU,CPC,CPMA,CPPIB,CRA,CRC,CRCC,CRRF,CRTC,CSA,CSC,CSEC,CSIS,CSPS,CTA,"
