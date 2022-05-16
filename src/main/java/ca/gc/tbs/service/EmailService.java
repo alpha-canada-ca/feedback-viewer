@@ -46,8 +46,7 @@ public class EmailService {
 	}
 
 	public NotificationClient getNotificationClient() {
-		NotificationClient client = new NotificationClient(getAPIKey(), "https://api.notification.alpha.canada.ca");
-		return client;
+		return new NotificationClient(getAPIKey(), "https://api.notification.alpha.canada.ca");
 	}
 
 	private String getAPIKey() {
