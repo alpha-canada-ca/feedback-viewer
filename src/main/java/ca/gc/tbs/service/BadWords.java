@@ -4,9 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -16,9 +14,9 @@ import org.springframework.core.io.Resource;
 
 public class BadWords {
 
-	static Set<String> words = new HashSet<String>();
+	static Set<String> words = new HashSet<>();
 
-	public class LengthComparator implements java.util.Comparator<String> {
+	public static class LengthComparator implements java.util.Comparator<String> {
 
 		public int compare(String s1, String s2) {
 			if (s1.length() > s2.length()) {
@@ -44,7 +42,7 @@ public class BadWords {
 	public static void loadFileConfigs(String filePath) {
 		try {
 			Resource resource = new ClassPathResource(filePath, BadWords.class.getClassLoader());
-			String newWords[] = IOUtils.toString(resource.getInputStream(), "UTF-8").split(",");
+			String[] newWords = IOUtils.toString(resource.getInputStream(), StandardCharsets.UTF_8).split(",");
 			for (String word : newWords) {
 				words.add(word.trim());
 			}
@@ -81,20 +79,6 @@ public class BadWords {
 
 	}
 
-//	public static String removeLeetSpeak(String input) {
-//		input = input.replaceAll("1", "i");
-//		input = input.replaceAll("!", "i");
-//		input = input.replaceAll("3", "e");
-//		input = input.replaceAll("4", "a");
-//		input = input.replaceAll("@", "a");
-//		input = input.replaceAll("5", "s");
-//		input = input.replaceAll("7", "t");
-//		input = input.replaceAll("0", "o");
-//		input = input.replaceAll("9", "g");
-//		input = input.replaceAll("\\$", "s");
-//		return input;
-//	}
-
 	static String censor(String text) {
 
 		//text = removeLeetSpeak(text);
@@ -104,36 +88,35 @@ public class BadWords {
 		String[] word_list = text.split("\\s+");
 
 		// A new string to store the result
-		String result = "";
+		StringBuilder result = new StringBuilder();
 
 		// Iterating through our list
 		// of extracted words
 		int index = 0;
 		for (String i : word_list) {
-			String wordToCheckOrig = i;
-			String wordToCheck = wordToCheckOrig;
+			String wordToCheck = i;
 			wordToCheck = wordToCheck.toLowerCase().replaceAll("[^a-zA-Z]", "");
 			if (words.contains(wordToCheck)) {
 				// changing the censored word to
 				// created asterisks censor
-				word_list[index] = createMask(wordToCheckOrig);
+				word_list[index] = createMask(i);
 			}
 			index++;
 		}
 
 		// join the words
 		for (String i : word_list)
-			result += i + ' ';
+			result.append(i).append(' ');
 
-		return result;
+		return result.toString();
 	}
 
 	public static String createMask(String word) {
-		String mask = "";
+		StringBuilder mask = new StringBuilder();
 		for (int i = 0; i < word.length(); i++) {
-			mask += "#";
+			mask.append("#");
 		}
-		return mask;
+		return mask.toString();
 	}
 
 }
