@@ -127,6 +127,8 @@ public class ProblemController {
 			String deptSearchVal 	= input.getColumn("institution").get().getSearch().getValue();
 			String sectionSearchVal = input.getColumn("section").get().getSearch().getValue();
 			String themeSearchVal 	= input.getColumn("theme").get().getSearch().getValue();
+			String pattern = "yyyy-MM-dd";
+			SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 			
 			List<Column> columns = input.getColumns();
 			
@@ -152,37 +154,35 @@ public class ProblemController {
 		    			return problemRepository.findAll(input, dateCriteria, findProcessed);
 		    		}
 	    		} 
-	    	}else 
+	    	}
+			else
+			if(dateSearchVal.contains("today")) {
+				input.getColumn("problemDate").get().getSearch().setValue("");
+				String today = simpleDateFormat.format(new Date(System.currentTimeMillis()));
+				Criteria dateCriteria = where("problemDate").is(today);
+				return problemRepository.findAll(input, dateCriteria , findProcessed);
+			}else
+			if(dateSearchVal.contains("yesterday")) {
+				input.getColumn("problemDate").get().getSearch().setValue("");
+				String yesterday = simpleDateFormat.format(new Date(System.currentTimeMillis() - DAY_IN_MS));
+				Criteria dateCriteria = where("problemDate").is(yesterday);
+				return problemRepository.findAll(input, dateCriteria , findProcessed);
+			}else
 	    	if(dateSearchVal.contains("seven")) {
 	    		input.getColumn("problemDate").get().getSearch().setValue("");
-	    		
-	    		String pattern = "yyyy-MM-dd";
-	    		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-	    		
 	    		String lastSeven = simpleDateFormat.format(new Date(System.currentTimeMillis() - (7 * DAY_IN_MS)));
-
 	    		Criteria dateCriteria = where("problemDate").gte(lastSeven);
 				return problemRepository.findAll(input, dateCriteria , findProcessed);
 	    	} else
 	    	if(dateSearchVal.contains("fifteen")) {
 	    		input.getColumn("problemDate").get().getSearch().setValue("");
-	    		
-	    		String pattern = "yyyy-MM-dd";
-	    		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-	    		
 	    		String lastFifteen = simpleDateFormat.format(new Date(System.currentTimeMillis() - (15 * DAY_IN_MS)));
-
 	    		Criteria dateCriteria = where("problemDate").gte(lastFifteen);
 				return problemRepository.findAll(input, dateCriteria , findProcessed);
 	    	} else
 	    	if(dateSearchVal.contains("thirty")) {
 	    		input.getColumn("problemDate").get().getSearch().setValue("");
-	    		
-	    		String pattern = "yyyy-MM-dd";
-	    		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-	    		
 	    		String lastThirty = simpleDateFormat.format(new Date(System.currentTimeMillis() - (30 * DAY_IN_MS)));
-
 	    		Criteria dateCriteria = where("problemDate").gte(lastThirty);
 				return problemRepository.findAll(input, dateCriteria , findProcessed);
 	    	}
