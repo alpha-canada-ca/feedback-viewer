@@ -2,8 +2,6 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
     xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{default}" lang="en">
 <th:block layout:fragment="content">
-    <!-- <link rel="stylesheet" href="https://unpkg.com/@trevoreyre/autocomplete-js/dist/style.css"/> -->
-
     <style>
         ​ .dt-button {
             align-items: flex-start;
@@ -23,6 +21,55 @@
             transform: translate(-50%, -50%);
             visibility: visible;
         }
+
+        .autocomplete-result-list {
+            margin: 0;
+            border: 1px solid rgba(0, 0, 0, .12);
+            padding: 0;
+            box-sizing: border-box;
+            max-height: 296px;
+            overflow-y: auto;
+            background: #fff;
+            list-style: none;
+            box-shadow: 0 2px 2px rgba(0, 0, 0, .16)
+        }
+
+        [data-position=below] .autocomplete-result-list {
+            margin-top: -1px;
+            border-top-color: transparent;
+            border-radius: 0 0 8px 8px;
+            padding-bottom: 8px
+        }
+
+        [data-position=above] .autocomplete-result-list {
+            margin-bottom: -1px;
+            border-bottom-color: transparent;
+            border-radius: 8px 8px 0 0;
+            padding-top: 8px
+        }
+
+        .autocomplete-result {
+            cursor: default;
+            padding: 12px 12px 12px 48px;
+            background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjY2NjIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PGNpcmNsZSBjeD0iMTEiIGN5PSIxMSIgcj0iOCIvPjxwYXRoIGQ9Ik0yMSAyMWwtNC00Ii8+PC9zdmc+");
+            background-repeat: no-repeat;
+            background-position: 12px
+        }
+
+        .autocomplete-result:hover,
+        .autocomplete-result[aria-selected=true] {
+            background-color: rgba(0, 0, 0, .06)
+        }
+
+        @keyframes rotate {
+            0% {
+                transform: translateY(-50%) rotate(0deg)
+            }
+
+            to {
+                transform: translateY(-50%) rotate(359deg)
+            }
+        }
     </style>
     <!--  -->
     <h1>GC Task Success Survey</h1>
@@ -35,7 +82,6 @@
                 <label for="Department">Department</label>
                 <select class="form-control" id="Department" name="Department" data-column="5">
                     <option value="">All</option>
-
                     <!-- DEPARTMENTS -->
                 </select>
                 <h2 class="mrgn-lft h3">OR</h2>
@@ -63,8 +109,17 @@
                     <option value="Transport">Transport</option>
                     <option value="Travel">Travel</option>
                     <option value="Veterans">Veterans</option>
+                    <option value="Other">Other</option>
                     <!-- THEMES -->
                 </select>
+                <h2 class="mrgn-lft h3">OR</h2>
+                <br>
+                <label for="autocomplete-input">Task</label>
+                <div id="autocomplete" class="autocomplete">
+                    <input class="autocomplete-input form-control" placeholder="Search for a task"
+                        aria-label="Search for a task">
+                    <ul class="autocomplete-result-list"></ul>
+                </div>
                 <h2 class="mrgn-lft h3">AND</h2>
                 <br>
                 <label for="dataSet">Data set</label>
@@ -72,75 +127,70 @@
                     <option value="">All entries</option>
                     <option value="true">Entries with comments</option>
                 </select>
-                <div id="autocomplete" class="autocomplete">
-                    <input class="autocomplete-input" placeholder="Search for a task" aria-label="Search for a task">
-                    <ul class="autocomplete-result-list"></ul>
+            </div>
+            <div class="form-horizontal col-md-5">
+                <label for="date">Date range</label>
+                <div class="form-group">
+                    <label for="min" class="col-sm-4 control-label">Start date:</label>
+                    <input type="date" class="col-sm-8 form-control" id="min" name="min">
+                </div>
+                <div class="form-group">
+                    <label for="max" class="col-sm-4 control-label">End date:</label>
+                    <input type="date" class="col-sm-8 form-control" id="max" name="max">
                 </div>
             </div>
-    </div>
-    <div class="form-horizontal col-md-5">
-        <label for="date">Date range</label>
-        <div class="form-group">
-            <label for="min" class="col-sm-4 control-label">Start date:</label>
-            <input type="date" class="col-sm-8 form-control" id="min" name="min">
-        </div>
-        <div class="form-group">
-            <label for="max" class="col-sm-4 control-label">End date:</label>
-            <input type="date" class="col-sm-8 form-control" id="max" name="max">
-        </div>
-    </div>
-    <div class="clearfix"></div>
-    <div class="btn-group-lg mrgn-bttm-lg mrgn-tp-lg col-md-12">
-        <!-- <button type="submit" class="btn btn-primary" aria-controls="topTaskTable" id="filter">Filter</button> -->
-        <button type="reset" class="btn btn-default" id="reset">Reset to defaults</button>
-    </div>
-    </form>
+            <div class="clearfix"></div>
+            <div class="btn-group-lg mrgn-bttm-lg mrgn-tp-lg col-md-12">
+                <!-- <button type="submit" class="btn btn-primary" aria-controls="topTaskTable" id="filter">Filter</button> -->
+                <button type="reset" class="btn btn-default" id="reset">Reset to defaults</button>
+            </div>
+        </form>
 
-    <div class="col-md-2 mrgn-tp-lg">
-        <table id="topTaskTable" class="hidden">
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>Time stamp</th>
-                    <th>Survey Referrer</th>
-                    <th>Language</th>
-                    <th>Device</th>
-                    <th>Screener</th>
-                    <th>Department</th>
-                    <th>Theme</th>
-                    <th>Theme Other</th>
-                    <th>Grouping</th>
-                    <th>Task</th>
-                    <th>Task Other</th>
-                    <th>Task Satisfaction</th>
-                    <th>Task Ease</th>
-                    <th>Task Completion</th>
-                    <th>Task Improve</th>
-                    <th>Task Improve Comment</th>
-                    <th>Task Why Not</th>
-                    <th>Task Why Not Comment</th>
-                    <th>Sampling</th>
-                    <th>Sampling Invitation</th>
-                    <th>Sampling GC</th>
-                    <th>Sampling Canada</th>
-                    <th>Sampling Theme</th>
-                    <th>Sampling Institution</th>
-                    <th>Sampling Group</th>
-                    <th>Sampling Task</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!--<tr th:remove="tag" th:utext="${data}"></tr> -->
-            </tbody>
+        <div class="col-md-2 mrgn-tp-lg">
+            <table id="topTaskTable" class="hidden">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Time stamp</th>
+                        <th>Survey Referrer</th>
+                        <th>Language</th>
+                        <th>Device</th>
+                        <th>Screener</th>
+                        <th>Department</th>
+                        <th>Theme</th>
+                        <th>Theme Other</th>
+                        <th>Grouping</th>
+                        <th>Task</th>
+                        <th>Task Other</th>
+                        <th>Task Satisfaction</th>
+                        <th>Task Ease</th>
+                        <th>Task Completion</th>
+                        <th>Task Improve</th>
+                        <th>Task Improve Comment</th>
+                        <th>Task Why Not</th>
+                        <th>Task Why Not Comment</th>
+                        <th>Sampling</th>
+                        <th>Sampling Invitation</th>
+                        <th>Sampling GC</th>
+                        <th>Sampling Canada</th>
+                        <th>Sampling Theme</th>
+                        <th>Sampling Institution</th>
+                        <th>Sampling Group</th>
+                        <th>Sampling Task</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!--<tr th:remove="tag" th:utext="${data}"></tr> -->
+                </tbody>
 
-        </table>
-    </div>
+            </table>
+        </div>
     </div>
 </th:block>
 <th:block layout:fragment="script">
     <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/1.6.1/js/buttons.flash.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/1.6.1/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables2.net/buttons/1.6.1/js/buttons.html5.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/1.6.1/js/buttons.print.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/1.6.1/js/dataTables.buttons.min.js"></script>
     <script src="https://cdn.datatables.net/colreorder/1.5.2/js/dataTables.colReorder.min.js"></script>
@@ -378,7 +428,8 @@
                     // There was an error
                     console.warn('Something went wrong.', err);
                 });
-            const taskList = [];
+
+            const taskList = ["COVID-19 cases, statistics", "Vaccines and treatment", "Get your Canadian COVID-19 proof of vaccination", "Symptoms of COVID-19", "Testing for COVID-19", "Prevention, masks", "Canada Recovery Caregiving Benefit (CRCB)", "Canada Recovery Sickness Benefit (CRSB)", "Canada Recovery Benefit (CRB)", "Canada Worker Lockdown Benefit (CWLB)", "Tourism and Hospitality Recovery Program (THRP)", "Hardest-Hit Businesses Recovery Program (HHBRP)", "Canada Emergency Wage Subsidy (CEWS)", "Canada Emergency Rent Subsidy (CERS)", "Canada Recovery Hiring Program (CRHP)", "COVID-19 requirements for travellers to Canada", "Travel inside Canada", "Travel outside Canada", "Other - Reason for my visit is not in this list"];
             new Autocomplete('#autocomplete', {
                 search: input => {
                     if (input.length < 1) { return [] }
