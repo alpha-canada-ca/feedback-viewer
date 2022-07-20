@@ -113,15 +113,13 @@ public class TopTaskController {
     
     @RequestMapping(value = "/topTaskSurvey/departments")
     @ResponseBody
-	public String paginationProblemData(HttpServletRequest request) {
+	public String departmentData(HttpServletRequest request) {
     	return  "AAFC / AAC,ATSSC / SCDATA,CATSA / ACSTA,CFIA / ACIA,CIRNAC / RCAANC,NSERC / CRSNG,CBSA / ASFC,CCG / GCC,CGC / CCG,"
 				+ "CIHR / IRSC,CIPO / OPIC,CRA / ARC,CRTC / CRTC,CSA / ASC,CSEC / CSTC,CSPS / EFPC,DFO / MPO,DND / MDN,ECCC / ECCC,"
 				+ "ESDC / EDSC,FCAC / ACFC,FIN / FIN,GAC / AMC,HC / SC,INFC / INFC,IRCC / IRCC,ISC / SAC,ISED / ISDE,JUS / JUS,"
 				+ "LAC / BAC,NFB / ONF,NRC / CNRC,NRCan / RNCan,OSB / BSF,PBC / CLCC,PC / PC,PCH / PCH,PCO / BCP,PHAC / ASPC,"
 				+ "PS / SP,PSC / CFP,SSC / PSC,PSPC / SPAC,RCMP / GRC,StatCan / StatCan,TBS / SCT,TC / TC,VAC / ACC,WAGE / FEGC,WD / DEO";
     }
-
-    			
 
 	@GetMapping(value = "/topTaskSurvey")
 	public ModelAndView topTaskSurvey(HttpServletRequest request) throws Exception {
