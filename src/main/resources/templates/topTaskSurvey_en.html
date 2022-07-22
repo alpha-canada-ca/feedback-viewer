@@ -434,16 +434,19 @@
                 search: input => {
                     if (input.length < 1) { return [] }
                     return taskList.filter(task => {
-                        return task.toLowerCase()
-                            .startsWith(input.toLowerCase())
+                    return task.toLowerCase()
+                        .startsWith(input.toLowerCase())
                     })
                 },
-                getResultValue: result => result
+                onSubmit: result => {
+                    alert(`You selected ${result}`)
+                }
             })
 
             const DateColumn = 0;
             const DepartmentColumn = 6;
             const ThemeColumn = 7;
+            const TaskColum = 10;
             const TaskOtherColumn = 11;
 
             var flag = false;
