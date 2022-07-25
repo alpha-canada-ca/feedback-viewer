@@ -429,24 +429,12 @@
                     console.warn('Something went wrong.', err);
                 });
 
-            const taskList = ["COVID-19 cases, statistics", "Vaccines and treatment", "Get your Canadian COVID-19 proof of vaccination", "Symptoms of COVID-19", "Testing for COVID-19", "Prevention, masks", "Canada Recovery Caregiving Benefit (CRCB)", "Canada Recovery Sickness Benefit (CRSB)", "Canada Recovery Benefit (CRB)", "Canada Worker Lockdown Benefit (CWLB)", "Tourism and Hospitality Recovery Program (THRP)", "Hardest-Hit Businesses Recovery Program (HHBRP)", "Canada Emergency Wage Subsidy (CEWS)", "Canada Emergency Rent Subsidy (CERS)", "Canada Recovery Hiring Program (CRHP)", "COVID-19 requirements for travellers to Canada", "Travel inside Canada", "Travel outside Canada", "Other - Reason for my visit is not in this list"];
-            new Autocomplete('#autocomplete', {
-                search: input => {
-                    if (input.length < 1) { return [] }
-                    return taskList.filter(task => {
-                    return task.toLowerCase()
-                        .startsWith(input.toLowerCase())
-                    })
-                },
-                onSubmit: result => {
-                    alert(`You selected ${result}`)
-                }
-            })
+           
 
             const DateColumn = 0;
             const DepartmentColumn = 6;
             const ThemeColumn = 7;
-            const TaskColum = 10;
+            const TaskColumn = 10;
             const TaskOtherColumn = 11;
 
             var flag = false;
@@ -560,6 +548,23 @@
                         .draw()
                 }
             });
+
+            const taskList = ["COVID-19 cases, statistics", "Vaccines and treatment", "Get your Canadian COVID-19 proof of vaccination", "Symptoms of COVID-19", "Testing for COVID-19", "Prevention, masks", "Canada Recovery Caregiving Benefit (CRCB)", "Canada Recovery Sickness Benefit (CRSB)", "Canada Recovery Benefit (CRB)", "Canada Worker Lockdown Benefit (CWLB)", "Tourism and Hospitality Recovery Program (THRP)", "Hardest-Hit Businesses Recovery Program (HHBRP)", "Canada Emergency Wage Subsidy (CEWS)", "Canada Emergency Rent Subsidy (CERS)", "Canada Recovery Hiring Program (CRHP)", "COVID-19 requirements for travellers to Canada", "Travel inside Canada", "Travel outside Canada", "Other - Reason for my visit is not in this list"];
+            new Autocomplete('#autocomplete', {
+                search: input => {
+                    if (input.length < 1) { return [] }
+                    return taskList.filter(task => {
+                    return task.toLowerCase()
+                        .startsWith(input.toLowerCase())
+                    })
+                },
+                onSubmit: result => {
+                    table
+                        .column(TaskColumn)
+                        .search(result)
+                        .draw();
+                }
+            })
 
         });
     </script>
