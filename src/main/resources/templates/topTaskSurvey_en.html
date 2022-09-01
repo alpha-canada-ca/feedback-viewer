@@ -427,7 +427,7 @@
 
 
                 (async () => {
-                    const raw = await fetch('/topTaskSurvey/taskList');
+                    const raw = await fetch('/topTaskSurvey/taskList/en');
                     return JSON.parse(await raw.text());
                     })().then((taskList) => {
                         autocomplete(taskList);

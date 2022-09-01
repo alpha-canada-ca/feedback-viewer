@@ -20,7 +20,56 @@
             transform: translate(-50%, -50%);
             visibility: visible;
         }
+        
+        .autocomplete-result-list {
+            margin: 0;
+            border: 1px solid rgba(0, 0, 0, .12);
+            padding: 0;
+            box-sizing: border-box;
+            max-height: 296px;
+            overflow-y: auto;
+            background: #fff;
+            list-style: none;
+            box-shadow: 0 2px 2px rgba(0, 0, 0, .16)
+        }
+        
+        [data-position=below] .autocomplete-result-list {
+            margin-top: -1px;
+            border-top-color: transparent;
+            border-radius: 0 0 8px 8px;
+            padding-bottom: 8px
+        }
+        
+        [data-position=above] .autocomplete-result-list {
+            margin-bottom: -1px;
+            border-bottom-color: transparent;
+            border-radius: 8px 8px 0 0;
+            padding-top: 8px
+        }
+        
+        .autocomplete-result {
+            cursor: default;
+            padding: 12px 12px 12px 48px;
+            background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjY2NjIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PGNpcmNsZSBjeD0iMTEiIGN5PSIxMSIgcj0iOCIvPjxwYXRoIGQ9Ik0yMSAyMWwtNC00Ii8+PC9zdmc+");
+            background-repeat: no-repeat;
+            background-position: 12px
+        }
+        
+        .autocomplete-result:hover,
+        .autocomplete-result[aria-selected=true] {
+            background-color: rgba(0, 0, 0, .06)
+        }
+        
+        @keyframes rotate {
+            0% {
+                transform: translateY(-50%) rotate(0deg)
+            }
+            to {
+                transform: translateY(-50%) rotate(359deg)
+            }
+        }
     </style>
+    <!--  -->
     <h1>Sondage sur la réussite de tâches</h1>
     <p class="mrgn-tp-md">Pour accéder aux résultats de l'enquête sur la réussite des tâches, faites des sélections à l'aide des filtres, puis téléchargez vos données sous forme de fichier Excel ou CSV.</p>
     <h2 class="mrgn-lft-md h3">Filtre</h2>
@@ -53,12 +102,20 @@
                     <option value="Policing">Police</option>
                     <option value="PublicService">Service public</option>
                     <option value="Science">Science</option>
-                    <option value="Taxes">Taxes</option>
+                    <option value="Taxes">Impôts</option>
                     <option value="Transport">Transport</option>
                     <option value="Travel">Voyage</option>
                     <option value="Veterans">Anciens combattants</option>
+                    <option value="Other">Autre</option>
                     <!-- THEMES -->
                 </select>
+                <h2 class="mrgn-lft h3">ET</h2>
+                <br>
+                <label for="autocomplete-input">Task</label>
+                <div id="autocomplete" class="autocomplete">
+                    <input class="autocomplete-input form-control" placeholder="Recherche d'une tâche" aria-label="Recherche d'une tâche">
+                    <ul class="autocomplete-result-list"></ul>
+                </div>
                 <h2 class="mrgn-lft h3">ET</h2>
                 <br>
                 <label for="dataSet">Jeu de données</label>
@@ -80,10 +137,10 @@
             </div>
             <div class="clearfix"></div>
             <div class="btn-group-lg mrgn-bttm-lg mrgn-tp-lg col-md-12">
-                <!-- <button type="submit" class="btn btn-primary" aria-controls="topTaskTable" id="filter">Filter</button> -->
                 <button type="reset" class="btn btn-default" id="reset">Rétablir les valeurs par défaut</button>
             </div>
         </form>
+
         <div class="col-md-2 mrgn-tp-lg">
             <table id="topTaskTable" class="hidden">
                 <thead>
@@ -135,9 +192,9 @@
     <script src="https://cdn.datatables.net/buttons/1.6.1/js/buttons.html5.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/1.6.1/js/buttons.print.min.js"></script>
     <script src="https://cdn.datatables.net/colreorder/1.5.2/js/dataTables.colReorder.min.js"></script>
+    <script src="https://unpkg.com/@trevoreyre/autocomplete-js"></script>
 
     <script type="text/javascript" src="js/spring-friendly.min.js"></script>
-
     <script th:inline="javascript">
         $(document).ready(function() {
             function newexportaction(e, dt, button, config) {
@@ -270,7 +327,7 @@
                     processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span> '
                 },
                 "lengthMenu": [
-                    10, 25, 50, -1
+                    50, -1
                 ],
                 retrieve: true,
                 'serverSide': true,
@@ -345,7 +402,7 @@
                 }]
             });
 
-            fetch('/topTaskSurvey/tasks')
+            fetch('/topTaskSurvey/departments')
                 .then(function(response) {
                     // The API call was successful!
                     return response.text();
@@ -366,9 +423,25 @@
                     console.warn('Something went wrong.', err);
                 });
 
+
+
+                (async () => {
+                    const raw = await fetch('/topTaskSurvey/taskList/fr');
+                    return JSON.parse(await raw.text());
+                    })().then((taskList) => {
+                        autocomplete(taskList);
+                    console.log(taskList);
+                    }).catch((e) => {
+                    console.error("Something went horribly wrong", e);
+                });
+
+
+
+
             const DateColumn = 0;
             const DepartmentColumn = 6;
             const ThemeColumn = 7;
+            const TaskColumn = 10;
             const TaskOtherColumn = 11;
 
             var flag = false;
@@ -483,7 +556,27 @@
                 }
             });
 
-        });
+            function autocomplete(taskList){
+                new Autocomplete('#autocomplete', {
+                        search: input => {
+                            if (input.length < 1) {
+                                return []
+                            }
+                            return taskList.filter(task => {
+                                return task.toLowerCase()
+                                    .startsWith(input.toLowerCase())
+                            })
+                        },
+                        //TODO: make sure that the filter is working with the dataset, themes, and departments without any side effects.
+                        onSubmit: result => {
+                            table
+                                .column(TaskColumn)
+                                .search(result)
+                                .draw();
+                        }
+                    })
+                }
+    });
     </script>
 </th:block>
 
