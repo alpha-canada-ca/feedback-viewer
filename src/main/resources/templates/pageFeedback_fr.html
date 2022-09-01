@@ -194,6 +194,7 @@
                                 <label for="rangeSelection">ou choisir
                             <span class="wb-inv">Date de début</span></label>
                                 <select class="form-control" id="rangeSelection" name="rangeSelection">
+                                    <option value="">Durée</option>
                                     <option value="today">Aujourd'hui</option>
                                     <option value="yesterday">Hier</option>
                                     <option value="seven">7 derniers jours</option>
@@ -358,6 +359,7 @@
 
     <script th:inline="javascript">
         $(document).ready(function() {
+
             function newexportaction(e, dt, button, config) {
                 var self = this;
                 var oldStart = dt
@@ -476,7 +478,6 @@
                     .ajax
                     .reload();
             };
-
             var today = new Date();
             var dd = String(today.getDate()).padStart(2, '0');
             var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
@@ -494,10 +495,9 @@
                 ],
                 processing: true,
                 language: {
-
+                    "processing": '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Traitement...</span> ',
                     "emptyTable": "Aucune donnée disponible dans le tableau",
                     "loadingRecords": "Chargement...",
-                    "processing": "Traitement...",
                     "aria": {
                         "sortAscending": ": activer pour trier la colonne par ordre croissant",
                         "sortDescending": ": activer pour trier la colonne par ordre décroissant"
@@ -567,10 +567,8 @@
                         "previous": "Précédente"
                     },
                     "zeroRecords": "Aucune entrée correspondante trouvée",
-
-                    url: "https://cdn.datatables.net/plug-ins/1.11.4/i18n/fr-FR.json",
-                    processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading..n.</span> '
                 },
+
                 lengthMenu: false,
                 "drawCallback": function(settings) {
                     fetchTotalCommentsCount();
@@ -670,7 +668,7 @@
                 .appendTo('#problemTable thead');
             $('#problemTable thead tr:eq(1) th').each(function(i) {
                 var title = $(this).text();
-                $(this).html('<input type="text" id="searchBox' + COLUMNS[i] + '" placeholder="Search ' + title + '" />');
+                $(this).html('<input type="text" id="searchBox' + COLUMNS[i] + '" placeholder="Recherche ' + title + '" />');
 
                 $('input', this)
                     .unbind()
@@ -691,15 +689,15 @@
             table.column(TimestampColIndex).visible(false);
             table.column(TitleColIndex).visible(false);
 
-            $('#searchBoxDept').closest('th').hide();
-            $('#searchBoxSection').closest('th').hide();
-            $('#searchBoxTheme').closest('th').hide();
-
             $('#searchBoxTimeStamp').closest('th').hide();
             $('#searchBoxUrlEntries').closest('th').hide();
             $('#searchBoxTitle').closest('th').hide();
 
             var minMaxDateChosen = false;
+
+
+
+
 
             function clearText() {
                 $("#searchBoxDate").val("");
@@ -723,33 +721,80 @@
                 $('#total_comments').hide()
 
                 $(".sorting-cnt").removeClass("hidden");
-
                 table
-                    .column(CommentColIndex)
-                    .visible(true)
-                    .column(ProblemColIndex)
-                    .visible(true)
-                    .column(DateColIndex)
-                    .visible(true)
-                    .column(urlEntriesColIndex)
-                    .visible(false)
-                    .column(TimestampColIndex)
-                    .visible(false)
-                    .column(TitleColIndex)
-                    .visible(false)
+                    .column(UrlColIndex).search("")
+                    .column(LangColIndex).search("")
+                    .column(DeptColIndex).search("")
+                    .column(SectionColIndex).search("")
+                    .column(ThemeColIndex).search("")
+                    .column(CommentColIndex).search("").visible(true)
+                    .column(ProblemColIndex).search("").visible(true)
+                    .column(DateColIndex).search("").visible(true)
+                    .column(urlEntriesColIndex).search("").visible(false)
+                    .column(TimestampColIndex).search("").visible(false)
+                    .column(TitleColIndex).search("").visible(false)
+                    .page.len(10)
                     .draw()
             }
 
             $("#clear-text").click(clearText);
 
+
+
+            $('#rangeSelection', this).on('keyup change', function() {
+                clearText();
+                if (this.value == "") {
+                    rangeChosen = false;
+                    table
+                        .column(DateColIndex)
+                        .search("")
+                        .draw()
+                }
+                if (this.value != "") {
+                    rangeChosen = true;
+                    console.log(this.value + " gmug8w7erhg87whrf78w")
+                    table
+                        .column(DateColIndex)
+                        .search(this.value)
+                        .page.len(10)
+                        .draw()
+                    $('#themeINV').val("");
+                    $('#sectionINV').val("");
+                    $('#deptINV').val("");
+                }
+                if ($('#Department').val() && rangeChosen) {
+                    table
+                        .column(ThemeColIndex)
+                        .search($('#dt_theme').val())
+                        .draw();
+                }
+                if ($('#Department').val() && rangeChosen) {
+                    table
+                        .column(DeptColIndex)
+                        .search($('#Department').val())
+                        .draw();
+                }
+                if ($('#section').val() && rangeChosen) {
+                    table
+                        .column(SectionColIndex)
+                        .search($('#section').val())
+                        .draw()
+                }
+            })
+
             $('#min', this).on('keyup change', function() {
+                clearText();
                 minMaxDateChosen = false;
                 if (this.value != "" && $('#max').val() != "") {
                     minMaxDateChosen = true;
                     table
                         .column(DateColIndex)
                         .search(this.value + ":" + $('#max').val())
+                        .page.len(10)
                         .draw();
+                    $('#themeINV').val("");
+                    $('#sectionINV').val("");
+                    $('#deptINV').val("");
                 }
                 if ($('#dt_theme').val() != "" && minMaxDateChosen) {
                     table
@@ -772,13 +817,18 @@
             });
 
             $('#max', this).on('keyup change', function() {
+                clearText();
                 minMaxDateChosen = false;
                 if (this.value != "" && $('#min').val() != "") {
                     minMaxDateChosen = true;
                     table
                         .column(DateColIndex)
                         .search($('#min').val() + ":" + this.value)
+                        .page.len(10)
                         .draw();
+                    $('#themeINV').val("");
+                    $('#sectionINV').val("");
+                    $('#deptINV').val("");
                 }
                 if ($('#dt_theme').val() != "" && minMaxDateChosen) {
                     table
@@ -801,6 +851,7 @@
             });
 
             $('#dt_theme', this).on('keyup change', function() {
+                clearText();
                 if (this.value == "") {
                     table
                         .column(ThemeColIndex)
@@ -811,7 +862,11 @@
                     table
                         .column(ThemeColIndex)
                         .search(this.value)
+                        .page.len(10)
                         .draw()
+                    $('#themeINV').val("");
+                    $('#sectionINV').val("");
+                    $('#deptINV').val("");
                 }
                 if (minMaxDateChosen) {
                     table
@@ -834,17 +889,24 @@
             });
 
             $('#Department', this).on('keyup change', function() {
+                clearText();
                 if (this.value == "") {
+                    deptChosen = false;
                     table
                         .column(DeptColIndex)
                         .search("")
                         .draw()
                 }
                 if (this.value != "") {
+                    deptChosen = true;
                     table
                         .column(DeptColIndex)
                         .search(this.value)
+                        .page.len(10)
                         .draw()
+                    $('#themeINV').val("");
+                    $('#sectionINV').val("");
+                    $('#deptINV').val("");
                 }
                 if (minMaxDateChosen) {
                     table
@@ -867,17 +929,24 @@
             });
 
             $('#section', this).on('keyup change', function() {
+                clearText();
                 if (this.value == "") {
+                    sectionChosen = false;
                     table
                         .column(SectionColIndex)
                         .search("")
                         .draw()
                 }
                 if (this.value != "") {
+                    sectionChosen = true;
                     table
                         .column(SectionColIndex)
                         .search(this.value)
+                        .page.len(10)
                         .draw()
+                    $('#themeINV').val("");
+                    $('#sectionINV').val("");
+                    $('#deptINV').val("");
                 }
                 if (minMaxDateChosen) {
                     table
@@ -926,8 +995,15 @@
                         .visible(true)
                         .column(TitleColIndex)
                         .visible(true)
+                        .page
+                        .len(-1)
                         .draw()
-
+                    $('#Department').val("");
+                    $('#dt_theme').val("");
+                    $('#section').val("");
+                    $('#min').val("");
+                    $('#max').val("");
+                    $('#rangeSelection').val("");
                     $('#searchBoxDate').closest('th').hide()
                     $('#searchBoxTimeStamp').closest('th').hide()
                     $('#searchBoxComment').closest('th').hide()
@@ -978,8 +1054,16 @@
                         .visible(true)
                         .column(TitleColIndex)
                         .visible(true)
+                        .page
+                        .len(-1)
                         .draw()
 
+                    $('#Department').val("");
+                    $('#dt_theme').val("");
+                    $('#section').val("");
+                    $('#min').val("");
+                    $('#max').val("");
+                    $('#rangeSelection').val("");
                     $('#searchBoxDate').closest('th').hide()
                     $('#searchBoxTimeStamp').closest('th').hide()
                     $('#searchBoxComment').closest('th').hide()
@@ -1029,8 +1113,16 @@
                         .visible(true)
                         .column(TitleColIndex)
                         .visible(true)
+                        .page
+                        .len(-1)
                         .draw()
 
+                    $('#Department').val("");
+                    $('#dt_theme').val("");
+                    $('#section').val("");
+                    $('#min').val("");
+                    $('#max').val("");
+                    $('#rangeSelection').val("");
                     $('#searchBoxDate').closest('th').hide()
                     $('#searchBoxTimeStamp').closest('th').hide()
                     $('#searchBoxComment').closest('th').hide()
@@ -1055,6 +1147,8 @@
                         .draw()
                 }
             });
+
+
         });
     </script>
 
