@@ -139,223 +139,134 @@ public class ProblemController {
 		Criteria findProcessed = where("processed").is("true");
 
 		String lang = (String) request.getSession().getAttribute("lang");
-		if (lang.equals("en")) {
+		String dateSearchVal = input.getColumn("problemDate").get().getSearch().getValue();
+		String deptSearchVal = input.getColumn("institution").get().getSearch().getValue();
+		String sectionSearchVal = input.getColumn("section").get().getSearch().getValue();
+		String themeSearchVal = input.getColumn("theme").get().getSearch().getValue();
+		String pattern = "yyyy-MM-dd";
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 
-			String           dateSearchVal    = input.getColumn("problemDate").get().getSearch().getValue();
-			String           deptSearchVal    = input.getColumn("institution").get().getSearch().getValue();
-			String           sectionSearchVal = input.getColumn("section").get().getSearch().getValue();
-			String           themeSearchVal   = input.getColumn("theme").get().getSearch().getValue();
-			String           pattern          = "yyyy-MM-dd";
-			SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 
-			List<Column> columns = input.getColumns();
+		if (dateSearchVal.contains(":")) {
 
-			for (Column col : columns) {
-				System.out.println(col);
-			}
-			System.out.println("---------------------");
-			if (dateSearchVal.contains(":")) {
+			String[] ret = dateSearchVal.split(":");
 
-				String[] ret = dateSearchVal.split(":");
+			if (ret.length == 2) {
 
-				if (ret.length == 2) {
+				String dateSearchValA = ret[0];
 
-					String dateSearchValA = ret[0];
+				String dateSearchValB = ret[1];
 
-					String dateSearchValB = ret[1];
-
-					input.getColumn("problemDate").get().getSearch().setValue("");
-
-					Criteria dateCriteria = where("problemDate").gte(dateSearchValA).lte(dateSearchValB);
-
-					if (!dateSearchValA.equals("") && !dateSearchValB.equals("")) {
-						return problemRepository.findAll(input, dateCriteria, findProcessed);
-					}
-				}
-			} else if (dateSearchVal.contains("today")) {
 				input.getColumn("problemDate").get().getSearch().setValue("");
-				String   today        = simpleDateFormat.format(new Date(System.currentTimeMillis()));
-				Criteria dateCriteria = where("problemDate").is(today);
-				return problemRepository.findAll(input, dateCriteria, findProcessed);
-			} else if (dateSearchVal.contains("yesterday")) {
-				input.getColumn("problemDate").get().getSearch().setValue("");
-				String   yesterday    = simpleDateFormat.format(new Date(System.currentTimeMillis() - DAY_IN_MS));
-				Criteria dateCriteria = where("problemDate").is(yesterday);
-				return problemRepository.findAll(input, dateCriteria, findProcessed);
-			} else if (dateSearchVal.contains("seven")) {
-				input.getColumn("problemDate").get().getSearch().setValue("");
-				String   lastSeven    = simpleDateFormat.format(new Date(System.currentTimeMillis() - (7 * DAY_IN_MS)));
-				Criteria dateCriteria = where("problemDate").gte(lastSeven);
-				return problemRepository.findAll(input, dateCriteria, findProcessed);
-			} else if (dateSearchVal.contains("fifteen")) {
-				input.getColumn("problemDate").get().getSearch().setValue("");
-				String   lastFifteen  = simpleDateFormat.format(new Date(System.currentTimeMillis() - (15 * DAY_IN_MS)));
-				Criteria dateCriteria = where("problemDate").gte(lastFifteen);
-				return problemRepository.findAll(input, dateCriteria, findProcessed);
-			} else if (dateSearchVal.contains("thirty")) {
-				input.getColumn("problemDate").get().getSearch().setValue("");
-				String   lastThirty   = simpleDateFormat.format(new Date(System.currentTimeMillis() - (30 * DAY_IN_MS)));
-				Criteria dateCriteria = where("problemDate").gte(lastThirty);
-				return problemRepository.findAll(input, dateCriteria, findProcessed);
-			}
 
-			if (deptSearchVal.contains("~") || sectionSearchVal.contains("~") || themeSearchVal.contains("~")) {
-				// ternary operator for if it exists to set the value.
-				String deptValue = deptSearchVal.equals("") ? ""
-						:  deptSearchVal.substring(0, deptSearchVal.length() - 2);
-				String sectionValue = sectionSearchVal.equals("") ? ""
-						:  sectionSearchVal.substring(0, sectionSearchVal.length() - 2);
-				String themeValue = themeSearchVal.equals("") ? ""
-						:  themeSearchVal.substring(0, themeSearchVal.length() - 2);
+				Criteria dateCriteria = where("problemDate").gte(dateSearchValA).lte(dateSearchValB);
 
-				input.getColumn("institution").get().getSearch().setValue(deptValue);
-				input.getColumn("section").get().getSearch().setValue(sectionValue);
-				input.getColumn("theme").get().getSearch().setValue(themeValue);
+				if (!dateSearchValA.equals("") && !dateSearchValB.equals("") && lang.equals("fr")) {
+					DataTablesOutput<Problem> problems = problemRepository.findAll(input, dateCriteria,
+							findProcessed); // this part checks date range and returns without translations
+					for (int i = 0; i < problems.getData().size(); i++) {
+						problems.getData().get(i)
+								.setInstitution(translationsMap.get(problems.getData().get(i).getInstitution()));
+						problems.getData().get(i)
+								.setProblem(translationsMap.get(problems.getData().get(i).getProblem()));
+						problems.getData().get(i)
+								.setTheme(translationsMap.get(problems.getData().get(i).getTheme()));
+						problems.getData().get(i)
+								.setSection(translationsMap.get(problems.getData().get(i).getSection()));
 
-				input.setStart(0);
-				input.setLength(-1);
-
-				DataTablesOutput<Problem> urls = problemRepository.findAll(input);
-
-				HashMap<String, Integer> urlCountMap       = new HashMap<>();
-				HashMap<String, List<String>> urlCountMap2 = new HashMap<>();
-
-				// Convert for loop to stream for efficiency.
-
-				for (int i = 0; i < urls.getData().size(); i++) {
-					int count = urlCountMap.getOrDefault(urls.getData().get(i).getUrl(), 0);
-					urlCountMap.put(urls.getData().get(i).getUrl(), count + 1);
-					System.out.println(i + 1);
-					urlCountMap2.put(urls.getData().get(i).getUrl(), Arrays.asList(urls.getData().get(i).getTitle(),
-							urls.getData().get(i).getLanguage(), urls.getData().get(i).getInstitution(),
-							urls.getData().get(i).getTheme(), urls.getData().get(i).getSection()));
-				}
-				System.out.println("size: " + urlCountMap.size() + "  ---- " + urlCountMap);
-
-				// sort Map
-				HashMap<String, Integer> sortedUrlCountMap = sortByValue(urlCountMap, DESC);
-
-				ArrayList<Problem> urlList       = new ArrayList<>();
-				int                index         = 0;
-				                   totalComments = 0;
-				for (String key : sortedUrlCountMap.keySet()) {
-					totalComments += urlCountMap.get(key);
-					urls.getData().get(index).setUrl(key);
-					urls.getData().get(index).setUrlEntries(sortedUrlCountMap.get(key));
-					urls.getData().get(index).setTitle(urlCountMap2.get(key).get(0));
-					urls.getData().get(index).setLanguage(urlCountMap2.get(key).get(1));
-					urls.getData().get(index).setInstitution(urlCountMap2.get(key).get(2));
-					urls.getData().get(index).setTheme(urlCountMap2.get(key).get(3));
-					urls.getData().get(index).setSection(urlCountMap2.get(key).get(4));
-					urlList.add(urls.getData().get(index));
-					index++;
-				}
-
-				urls.setRecordsFiltered(sortedUrlCountMap.size());
-				urls.setData(urlList);
-
-				return urls;
-			}
-			return problemRepository.findAll(input, findProcessed);
-		}
-		if (lang.equals("fr")) {
-			String dateSearchVal    = input.getColumn("problemDate").get().getSearch().getValue();
-			String deptSearchVal    = input.getColumn("institution").get().getSearch().getValue();
-			String sectionSearchVal = input.getColumn("section").get().getSearch().getValue();
-			String themeSearchVal   = input.getColumn("theme").get().getSearch().getValue();
-
-			if (dateSearchVal.contains(":")) {
-
-				String[] ret = dateSearchVal.split(":");
-
-				if (ret.length == 2) {
-
-					String dateSearchValA = ret[0];
-
-					String dateSearchValB = ret[1];
-
-					input.getColumn("problemDate").get().getSearch().setValue("");
-
-					Criteria dateCriteria = where("problemDate").gte(dateSearchValA).lte(dateSearchValB);
-
-					if (!dateSearchValA.equals("") && !dateSearchValB.equals("")) {
-						DataTablesOutput<Problem> problems = problemRepository.findAll(input, dateCriteria,
-								findProcessed); // this part checks date range and returns without translations
-						for (int i = 0; i < problems.getData().size(); i++) {
-							problems.getData().get(i)
-									.setInstitution(translationsMap.get(problems.getData().get(i).getInstitution()));
-							problems.getData().get(i)
-									.setProblem(translationsMap.get(problems.getData().get(i).getProblem()));
-							problems.getData().get(i)
-									.setTheme(translationsMap.get(problems.getData().get(i).getTheme()));
-							problems.getData().get(i)
-									.setSection(translationsMap.get(problems.getData().get(i).getSection()));
-
-							List<String> tags = problems.getData().get(i).getTags();
-							for (int j = 0; j < tags.size(); j++) {
-								if (tagTranslations.containsKey(tags.get(j)))
-									tags.set(j, tagTranslations.get(tags.get(j)));
-							}
+						List<String> tags = problems.getData().get(i).getTags();
+						for (int j = 0; j < tags.size(); j++) {
+							if (tagTranslations.containsKey(tags.get(j)))
+								tags.set(j, tagTranslations.get(tags.get(j)));
 						}
-						return problems;
 					}
+					return problems;
 				}
+				return problemRepository.findAll(input, dateCriteria, findProcessed);
 			}
-			if (deptSearchVal.contains("~") || sectionSearchVal.contains("~") || themeSearchVal.contains("~")) {
-				// ternary operator for if it exists to set the value.
-				String deptValue = deptSearchVal.equals("") ? ""
-						:  deptSearchVal.substring(0, deptSearchVal.length() - 2);
-				String sectionValue = sectionSearchVal.equals("") ? ""
-						:  sectionSearchVal.substring(0, sectionSearchVal.length() - 2);
-				String themeValue = themeSearchVal.equals("") ? ""
-						:  themeSearchVal.substring(0, themeSearchVal.length() - 2);
+		} else if (dateSearchVal.contains("today")) {
+			input.getColumn("problemDate").get().getSearch().setValue("");
+			String today = simpleDateFormat.format(new Date(System.currentTimeMillis()));
+			Criteria dateCriteria = where("problemDate").is(today);
+			return problemRepository.findAll(input, dateCriteria, findProcessed);
+		} else if (dateSearchVal.contains("yesterday")) {
+			input.getColumn("problemDate").get().getSearch().setValue("");
+			String yesterday = simpleDateFormat.format(new Date(System.currentTimeMillis() - DAY_IN_MS));
+			Criteria dateCriteria = where("problemDate").is(yesterday);
+			return problemRepository.findAll(input, dateCriteria, findProcessed);
+		} else if (dateSearchVal.contains("seven")) {
+			input.getColumn("problemDate").get().getSearch().setValue("");
+			String lastSeven = simpleDateFormat.format(new Date(System.currentTimeMillis() - (7 * DAY_IN_MS)));
+			Criteria dateCriteria = where("problemDate").gte(lastSeven);
+			return problemRepository.findAll(input, dateCriteria, findProcessed);
+		} else if (dateSearchVal.contains("fifteen")) {
+			input.getColumn("problemDate").get().getSearch().setValue("");
+			String lastFifteen = simpleDateFormat.format(new Date(System.currentTimeMillis() - (15 * DAY_IN_MS)));
+			Criteria dateCriteria = where("problemDate").gte(lastFifteen);
+			return problemRepository.findAll(input, dateCriteria, findProcessed);
+		} else if (dateSearchVal.contains("thirty")) {
+			input.getColumn("problemDate").get().getSearch().setValue("");
+			String lastThirty = simpleDateFormat.format(new Date(System.currentTimeMillis() - (30 * DAY_IN_MS)));
+			Criteria dateCriteria = where("problemDate").gte(lastThirty);
+			return problemRepository.findAll(input, dateCriteria, findProcessed);
+		}
 
-				input.getColumn("institution").get().getSearch().setValue(deptValue);
-				input.getColumn("section").get().getSearch().setValue(sectionValue);
-				input.getColumn("theme").get().getSearch().setValue(themeValue);
+		if (deptSearchVal.contains("~") || sectionSearchVal.contains("~") || themeSearchVal.contains("~")) {
+			// ternary operator for if it exists to set the value.
+			String deptValue = deptSearchVal.equals("") ? ""
+					: deptSearchVal.substring(0, deptSearchVal.length() - 2);
+			String sectionValue = sectionSearchVal.equals("") ? ""
+					: sectionSearchVal.substring(0, sectionSearchVal.length() - 2);
+			String themeValue = themeSearchVal.equals("") ? ""
+					: themeSearchVal.substring(0, themeSearchVal.length() - 2);
 
-				input.setStart(0);
-				input.setLength(-1);
+			input.getColumn("institution").get().getSearch().setValue(deptValue);
+			input.getColumn("section").get().getSearch().setValue(sectionValue);
+			input.getColumn("theme").get().getSearch().setValue(themeValue);
 
-				DataTablesOutput<Problem> urls = problemRepository.findAll(input);
+			input.setStart(0);
+			input.setLength(-1);
 
-				HashMap<String, Integer> urlCountMap       = new HashMap<>();
-				HashMap<String, List<String>> urlCountMap2 = new HashMap<>();
+			DataTablesOutput<Problem> urls = problemRepository.findAll(input);
 
-				// Convert for loop to stream for efficiency.
+			HashMap<String, Integer> urlCountMap = new HashMap<>();
+			HashMap<String, List<String>> urlCountMap2 = new HashMap<>();
 
-				for (int i = 0; i < urls.getData().size(); i++) {
-					int count = urlCountMap.getOrDefault(urls.getData().get(i).getUrl(), 0);
-					urlCountMap.put(urls.getData().get(i).getUrl(), count + 1);
-					System.out.println(i + 1);
-					urlCountMap2.put(urls.getData().get(i).getUrl(), Arrays.asList(urls.getData().get(i).getTitle(),
-							urls.getData().get(i).getLanguage(), urls.getData().get(i).getInstitution(),
-							urls.getData().get(i).getTheme(), urls.getData().get(i).getSection()));
-				}
-				System.out.println("size: " + urlCountMap.size() + "  ---- " + urlCountMap);
+			// Convert for loop to stream for efficiency.
 
-				// sort Map
-				HashMap<String, Integer> sortedUrlCountMap = sortByValue(urlCountMap, DESC);
+			for (int i = 0; i < urls.getData().size(); i++) {
+				int count = urlCountMap.getOrDefault(urls.getData().get(i).getUrl(), 0);
+				urlCountMap.put(urls.getData().get(i).getUrl(), count + 1);
+				System.out.println(i + 1);
+				urlCountMap2.put(urls.getData().get(i).getUrl(), Arrays.asList(urls.getData().get(i).getTitle(),
+						urls.getData().get(i).getLanguage(), urls.getData().get(i).getInstitution(),
+						urls.getData().get(i).getTheme(), urls.getData().get(i).getSection()));
+			}
+			System.out.println("size: " + urlCountMap.size() + "  ---- " + urlCountMap);
 
-				ArrayList<Problem> urlList       = new ArrayList<>();
-				int                index         = 0;
-				                   totalComments = 0;
-				for (String key : sortedUrlCountMap.keySet()) {
-					totalComments += urlCountMap.get(key);
-					urls.getData().get(index).setUrl(key);
-					urls.getData().get(index).setUrlEntries(sortedUrlCountMap.get(key));
-					urls.getData().get(index).setTitle(urlCountMap2.get(key).get(0));
-					urls.getData().get(index).setLanguage(urlCountMap2.get(key).get(1));
-					urls.getData().get(index).setInstitution(urlCountMap2.get(key).get(2));
-					urls.getData().get(index).setTheme(urlCountMap2.get(key).get(3));
-					urls.getData().get(index).setSection(urlCountMap2.get(key).get(4));
-					urlList.add(urls.getData().get(index));
-					index++;
-				}
+			// sort Map
+			HashMap<String, Integer> sortedUrlCountMap = sortByValue(urlCountMap, DESC);
 
-				urls.setRecordsFiltered(sortedUrlCountMap.size());
-				urls.setData(urlList);
+			ArrayList<Problem> urlList = new ArrayList<>();
+			int index = 0;
+			totalComments = 0;
+			for (String key : sortedUrlCountMap.keySet()) {
+				totalComments += urlCountMap.get(key);
+				urls.getData().get(index).setUrl(key);
+				urls.getData().get(index).setUrlEntries(sortedUrlCountMap.get(key));
+				urls.getData().get(index).setTitle(urlCountMap2.get(key).get(0));
+				urls.getData().get(index).setLanguage(urlCountMap2.get(key).get(1));
+				urls.getData().get(index).setInstitution(urlCountMap2.get(key).get(2));
+				urls.getData().get(index).setTheme(urlCountMap2.get(key).get(3));
+				urls.getData().get(index).setSection(urlCountMap2.get(key).get(4));
+				urlList.add(urls.getData().get(index));
+				index++;
+			}
 
+			urls.setRecordsFiltered(sortedUrlCountMap.size());
+			urls.setData(urlList);
+
+			if (lang.equals("fr")) {
 				for (int i = 0; i < urls.getData().size(); i++) {
 					urls.getData().get(i).setInstitution(translationsMap.get(urls.getData().get(i).getInstitution()));
 					urls.getData().get(i).setProblem(translationsMap.get(urls.getData().get(i).getProblem()));
@@ -368,10 +279,13 @@ public class ProblemController {
 							tags.set(j, tagTranslations.get(tags.get(j)));
 					}
 				}
-				return urls;
-
 			}
-			DataTablesOutput<Problem> problems = problemRepository.findAll(input, findProcessed);
+
+			return urls;
+		}
+		DataTablesOutput<Problem> problems = problemRepository.findAll(input, findProcessed);
+
+		if (lang.equals("fr")) {
 			for (int i = 0; i < problems.getData().size(); i++) {
 				problems.getData().get(i)
 						.setInstitution(translationsMap.get(problems.getData().get(i).getInstitution()));
@@ -385,10 +299,11 @@ public class ProblemController {
 						tags.set(j, tagTranslations.get(tags.get(j)));
 				}
 			}
-			return problems;
-
 		}
-		return null;
+		return problems;
+
+
+
 	}
 
 	@RequestMapping(value = "/pageFeedback/totalCommentsCount")
