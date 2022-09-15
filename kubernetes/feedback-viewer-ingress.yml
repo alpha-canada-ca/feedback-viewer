@@ -15,7 +15,9 @@ spec:
     http:
       paths:
       - backend:
-          serviceName: feedback-viewer
-          servicePort: 8080
+          service:
+            name: feedback-viewer
+            port:
+              number: 8080
         path: /
         pathType: Prefix
