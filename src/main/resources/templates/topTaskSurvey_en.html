@@ -445,50 +445,58 @@
             const TaskColumn = 10;
             const TaskOtherColumn = 11;
 
-            var flag = false;
-            var flag2 = false;
+            var minMaxDateChosen = false;
+
             $('#min', this).on('keyup change', function() {
+                minMaxDateChosen = false;
                 if (this.value != "" && $('#max').val() != "") {
-                    flag = true;
+                    minMaxDateChosen = true;
                     table
                         .column(DateColumn)
                         .search(this.value + ":" + $('#max').val())
-                        .draw();
                 }
-                if ($('#dt_theme').val() != "" && flag) {
+                if ($('#dt_theme').val() != "" && minMaxDateChosen) {
                     table
                         .column(ThemeColumn)
                         .search($('#dt_theme').val())
-                        .draw()
                 }
-                if ($('#Department').val() != "" && flag) {
+                if ($('#Department').val() != "" && minMaxDateChosen) {
                     table
                         .column(DepartmentColumn)
                         .search($('#Department').val())
-                        .draw()
                 }
+                if ($('.autocomplete-input').val() != "" && minMaxDateChosen) {
+                    table
+                        .column(TaskColumn)
+                        .search($('.autocomplete-input').val())
+                }
+                table.draw();
             });
 
             $('#max', this).on('keyup change', function() {
+                minMaxDateChosen = false;
                 if (this.value != "" && $('#min').val() != "") {
-                    flag2 = true;
+                    minMaxDateChosen = true;
                     table
                         .column(DateColumn)
                         .search($('#min').val() + ":" + this.value)
-                        .draw();
                 }
-                if ($('#dt_theme').val() != "" && flag2) {
+                if ($('#dt_theme').val() != "" && minMaxDateChosen) {
                     table
                         .column(ThemeColumn)
                         .search($('#dt_theme').val())
-                        .draw()
                 }
-                if ($('#Department').val() != "" && flag2) {
+                if ($('#Department').val() != "" && minMaxDateChosen) {
                     table
                         .column(DepartmentColumn)
                         .search($('#Department').val())
-                        .draw()
                 }
+                if ($('.autocomplete-input').val() != "" && minMaxDateChosen) {
+                    table
+                        .column(TaskColumn)
+                        .search($('.autocomplete-input').val())
+                }
+                table.draw();
             });
 
             $('#dt_theme', this).on('keyup change', function() {
@@ -504,7 +512,7 @@
                         .search(this.value)
                         .draw()
                 }
-                if (flag && flag2) {
+                if (minMaxDateChosen) {
                     table
                         .column(DateColumn)
                         .search($('#min').val() + ":" + $('#max').val())
@@ -514,6 +522,12 @@
                     table
                         .column(DepartmentColumn)
                         .search($('#Department').val())
+                        .draw()
+                }
+                if ($('.autocomplete-input').val() != "") {
+                    table
+                        .column(TaskColumn)
+                        .search($('.autocomplete-input').val())
                         .draw()
                 }
             });
@@ -530,7 +544,7 @@
                         .search(this.value)
                         .draw()
                 }
-                if (flag && flag2) {
+                if (minMaxDateChosen) {
                     table
                         .column(DateColumn)
                         .search($('#min').val() + ":" + $('#max').val())
@@ -540,6 +554,12 @@
                     table
                         .column(ThemeColumn)
                         .search($('#dt_theme').val())
+                        .draw()
+                }
+                if ($('.autocomplete-input').val() != "") {
+                    table
+                        .column(TaskColumn)
+                        .search($('.autocomplete-input').val())
                         .draw()
                 }
             });
