@@ -44,8 +44,14 @@ public class TopTaskController {
     	String dateSearchVal = input.getColumn("dateTime").get().getSearch().getValue();
     	
     	String dataSetVal = input.getColumn("taskOther").get().getSearch().getValue();
-    	
-    	List<Column> columns = input.getColumns();
+
+		// escape all the brackets so that the input can return a result.
+		String taskValue = input.getColumn("task").get().getSearch().getValue();
+		taskValue = taskValue.replace("(","\\(");
+		taskValue = taskValue.replace(")","\\)");
+		input.getColumn("task").get().getSearch().setValue(taskValue);
+
+		List<Column> columns = input.getColumns();
 		
 		for(Column col: columns) {
 			System.out.println(col);
