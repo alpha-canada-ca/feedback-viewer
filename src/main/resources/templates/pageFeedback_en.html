@@ -336,12 +336,12 @@
                         <th>Comment</th>
                         <th>Problem</th>
                         <th>URL</th>
-                        <th>Total comments</th>
                         <th>Page title</th>
                         <th>Language</th>
                         <th>Department</th>
                         <th>Section</th>
                         <th>Theme</th>
+                        <th>Total comments</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -529,9 +529,6 @@
                     data: 'url',
                     "width": "30%"
                 }, {
-                    data: 'urlEntries',
-                    "width": "10%"
-                }, {
                     data: 'title',
                     "width": "50%"
                 }, {
@@ -546,6 +543,9 @@
                 }, {
                     data: 'theme',
                     visible: false
+                }, {
+                    data: 'urlEntries',
+                    "width": "10%"
                 }],
 
                 orderCellsTop: true,
@@ -565,7 +565,7 @@
             });
 
             const COLUMNS = ["Date", "TimeStamp", "Comment", "Problem",
-                "Url", "UrlEntries", "Title", "Lang", "Dept", "Section", "Theme"
+                "Url", "Title", "Lang", "UrlEntries", "Section", "Theme", "Dept"
             ]
 
             const DateColIndex = 0;
@@ -573,12 +573,12 @@
             const CommentColIndex = 2;
             const ProblemColIndex = 3;
             const UrlColIndex = 4;
-            const urlEntriesColIndex = 5;
-            const TitleColIndex = 6;
-            const LangColIndex = 7;
-            const DeptColIndex = 8;
-            const SectionColIndex = 9;
-            const ThemeColIndex = 10;
+            const TitleColIndex = 5;
+            const LangColIndex = 6;
+            const DeptColIndex = 7;
+            const SectionColIndex = 8;
+            const ThemeColIndex = 9;
+            const urlEntriesColIndex = 10;
 
             function replaceSpecialChars(string) {
                 var string = string.replace(/[.?]/g, '\\$&');
