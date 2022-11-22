@@ -27,7 +27,7 @@ public class ContentService {
             System.out.println("Passport number cleaned: " + content);
         }
         newContent = BadWords.censor(content);
-        if (!newContent.contentEquals(content)) {
+        if (!newContent.contentEquals(content) && newContent.contains("#")) {
             content = newContent;
             System.out.println("curse words cleaned: " + content);
         }
