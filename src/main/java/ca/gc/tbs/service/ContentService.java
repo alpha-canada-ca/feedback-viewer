@@ -1,5 +1,6 @@
 package ca.gc.tbs.service;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -11,7 +12,13 @@ public class ContentService {
     }
 
     public String cleanContent(String content) {
-        String newContent = this.cleanPostalCode(content);
+        content = StringUtils.normalizeSpace(content);
+        String newContent = BadWords.censor(content);
+        if (!newContent.contentEquals(content) && newContent.contains("#")) {
+            content = newContent;
+            System.out.println("curse words cleaned: " + content);
+        }
+        newContent = this.cleanPostalCode(content);
         if (!newContent.contentEquals(content)) {
             content = newContent;
             System.out.println("Postal code cleaned: " + content);
@@ -25,11 +32,6 @@ public class ContentService {
         if (!newContent.contentEquals(content)) {
             content = newContent;
             System.out.println("Passport number cleaned: " + content);
-        }
-        newContent = BadWords.censor(content);
-        if (!newContent.contentEquals(content) && newContent.contains("#")) {
-            content = newContent;
-            System.out.println("curse words cleaned: " + content);
         }
         newContent = this.cleanSIN(content);
         if (!newContent.contentEquals(content)) {
