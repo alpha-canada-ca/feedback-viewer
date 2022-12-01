@@ -87,7 +87,7 @@
                     <div class="col-sm-6">
                         <div class="form-group">
                             <label for="Department">Department</label>
-                            <select class="form-control" id="Department" name="Department" data-column="5">
+                            <select class="form-control" id="Department" name="Department" data-column="10">
                                 <option value="">All</option>
                                 <option value="CCG">CCG/GCC</option>
                                 <option value="CRA">CRA/ARC</option>
@@ -116,7 +116,7 @@
                         </div>
                         <div class="form-group">
                             <label for="section">Section</label>
-                            <select class="form-control" id="section" name="section" data-column="6">
+                            <select class="form-control" id="section" name="section" data-column="8">
                                 <option value="">All</option>
                                 <option value="Business">Business</option>
                                 <option value="Canada's Parliamentary Precinct">Canada's Parliamentary Precinct</option>
@@ -161,7 +161,7 @@
                         </div>
                         <div class="form-group">
                             <label for="dt_theme">Theme</label>
-                            <select class="form-control" id="dt_theme" name="dt_theme" data-column="7">
+                            <select class="form-control" id="dt_theme" name="dt_theme" data-column="9">
                                 <!-- THEMES -->
                                 <option value="">All</option>
                                 <option value="Application status">Application status</option>
@@ -220,7 +220,7 @@
                     <div class="col-sm-6">
                         <div class="form-group">
                             <label for="deptINV">Department</label>
-                            <select class="form-control" id="deptINV" name="deptINV" data-column="5">
+                            <select class="form-control" id="deptINV" name="deptINV" data-column="10">
                                 <option value="">All</option>
                                 <option value="CCG">CCG/GCC</option>
                                 <option value="CRA">CRA/ARC</option>
@@ -249,7 +249,7 @@
                         </div>
                         <div class="form-group">
                             <label for="sectionINV">Section</label>
-                            <select class="form-control" id="sectionINV" name="sectionINV" data-column="6">
+                            <select class="form-control" id="sectionINV" name="sectionINV" data-column="8">
                                 <!-- SECTIONS -->
                                 <option value="">All</option>
                                 <option value="Business">Business</option>
@@ -293,7 +293,7 @@
                         </div>
                         <div class="form-group">
                             <label for="themeINV">Theme</label>
-                            <select class="form-control" id="themeINV" name="themeINV" data-column="7">
+                            <select class="form-control" id="themeINV" name="themeINV" data-column="9">
                                 <option value="">All</option>
                                 <option value="Application status">Application status</option>
                                 <option value="Benefits">Benefits</option>
@@ -344,10 +344,10 @@
                         <th>URL</th>
                         <th>Page title</th>
                         <th>Language</th>
-                        <th>Department</th>
+                        <th>Total comments</th>
                         <th>Section</th>
                         <th>Theme</th>
-                        <th>Total comments</th>
+                        <th>Department</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -541,17 +541,17 @@
                     data: 'language',
                     "width": "10%"
                 }, {
-                    data: 'institution',
-                    visible: false
-                }, {
+                    data: 'urlEntries',
+                    "width": "10%"
+                },  {
                     data: 'section',
                     visible: false
                 }, {
                     data: 'theme',
                     visible: false
-                }, {
-                    data: 'urlEntries',
-                    "width": "10%"
+                },{
+                    data: 'institution',
+                    visible: false
                 }],
 
                 orderCellsTop: true,
@@ -581,10 +581,10 @@
             const UrlColIndex = 4;
             const TitleColIndex = 5;
             const LangColIndex = 6;
-            const DeptColIndex = 7;
+            const urlEntriesColIndex = 7;
             const SectionColIndex = 8;
             const ThemeColIndex = 9;
-            const urlEntriesColIndex = 10;
+            const DeptColIndex = 10;
 
             function replaceSpecialChars(string) {
                 var string = string.replace(/[.?]/g, '\\$&');
@@ -632,6 +632,9 @@
             table.column(urlEntriesColIndex).visible(false);
             table.column(TimestampColIndex).visible(false);
             table.column(TitleColIndex).visible(false);
+
+            table.column(DeptColIndex).visible(false);
+
 
             $('#searchBoxTimeStamp').closest('th').hide();
             $('#searchBoxUrlEntries').closest('th').hide();
