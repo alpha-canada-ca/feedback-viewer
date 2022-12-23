@@ -139,6 +139,7 @@
                                 <option value="Fiona">Fiona</option>
                                 <option value="GST/HST">GST/HST</option>
                                 <option value="Health">Health</option>
+                                <option value="Health data">Health data</option>
                                 <option value="Help centre">Help centre</option>
                                 <option value="ITB">ITB</option>
                                 <option value="Mortgages">Mortgages</option>
@@ -272,6 +273,7 @@
                                 <option value="Fiona">Fiona</option>
                                 <option value="GST/HST">GST/HST</option>
                                 <option value="Health">Health</option>
+                                <option value="Health data">Health data</option>
                                 <option value="Help centre">Help centre</option>
                                 <option value="ITB">ITB</option>
                                 <option value="Mortgages">Mortgages</option>
@@ -642,10 +644,6 @@
 
             var minMaxDateChosen = false;
 
-
-
-
-
             function clearText() {
                 $("#searchBoxDate").val("");
                 $("#searchBoxTimeStamp").val("");
@@ -685,8 +683,6 @@
             }
 
             $("#clear-text").click(clearText);
-
-
 
             $('#rangeSelection', this).on('keyup change', function() {
                 clearText();
