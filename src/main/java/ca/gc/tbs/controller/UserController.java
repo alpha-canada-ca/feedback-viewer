@@ -97,11 +97,14 @@ public class UserController {
 		return returnData;
 	}
 
+
+
 	@GetMapping(value = "/u/index")
-	public ModelAndView dashboard() throws Exception {
+	public ModelAndView dashboard(HttpServletRequest request) throws Exception {
 		ModelAndView mav = new ModelAndView();
-		mav.addObject("data", this.getData());
-		mav.setViewName("users");
+		String lang = (String) request.getSession().getAttribute("lang");
+        mav.addObject("data", this.getData());
+		mav.setViewName("users_"+lang);
 		return mav;
 	}
 
