@@ -55,15 +55,10 @@ public class LanguageFilter implements Filter {
             return "";
         }
 
-        if (!queryString.contains("lang=")) {
-            return queryString;
-        }
-        queryString = queryString.replace("lang=" + lang, "");
+        queryString = queryString.replaceAll("(^|&)lang=" + lang + "($|&)", "&");
+        queryString = queryString.replaceAll("&&+", "&");
+        queryString = queryString.replaceAll("^&|&$", "");
 
-        // Only add & if there are other parameters in the query string
-        if (!queryString.isEmpty()) {
-            queryString += "&";
-        }
         return queryString;
     }
 
