@@ -420,10 +420,6 @@ public class ProblemController {
 	 * 
 	 */
 
-	@GetMapping(value = "/testForm")
-	public String testForm() {
-		return "testForm";
-	}
 
 	public UserService getUserService() {
 		return userService;
