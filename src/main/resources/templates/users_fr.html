@@ -2,17 +2,17 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:th="http://www.thymeleaf.org"
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorate="~{default_fr}" lang="fr">
+	layout:decorate="~{wide_fr}" lang="en">
 
 <th:block layout:fragment="content">
 	<table class="wb-tables table">
 		<thead>
 			<tr>
-				<th>jfgh</th>
-				<th>fjgh</th>
-				<th>fjgh</th>
-				<th>fhjg Created</th>
-				<th>Status</th>
+				<th>Courriel</th>
+				<th>Institution</th>
+				<th>Rôle</th>
+				<th>Date de création</th>
+				<th>Statut</th>
 				<th>Action</th>
 			</tr>
 		</thead>
@@ -59,9 +59,9 @@
 					},
 					success : function() {
 						var items = $("#enable" + id).parent().parent().parent().find("td");
-						$(items.get(4)).text("Enabled");
+						$(items.get(4)).text("Activé");
 						$("#enable" + id).replaceWith("<button id='disable" + id
-								+ "' class='btn btn-xs disableBtn'>Disable</button>");
+								+ "' class='btn btn-xs disableBtn'>Désactiver</button>");
 						
 					}
 				});
