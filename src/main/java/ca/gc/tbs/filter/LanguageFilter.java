@@ -1,16 +1,12 @@
 package ca.gc.tbs.filter;
 
-import java.io.IOException;
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Component;
+
+import javax.servlet.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import java.io.IOException;
 
 @Component
 public class LanguageFilter implements Filter {
@@ -39,11 +35,12 @@ public class LanguageFilter implements Filter {
 
         String requestURL = req.getRequestURL().toString();
         String queryString = cleanQueryStringLangParam(req, lang);
-        if (!queryString.equals("")){
-            queryString += "&";
-        }
-        requestURL = requestURL +"?"+ queryString + "lang=" + altLang;
 
+        if (queryString.equals("")) {
+            requestURL = requestURL + "?lang=" + altLang;
+        } else {
+            requestURL = requestURL + "?" + queryString + "&lang=" + altLang;
+        }
 
         session.setAttribute("langUrl", requestURL);
         session.setAttribute("altLang", altLang);
@@ -61,8 +58,15 @@ public class LanguageFilter implements Filter {
         if (!queryString.contains("lang=")) {
             return queryString;
         }
-        return queryString.replace("lang=" + lang, "");
+        queryString = queryString.replace("lang=" + lang, "");
+
+        // Only add & if there are other parameters in the query string
+        if (!queryString.isEmpty()) {
+            queryString += "&";
+        }
+        return queryString;
     }
+
 
     private String getSelectedLang(HttpServletRequest req) {
         String lang = (String) req.getSession().getAttribute("lang");
