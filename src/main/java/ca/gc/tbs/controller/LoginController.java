@@ -39,12 +39,13 @@ public class LoginController {
 
 
     @RequestMapping(value = "/signup", method = RequestMethod.GET)
-    public ModelAndView signup() {
+    public ModelAndView signup(HttpServletRequest request) {
         ModelAndView modelAndView = new ModelAndView();
         User user = new User();
+        String lang = (String) request.getSession().getAttribute("lang");
         modelAndView.addObject("user", user);
         modelAndView.addObject("institutions", this.userService.findInstitutions());
-        modelAndView.setViewName("signup");
+        modelAndView.setViewName("signup_" + lang);
         return modelAndView;
     }
 
