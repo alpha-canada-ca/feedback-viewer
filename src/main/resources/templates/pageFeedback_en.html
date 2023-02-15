@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{wide_en}" lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{wide_en}" lang="en">
 <th:block layout:fragment="content">
     <link href='https://fonts.googleapis.com/css?family=Open Sans' rel='stylesheet'>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
@@ -7,54 +8,54 @@
         th {
             font-size: 12px;
         }
-        
+
         td {
             font-size: 12px;
         }
-        
+
         .container .content {
             padding: 5px;
         }
-        
+
         .hidden {
             display: none;
         }
-        
+
         .table.dataTable {
             font-family: Verdana, Geneva, Tahoma, sans-serif;
             font-size: 12px;
         }
-        
+
         .dataTables_filter input {
             height: 35px;
             width: 150px;
         }
-        
+
         .dataTables_filter {
             font-size: 15px;
         }
-        
+
         .dataTables_length {
             font-size: 12px;
         }
-        
+
         .dataTables_info {
             font-size: 12px;
         }
-        
+
         .dataTables_paginate {
             font-size: 12px;
         }
-        
+
         .dt-button {
             text-align: center;
             font-size: 12px;
         }
-        
+
         #rangeSelection {
             margin-left: 1rem;
         }
-        
+
         .fa {
             position: fixed;
             top: 50%;
@@ -177,13 +178,15 @@
                                 <option value="Defence">Defence</option>
                                 <option value="Education/Research">Education/Research</option>
                                 <option value="Employment Insurance">Employment Insurance</option>
-                                <option value="Environment and natural resources">Environment and Natural Resources</option>
+                                <option value="Environment and natural resources">Environment and Natural Resources
+                                </option>
                                 <option value="Funding">Funding</option>
                                 <option value="Health">Health</option>
                                 <option value="Jobs">Jobs</option>
                                 <option value="Money and finances">Money and Finances</option>
                                 <option value="Policies">Policies</option>
-                                <option value="Policing, justice and emergencies">Policing, justice and emergencies</option>
+                                <option value="Policing, justice and emergencies">Policing, justice and emergencies
+                                </option>
                                 <option value="Public Service">Public Service</option>
                                 <option value="Science and innovation">Science and Innovation</option>
                                 <option value="Taxes">Taxes</option>
@@ -209,14 +212,14 @@
                         <div class="form-group">
                             <div class="form-inline">
                                 <label for="rangeSelection">or choose
-                                <span class="wb-inv">from start date</span></label>
+                                    <span class="wb-inv">from start date</span></label>
                                 <select class="form-control" id="rangeSelection" name="rangeSelection">
-                                        <option value="">Duration</option>
-                                        <option value="today">Today</option>
-                                        <option value="yesterday">Yesterday</option>
-                                        <option value="seven">Last 7 days</option>
-                                        <option value="fifteen">Last 15 days</option>
-                                        <option value="thirty">Last 30 days</option>
+                                    <option value="">Duration</option>
+                                    <option value="today">Today</option>
+                                    <option value="yesterday">Yesterday</option>
+                                    <option value="seven">Last 7 days</option>
+                                    <option value="fifteen">Last 15 days</option>
+                                    <option value="thirty">Last 30 days</option>
                                 </select>
                             </div>
                         </div>
@@ -292,7 +295,8 @@
                                 <option value="Retirement planning">Retirement planning</option>
                                 <option value="Sign in">Sign in</option>
                                 <option value="Skills for Success">Skills for Success</option>
-                                <option value="Social Development Partnerships Program">Social Development Partnerships Program</option>
+                                <option value="Social Development Partnerships Program">Social Development Partnerships
+                                    Program</option>
                                 <option value="travel-wizard">travel-wizard</option>
                                 <option value="Ukraine">Ukraine</option>
                                 <option value="Vaccines">Vaccines</option>
@@ -312,13 +316,15 @@
                                 <option value="Defence">Defence</option>
                                 <option value="Education/Research">Education/Research</option>
                                 <option value="Employment Insurance">Employment Insurance</option>
-                                <option value="Environment and natural resources">Environment and Natural Resources</option>
+                                <option value="Environment and natural resources">Environment and Natural Resources
+                                </option>
                                 <option value="Funding">Funding</option>
                                 <option value="Health">Health</option>
                                 <option value="Jobs">Jobs</option>
                                 <option value="Money and finances">Money and Finances</option>
                                 <option value="Policies">Policies</option>
-                                <option value="Policing, justice and emergencies">Policing, justice and emergencies</option>
+                                <option value="Policing, justice and emergencies">Policing, justice and emergencies
+                                </option>
                                 <option value="Public Service">Public Service</option>
                                 <option value="Science and innovation">Science and Innovation</option>
                                 <option value="Taxes">Taxes</option>
@@ -380,29 +386,19 @@
 
 
     <script th:inline="javascript">
-        $(document).ready(function() {
+        $(document).ready(function () {
 
             function newexportaction(e, dt, button, config) {
                 var self = this;
                 var oldStart = dt
                     .settings()[0]
                     ._iDisplayStart;
-                dt.one('preXhr', function(e, s, data) {
+                dt.one('preXhr', function (e, s, data) {
                     // Just this once, load all data from the server...
                     data.start = 0;
                     data.length = 2147483647;
-                    dt.one('preDraw', function(e, settings) {
-                        // Call the original action function
-                        if (button[0].className.indexOf('buttons-copy') >= 0) {
-                            $
-                                .fn
-                                .dataTable
-                                .ext
-                                .buttons
-                                .copyHtml5
-                                .action
-                                .call(self, e, dt, button, config);
-                        } else if (button[0].className.indexOf('buttons-excel') >= 0) {
+                    dt.one('preDraw', function (e, settings) {
+                      if (button[0].className.indexOf('buttons-excel') >= 0) {
                             $
                                 .fn
                                 .dataTable
@@ -411,21 +407,21 @@
                                 .excelHtml5
                                 .available(dt, config) ?
                                 $
-                                .fn
-                                .dataTable
-                                .ext
-                                .buttons
-                                .excelHtml5
-                                .action
-                                .call(self, e, dt, button, config) :
+                                    .fn
+                                    .dataTable
+                                    .ext
+                                    .buttons
+                                    .excelHtml5
+                                    .action
+                                    .call(self, e, dt, button, config) :
                                 $
-                                .fn
-                                .dataTable
-                                .ext
-                                .buttons
-                                .excelFlash
-                                .action
-                                .call(self, e, dt, button, config);
+                                    .fn
+                                    .dataTable
+                                    .ext
+                                    .buttons
+                                    .excelFlash
+                                    .action
+                                    .call(self, e, dt, button, config);
                         } else if (button[0].className.indexOf('buttons-csv') >= 0) {
                             $
                                 .fn
@@ -435,55 +431,23 @@
                                 .csvHtml5
                                 .available(dt, config) ?
                                 $
-                                .fn
-                                .dataTable
-                                .ext
-                                .buttons
-                                .csvHtml5
-                                .action
-                                .call(self, e, dt, button, config) :
+                                    .fn
+                                    .dataTable
+                                    .ext
+                                    .buttons
+                                    .csvHtml5
+                                    .action
+                                    .call(self, e, dt, button, config) :
                                 $
-                                .fn
-                                .dataTable
-                                .ext
-                                .buttons
-                                .csvFlash
-                                .action
-                                .call(self, e, dt, button, config);
-                        } else if (button[0].className.indexOf('buttons-pdf') >= 0) {
-                            $
-                                .fn
-                                .dataTable
-                                .ext
-                                .buttons
-                                .pdfHtml5
-                                .available(dt, config) ?
-                                $
-                                .fn
-                                .dataTable
-                                .ext
-                                .buttons
-                                .pdfHtml5
-                                .action
-                                .call(self, e, dt, button, config) :
-                                $
-                                .fn
-                                .dataTable
-                                .ext
-                                .buttons
-                                .pdfFlash
-                                .action
-                                .call(self, e, dt, button, config);
-                        } else if (button[0].className.indexOf('buttons-print') >= 0) {
-                            $
-                                .fn
-                                .dataTable
-                                .ext
-                                .buttons
-                                .print
-                                .action(e, dt, button, config);
+                                    .fn
+                                    .dataTable
+                                    .ext
+                                    .buttons
+                                    .csvFlash
+                                    .action
+                                    .call(self, e, dt, button, config);
                         }
-                        dt.one('preXhr', function(e, s, data) {
+                        dt.one('preXhr', function (e, s, data) {
                             // DataTables thinks the first item displayed is index 0, but we're not drawing that.
                             // Set the property to what it was before exporting.
                             settings._iDisplayStart = oldStart;
@@ -500,84 +464,55 @@
                     .ajax
                     .reload();
             };
-            var today = new Date();
-            var dd = String(today.getDate()).padStart(2, '0');
-            var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
-            var yyyy = today.getFullYear();
-
-            today = yyyy + '-' + mm + '-' + dd;
-
+            const today = new Date().toLocaleDateString('en-CA');
+            
             $('#problemTable')
                 .find('thead th')
                 .append('<span class="sorting-cnt"><span class="sorting-icons"></span></span>')
 
-            var table = $('table#problemTable').DataTable({
-                "order": [
-                    [0, "desc"]
+            var table = $('#problemTable').DataTable({
+                order: [
+                    [0, 'desc']
                 ],
                 processing: true,
                 language: {
-                    processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span> ',
-                    "infoFiltered": "(filtered from _MAX_ total entries, 2022-10-01 to " + today + ")",
-                    "error": "Your session has timed out.  Refresh the page and sign in again."
-
+                    processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span>',
+                    infoFiltered: `(filtered from _MAX_ total entries, 2022-10-01 to ${today})`,
+                    error: 'Your session has timed out. Refresh the page and sign in again.'
                 },
                 lengthMenu: false,
-                "drawCallback": function(settings) {
-                    fetchTotalCommentsCount();
-                },
+                drawCallback: fetchTotalCommentsCount,
                 retrieve: true,
-                ajax: '/problemData',
+                ajax: {
+                    url: '/problemData',
+                    type: 'GET',
+                    error: function(xhr, error, thrown) {
+                        alert("Error retrieving data. Please refresh the page and try again.");
+                    }
+                },
                 serverSide: true,
-                columns: [{
-                    data: 'problemDate',
-                    "width": "10%"
-                }, {
-                    data: 'timeStamp'
-                }, {
-                    data: 'problemDetails',
-                    "width": "30%"
-                }, {
-                    data: 'problem',
-                    "width": "20%"
-                }, {
-                    data: 'url',
-                    "width": "30%"
-                }, {
-                    data: 'title',
-                    "width": "50%"
-                }, {
-                    data: 'language',
-                    "width": "10%"
-                }, {
-                    data: 'urlEntries',
-                    "width": "10%"
-                },  {
-                    data: 'section',
-                    visible: false
-                }, {
-                    data: 'theme',
-                    visible: false
-                },{
-                    data: 'institution',
-                    visible: false
-                }],
-
+                columns: [
+                    { data: 'problemDate', width: '10%' },
+                    { data: 'timeStamp' },
+                    { data: 'problemDetails', width: '30%' },
+                    { data: 'problem', width: '20%' },
+                    { data: 'url', width: '30%' },
+                    { data: 'title', width: '50%' },
+                    { data: 'language', width: '10%' },
+                    { data: 'urlEntries', width: '10%' },
+                    { data: 'section', visible: false },
+                    { data: 'theme', visible: false },
+                    { data: 'institution', visible: false },
+                ],
                 orderCellsTop: true,
                 fixedHeader: true,
                 dom: 'fBr<"table-responsive"t>tip',
-                buttons: [{
-                    "extend": 'csv',
-                    "text": 'Download CSV',
-                    className: 'btn btn-default',
-                    "action": newexportaction
-                }, {
-                    "extend": 'excel',
-                    "text": "Download Excel",
-                    className: 'btn btn-default',
-                    "action": newexportaction
-                }]
+                buttons: [
+                    { extend: 'csv', text: 'Download CSV', className: 'btn btn-default', action: newexportaction },
+                    { extend: 'excel', text: 'Download Excel', className: 'btn btn-default', action: newexportaction },
+                ],
             });
+
 
             const COLUMNS = ["Date", "TimeStamp", "Comment", "Problem",
                 "Url", "Title", "Lang", "UrlEntries", "Section", "Theme", "Dept"
@@ -602,15 +537,15 @@
 
             function fetchTotalCommentsCount() {
                 fetch('/pageFeedback/totalCommentsCount')
-                    .then(function(response) {
+                    .then(function (response) {
                         // The API call was successful!
                         return response.text();
                     })
-                    .then(function(totalCommentsCount) {
+                    .then(function (totalCommentsCount) {
                         // This is the HTML from our response as a text string
                         $('#total_comments').text(String(totalCommentsCount));
                     })
-                    .catch(function(err) {
+                    .catch(function (err) {
                         // There was an error
                         console.warn('Something went wrong.', err);
                     });
@@ -619,13 +554,13 @@
             $('#problemTable thead tr')
                 .clone(false)
                 .appendTo('#problemTable thead');
-            $('#problemTable thead tr:eq(1) th').each(function(i) {
+            $('#problemTable thead tr:eq(1) th').each(function (i) {
                 var title = $(this).text();
                 $(this).html('<input type="text" id="searchBox' + COLUMNS[i] + '" placeholder="Search ' + title + '" />');
 
                 $('input', this)
                     .unbind()
-                    .bind('keyup change', function(e) {
+                    .bind('keyup change', function (e) {
                         if (e.keyCode == 13 || this.value == "") {
                             table
                                 .column(i)
@@ -650,6 +585,8 @@
             $('#searchBoxTitle').closest('th').hide();
 
             var minMaxDateChosen = false;
+
+
 
             function clearText() {
                 $("#searchBoxDate").val("");
@@ -691,7 +628,7 @@
 
             $("#clear-text").click(clearText);
 
-            $('#rangeSelection', this).on('keyup change', function() {
+            $('#rangeSelection', this).on('keyup change', function () {
                 clearText();
                 if (this.value == "") {
                     rangeChosen = false;
@@ -731,7 +668,7 @@
                 }
             })
 
-            $('#min', this).on('keyup change', function() {
+            $('#min', this).on('keyup change', function () {
                 clearText();
                 minMaxDateChosen = false;
                 if (this.value != "" && $('#max').val() != "") {
@@ -765,7 +702,7 @@
                 }
             });
 
-            $('#max', this).on('keyup change', function() {
+            $('#max', this).on('keyup change', function () {
                 clearText();
                 minMaxDateChosen = false;
                 if (this.value != "" && $('#min').val() != "") {
@@ -799,7 +736,7 @@
                 }
             });
 
-            $('#dt_theme', this).on('keyup change', function() {
+            $('#dt_theme', this).on('keyup change', function () {
                 clearText();
                 if (this.value == "") {
                     table
@@ -837,7 +774,7 @@
                 }
             });
 
-            $('#Department', this).on('keyup change', function() {
+            $('#Department', this).on('keyup change', function () {
                 clearText();
                 if (this.value == "") {
                     deptChosen = false;
@@ -877,7 +814,7 @@
                 }
             });
 
-            $('#section', this).on('keyup change', function() {
+            $('#section', this).on('keyup change', function () {
                 clearText();
                 if (this.value == "") {
                     sectionChosen = false;
@@ -917,7 +854,7 @@
                 }
             });
 
-            $('#deptINV', this).on('keyup change', function() {
+            $('#deptINV', this).on('keyup change', function () {
                 if (this.value == "") {
                     if ($('#sectionINV').val() != "" || $('#themeINV').val() != "") {
                         table
@@ -978,7 +915,7 @@
                         .draw()
                 }
             });
-            $('#sectionINV', this).on('keyup change', function() {
+            $('#sectionINV', this).on('keyup change', function () {
                 if (this.value == "") {
                     table
                         .column(SectionColIndex)
@@ -1037,7 +974,7 @@
                         .draw()
                 }
             });
-            $('#themeINV', this).on('keyup change', function() {
+            $('#themeINV', this).on('keyup change', function () {
                 if (this.value == "") {
                     table
                         .column(ThemeColIndex)
