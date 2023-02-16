@@ -574,7 +574,18 @@
             $('#problemTable thead tr:eq(1) th:eq(' + urlEntriesColIndex + ')').attr('id', 'total_comments');
 
 
-
+                function init_feedback_admin_view(){
+                    $('#institution, #theme, #section, #min, #max, #rangeSelection').val("");
+                    
+                    $('#searchBoxDate, #searchBoxComment, #searchBoxProblem, #searchBoxTimeStamp').closest('th').hide();
+                    $('#searchBoxUrlEntries, #searchBoxTitle').closest('th').show()
+                    
+                    $('#total_comments').show()
+                    $(".sorting-cnt").addClass("hidden");
+                    
+                    table.columns([CommentColIndex, ProblemColIndex, DateColIndex]).visible(false);
+                    table.columns([urlEntriesColIndex, TitleColIndex]).visible(true).page.len(-1).draw();
+                }
 
 
             function reset_table_view_to_default() {
@@ -583,7 +594,7 @@
                 $('#searchBoxDate, #searchBoxTimeStamp, #searchBoxComment, #searchBoxProblem, #searchBoxUrl, #searchBoxUrlEntries, #searchBoxTitle, #searchBoxLang').val('');
 
                 $('#searchBoxDate, #searchBoxComment, #searchBoxProblem').closest('th').show();
-                $('#searchBoxUrlEntries, #searchBoxTimeStamp, #searchBoxTitle').closest('th').hide();
+                $('#searchBoxUrlEntries, #searchBoxTitle, #searchBoxTimeStamp').closest('th').hide();
 
                 $('#total_comments').hide().closest('th').hide()
                 $(".sorting-cnt").removeClass("hidden");
@@ -959,24 +970,8 @@
                         .search($('#sectionINV').val() + " ~")
                         .column(deptINV)
                         .search($('#deptINV').val() + " ~")
-                        .column(CommentColIndex)
-                        .visible(false)
-                        .column(ProblemColIndex)
-                        .visible(false)
-                        .column(DateColIndex)
-                        .visible(false)
-                        .column(urlEntriesColIndex)
-                        .visible(true)
-                        .column(TitleColIndex)
-                        .visible(true)
-                        .page
-                        .len(-1)
-                        .draw()
 
-                    $('#institution, #theme, #section, #min, #max, #rangeSelection').val("");
-                    $('#searchBoxDate, #searchBoxTimeStamp, #searchBoxComment, #searchBoxProblem, #searchBoxUrlEntries, #searchBoxTitle').closest('th').hide()
-                    $('#total_comments').show()
-                    $(".sorting-cnt").addClass("hidden");
+                        init_feedback_admin_view();
 
                         //clear the values in all of the searchBoxes when reset to defaults button is clicked
                 }
