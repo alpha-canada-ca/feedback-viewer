@@ -87,8 +87,8 @@
                 <div class="row">
                     <div class="col-sm-6">
                         <div class="form-group">
-                            <label for="Department">Department</label>
-                            <select class="form-control" id="Department" name="Department" data-column="10">
+                            <label for="institution">Department</label>
+                            <select class="form-control" id="institution" name="institution" data-column="10">
                                 <option value="">All</option>
                                 <option value="CCG">CCG/GCC</option>
                                 <option value="CRA">CRA/ARC</option>
@@ -618,16 +618,16 @@
                     $('#sectionINV').val("");
                     $('#deptINV').val("");
                 }
-                if ($('#Department').val() && rangeChosen) {
+                if ($('#institution').val() && rangeChosen) {
                     table
                         .column(ThemeColIndex)
                         .search($('#theme').val())
                         .draw();
                 }
-                if ($('#Department').val() && rangeChosen) {
+                if ($('#institution').val() && rangeChosen) {
                     table
                         .column(DeptColIndex)
-                        .search($('#Department').val())
+                        .search($('#institution').val())
                         .draw();
                 }
                 if ($('#section').val() && rangeChosen) {
@@ -658,10 +658,10 @@
                         .search($('#theme').val())
                         .draw()
                 }
-                if ($('#Department').val() != "" && minMaxDateChosen) {
+                if ($('#institution').val() != "" && minMaxDateChosen) {
                     table
                         .column(DeptColIndex)
-                        .search($('#Department').val())
+                        .search($('#institution').val())
                         .draw()
                 }
                 if ($('#section').val() != "" && minMaxDateChosen) {
@@ -692,10 +692,10 @@
                         .search($('#theme').val())
                         .draw()
                 }
-                if ($('#Department').val() != "" && minMaxDateChosen) {
+                if ($('#institution').val() != "" && minMaxDateChosen) {
                     table
                         .column(DeptColIndex)
-                        .search($('#Department').val())
+                        .search($('#institution').val())
                         .draw()
                 }
                 if ($('#section').val() != "" && minMaxDateChosen) {
@@ -730,10 +730,10 @@
                         .search($('#min').val() + ":" + $('#max').val())
                         .draw();
                 }
-                if ($('#Department').val()) {
+                if ($('#institution').val()) {
                     table
                         .column(DeptColIndex) //change these to const values
-                        .search($('#Department').val())
+                        .search($('#institution').val())
                         .draw()
                 }
                 if ($('#section').val()) {
@@ -744,7 +744,7 @@
                 }
             });
 
-            $('#Department', this).on('keyup change', function () {
+            $('#institution', this).on('keyup change', function () {
                 reset_table_view_to_default();
                 if (this.value == "") {
                     deptChosen = false;
@@ -810,10 +810,10 @@
                         .search($('#min').val() + ":" + $('#max').val())
                         .draw();
                 }
-                if ($('#Department').val() != "") {
+                if ($('#institution').val() != "") {
                     table
                         .column(DeptColIndex) //change these to const values
-                        .search($('#Department').val())
+                        .search($('#institution').val())
                         .draw()
                 }
                 if ($('#theme').val() != "") {
@@ -854,7 +854,7 @@
                         .page
                         .len(-1)
                         .draw()
-                    $('#Department').val("");
+                    $('#institution').val("");
                     $('#theme').val("");
                     $('#section').val("");
                     $('#min').val("");
@@ -914,7 +914,7 @@
                         .len(-1)
                         .draw()
 
-                    $('#Department').val("");
+                    $('#institution').val("");
                     $('#theme').val("");
                     $('#section').val("");
                     $('#min').val("");
@@ -973,7 +973,7 @@
                         .len(-1)
                         .draw()
 
-                    $('#Department, #theme, #section, #min, #max, #rangeSelection').val("");
+                    $('#institution, #theme, #section, #min, #max, #rangeSelection').val("");
                     $('#searchBoxDate, #searchBoxTimeStamp, #searchBoxComment, #searchBoxProblem, #searchBoxUrlEntries, #searchBoxTitle').closest('th').hide()
                     $('#total_comments').show()
                     $(".sorting-cnt").addClass("hidden");
