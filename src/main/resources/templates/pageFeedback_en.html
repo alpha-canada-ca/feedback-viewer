@@ -165,8 +165,8 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="dt_theme">Theme</label>
-                            <select class="form-control" id="dt_theme" name="dt_theme" data-column="9">
+                            <label for="theme">Theme</label>
+                            <select class="form-control" id="theme" name="theme" data-column="9">
                                 <!-- THEMES -->
                                 <option value="">All</option>
                                 <option value="Application status">Application status</option>
@@ -621,7 +621,7 @@
                 if ($('#Department').val() && rangeChosen) {
                     table
                         .column(ThemeColIndex)
-                        .search($('#dt_theme').val())
+                        .search($('#theme').val())
                         .draw();
                 }
                 if ($('#Department').val() && rangeChosen) {
@@ -652,10 +652,10 @@
                     $('#sectionINV').val("");
                     $('#deptINV').val("");
                 }
-                if ($('#dt_theme').val() != "" && minMaxDateChosen) {
+                if ($('#theme').val() != "" && minMaxDateChosen) {
                     table
                         .column(ThemeColIndex)
-                        .search($('#dt_theme').val())
+                        .search($('#theme').val())
                         .draw()
                 }
                 if ($('#Department').val() != "" && minMaxDateChosen) {
@@ -686,10 +686,10 @@
                     $('#sectionINV').val("");
                     $('#deptINV').val("");
                 }
-                if ($('#dt_theme').val() != "" && minMaxDateChosen) {
+                if ($('#theme').val() != "" && minMaxDateChosen) {
                     table
                         .column(ThemeColIndex)
-                        .search($('#dt_theme').val())
+                        .search($('#theme').val())
                         .draw()
                 }
                 if ($('#Department').val() != "" && minMaxDateChosen) {
@@ -706,7 +706,7 @@
                 }
             });
 
-            $('#dt_theme', this).on('keyup change', function () {
+            $('#theme', this).on('keyup change', function () {
                 reset_table_view_to_default();
                 if (this.value == "") {
                     table
@@ -770,10 +770,10 @@
                         .search($('#min').val() + ":" + $('#max').val())
                         .draw();
                 }
-                if ($('#dt_theme').val() != "") {
+                if ($('#theme').val() != "") {
                     table
                         .column(ThemeColIndex)
-                        .search($('#dt_theme').val())
+                        .search($('#theme').val())
                         .draw()
                 }
                 if ($('#section').val() != "") {
@@ -816,10 +816,10 @@
                         .search($('#Department').val())
                         .draw()
                 }
-                if ($('#dt_theme').val() != "") {
+                if ($('#theme').val() != "") {
                     table
                         .column(ThemeColIndex)
-                        .search($('#dt_theme').val())
+                        .search($('#theme').val())
                         .draw()
                 }
             });
@@ -855,7 +855,7 @@
                         .len(-1)
                         .draw()
                     $('#Department').val("");
-                    $('#dt_theme').val("");
+                    $('#theme').val("");
                     $('#section').val("");
                     $('#min').val("");
                     $('#max').val("");
@@ -915,7 +915,7 @@
                         .draw()
 
                     $('#Department').val("");
-                    $('#dt_theme').val("");
+                    $('#theme').val("");
                     $('#section').val("");
                     $('#min').val("");
                     $('#max').val("");
@@ -973,7 +973,7 @@
                         .len(-1)
                         .draw()
 
-                    $('#Department, #dt_theme, #section, #min, #max, #rangeSelection').val("");
+                    $('#Department, #theme, #section, #min, #max, #rangeSelection').val("");
                     $('#searchBoxDate, #searchBoxTimeStamp, #searchBoxComment, #searchBoxProblem, #searchBoxUrlEntries, #searchBoxTitle').closest('th').hide()
                     $('#total_comments').show()
                     $(".sorting-cnt").addClass("hidden");
