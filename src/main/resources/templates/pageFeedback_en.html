@@ -530,6 +530,8 @@
             const ThemeColIndex = 9;
             const DeptColIndex = 10;
 
+            var minMaxDateChosen = false;
+
             function replaceSpecialChars(string) {
                 var string = string.replace(/[.?]/g, '\\$&');
                 return string;
@@ -573,17 +575,6 @@
 
 
 
-            table.column(urlEntriesColIndex).visible(false);
-            table.column(TimestampColIndex).visible(false);
-            table.column(TitleColIndex).visible(false);
-
-            table.column(DeptColIndex).visible(false);
-
-
-            $('#searchBoxUrlEntries, #searchBoxTimeStamp, #searchBoxTitle').closest('th').hide();
-
-            var minMaxDateChosen = false;
-
 
 
             function reset_table_view_to_default() {
@@ -601,6 +592,9 @@
                 table.columns([CommentColIndex,ProblemColIndex,DateColIndex]).search("").visible(true)
                 table.columns([urlEntriesColIndex,TimestampColIndex,TitleColIndex]).search("").visible(false).page.len(10).draw()
             }
+            
+
+            reset_table_view_to_default();
 
             $("#reset-to-default").click(reset_table_view_to_default);
 
@@ -979,22 +973,12 @@
                         .len(-1)
                         .draw()
 
-                    $('#Department').val("");
-                    $('#dt_theme').val("");
-                    $('#section').val("");
-                    $('#min').val("");
-                    $('#max').val("");
-                    $('#rangeSelection').val("");
-                    $('#searchBoxDate').closest('th').hide()
-                    $('#searchBoxTimeStamp').closest('th').hide()
-                    $('#searchBoxComment').closest('th').hide()
-                    $('#searchBoxProblem').closest('th').hide()
-                    $('#searchBoxUrlEntries').closest('th').show()
-                    $('#searchBoxTitle').closest('th').show()
-
+                    $('#Department, #dt_theme, #section, #min, #max, #rangeSelection').val("");
+                    $('#searchBoxDate, #searchBoxTimeStamp, #searchBoxComment, #searchBoxProblem, #searchBoxUrlEntries, #searchBoxTitle').closest('th').hide()
                     $('#total_comments').show()
-
                     $(".sorting-cnt").addClass("hidden");
+
+                        //clear the values in all of the searchBoxes when reset to defaults button is clicked
                 }
                 if ($('#deptINV').val() != "") {
                     table
