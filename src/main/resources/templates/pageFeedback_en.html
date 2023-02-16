@@ -339,7 +339,7 @@
 
                 <div class="mrgn-lft-sm row">
                     <!-- <button type="submit" class="btn btn-primary" aria-controls="problemTable">Filter</button> -->
-                    <button type="reset" class="btn btn-primary" id="clear-text">Reset to defaults</button>
+                    <button type="reset" class="btn btn-primary" id="reset-to-default">Reset to defaults</button>
                 </div>
                 <br>
             </form>
@@ -580,56 +580,32 @@
             table.column(DeptColIndex).visible(false);
 
 
-            $('#searchBoxTimeStamp').closest('th').hide();
-            $('#searchBoxUrlEntries').closest('th').hide();
-            $('#searchBoxTitle').closest('th').hide();
+            $('#searchBoxUrlEntries, #searchBoxTimeStamp, #searchBoxTitle').closest('th').hide();
 
             var minMaxDateChosen = false;
 
 
 
-            function clearText() {
-                $("#searchBoxDate").val("");
-                $("#searchBoxTimeStamp").val("");
-                $("#searchBoxComment").val("");
-                $("#searchBoxProblem").val("");
-                $("#searchBoxURL").val("");
-                $("#searchBoxUrlEntries").val("");
-                $("#searchBoxTitle").val("");
-                $("#searchBoxLang").val("");
+            function reset_table_view_to_default() {
 
-                $('#searchBoxDate').closest('th').show()
-                $('#searchBoxComment').closest('th').show()
-                $('#searchBoxProblem').closest('th').show()
+                //clear the values in all of the searchBoxes when reset to defaults button is clicked
+                $('#searchBoxDate, #searchBoxTimeStamp, #searchBoxComment, #searchBoxProblem, #searchBoxUrl, #searchBoxUrlEntries, #searchBoxTitle, #searchBoxLang').val('');
 
-                $('#searchBoxUrlEntries').closest('th').hide()
-                $('#searchBoxTimeStamp').closest('th').hide()
-                $('#searchBoxTitle').closest('th').hide()
+                $('#searchBoxDate, #searchBoxComment, #searchBoxProblem').closest('th').show();
+                $('#searchBoxUrlEntries, #searchBoxTimeStamp, #searchBoxTitle').closest('th').hide();
 
-                $('#total_comments').closest('th').hide()
-                $('#total_comments').hide()
-
+                $('#total_comments').hide().closest('th').hide()
                 $(".sorting-cnt").removeClass("hidden");
-                table
-                    .column(UrlColIndex).search("")
-                    .column(LangColIndex).search("")
-                    .column(DeptColIndex).search("")
-                    .column(SectionColIndex).search("")
-                    .column(ThemeColIndex).search("")
-                    .column(CommentColIndex).search("").visible(true)
-                    .column(ProblemColIndex).search("").visible(true)
-                    .column(DateColIndex).search("").visible(true)
-                    .column(urlEntriesColIndex).search("").visible(false)
-                    .column(TimestampColIndex).search("").visible(false)
-                    .column(TitleColIndex).search("").visible(false)
-                    .page.len(10)
-                    .draw()
+
+                table.columns([UrlColIndex,LangColIndex,DeptColIndex,SectionColIndex,ThemeColIndex]).search("")
+                table.columns([CommentColIndex,ProblemColIndex,DateColIndex]).search("").visible(true)
+                table.columns([urlEntriesColIndex,TimestampColIndex,TitleColIndex]).search("").visible(false).page.len(10).draw()
             }
 
-            $("#clear-text").click(clearText);
+            $("#reset-to-default").click(reset_table_view_to_default);
 
             $('#rangeSelection', this).on('keyup change', function () {
-                clearText();
+                reset_table_view_to_default();
                 if (this.value == "") {
                     rangeChosen = false;
                     table
@@ -669,7 +645,7 @@
             })
 
             $('#min', this).on('keyup change', function () {
-                clearText();
+                reset_table_view_to_default();
                 minMaxDateChosen = false;
                 if (this.value != "" && $('#max').val() != "") {
                     minMaxDateChosen = true;
@@ -703,7 +679,7 @@
             });
 
             $('#max', this).on('keyup change', function () {
-                clearText();
+                reset_table_view_to_default();
                 minMaxDateChosen = false;
                 if (this.value != "" && $('#min').val() != "") {
                     minMaxDateChosen = true;
@@ -737,7 +713,7 @@
             });
 
             $('#dt_theme', this).on('keyup change', function () {
-                clearText();
+                reset_table_view_to_default();
                 if (this.value == "") {
                     table
                         .column(ThemeColIndex)
@@ -775,7 +751,7 @@
             });
 
             $('#Department', this).on('keyup change', function () {
-                clearText();
+                reset_table_view_to_default();
                 if (this.value == "") {
                     deptChosen = false;
                     table
@@ -815,7 +791,7 @@
             });
 
             $('#section', this).on('keyup change', function () {
-                clearText();
+                reset_table_view_to_default();
                 if (this.value == "") {
                     sectionChosen = false;
                     table
