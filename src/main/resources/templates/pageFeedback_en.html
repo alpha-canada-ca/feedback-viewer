@@ -911,36 +911,8 @@
                         .search($('#themeINV').val() + " ~")
                         .column(deptINV)
                         .search($('#deptINV').val() + " ~")
-                        .column(CommentColIndex)
-                        .visible(false)
-                        .column(ProblemColIndex)
-                        .visible(false)
-                        .column(DateColIndex)
-                        .visible(false)
-                        .column(urlEntriesColIndex)
-                        .visible(true)
-                        .column(TitleColIndex)
-                        .visible(true)
-                        .page
-                        .len(-1)
-                        .draw()
-
-                    $('#institution').val("");
-                    $('#theme').val("");
-                    $('#section').val("");
-                    $('#min').val("");
-                    $('#max').val("");
-                    $('#rangeSelection').val("");
-                    $('#searchBoxDate').closest('th').hide()
-                    $('#searchBoxTimeStamp').closest('th').hide()
-                    $('#searchBoxComment').closest('th').hide()
-                    $('#searchBoxProblem').closest('th').hide()
-                    $('#searchBoxUrlEntries').closest('th').show()
-                    $('#searchBoxTitle').closest('th').show()
-
-                    $('#total_comments').show()
-
-                    $(".sorting-cnt").addClass("hidden");
+                        
+                        init_feedback_admin_view();
                 }
                 if ($('#deptINV').val() != "") {
                     table
