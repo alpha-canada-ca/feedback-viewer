@@ -63,15 +63,10 @@
             transform: translate(-50%, -50%);
         }
     </style>
-
-
-
     <div class="container">
         <h1>Page feedback tool</h1>
         <details open="true">
-            <summary>
-                Filter feedback
-            </summary>
+            <summary>Filter feedback </summary>
             <h4 class="wb-inv">Filtering options</h4>
             <form class="wb-tables-filter" data-bind-to="problemTable">
                 <div class="row">
@@ -86,9 +81,8 @@
                 </div>
                 <div class="row">
                     <div class="col-sm-6">
-                        <div class="form-group">
-                            <label for="institution">Department</label>
-                            <select class="form-control" id="institution" name="institution" data-column="10">
+                        <div class="form-group"><label for="institution">Department</label><select class="form-control"
+                                id="institution" name="institution" data-column="10">
                                 <option value="">All</option>
                                 <option value="CCG">CCG/GCC</option>
                                 <option value="CRA">CRA/ARC</option>
@@ -112,13 +106,10 @@
                                 <option value="Public Health Agency of Canada">PHAC/ASPC</option>
                                 <option value="SC">SC/SC</option>
                                 <option value="SST">SST/TSS</option>
-                                <option value="TBS">TBS/SCT</option>
-                                <!-- DEPARTMENTS -->
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="section">Section</label>
-                            <select class="form-control" id="section" name="section" data-column="8">
+                                <option value="TBS">TBS/SCT</option><!-- DEPARTMENTS -->
+                            </select></div>
+                        <div class="form-group"><label for="section">Section</label><select class="form-control"
+                                id="section" name="section" data-column="8">
                                 <option value="">All</option>
                                 <option value="Business">Business</option>
                                 <option value="Canada's Parliamentary Precinct">Canada's Parliamentary Precinct</option>
@@ -162,19 +153,17 @@
                                 <option value="Ukraine">Ukraine</option>
                                 <option value="Vaccines">Vaccines</option>
                                 <option value="WFHE">WFHE</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="theme">Theme</label>
-                            <select class="form-control" id="theme" name="theme" data-column="9">
-                                <!-- THEMES -->
+                            </select></div>
+                        <div class="form-group"><label for="theme">Theme</label><select class="form-control" id="theme"
+                                name="theme" data-column="9"><!-- THEMES -->
                                 <option value="">All</option>
                                 <option value="Application status">Application status</option>
                                 <option value="Benefits">Benefits</option>
                                 <option value="Business">Business</option>
                                 <option value="Canada and the world">Canada and the world</option>
                                 <option value="COVID">COVID</option>
-                                <option value="Culture, history and sport">Culture, history and sport</option>
+                                <option value="Culture, history and sport">Culture,
+                                    history and sport</option>
                                 <option value="Defence">Defence</option>
                                 <option value="Education/Research">Education/Research</option>
                                 <option value="Employment Insurance">Employment Insurance</option>
@@ -185,49 +174,40 @@
                                 <option value="Jobs">Jobs</option>
                                 <option value="Money and finances">Money and Finances</option>
                                 <option value="Policies">Policies</option>
-                                <option value="Policing, justice and emergencies">Policing, justice and emergencies
-                                </option>
+                                <option value="Policing, justice and emergencies">Policing,
+                                    justice and emergencies </option>
                                 <option value="Public Service">Public Service</option>
                                 <option value="Science and innovation">Science and Innovation</option>
                                 <option value="Taxes">Taxes</option>
                                 <option value="Top tasks">Top tasks</option>
                                 <option value="Travel">Travel</option>
                                 <option value="Youth">Youth</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="min">Date Range
-                                <span class="wb-inv">from start date</span></label>
+                            </select></div>
+                        <div class="form-group"><label for="min">Date Range <span class="wb-inv">from start
+                                    date</span></label>
                             <div class="form-inline">
-                                <div class="form-group">
-                                    <input type="date" class="form-control" id="min" name="min">
-                                </div>
-                                <label for="max">To
-                                    <span class="wb-inv">end date</span></label>
-                                <div class="form-group">
-                                    <input type="date" class="form-control" id="max" name="max">
+                                <div class="form-group"><input type="date" class="form-control" id="min" name="min">
+                                </div><label for="max">To <span class="wb-inv">end date</span></label>
+                                <div class="form-group"><input type="date" class="form-control" id="max" name="max">
                                 </div>
                             </div>
                         </div>
                         <div class="form-group">
-                            <div class="form-inline">
-                                <label for="rangeSelection">or choose
-                                    <span class="wb-inv">from start date</span></label>
-                                <select class="form-control" id="rangeSelection" name="rangeSelection">
+                            <div class="form-inline"><label for="rangeSelection">or choose <span class="wb-inv">from
+                                        start date</span></label><select class="form-control" id="rangeSelection"
+                                    name="rangeSelection">
                                     <option value="">Duration</option>
                                     <option value="today">Today</option>
                                     <option value="yesterday">Yesterday</option>
                                     <option value="seven">Last 7 days</option>
                                     <option value="fifteen">Last 15 days</option>
                                     <option value="thirty">Last 30 days</option>
-                                </select>
-                            </div>
+                                </select></div>
                         </div>
                     </div>
                     <div class="col-sm-6">
-                        <div class="form-group">
-                            <label for="deptINV">Department</label>
-                            <select class="form-control" id="deptINV" name="deptINV" data-column="10">
+                        <div class="form-group"><label for="deptINV">Department</label><select class="form-control"
+                                id="deptINV" name="deptINV" data-column="10">
                                 <option value="">All</option>
                                 <option value="CCG">CCG/GCC</option>
                                 <option value="CRA">CRA/ARC</option>
@@ -251,14 +231,10 @@
                                 <option value="Public Health Agency of Canada">PHAC/ASPC</option>
                                 <option value="SC">SC/SC</option>
                                 <option value="SST">SST/TSS</option>
-                                <option value="TBS">TBS/SCT</option>
-                                <!-- DEPARTMENTS -->
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="sectionINV">Section</label>
-                            <select class="form-control" id="sectionINV" name="sectionINV" data-column="8">
-                                <!-- SECTIONS -->
+                                <option value="TBS">TBS/SCT</option><!-- DEPARTMENTS -->
+                            </select></div>
+                        <div class="form-group"><label for="sectionINV">Section</label><select class="form-control"
+                                id="sectionINV" name="sectionINV" data-column="8"><!-- SECTIONS -->
                                 <option value="">All</option>
                                 <option value="Business">Business</option>
                                 <option value="Canada's Parliamentary Precinct">Canada's Parliamentary Precinct</option>
@@ -301,18 +277,17 @@
                                 <option value="Ukraine">Ukraine</option>
                                 <option value="Vaccines">Vaccines</option>
                                 <option value="WFHE">WFHE</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="themeINV">Theme</label>
-                            <select class="form-control" id="themeINV" name="themeINV" data-column="9">
+                            </select></div>
+                        <div class="form-group"><label for="themeINV">Theme</label><select class="form-control"
+                                id="themeINV" name="themeINV" data-column="9">
                                 <option value="">All</option>
                                 <option value="Application status">Application status</option>
                                 <option value="Benefits">Benefits</option>
                                 <option value="Business">Business</option>
                                 <option value="Canada and the world">Canada and the world</option>
                                 <option value="COVID">COVID</option>
-                                <option value="Culture, history and sport">Culture, history and sport</option>
+                                <option value="Culture, history and sport">Culture,
+                                    history and sport</option>
                                 <option value="Defence">Defence</option>
                                 <option value="Education/Research">Education/Research</option>
                                 <option value="Employment Insurance">Employment Insurance</option>
@@ -323,29 +298,24 @@
                                 <option value="Jobs">Jobs</option>
                                 <option value="Money and finances">Money and Finances</option>
                                 <option value="Policies">Policies</option>
-                                <option value="Policing, justice and emergencies">Policing, justice and emergencies
-                                </option>
+                                <option value="Policing, justice and emergencies">Policing,
+                                    justice and emergencies </option>
                                 <option value="Public Service">Public Service</option>
                                 <option value="Science and innovation">Science and Innovation</option>
                                 <option value="Taxes">Taxes</option>
                                 <option value="Top tasks">Top tasks</option>
                                 <option value="Travel">Travel</option>
-                                <option value="Youth">Youth</option>
-                                <!-- THEMES -->
-                            </select>
-                        </div>
+                                <option value="Youth">Youth</option><!-- THEMES -->
+                            </select></div>
                     </div>
                 </div>
-
                 <div class="mrgn-lft-sm row">
-                    <!-- <button type="submit" class="btn btn-primary" aria-controls="problemTable">Filter</button> -->
-                    <button type="reset" class="btn btn-primary" id="reset-to-default">Reset to defaults</button>
-                </div>
-                <br>
+                    <!-- <button type="submit" class="btn btn-primary" aria-controls="problemTable">Filter</button>--><button
+                        type="reset" class="btn btn-primary" id="reset-to-default">Reset to defaults</button>
+                </div><br>
             </form>
         </details>
     </div>
-
     <div class="col-md-12">
         <div class="table-responsive">
             <table id="problemTable" class="small table hover display compact">
@@ -364,12 +334,10 @@
                         <th>Department</th>
                     </tr>
                 </thead>
-                <tbody>
-                </tbody>
+                <tbody></tbody>
             </table>
         </div>
     </div>
-
 </th:block>
 <th:block layout:fragment="script">
     <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
@@ -383,92 +351,35 @@
     <script src="https://cdn.datatables.net/colreorder/1.5.2/js/dataTables.colReorder.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/busy-load@0.1.2/src/index.min.js"></script>
     <script type="text/javascript" src="js/spring-friendly.min.js"></script>
-
-
     <script th:inline="javascript">
         $(document).ready(function () {
-
             function newexportaction(e, dt, button, config) {
                 var self = this;
-                var oldStart = dt
-                    .settings()[0]
-                    ._iDisplayStart;
+                var oldStart = dt.settings()[0]._iDisplayStart;
                 dt.one('preXhr', function (e, s, data) {
                     // Just this once, load all data from the server...
                     data.start = 0;
                     data.length = 2147483647;
                     dt.one('preDraw', function (e, settings) {
-                      if (button[0].className.indexOf('buttons-excel') >= 0) {
-                            $
-                                .fn
-                                .dataTable
-                                .ext
-                                .buttons
-                                .excelHtml5
-                                .available(dt, config) ?
-                                $
-                                    .fn
-                                    .dataTable
-                                    .ext
-                                    .buttons
-                                    .excelHtml5
-                                    .action
-                                    .call(self, e, dt, button, config) :
-                                $
-                                    .fn
-                                    .dataTable
-                                    .ext
-                                    .buttons
-                                    .excelFlash
-                                    .action
-                                    .call(self, e, dt, button, config);
+                        if (button[0].className.indexOf('buttons-excel') >= 0) {
+                            $.fn.dataTable.ext.buttons.excelHtml5.available(dt, config) ? $.fn.dataTable.ext.buttons.excelHtml5.action.call(self, e, dt, button, config) : $.fn.dataTable.ext.buttons.excelFlash.action.call(self, e, dt, button, config);
                         } else if (button[0].className.indexOf('buttons-csv') >= 0) {
-                            $
-                                .fn
-                                .dataTable
-                                .ext
-                                .buttons
-                                .csvHtml5
-                                .available(dt, config) ?
-                                $
-                                    .fn
-                                    .dataTable
-                                    .ext
-                                    .buttons
-                                    .csvHtml5
-                                    .action
-                                    .call(self, e, dt, button, config) :
-                                $
-                                    .fn
-                                    .dataTable
-                                    .ext
-                                    .buttons
-                                    .csvFlash
-                                    .action
-                                    .call(self, e, dt, button, config);
+                            $.fn.dataTable.ext.buttons.csvHtml5.available(dt, config) ? $.fn.dataTable.ext.buttons.csvHtml5.action.call(self, e, dt, button, config) : $.fn.dataTable.ext.buttons.csvFlash.action.call(self, e, dt, button, config);
                         }
                         dt.one('preXhr', function (e, s, data) {
                             // DataTables thinks the first item displayed is index 0, but we're not drawing that.
                             // Set the property to what it was before exporting.
                             settings._iDisplayStart = oldStart;
                             data.start = oldStart;
-                        });
-                        // Reload the grid with the original page. Otherwise, API functions like table.cell(this) don't work properly.
-                        setTimeout(dt.ajax.reload, 0);
-                        // Prevent rendering of the full data to the DOM
+                        }); // Reload the grid with the original page. Otherwise, API functions like table.cell(this) don't work properly.
+                        setTimeout(dt.ajax.reload, 0); // Prevent rendering of the full data to the DOM
                         return false;
                     });
-                });
-                // Requery the server with the new one-time export settings
-                dt
-                    .ajax
-                    .reload();
+                }); // Requery the server with the new one-time export settings
+                dt.ajax.reload();
             };
             const today = new Date().toLocaleDateString('en-CA');
-            
-            $('#problemTable')
-                .find('thead th')
-                .append('<span class="sorting-cnt"><span class="sorting-icons"></span></span>')
+            $('#problemTable').find('thead th').append('<span class="sorting-cnt"><span class="sorting-icons"></span></span>')
 
             var table = $('#problemTable').DataTable({
                 order: [
@@ -486,38 +397,60 @@
                 ajax: {
                     url: '/problemData',
                     type: 'GET',
-                    error: function(xhr, error, thrown) {
+                    error: function (xhr, error, thrown) {
                         alert("Error retrieving data. Please refresh the page and try again.");
                     }
                 },
                 serverSide: true,
-                columns: [
-                    { data: 'problemDate', width: '10%' },
-                    { data: 'timeStamp' },
-                    { data: 'problemDetails', width: '30%' },
-                    { data: 'problem', width: '20%' },
-                    { data: 'url', width: '30%' },
-                    { data: 'title', width: '50%' },
-                    { data: 'language', width: '10%' },
-                    { data: 'urlEntries', width: '10%' },
-                    { data: 'section', visible: false },
-                    { data: 'theme', visible: false },
-                    { data: 'institution', visible: false },
-                ],
+                columns: [{
+                    data: 'problemDate',
+                    width: '10%'
+                }, {
+                    data: 'timeStamp'
+                }, {
+                    data: 'problemDetails',
+                    width: '30%'
+                }, {
+                    data: 'problem',
+                    width: '20%'
+                }, {
+                    data: 'url',
+                    width: '30%'
+                }, {
+                    data: 'title',
+                    width: '50%'
+                }, {
+                    data: 'language',
+                    width: '10%'
+                }, {
+                    data: 'urlEntries',
+                    width: '10%'
+                }, {
+                    data: 'section',
+                    visible: false
+                }, {
+                    data: 'theme',
+                    visible: false
+                }, {
+                    data: 'institution',
+                    visible: false
+                },],
                 orderCellsTop: true,
                 fixedHeader: true,
                 dom: 'fBr<"table-responsive"t>tip',
-                buttons: [
-                    { extend: 'csv', text: 'Download CSV', className: 'btn btn-default', action: newexportaction },
-                    { extend: 'excel', text: 'Download Excel', className: 'btn btn-default', action: newexportaction },
-                ],
+                buttons: [{
+                    extend: 'csv',
+                    text: 'Download CSV',
+                    className: 'btn btn-default',
+                    action: newexportaction
+                }, {
+                    extend: 'excel',
+                    text: 'Download Excel',
+                    className: 'btn btn-default',
+                    action: newexportaction
+                },],
             });
-
-
-            const COLUMNS = ["Date", "TimeStamp", "Comment", "Problem",
-                "Url", "Title", "Lang", "UrlEntries", "Section", "Theme", "Dept"
-            ]
-
+            const COLUMNS = ["Date", "TimeStamp", "Comment", "Problem", "Url", "Title", "Lang", "UrlEntries", "Section", "Theme", "Dept"]
             const DateColIndex = 0;
             const TimestampColIndex = 1;
             const CommentColIndex = 2;
@@ -529,7 +462,6 @@
             const SectionColIndex = 8;
             const ThemeColIndex = 9;
             const DeptColIndex = 10;
-
             var minMaxDateChosen = false;
 
             function replaceSpecialChars(string) {
@@ -538,433 +470,246 @@
             }
 
             function fetchTotalCommentsCount() {
-                fetch('/pageFeedback/totalCommentsCount')
-                    .then(function (response) {
-                        // The API call was successful!
-                        return response.text();
-                    })
-                    .then(function (totalCommentsCount) {
-                        // This is the HTML from our response as a text string
-                        $('#total_comments').text(String(totalCommentsCount));
-                    })
-                    .catch(function (err) {
-                        // There was an error
-                        console.warn('Something went wrong.', err);
-                    });
+                fetch('/pageFeedback/totalCommentsCount').then(function (response) {
+                    // The API call was successful!
+                    return response.text();
+                }).then(function (totalCommentsCount) {
+                    // This is the HTML from our response as a text string
+                    $('#total_comments').text(String(totalCommentsCount));
+                }).catch(function (err) {
+                    // There was an error
+                    console.warn('Something went wrong.', err);
+                });
             }
-
-            $('#problemTable thead tr')
-                .clone(false)
-                .appendTo('#problemTable thead');
+            $('#problemTable thead tr').clone(false).appendTo('#problemTable thead');
             $('#problemTable thead tr:eq(1) th').each(function (i) {
                 var title = $(this).text();
                 $(this).html('<input type="text" id="searchBox' + COLUMNS[i] + '" placeholder="Search ' + title + '" />');
-
-                $('input', this)
-                    .unbind()
-                    .bind('keyup change', function (e) {
-                        if (e.keyCode == 13 || this.value == "") {
-                            table
-                                .column(i)
-                                .search(replaceSpecialChars(this.value))
-                                .draw();
-                        }
-                    });
+                $('input', this).unbind().bind('keyup change', function (e) {
+                    if (e.keyCode == 13 || this.value == "") {
+                        table.column(i).search(replaceSpecialChars(this.value)).draw();
+                    }
+                });
             });
             $('#problemTable thead tr:eq(1) th:eq(' + urlEntriesColIndex + ')').attr('id', 'total_comments');
 
-
-                function init_feedback_admin_view(){
-                    $('#institution, #theme, #section, #min, #max, #rangeSelection').val("");
-                    
-                    $('#searchBoxDate, #searchBoxComment, #searchBoxProblem, #searchBoxTimeStamp').closest('th').hide();
-                    $('#searchBoxUrlEntries, #searchBoxTitle').closest('th').show()
-                    
-                    $('#total_comments').show()
-                    $(".sorting-cnt").addClass("hidden");
-                    
-                    table.columns([CommentColIndex, ProblemColIndex, DateColIndex]).visible(false);
-                    table.columns([urlEntriesColIndex, TitleColIndex]).visible(true).page.len(-1).draw();
-                }
-
+            function init_feedback_admin_view() {
+                $('#institution, #theme, #section, #min, #max, #rangeSelection').val("");
+                $('#searchBoxDate, #searchBoxComment, #searchBoxProblem, #searchBoxTimeStamp').closest('th').hide();
+                $('#searchBoxUrlEntries, #searchBoxTitle').closest('th').show()
+                $('#total_comments').show() 
+                table.columns([CommentColIndex, ProblemColIndex, DateColIndex]).visible(false);
+                table.columns([urlEntriesColIndex, TitleColIndex]).visible(true).page.len(-1).draw();
+            }
 
             function reset_table_view_to_default() {
-
                 //clear the values in all of the searchBoxes when reset to defaults button is clicked
                 $('#searchBoxDate, #searchBoxTimeStamp, #searchBoxComment, #searchBoxProblem, #searchBoxUrl, #searchBoxUrlEntries, #searchBoxTitle, #searchBoxLang').val('');
-
                 $('#searchBoxDate, #searchBoxComment, #searchBoxProblem').closest('th').show();
                 $('#searchBoxUrlEntries, #searchBoxTitle, #searchBoxTimeStamp').closest('th').hide();
-
-                $('#total_comments').hide().closest('th').hide()
-                $(".sorting-cnt").removeClass("hidden");
-
-                table.columns([UrlColIndex,LangColIndex,DeptColIndex,SectionColIndex,ThemeColIndex]).search("")
-                table.columns([CommentColIndex,ProblemColIndex,DateColIndex]).search("").visible(true)
-                table.columns([urlEntriesColIndex,TimestampColIndex,TitleColIndex]).search("").visible(false).page.len(10).draw()
+                $('#total_comments').hide().closest('th').hide() 
+                table.columns([UrlColIndex, LangColIndex, DeptColIndex, SectionColIndex, ThemeColIndex]).search("") 
+                table.columns([CommentColIndex, ProblemColIndex, DateColIndex]).search("").visible(true) 
+                table.columns([urlEntriesColIndex, TimestampColIndex, TitleColIndex]).search("").visible(false).page.len(10).draw()
             }
-            
-
             reset_table_view_to_default();
-
             $("#reset-to-default").click(reset_table_view_to_default);
-
             $('#rangeSelection', this).on('keyup change', function () {
                 reset_table_view_to_default();
-                if (this.value == "") {
-                    rangeChosen = false;
-                    table
-                        .column(DateColIndex)
-                        .search("")
-                        .draw()
-                }
-                if (this.value != "") {
-                    rangeChosen = true;
-                    table
-                        .column(DateColIndex)
-                        .search(this.value)
-                        .page.len(10)
-                        .draw()
-                    $('#themeINV').val("");
-                    $('#sectionINV').val("");
-                    $('#deptINV').val("");
-                }
-                if ($('#institution').val() && rangeChosen) {
-                    table
-                        .column(ThemeColIndex)
-                        .search($('#theme').val())
-                        .draw();
-                }
-                if ($('#institution').val() && rangeChosen) {
-                    table
-                        .column(DeptColIndex)
-                        .search($('#institution').val())
-                        .draw();
-                }
-                if ($('#section').val() && rangeChosen) {
-                    table
-                        .column(SectionColIndex)
-                        .search($('#section').val())
-                        .draw()
-                }
-            })
 
+                var rangeValue = this.value.trim();
+                var isRangeChosen = rangeValue !== "";
+
+                if (!isRangeChosen) {
+                    rangeChosen = false;
+                    table.column(DateColIndex).search("").draw();
+                } else {
+                    rangeChosen = true;
+                    table.column(DateColIndex).search(rangeValue).page.len(10).draw();
+                    $('#themeINV, #sectionINV, #deptINV').val("");
+                }
+
+                if ($('#institution, #section, #theme').filter(function () {
+                    return this.value.trim() !== "";
+                }).length === 3) {
+                    table.columns([ThemeColIndex, DeptColIndex, SectionColIndex])
+                        .search([$('#theme').val(), $('#institution').val(), $('#section').val()])
+                        .draw();
+                } else {
+                    if ($('#institution').val() && isRangeChosen) {
+                        table.column(DeptColIndex).search($('#institution').val()).draw();
+                    }
+                    if ($('#section').val() && isRangeChosen) {
+                        table.column(SectionColIndex).search($('#section').val()).draw();
+                    }
+                    if ($('#theme').val() && isRangeChosen) {
+                        table.column(ThemeColIndex).search($('#theme').val()).draw();
+                    }
+                }
+            });
             $('#min', this).on('keyup change', function () {
                 reset_table_view_to_default();
                 minMaxDateChosen = false;
                 if (this.value != "" && $('#max').val() != "") {
                     minMaxDateChosen = true;
-                    table
-                        .column(DateColIndex)
-                        .search(this.value + ":" + $('#max').val())
-                        .page.len(10)
-                        .draw();
+                    table.column(DateColIndex).search(this.value + ":" + $('#max').val()).page.len(10).draw();
                     $('#themeINV').val("");
                     $('#sectionINV').val("");
                     $('#deptINV').val("");
                 }
                 if ($('#theme').val() != "" && minMaxDateChosen) {
-                    table
-                        .column(ThemeColIndex)
-                        .search($('#theme').val())
-                        .draw()
+                    table.column(ThemeColIndex).search($('#theme').val()).draw()
                 }
                 if ($('#institution').val() != "" && minMaxDateChosen) {
-                    table
-                        .column(DeptColIndex)
-                        .search($('#institution').val())
-                        .draw()
+                    table.column(DeptColIndex).search($('#institution').val()).draw()
                 }
                 if ($('#section').val() != "" && minMaxDateChosen) {
-                    table
-                        .column(SectionColIndex)
-                        .search($('#section').val())
-                        .draw()
+                    table.column(SectionColIndex).search($('#section').val()).draw()
                 }
             });
-
             $('#max', this).on('keyup change', function () {
                 reset_table_view_to_default();
                 minMaxDateChosen = false;
                 if (this.value != "" && $('#min').val() != "") {
                     minMaxDateChosen = true;
-                    table
-                        .column(DateColIndex)
-                        .search($('#min').val() + ":" + this.value)
-                        .page.len(10)
-                        .draw();
+                    table.column(DateColIndex).search($('#min').val() + ":" + this.value).page.len(10).draw();
                     $('#themeINV').val("");
                     $('#sectionINV').val("");
                     $('#deptINV').val("");
                 }
                 if ($('#theme').val() != "" && minMaxDateChosen) {
-                    table
-                        .column(ThemeColIndex)
-                        .search($('#theme').val())
-                        .draw()
+                    table.column(ThemeColIndex).search($('#theme').val()).draw()
                 }
                 if ($('#institution').val() != "" && minMaxDateChosen) {
-                    table
-                        .column(DeptColIndex)
-                        .search($('#institution').val())
-                        .draw()
+                    table.column(DeptColIndex).search($('#institution').val()).draw()
                 }
                 if ($('#section').val() != "" && minMaxDateChosen) {
-                    table
-                        .column(SectionColIndex)
-                        .search($('#section').val())
-                        .draw()
+                    table.column(SectionColIndex).search($('#section').val()).draw()
                 }
             });
-
             $('#theme', this).on('keyup change', function () {
                 reset_table_view_to_default();
                 if (this.value == "") {
-                    table
-                        .column(ThemeColIndex)
-                        .search("")
-                        .draw()
+                    table.column(ThemeColIndex).search("").draw()
                 }
                 if (this.value != "") {
-                    table
-                        .column(ThemeColIndex)
-                        .search(this.value)
-                        .page.len(10)
-                        .draw()
+                    table.column(ThemeColIndex).search(this.value).page.len(10).draw()
                     $('#themeINV').val("");
                     $('#sectionINV').val("");
                     $('#deptINV').val("");
                 }
                 if (minMaxDateChosen) {
-                    table
-                        .column(DateColIndex)
-                        .search($('#min').val() + ":" + $('#max').val())
-                        .draw();
+                    table.column(DateColIndex).search($('#min').val() + ":" + $('#max').val()).draw();
                 }
                 if ($('#institution').val()) {
-                    table
-                        .column(DeptColIndex) //change these to const values
-                        .search($('#institution').val())
-                        .draw()
+                    table.column(DeptColIndex).search($('#institution').val()).draw()
                 }
                 if ($('#section').val()) {
-                    table
-                        .column(SectionColIndex)
-                        .search($('#section').val())
-                        .draw()
+                    table.column(SectionColIndex).search($('#section').val()).draw()
                 }
             });
-
             $('#institution', this).on('keyup change', function () {
                 reset_table_view_to_default();
                 if (this.value == "") {
                     deptChosen = false;
-                    table
-                        .column(DeptColIndex)
-                        .search("")
-                        .draw()
+                    table.column(DeptColIndex).search("").draw()
                 }
                 if (this.value != "") {
                     deptChosen = true;
-                    table
-                        .column(DeptColIndex)
-                        .search(this.value)
-                        .page.len(10)
-                        .draw()
+                    table.column(DeptColIndex).search(this.value).page.len(10).draw()
                     $('#themeINV').val("");
                     $('#sectionINV').val("");
                     $('#deptINV').val("");
                 }
                 if (minMaxDateChosen) {
-                    table
-                        .column(DateColIndex)
-                        .search($('#min').val() + ":" + $('#max').val())
-                        .draw();
+                    table.column(DateColIndex).search($('#min').val() + ":" + $('#max').val()).draw();
                 }
                 if ($('#theme').val() != "") {
-                    table
-                        .column(ThemeColIndex)
-                        .search($('#theme').val())
-                        .draw()
+                    table.column(ThemeColIndex).search($('#theme').val()).draw()
                 }
                 if ($('#section').val() != "") {
-                    table
-                        .column(SectionColIndex)
-                        .search($('#section').val())
-                        .draw()
+                    table.column(SectionColIndex).search($('#section').val()).draw()
                 }
             });
-
             $('#section', this).on('keyup change', function () {
                 reset_table_view_to_default();
                 if (this.value == "") {
                     sectionChosen = false;
-                    table
-                        .column(SectionColIndex)
-                        .search("")
-                        .draw()
+                    table.column(SectionColIndex).search("").draw()
                 }
                 if (this.value != "") {
                     sectionChosen = true;
-                    table
-                        .column(SectionColIndex)
-                        .search(this.value)
-                        .page.len(10)
-                        .draw()
+                    table.column(SectionColIndex).search(this.value).page.len(10).draw()
                     $('#themeINV').val("");
                     $('#sectionINV').val("");
                     $('#deptINV').val("");
                 }
                 if (minMaxDateChosen) {
-                    table
-                        .column(DateColIndex)
-                        .search($('#min').val() + ":" + $('#max').val())
-                        .draw();
+                    table.column(DateColIndex).search($('#min').val() + ":" + $('#max').val()).draw();
                 }
                 if ($('#institution').val() != "") {
-                    table
-                        .column(DeptColIndex) //change these to const values
-                        .search($('#institution').val())
-                        .draw()
+                    table.column(DeptColIndex) //change these to const values
+                        .search($('#institution').val()).draw()
                 }
                 if ($('#theme').val() != "") {
-                    table
-                        .column(ThemeColIndex)
-                        .search($('#theme').val())
-                        .draw()
+                    table.column(ThemeColIndex).search($('#theme').val()).draw()
                 }
             });
-
             $('#deptINV', this).on('keyup change', function () {
                 if (this.value == "") {
                     if ($('#sectionINV').val() != "" || $('#themeINV').val() != "") {
-                        table
-                            .column(DeptColIndex)
-                            .search("")
-                            .draw()
+                        table.column(DeptColIndex).search("").draw()
                     }
                 }
                 if (this.value != "") {
-                    table
-                        .column(DeptColIndex)
-                        .search(this.value + " ~")
-                        .column(ThemeColIndex)
-                        .search($('#themeINV').val() + " ~")
-                        .column(SectionColIndex)
-                        .search($('#sectionINV').val() + " ~")
-                        .column(CommentColIndex)
-                        .visible(false)
-                        .column(ProblemColIndex)
-                        .visible(false)
-                        .column(DateColIndex)
-                        .visible(false)
-                        .column(urlEntriesColIndex)
-                        .visible(true)
-                        .column(TitleColIndex)
-                        .visible(true)
-                        .page
-                        .len(-1)
-                        .draw()
-                    $('#institution').val("");
-                    $('#theme').val("");
-                    $('#section').val("");
-                    $('#min').val("");
-                    $('#max').val("");
-                    $('#rangeSelection').val("");
-                    $('#searchBoxDate').closest('th').hide()
-                    $('#searchBoxTimeStamp').closest('th').hide()
-                    $('#searchBoxComment').closest('th').hide()
-                    $('#searchBoxProblem').closest('th').hide()
-                    $('#searchBoxUrlEntries').closest('th').show()
-                    $('#searchBoxTitle').closest('th').show()
-
-                    $('#total_comments').show()
-
-                    $(".sorting-cnt").addClass("hidden");
-
+                    table.column(DeptColIndex).search(this.value + " ~").column(ThemeColIndex).search($('#themeINV').val() + " ~").column(SectionColIndex).search($('#sectionINV').val() + " ~") 
+                    init_feedback_admin_view();
                 }
                 if ($('#sectionINV').val() != "") {
-                    table
-                        .column(SectionColIndex) //change these to const values
-                        .search($('#sectionINV').val() + " ~")
-                        .draw()
+                    table.column(SectionColIndex) //change these to const values
+                        .search($('#sectionINV').val() + " ~").draw()
                 }
                 if ($('#themeINV').val() != "") {
-                    table
-                        .column(ThemeColIndex) //change these to const values
-                        .search($('#themeINV').val() + " ~")
-                        .draw()
+                    table.column(ThemeColIndex) //change these to const values
+                        .search($('#themeINV').val() + " ~").draw()
                 }
             });
             $('#sectionINV', this).on('keyup change', function () {
                 if (this.value == "") {
-                    table
-                        .column(SectionColIndex)
-                        .search("")
-                        .draw()
+                    table.column(SectionColIndex).search("").draw()
                 }
                 if (this.value != "") {
-                    table
-                        .column(SectionColIndex)
-                        .search(this.value + " ~")
-                        .column(ThemeColIndex)
-                        .search($('#themeINV').val() + " ~")
-                        .column(deptINV)
-                        .search($('#deptINV').val() + " ~")
-                        
-                        init_feedback_admin_view();
+                    table.column(SectionColIndex).search(this.value + " ~").column(ThemeColIndex).search($('#themeINV').val() + " ~").column(deptINV).search($('#deptINV').val() + " ~") 
+                    init_feedback_admin_view();
                 }
                 if ($('#deptINV').val() != "") {
-                    table
-                        .column(DeptColIndex) //change these to const values
-                        .search($('#deptINV').val() + " ~")
-                        .draw()
+                    table.column(DeptColIndex) //change these to const values
+                        .search($('#deptINV').val() + " ~").draw()
                 }
                 if ($('#themeINV').val() != "") {
-                    table
-                        .column(ThemeColIndex) //change these to const values
-                        .search($('#themeINV').val() + " ~")
-                        .draw()
+                    table.column(ThemeColIndex) //change these to const values
+                        .search($('#themeINV').val() + " ~").draw()
                 }
             });
             $('#themeINV', this).on('keyup change', function () {
                 if (this.value == "") {
-                    table
-                        .column(ThemeColIndex)
-                        .search("")
-                        .draw()
+                    table.column(ThemeColIndex).search("").draw()
                 }
                 if (this.value != "") {
-                    table
-                        .column(ThemeColIndex)
-                        .search(this.value + " ~")
-                        .column(SectionColIndex)
-                        .search($('#sectionINV').val() + " ~")
-                        .column(deptINV)
-                        .search($('#deptINV').val() + " ~")
-
-                        init_feedback_admin_view();
-
-                        //clear the values in all of the searchBoxes when reset to defaults button is clicked
+                    table.column(ThemeColIndex).search(this.value + " ~").column(SectionColIndex).search($('#sectionINV').val() + " ~").column(deptINV).search($('#deptINV').val() + " ~") 
+                    init_feedback_admin_view();
                 }
                 if ($('#deptINV').val() != "") {
-                    table
-                        .column(DeptColIndex)
-                        .search($('#deptINV').val() + " ~")
-                        .draw()
+                    table.column(DeptColIndex).search($('#deptINV').val() + " ~").draw()
                 }
                 if ($('#sectionINV').val() != "") {
-                    table
-                        .column(SectionColIndex)
-                        .search($('#sectionINV').val() + " ~")
-                        .draw()
+                    table.column(SectionColIndex).search($('#sectionINV').val() + " ~").draw()
                 }
             });
+        }
 
-
-        });
+        );
     </script>
-
 </th:block>
 
 </html>
