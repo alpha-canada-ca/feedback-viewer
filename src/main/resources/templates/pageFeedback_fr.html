@@ -1,56 +1,61 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{wide_fr}" lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{wide_en}" lang="en">
 <th:block layout:fragment="content">
-
+    <link href='https://fonts.googleapis.com/css?family=Open Sans' rel='stylesheet'>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
     <style>
         th {
             font-size: 12px;
         }
-        
+
         td {
             font-size: 12px;
         }
-        
+
+        .container .content {
+            padding: 5px;
+        }
+
         .hidden {
             display: none;
         }
-        
+
         .table.dataTable {
             font-family: Verdana, Geneva, Tahoma, sans-serif;
             font-size: 12px;
         }
-        
+
         .dataTables_filter input {
             height: 35px;
             width: 150px;
         }
-        
+
         .dataTables_filter {
             font-size: 15px;
         }
-        
+
         .dataTables_length {
             font-size: 12px;
         }
-        
+
         .dataTables_info {
             font-size: 12px;
         }
-        
+
         .dataTables_paginate {
             font-size: 12px;
         }
-        
+
         .dt-button {
             text-align: center;
             font-size: 12px;
         }
-        
+
         #rangeSelection {
             margin-left: 1rem;
         }
-        
+
         .fa {
             position: fixed;
             top: 50%;
@@ -58,29 +63,27 @@
             transform: translate(-50%, -50%);
         }
     </style>
-
     <div class="container">
-        <h1>Outil de rétroaction</h1>
+        <h1>Page feedback tool</h1>
         <details open="true">
-            <summary>Filtrer les commentaires</summary>
-            <h4 class="wb-inv">Options de filtrage</h4>
+            <summary>Filter feedback </summary>
+            <h4 class="wb-inv">Filtering options</h4>
             <form class="wb-tables-filter" data-bind-to="problemTable">
                 <div class="row">
                     <div class="col-sm-6">
-                        <h4 class="h4">Options de filtre</h4>
-                        <p class="mrgn-tp-md">Utilisez ces filtres pour obtenir des commentaires sur les pages</p>
+                        <h4 class="h4">Filter options</h4>
+                        <p class="mrgn-tp-md">Use these filters to get page feedback</p>
                     </div>
                     <div class="col-sm-6">
                         <h4 class="h4">Feedback admin</h4>
-                        <p class="mrgn-tp-md">Utilisez ces filtres pour obtenir une liste des pages utilisant l'outil de feedback</p>
+                        <p class="mrgn-tp-md">Use these filters to get a list of pages using the feedback tool</p>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-sm-6">
                         <div class="form-group">
-                            <label for="Department">Département</label>
-                            <select class="form-control" id="Department" name="Department" data-column="5">
-                                <!-- DEPARTMENTS -->
+                            <label for="institution">Département</label>
+                            <select class="form-control" id="institution" name="institution" data-column="10">
                                 <option value="">Tous</option>
                                 <option value="CCG">GCC/CCG</option>
                                 <option value="CRA">ARC/CRA</option>
@@ -109,8 +112,7 @@
                         </div>
                         <div class="form-group">
                             <label for="section">Section</label>
-                            <select class="form-control" id="section" name="section" data-column="6">
-                                 <!-- SECTIONS -->
+                            <select class="form-control" id="section" name="section" data-column="8">
                                 <option value="">Tous</option>
                                 <option value="Business">Entreprise</option>
                                 <option value="Canada's Parliamentary Precinct">Cité parlementaire du Canada</option>
@@ -157,9 +159,8 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="dt_theme">Thème</label>
-                            <select class="form-control" id="dt_theme" name="dt_theme" data-column="8">
-                                <!-- THEMES -->
+                            <label for="theme">Thème</label>
+                            <select class="form-control" id="theme" name="theme" data-column="9"><!-- THEMES -->
                                 <option value="">Tous</option>
                                 <option value="Application status">Statut des applications</option>
                                 <option value="Benefits">Prestations</option>
@@ -200,7 +201,7 @@
                         <div class="form-group">
                             <div class="form-inline">
                                 <label for="rangeSelection">ou choisir
-                            <span class="wb-inv">Date de début</span></label>
+                                    <span class="wb-inv">Date de début</span></label>
                                 <select class="form-control" id="rangeSelection" name="rangeSelection">
                                     <option value="">Durée</option>
                                     <option value="today">Aujourd'hui</option>
@@ -208,15 +209,13 @@
                                     <option value="seven">7 derniers jours</option>
                                     <option value="fifteen">15 derniers jours</option>
                                     <option value="thirty">30 derniers jours</option>
-                            </select>
+                                </select>
                             </div>
                         </div>
                     </div>
                     <div class="col-sm-6">
-                        <div class="form-group">
-                            <label for="deptINV">Département</label>
-                            <select class="form-control" id="deptINV" name="deptINV" data-column="5">
-                                <!-- DEPARTMENTS -->
+                        <div class="form-group"><label for="deptINV">Département</label>
+                            <select class="form-control" id="deptINV" name="deptINV" data-column="10">
                                 <option value="">Tous</option>
                                 <option value="CCG">GCC/CCG</option>
                                 <option value="CRA">ARC/CRA</option>
@@ -243,10 +242,8 @@
                                 <option value="TBS">SCT/TBS</option>
                             </select>
                         </div>
-                        <div class="form-group">
-                            <label for="sectionINV">Section</label>
-                            <select class="form-control" id="sectionINV" name="sectionINV" data-column="6">
-                                 <!-- SECTIONS -->
+                        <div class="form-group"><label for="sectionINV">Section</label>
+                            <select class="form-control" id="sectionINV" name="sectionINV" data-column="8"><!-- SECTIONS -->
                                 <option value="">Tous</option>
                                 <option value="Business">Entreprise</option>
                                 <option value="Canada's Parliamentary Precinct">Cité parlementaire du Canada</option>
@@ -292,10 +289,8 @@
                                 <option value="WFHE">FTD</option>
                             </select>
                         </div>
-                        <div class="form-group">
-                            <label for="themeINV">Thème</label>
-                            <select class="form-control" id="themeINV" name="themeINV" data-column="8">
-                                <!-- THEMES -->
+                        <div class="form-group"><label for="themeINV">Thème</label>
+                            <select class="form-control" id="themeINV" name="themeINV" data-column="9">
                                 <option value="">Tous</option>
                                 <option value="Application status">Statut des applications</option>
                                 <option value="Benefits">Prestations</option>
@@ -323,16 +318,13 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="mrgn-lft-sm row">
-                    <!-- <button type="submit" class="btn btn-primary" aria-controls="problemTable">Filter</button> -->
-                    <button type="reset" class="btn btn-primary" id="clear-text">Réinitialiser</button>
-                </div>
-                <br>
+                    <!-- <button type="submit" class="btn btn-primary" aria-controls="problemTable">Filter</button>--><button
+                        type="reset" class="btn btn-primary" id="reset-to-default">Réinitialiser</button>
+                </div><br>
             </form>
         </details>
     </div>
-
     <div class="col-md-12">
         <div class="table-responsive">
             <table id="problemTable" class="small table hover display compact">
@@ -351,12 +343,10 @@
                         <th>Total des commentaires</th>
                     </tr>
                 </thead>
-                <tbody>
-                </tbody>
+                <tbody></tbody>
             </table>
         </div>
     </div>
-
 </th:block>
 <th:block layout:fragment="script">
     <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
@@ -370,139 +360,35 @@
     <script src="https://cdn.datatables.net/colreorder/1.5.2/js/dataTables.colReorder.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/busy-load@0.1.2/src/index.min.js"></script>
     <script type="text/javascript" src="js/spring-friendly.min.js"></script>
-
-
     <script th:inline="javascript">
-        $(document).ready(function() {
-
+        $(document).ready(function () {
             function newexportaction(e, dt, button, config) {
                 var self = this;
-                var oldStart = dt
-                    .settings()[0]
-                    ._iDisplayStart;
-                dt.one('preXhr', function(e, s, data) {
+                var oldStart = dt.settings()[0]._iDisplayStart;
+                dt.one('preXhr', function (e, s, data) {
                     // Just this once, load all data from the server...
                     data.start = 0;
                     data.length = 2147483647;
-                    dt.one('preDraw', function(e, settings) {
-                        // Call the original action function
-                        if (button[0].className.indexOf('buttons-copy') >= 0) {
-                            $
-                                .fn
-                                .dataTable
-                                .ext
-                                .buttons
-                                .copyHtml5
-                                .action
-                                .call(self, e, dt, button, config);
-                        } else if (button[0].className.indexOf('buttons-excel') >= 0) {
-                            $
-                                .fn
-                                .dataTable
-                                .ext
-                                .buttons
-                                .excelHtml5
-                                .available(dt, config) ?
-                                $
-                                .fn
-                                .dataTable
-                                .ext
-                                .buttons
-                                .excelHtml5
-                                .action
-                                .call(self, e, dt, button, config) :
-                                $
-                                .fn
-                                .dataTable
-                                .ext
-                                .buttons
-                                .excelFlash
-                                .action
-                                .call(self, e, dt, button, config);
+                    dt.one('preDraw', function (e, settings) {
+                        if (button[0].className.indexOf('buttons-excel') >= 0) {
+                            $.fn.dataTable.ext.buttons.excelHtml5.available(dt, config) ? $.fn.dataTable.ext.buttons.excelHtml5.action.call(self, e, dt, button, config) : $.fn.dataTable.ext.buttons.excelFlash.action.call(self, e, dt, button, config);
                         } else if (button[0].className.indexOf('buttons-csv') >= 0) {
-                            $
-                                .fn
-                                .dataTable
-                                .ext
-                                .buttons
-                                .csvHtml5
-                                .available(dt, config) ?
-                                $
-                                .fn
-                                .dataTable
-                                .ext
-                                .buttons
-                                .csvHtml5
-                                .action
-                                .call(self, e, dt, button, config) :
-                                $
-                                .fn
-                                .dataTable
-                                .ext
-                                .buttons
-                                .csvFlash
-                                .action
-                                .call(self, e, dt, button, config);
-                        } else if (button[0].className.indexOf('buttons-pdf') >= 0) {
-                            $
-                                .fn
-                                .dataTable
-                                .ext
-                                .buttons
-                                .pdfHtml5
-                                .available(dt, config) ?
-                                $
-                                .fn
-                                .dataTable
-                                .ext
-                                .buttons
-                                .pdfHtml5
-                                .action
-                                .call(self, e, dt, button, config) :
-                                $
-                                .fn
-                                .dataTable
-                                .ext
-                                .buttons
-                                .pdfFlash
-                                .action
-                                .call(self, e, dt, button, config);
-                        } else if (button[0].className.indexOf('buttons-print') >= 0) {
-                            $
-                                .fn
-                                .dataTable
-                                .ext
-                                .buttons
-                                .print
-                                .action(e, dt, button, config);
+                            $.fn.dataTable.ext.buttons.csvHtml5.available(dt, config) ? $.fn.dataTable.ext.buttons.csvHtml5.action.call(self, e, dt, button, config) : $.fn.dataTable.ext.buttons.csvFlash.action.call(self, e, dt, button, config);
                         }
-                        dt.one('preXhr', function(e, s, data) {
+                        dt.one('preXhr', function (e, s, data) {
                             // DataTables thinks the first item displayed is index 0, but we're not drawing that.
                             // Set the property to what it was before exporting.
                             settings._iDisplayStart = oldStart;
                             data.start = oldStart;
-                        });
-                        // Reload the grid with the original page. Otherwise, API functions like table.cell(this) don't work properly.
-                        setTimeout(dt.ajax.reload, 0);
-                        // Prevent rendering of the full data to the DOM
+                        }); // Reload the grid with the original page. Otherwise, API functions like table.cell(this) don't work properly.
+                        setTimeout(dt.ajax.reload, 0); // Prevent rendering of the full data to the DOM
                         return false;
                     });
-                });
-                // Requery the server with the new one-time export settings
-                dt
-                    .ajax
-                    .reload();
+                }); // Requery the server with the new one-time export settings
+                dt.ajax.reload();
             };
-            var today = new Date();
-            var dd = String(today.getDate()).padStart(2, '0');
-            var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
-            var yyyy = today.getFullYear();
-
-            today = yyyy + '-' + mm + '-' + dd;
-
-            $('#problemTable')
-                .find('thead th')
-                .append('<span class="sorting-cnt"><span class="sorting-icons"></span></span>')
+            const today = new Date().toLocaleDateString('en-CA');
+            $('#problemTable').find('thead th').append('<span class="sorting-cnt"><span class="sorting-icons"></span></span>')
 
             var table = $('table#problemTable').DataTable({
                 "order": [
@@ -574,7 +460,7 @@
                     "info": "Affichage de _START_ à _END_ sur _TOTAL_ entrées",
                     "infoEmpty": "Affichage de 0 à 0 sur 0 entrées",
                     "infoFiltered": "(filtrées depuis un total de _MAX_ entrées, 2022-10-01 à " + today + ")",
-
+                    "error": 'Votre session a expiré. Actualisez la page et reconnectez-vous.',
                     "lengthMenu": "Afficher _MENU_ entrées",
                     "paginate": {
                         "first": "Première",
@@ -590,31 +476,37 @@
                     fetchTotalCommentsCount();
                 },
                 retrieve: true,
-                ajax: '/problemData',
+                ajax: {
+                    url: '/problemData',
+                    type: 'GET',
+                    error: function (xhr, error, thrown) {
+                        alert("Votre session a expiré. Actualisez la page et reconnectez-vous.");
+                    }
+                },
                 serverSide: true,
                 columns: [{
                     data: 'problemDate',
-                    "width": "10%"
+                    width: '10%'
                 }, {
                     data: 'timeStamp'
                 }, {
                     data: 'problemDetails',
-                    "width": "30%"
+                    width: '30%'
                 }, {
                     data: 'problem',
-                    "width": "20%"
+                    width: '20%'
                 }, {
                     data: 'url',
-                    "width": "30%"
+                    width: '30%',
                 }, {
                     data: 'title',
-                    "width": "50%"
+                    width: '50%'
                 }, {
                     data: 'language',
-                    "width": "10%"
+                    width: '10%'
                 }, {
-                    data: 'institution',
-                    visible: false
+                    data: 'urlEntries',
+                    width: '10%'
                 }, {
                     data: 'section',
                     visible: false
@@ -622,9 +514,9 @@
                     data: 'theme',
                     visible: false
                 }, {
-                    data: 'urlEntries',
-                    "width": "10%"
-                }],
+                    data: 'institution',
+                    visible: false
+                },],
 
                 orderCellsTop: true,
                 fixedHeader: true,
@@ -641,11 +533,7 @@
                     "action": newexportaction
                 }]
             });
-
-            const COLUMNS = ["Date", "TimeStamp", "Comment", "Problem",
-                "Url", "Title", "Lang", "UrlEntries", "Section", "Theme", "Dept"
-            ]
-
+            const COLUMNS = ["Date", "TimeStamp", "Comment", "Problem", "Url", "Title", "Lang", "UrlEntries", "Section", "Theme", "Dept"]
             const DateColIndex = 0;
             const TimestampColIndex = 1;
             const CommentColIndex = 2;
@@ -653,10 +541,11 @@
             const UrlColIndex = 4;
             const TitleColIndex = 5;
             const LangColIndex = 6;
-            const DeptColIndex = 7;
+            const urlEntriesColIndex = 7;
             const SectionColIndex = 8;
             const ThemeColIndex = 9;
-            const urlEntriesColIndex = 10;
+            const DeptColIndex = 10;
+            var minMaxDateChosen = false;
 
             function replaceSpecialChars(string) {
                 var string = string.replace(/[.?]/g, '\\$&');
@@ -664,510 +553,246 @@
             }
 
             function fetchTotalCommentsCount() {
-                fetch('/pageFeedback/totalCommentsCount')
-                    .then(function(response) {
-                        // The API call was successful!
-                        return response.text();
-                    })
-                    .then(function(totalCommentsCount) {
-                        // This is the HTML from our response as a text string
-                        $('#total_comments').text(String(totalCommentsCount));
-                    })
-                    .catch(function(err) {
-                        // There was an error
-                        console.warn('Something went wrong.', err);
-                    });
+                fetch('/pageFeedback/totalCommentsCount').then(function (response) {
+                    // The API call was successful!
+                    return response.text();
+                }).then(function (totalCommentsCount) {
+                    // This is the HTML from our response as a text string
+                    $('#total_comments').text(String(totalCommentsCount));
+                }).catch(function (err) {
+                    // There was an error
+                    console.warn('Something went wrong.', err);
+                });
             }
-
-            $('#problemTable thead tr')
-                .clone(false)
-                .appendTo('#problemTable thead');
-            $('#problemTable thead tr:eq(1) th').each(function(i) {
+            $('#problemTable thead tr').clone(false).appendTo('#problemTable thead');
+            $('#problemTable thead tr:eq(1) th').each(function (i) {
                 var title = $(this).text();
-                $(this).html('<input type="text" id="searchBox' + COLUMNS[i] + '" placeholder="Recherche ' + title + '" />');
-
-                $('input', this)
-                    .unbind()
-                    .bind('keyup change', function(e) {
-                        if (e.keyCode == 13 || this.value == "") {
-                            table
-                                .column(i)
-                                .search(replaceSpecialChars(this.value))
-                                .draw();
-                        }
-                    });
+                $(this).html('<input type="text" id="searchBox' + COLUMNS[i] + '" placeholder="Rechercher ' + title + '" />');
+                $('input', this).unbind().bind('keyup change', function (e) {
+                    if (e.keyCode == 13 || this.value == "") {
+                        table.column(i).search(replaceSpecialChars(this.value)).draw();
+                    }
+                });
             });
             $('#problemTable thead tr:eq(1) th:eq(' + urlEntriesColIndex + ')').attr('id', 'total_comments');
 
-
-
-            table.column(urlEntriesColIndex).visible(false);
-            table.column(TimestampColIndex).visible(false);
-            table.column(TitleColIndex).visible(false);
-
-            $('#searchBoxTimeStamp').closest('th').hide();
-            $('#searchBoxUrlEntries').closest('th').hide();
-            $('#searchBoxTitle').closest('th').hide();
-
-            var minMaxDateChosen = false;
-
-
-
-
-
-            function clearText() {
-                $("#searchBoxDate").val("");
-                $("#searchBoxTimeStamp").val("");
-                $("#searchBoxComment").val("");
-                $("#searchBoxProblem").val("");
-                $("#searchBoxURL").val("");
-                $("#searchBoxUrlEntries").val("");
-                $("#searchBoxTitle").val("");
-                $("#searchBoxLang").val("");
-
-                $('#searchBoxDate').closest('th').show()
-                $('#searchBoxComment').closest('th').show()
-                $('#searchBoxProblem').closest('th').show()
-
-                $('#searchBoxUrlEntries').closest('th').hide()
-                $('#searchBoxTimeStamp').closest('th').hide()
-                $('#searchBoxTitle').closest('th').hide()
-
-                $('#total_comments').closest('th').hide()
-                $('#total_comments').hide()
-
-                $(".sorting-cnt").removeClass("hidden");
-                table
-                    .column(UrlColIndex).search("")
-                    .column(LangColIndex).search("")
-                    .column(DeptColIndex).search("")
-                    .column(SectionColIndex).search("")
-                    .column(ThemeColIndex).search("")
-                    .column(CommentColIndex).search("").visible(true)
-                    .column(ProblemColIndex).search("").visible(true)
-                    .column(DateColIndex).search("").visible(true)
-                    .column(urlEntriesColIndex).search("").visible(false)
-                    .column(TimestampColIndex).search("").visible(false)
-                    .column(TitleColIndex).search("").visible(false)
-                    .page.len(10)
-                    .draw()
+            function init_feedback_admin_view() {
+                $('#institution, #theme, #section, #min, #max, #rangeSelection').val("");
+                $('#searchBoxDate, #searchBoxComment, #searchBoxProblem, #searchBoxTimeStamp').closest('th').hide();
+                $('#searchBoxUrlEntries, #searchBoxTitle').closest('th').show()
+                $('#total_comments').show()
+                table.columns([CommentColIndex, ProblemColIndex, DateColIndex]).visible(false);
+                table.columns([urlEntriesColIndex, TitleColIndex]).visible(true).page.len(-1).draw();
             }
 
-            $("#clear-text").click(clearText);
+            function reset_table_view_to_default() {
+                //clear the values in all of the searchBoxes when reset to defaults button is clicked
+                $('#searchBoxDate, #searchBoxTimeStamp, #searchBoxComment, #searchBoxProblem, #searchBoxUrl, #searchBoxUrlEntries, #searchBoxTitle, #searchBoxLang').val('');
+                $('#searchBoxDate, #searchBoxComment, #searchBoxProblem').closest('th').show();
+                $('#searchBoxUrlEntries, #searchBoxTitle, #searchBoxTimeStamp').closest('th').hide();
+                $('#total_comments').hide().closest('th').hide()
+                table.columns([UrlColIndex, LangColIndex, DeptColIndex, SectionColIndex, ThemeColIndex]).search("")
+                table.columns([CommentColIndex, ProblemColIndex, DateColIndex]).search("").visible(true)
+                table.columns([urlEntriesColIndex, TimestampColIndex, TitleColIndex]).search("").visible(false).page.len(10).draw()
+            }
+            reset_table_view_to_default();
+            $("#reset-to-default").click(reset_table_view_to_default);
+            $('#rangeSelection', this).on('keyup change', function () {
+                reset_table_view_to_default();
 
+                var rangeValue = this.value.trim();
+                var isRangeChosen = rangeValue !== "";
 
-
-            $('#rangeSelection', this).on('keyup change', function() {
-                clearText();
-                if (this.value == "") {
+                if (!isRangeChosen) {
                     rangeChosen = false;
-                    table
-                        .column(DateColIndex)
-                        .search("")
-                        .draw()
-                }
-                if (this.value != "") {
+                    table.column(DateColIndex).search("").draw();
+                } else {
                     rangeChosen = true;
-                    console.log(this.value + " gmug8w7erhg87whrf78w")
-                    table
-                        .column(DateColIndex)
-                        .search(this.value)
-                        .page.len(10)
-                        .draw()
-                    $('#themeINV').val("");
-                    $('#sectionINV').val("");
-                    $('#deptINV').val("");
+                    table.column(DateColIndex).search(rangeValue).page.len(10).draw();
+                    $('#themeINV, #sectionINV, #deptINV').val("");
                 }
-                if ($('#Department').val() && rangeChosen) {
-                    table
-                        .column(ThemeColIndex)
-                        .search($('#dt_theme').val())
-                        .draw();
-                }
-                if ($('#Department').val() && rangeChosen) {
-                    table
-                        .column(DeptColIndex)
-                        .search($('#Department').val())
-                        .draw();
-                }
-                if ($('#section').val() && rangeChosen) {
-                    table
-                        .column(SectionColIndex)
-                        .search($('#section').val())
-                        .draw()
-                }
-            })
 
-            $('#min', this).on('keyup change', function() {
-                clearText();
+                if ($('#institution, #section, #theme').filter(function () {
+                    return this.value.trim() !== "";
+                }).length === 3) {
+                    table.columns([ThemeColIndex, DeptColIndex, SectionColIndex])
+                        .search([$('#theme').val(), $('#institution').val(), $('#section').val()])
+                        .draw();
+                } else {
+                    if ($('#institution').val() && isRangeChosen) {
+                        table.column(DeptColIndex).search($('#institution').val()).draw();
+                    }
+                    if ($('#section').val() && isRangeChosen) {
+                        table.column(SectionColIndex).search($('#section').val()).draw();
+                    }
+                    if ($('#theme').val() && isRangeChosen) {
+                        table.column(ThemeColIndex).search($('#theme').val()).draw();
+                    }
+                }
+            });
+            $('#min', this).on('keyup change', function () {
+                reset_table_view_to_default();
                 minMaxDateChosen = false;
                 if (this.value != "" && $('#max').val() != "") {
                     minMaxDateChosen = true;
-                    table
-                        .column(DateColIndex)
-                        .search(this.value + ":" + $('#max').val())
-                        .page.len(10)
-                        .draw();
+                    table.column(DateColIndex).search(this.value + ":" + $('#max').val()).page.len(10).draw();
                     $('#themeINV').val("");
                     $('#sectionINV').val("");
                     $('#deptINV').val("");
                 }
-                if ($('#dt_theme').val() != "" && minMaxDateChosen) {
-                    table
-                        .column(ThemeColIndex)
-                        .search($('#dt_theme').val())
-                        .draw()
+                if ($('#theme').val() != "" && minMaxDateChosen) {
+                    table.column(ThemeColIndex).search($('#theme').val()).draw()
                 }
-                if ($('#Department').val() != "" && minMaxDateChosen) {
-                    table
-                        .column(DeptColIndex)
-                        .search($('#Department').val())
-                        .draw()
+                if ($('#institution').val() != "" && minMaxDateChosen) {
+                    table.column(DeptColIndex).search($('#institution').val()).draw()
                 }
                 if ($('#section').val() != "" && minMaxDateChosen) {
-                    table
-                        .column(SectionColIndex)
-                        .search($('#section').val())
-                        .draw()
+                    table.column(SectionColIndex).search($('#section').val()).draw()
                 }
             });
-
-            $('#max', this).on('keyup change', function() {
-                clearText();
+            $('#max', this).on('keyup change', function () {
+                reset_table_view_to_default();
                 minMaxDateChosen = false;
                 if (this.value != "" && $('#min').val() != "") {
                     minMaxDateChosen = true;
-                    table
-                        .column(DateColIndex)
-                        .search($('#min').val() + ":" + this.value)
-                        .page.len(10)
-                        .draw();
+                    table.column(DateColIndex).search($('#min').val() + ":" + this.value).page.len(10).draw();
                     $('#themeINV').val("");
                     $('#sectionINV').val("");
                     $('#deptINV').val("");
                 }
-                if ($('#dt_theme').val() != "" && minMaxDateChosen) {
-                    table
-                        .column(ThemeColIndex)
-                        .search($('#dt_theme').val())
-                        .draw()
+                if ($('#theme').val() != "" && minMaxDateChosen) {
+                    table.column(ThemeColIndex).search($('#theme').val()).draw()
                 }
-                if ($('#Department').val() != "" && minMaxDateChosen) {
-                    table
-                        .column(DeptColIndex)
-                        .search($('#Department').val())
-                        .draw()
+                if ($('#institution').val() != "" && minMaxDateChosen) {
+                    table.column(DeptColIndex).search($('#institution').val()).draw()
                 }
                 if ($('#section').val() != "" && minMaxDateChosen) {
-                    table
-                        .column(SectionColIndex)
-                        .search($('#section').val())
-                        .draw()
+                    table.column(SectionColIndex).search($('#section').val()).draw()
                 }
             });
-
-            $('#dt_theme', this).on('keyup change', function() {
-                clearText();
+            $('#theme', this).on('keyup change', function () {
+                reset_table_view_to_default();
                 if (this.value == "") {
-                    table
-                        .column(ThemeColIndex)
-                        .search("")
-                        .draw()
+                    table.column(ThemeColIndex).search("").draw()
                 }
                 if (this.value != "") {
-                    table
-                        .column(ThemeColIndex)
-                        .search(this.value)
-                        .page.len(10)
-                        .draw()
+                    table.column(ThemeColIndex).search(this.value).page.len(10).draw()
                     $('#themeINV').val("");
                     $('#sectionINV').val("");
                     $('#deptINV').val("");
                 }
                 if (minMaxDateChosen) {
-                    table
-                        .column(DateColIndex)
-                        .search($('#min').val() + ":" + $('#max').val())
-                        .draw();
+                    table.column(DateColIndex).search($('#min').val() + ":" + $('#max').val()).draw();
                 }
-                if ($('#Department').val()) {
-                    table
-                        .column(DeptColIndex) //change these to const values
-                        .search($('#Department').val())
-                        .draw()
+                if ($('#institution').val()) {
+                    table.column(DeptColIndex).search($('#institution').val()).draw()
                 }
                 if ($('#section').val()) {
-                    table
-                        .column(SectionColIndex)
-                        .search($('#section').val())
-                        .draw()
+                    table.column(SectionColIndex).search($('#section').val()).draw()
                 }
             });
-
-            $('#Department', this).on('keyup change', function() {
-                clearText();
+            $('#institution', this).on('keyup change', function () {
+                reset_table_view_to_default();
                 if (this.value == "") {
                     deptChosen = false;
-                    table
-                        .column(DeptColIndex)
-                        .search("")
-                        .draw()
+                    table.column(DeptColIndex).search("").draw()
                 }
                 if (this.value != "") {
                     deptChosen = true;
-                    table
-                        .column(DeptColIndex)
-                        .search(this.value)
-                        .page.len(10)
-                        .draw()
+                    table.column(DeptColIndex).search(this.value).page.len(10).draw()
                     $('#themeINV').val("");
                     $('#sectionINV').val("");
                     $('#deptINV').val("");
                 }
                 if (minMaxDateChosen) {
-                    table
-                        .column(DateColIndex)
-                        .search($('#min').val() + ":" + $('#max').val())
-                        .draw();
+                    table.column(DateColIndex).search($('#min').val() + ":" + $('#max').val()).draw();
                 }
-                if ($('#dt_theme').val() != "") {
-                    table
-                        .column(ThemeColIndex)
-                        .search($('#dt_theme').val())
-                        .draw()
+                if ($('#theme').val() != "") {
+                    table.column(ThemeColIndex).search($('#theme').val()).draw()
                 }
                 if ($('#section').val() != "") {
-                    table
-                        .column(SectionColIndex)
-                        .search($('#section').val())
-                        .draw()
+                    table.column(SectionColIndex).search($('#section').val()).draw()
                 }
             });
-
-            $('#section', this).on('keyup change', function() {
-                clearText();
+            $('#section', this).on('keyup change', function () {
+                reset_table_view_to_default();
                 if (this.value == "") {
                     sectionChosen = false;
-                    table
-                        .column(SectionColIndex)
-                        .search("")
-                        .draw()
+                    table.column(SectionColIndex).search("").draw()
                 }
                 if (this.value != "") {
                     sectionChosen = true;
-                    table
-                        .column(SectionColIndex)
-                        .search(this.value)
-                        .page.len(10)
-                        .draw()
+                    table.column(SectionColIndex).search(this.value).page.len(10).draw()
                     $('#themeINV').val("");
                     $('#sectionINV').val("");
                     $('#deptINV').val("");
                 }
                 if (minMaxDateChosen) {
-                    table
-                        .column(DateColIndex)
-                        .search($('#min').val() + ":" + $('#max').val())
-                        .draw();
+                    table.column(DateColIndex).search($('#min').val() + ":" + $('#max').val()).draw();
                 }
-                if ($('#Department').val() != "") {
-                    table
-                        .column(DeptColIndex) //change these to const values
-                        .search($('#Department').val())
-                        .draw()
+                if ($('#institution').val() != "") {
+                    table.column(DeptColIndex) //change these to const values
+                        .search($('#institution').val()).draw()
                 }
-                if ($('#dt_theme').val() != "") {
-                    table
-                        .column(ThemeColIndex)
-                        .search($('#dt_theme').val())
-                        .draw()
+                if ($('#theme').val() != "") {
+                    table.column(ThemeColIndex).search($('#theme').val()).draw()
                 }
             });
-
-            $('#deptINV', this).on('keyup change', function() {
+            $('#deptINV', this).on('keyup change', function () {
                 if (this.value == "") {
                     if ($('#sectionINV').val() != "" || $('#themeINV').val() != "") {
-                        table
-                            .column(DeptColIndex)
-                            .search("")
-                            .draw()
+                        table.column(DeptColIndex).search("").draw()
                     }
                 }
                 if (this.value != "") {
-                    table
-                        .column(DeptColIndex)
-                        .search(this.value + " ~")
-                        .column(ThemeColIndex)
-                        .search($('#themeINV').val() + " ~")
-                        .column(SectionColIndex)
-                        .search($('#sectionINV').val() + " ~")
-                        .column(CommentColIndex)
-                        .visible(false)
-                        .column(ProblemColIndex)
-                        .visible(false)
-                        .column(DateColIndex)
-                        .visible(false)
-                        .column(urlEntriesColIndex)
-                        .visible(true)
-                        .column(TitleColIndex)
-                        .visible(true)
-                        .page
-                        .len(-1)
-                        .draw()
-                    $('#Department').val("");
-                    $('#dt_theme').val("");
-                    $('#section').val("");
-                    $('#min').val("");
-                    $('#max').val("");
-                    $('#rangeSelection').val("");
-                    $('#searchBoxDate').closest('th').hide()
-                    $('#searchBoxTimeStamp').closest('th').hide()
-                    $('#searchBoxComment').closest('th').hide()
-                    $('#searchBoxProblem').closest('th').hide()
-                    $('#searchBoxUrlEntries').closest('th').show()
-                    $('#searchBoxTitle').closest('th').show()
-
-                    $('#total_comments').show()
-
-                    $(".sorting-cnt").addClass("hidden");
-
+                    table.column(DeptColIndex).search(this.value + " ~").column(ThemeColIndex).search($('#themeINV').val() + " ~").column(SectionColIndex).search($('#sectionINV').val() + " ~")
+                    init_feedback_admin_view();
                 }
                 if ($('#sectionINV').val() != "") {
-                    table
-                        .column(SectionColIndex) //change these to const values
-                        .search($('#sectionINV').val() + " ~")
-                        .draw()
+                    table.column(SectionColIndex) //change these to const values
+                        .search($('#sectionINV').val() + " ~").draw()
                 }
                 if ($('#themeINV').val() != "") {
-                    table
-                        .column(ThemeColIndex) //change these to const values
-                        .search($('#themeINV').val() + " ~")
-                        .draw()
+                    table.column(ThemeColIndex) //change these to const values
+                        .search($('#themeINV').val() + " ~").draw()
                 }
             });
-            $('#sectionINV', this).on('keyup change', function() {
+            $('#sectionINV', this).on('keyup change', function () {
                 if (this.value == "") {
-                    table
-                        .column(SectionColIndex)
-                        .search("")
-                        .draw()
+                    table.column(SectionColIndex).search("").draw()
                 }
                 if (this.value != "") {
-                    table
-                        .column(SectionColIndex)
-                        .search(this.value + " ~")
-                        .column(ThemeColIndex)
-                        .search($('#themeINV').val() + " ~")
-                        .column(deptINV)
-                        .search($('#deptINV').val() + " ~")
-                        .column(CommentColIndex)
-                        .visible(false)
-                        .column(ProblemColIndex)
-                        .visible(false)
-                        .column(DateColIndex)
-                        .visible(false)
-                        .column(urlEntriesColIndex)
-                        .visible(true)
-                        .column(TitleColIndex)
-                        .visible(true)
-                        .page
-                        .len(-1)
-                        .draw()
-
-                    $('#Department').val("");
-                    $('#dt_theme').val("");
-                    $('#section').val("");
-                    $('#min').val("");
-                    $('#max').val("");
-                    $('#rangeSelection').val("");
-                    $('#searchBoxDate').closest('th').hide()
-                    $('#searchBoxTimeStamp').closest('th').hide()
-                    $('#searchBoxComment').closest('th').hide()
-                    $('#searchBoxProblem').closest('th').hide()
-                    $('#searchBoxUrlEntries').closest('th').show()
-                    $('#searchBoxTitle').closest('th').show()
-
-                    $('#total_comments').show()
-
-                    $(".sorting-cnt").addClass("hidden");
+                    table.column(SectionColIndex).search(this.value + " ~").column(ThemeColIndex).search($('#themeINV').val() + " ~").column(deptINV).search($('#deptINV').val() + " ~")
+                    init_feedback_admin_view();
                 }
                 if ($('#deptINV').val() != "") {
-                    table
-                        .column(DeptColIndex) //change these to const values
-                        .search($('#deptINV').val() + " ~")
-                        .draw()
+                    table.column(DeptColIndex) //change these to const values
+                        .search($('#deptINV').val() + " ~").draw()
                 }
                 if ($('#themeINV').val() != "") {
-                    table
-                        .column(ThemeColIndex) //change these to const values
-                        .search($('#themeINV').val() + " ~")
-                        .draw()
+                    table.column(ThemeColIndex) //change these to const values
+                        .search($('#themeINV').val() + " ~").draw()
                 }
             });
-            $('#themeINV', this).on('keyup change', function() {
+            $('#themeINV', this).on('keyup change', function () {
                 if (this.value == "") {
-                    table
-                        .column(ThemeColIndex)
-                        .search("")
-                        .draw()
+                    table.column(ThemeColIndex).search("").draw()
                 }
                 if (this.value != "") {
-                    table
-                        .column(ThemeColIndex)
-                        .search(this.value + " ~")
-                        .column(SectionColIndex)
-                        .search($('#sectionINV').val() + " ~")
-                        .column(deptINV)
-                        .search($('#deptINV').val() + " ~")
-                        .column(CommentColIndex)
-                        .visible(false)
-                        .column(ProblemColIndex)
-                        .visible(false)
-                        .column(DateColIndex)
-                        .visible(false)
-                        .column(urlEntriesColIndex)
-                        .visible(true)
-                        .column(TitleColIndex)
-                        .visible(true)
-                        .page
-                        .len(-1)
-                        .draw()
-
-                    $('#Department').val("");
-                    $('#dt_theme').val("");
-                    $('#section').val("");
-                    $('#min').val("");
-                    $('#max').val("");
-                    $('#rangeSelection').val("");
-                    $('#searchBoxDate').closest('th').hide()
-                    $('#searchBoxTimeStamp').closest('th').hide()
-                    $('#searchBoxComment').closest('th').hide()
-                    $('#searchBoxProblem').closest('th').hide()
-                    $('#searchBoxUrlEntries').closest('th').show()
-                    $('#searchBoxTitle').closest('th').show()
-
-                    $('#total_comments').show()
-
-                    $(".sorting-cnt").addClass("hidden");
+                    table.column(ThemeColIndex).search(this.value + " ~").column(SectionColIndex).search($('#sectionINV').val() + " ~").column(deptINV).search($('#deptINV').val() + " ~")
+                    init_feedback_admin_view();
                 }
                 if ($('#deptINV').val() != "") {
-                    table
-                        .column(DeptColIndex)
-                        .search($('#deptINV').val() + " ~")
-                        .draw()
+                    table.column(DeptColIndex).search($('#deptINV').val() + " ~").draw()
                 }
                 if ($('#sectionINV').val() != "") {
-                    table
-                        .column(SectionColIndex)
-                        .search($('#sectionINV').val() + " ~")
-                        .draw()
+                    table.column(SectionColIndex).search($('#sectionINV').val() + " ~").draw()
                 }
             });
+        }
 
-
-        });
+        );
     </script>
-
 </th:block>
 
 </html>
