@@ -194,14 +194,7 @@
       <!-- /ROOT/etc/designs/canada/cdts/gcweb/v4_0_28/cdts/static/preFooter-${lang}.html -->
     </div>
     <!-- Write closure template -->
-    <script>
-      var defPreFooter = document.getElementById("def-preFooter");
-      defPreFooter.outerHTML = wet.builder.preFooter({
-        "dateModified": "2023-01-04",
-        showShare: false,
-        showFeedback: false,
-      });
-    </script>
+
   </main>
   <div id="def-footer">
     <!-- Write closure fall-back static file -->
@@ -211,6 +204,9 @@
   <script>
     var defFooter = document.getElementById("def-footer");
     defFooter.outerHTML = wet.builder.appFooter({
+      dateModified: "2023-02-4",
+      showShare: false,
+      showFeedback: false,
       cdnEnv: "prod",
       showFeatures: false,
     });
