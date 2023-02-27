@@ -211,8 +211,8 @@
                         </div>
                     </div>
                     <div class="col-sm-6">
-                        <div class="form-group"><label for="deptINV">Department</label>
-                            <select class="form-control" id="deptINV" name="deptINV" data-column="10">
+                        <div class="form-group"><label for="deptFA">Department</label>
+                            <select class="form-control" id="deptFA" name="deptFA" data-column="10">
                                 <option value="">All</option>
                                 <option value="CCG">CCG/GCC</option>
                                 <option value="CRA">CRA/ARC</option>
@@ -239,8 +239,8 @@
                                 <option value="TBS">TBS/SCT</option><!-- DEPARTMENTS -->
                             </select>
                         </div>
-                        <div class="form-group"><label for="sectionINV">Section</label>
-                            <select class="form-control" id="sectionINV" name="sectionINV" data-column="8"><!-- SECTIONS -->
+                        <div class="form-group"><label for="sectionFA">Section</label>
+                            <select class="form-control" id="sectionFA" name="sectionFA" data-column="8"><!-- SECTIONS -->
                                 <option value="">All</option>
                                 <option value="Business">Business</option>
                                 <option value="Canada's Parliamentary Precinct">Canada's Parliamentary Precinct</option>
@@ -285,8 +285,8 @@
                                 <option value="WFHE">WFHE</option>
                             </select>
                         </div>
-                        <div class="form-group"><label for="themeINV">Theme</label>
-                            <select class="form-control" id="themeINV" name="themeINV" data-column="9">
+                        <div class="form-group"><label for="themeFA">Theme</label>
+                            <select class="form-control" id="themeFA" name="themeFA" data-column="9">
                                 <option value="">All</option>
                                 <option value="Application status">Application status</option>
                                 <option value="Benefits">Benefits</option>
@@ -474,30 +474,38 @@
                 return string;
             }
 
+            // This function fetches the total count of comments for the page using an API call
             function fetchTotalCommentsCount() {
                 fetch('/pageFeedback/totalCommentsCount').then(function (response) {
-                    // The API call was successful!
+                    // If the API call was successful, the response is returned as a text string
                     return response.text();
                 }).then(function (totalCommentsCount) {
-                    // This is the HTML from our response as a text string
+                    // The total count of comments is displayed on the web page
                     $('#total_comments').text(String(totalCommentsCount));
                 }).catch(function (err) {
-                    // There was an error
+                    // If there was an error, a warning message is displayed in the console
                     console.warn('Something went wrong.', err);
                 });
             }
+
+            // This code clones the first row of a table and appends it to the table header
             $('#problemTable thead tr').clone(false).appendTo('#problemTable thead');
+
+            // This code adds a search box to each column of the table header row
             $('#problemTable thead tr:eq(1) th').each(function (i) {
                 var title = $(this).text();
-                $(this).html('<input type="text" id="searchBox' + COLUMNS[i] + '" placeholder="Search ' + title + '" />');
+                $(this).html('<input type="text" id="searchBox' + COLUMNS[i] + '" placeholder="Rechercher ' + title + '" />');
                 $('input', this).unbind().bind('keyup change', function (e) {
                     if (e.keyCode == 13 || this.value == "") {
                         table.column(i).search(replaceSpecialChars(this.value)).draw();
                     }
                 });
             });
+
+            // This code sets the ID of the column header for the total comments count to 'total_comments'
             $('#problemTable thead tr:eq(1) th:eq(' + urlEntriesColIndex + ')').attr('id', 'total_comments');
 
+            // This function initializes the feedback admin view by resetting search boxes and hiding columns
             function init_feedback_admin_view() {
                 $('#institution, #theme, #section, #min, #max, #rangeSelection').val("");
                 $('#searchBoxDate, #searchBoxComment, #searchBoxProblem, #searchBoxTimeStamp').closest('th').hide();
@@ -507,16 +515,21 @@
                 table.columns([urlEntriesColIndex, TitleColIndex]).visible(true).page.len(-1).draw();
             }
 
+            // This function resets the table view to its default settings
             function reset_table_view_to_default() {
-                //clear the values in all of the searchBoxes when reset to defaults button is clicked
+                // Clear the values in all of the search boxes when the 'reset to defaults' button is clicked
                 $('#searchBoxDate, #searchBoxTimeStamp, #searchBoxComment, #searchBoxProblem, #searchBoxUrl, #searchBoxUrlEntries, #searchBoxTitle, #searchBoxLang').val('');
+                $('#themeFA, #sectionFA, #deptFA').val('');
                 $('#searchBoxDate, #searchBoxComment, #searchBoxProblem').closest('th').show();
                 $('#searchBoxUrlEntries, #searchBoxTitle, #searchBoxTimeStamp').closest('th').hide();
                 $('#total_comments').hide().closest('th').hide()
+                // Reset the search filters and column visibility to their default values
                 table.columns([UrlColIndex, LangColIndex, DeptColIndex, SectionColIndex, ThemeColIndex]).search("")
                 table.columns([CommentColIndex, ProblemColIndex, DateColIndex]).search("").visible(true)
                 table.columns([urlEntriesColIndex, TimestampColIndex, TitleColIndex]).search("").visible(false).page.len(10).draw()
             }
+
+            // The table view is reset to default settings when the page is loaded
             reset_table_view_to_default();
             $("#reset-to-default").click(reset_table_view_to_default);
             $('#rangeSelection', this).on('keyup change', function () {
@@ -531,7 +544,6 @@
                 } else {
                     rangeChosen = true;
                     table.column(DateColIndex).search(rangeValue).page.len(10).draw();
-                    $('#themeINV, #sectionINV, #deptINV').val("");
                 }
 
                 if ($('#institution, #section, #theme').filter(function () {
@@ -558,9 +570,7 @@
                 if (this.value != "" && $('#max').val() != "") {
                     minMaxDateChosen = true;
                     table.column(DateColIndex).search(this.value + ":" + $('#max').val()).page.len(10).draw();
-                    $('#themeINV').val("");
-                    $('#sectionINV').val("");
-                    $('#deptINV').val("");
+       
                 }
                 if ($('#theme').val() != "" && minMaxDateChosen) {
                     table.column(ThemeColIndex).search($('#theme').val()).draw()
@@ -578,9 +588,7 @@
                 if (this.value != "" && $('#min').val() != "") {
                     minMaxDateChosen = true;
                     table.column(DateColIndex).search($('#min').val() + ":" + this.value).page.len(10).draw();
-                    $('#themeINV').val("");
-                    $('#sectionINV').val("");
-                    $('#deptINV').val("");
+
                 }
                 if ($('#theme').val() != "" && minMaxDateChosen) {
                     table.column(ThemeColIndex).search($('#theme').val()).draw()
@@ -599,9 +607,7 @@
                 }
                 if (this.value != "") {
                     table.column(ThemeColIndex).search(this.value).page.len(10).draw()
-                    $('#themeINV').val("");
-                    $('#sectionINV').val("");
-                    $('#deptINV').val("");
+
                 }
                 if (minMaxDateChosen) {
                     table.column(DateColIndex).search($('#min').val() + ":" + $('#max').val()).draw();
@@ -622,9 +628,6 @@
                 if (this.value != "") {
                     deptChosen = true;
                     table.column(DeptColIndex).search(this.value).page.len(10).draw()
-                    $('#themeINV').val("");
-                    $('#sectionINV').val("");
-                    $('#deptINV').val("");
                 }
                 if (minMaxDateChosen) {
                     table.column(DateColIndex).search($('#min').val() + ":" + $('#max').val()).draw();
@@ -639,78 +642,80 @@
             $('#section', this).on('keyup change', function () {
                 reset_table_view_to_default();
                 if (this.value == "") {
-                    sectionChosen = false;
                     table.column(SectionColIndex).search("").draw()
                 }
                 if (this.value != "") {
-                    sectionChosen = true;
                     table.column(SectionColIndex).search(this.value).page.len(10).draw()
-                    $('#themeINV').val("");
-                    $('#sectionINV').val("");
-                    $('#deptINV').val("");
+
                 }
                 if (minMaxDateChosen) {
                     table.column(DateColIndex).search($('#min').val() + ":" + $('#max').val()).draw();
                 }
                 if ($('#institution').val() != "") {
-                    table.column(DeptColIndex) //change these to const values
+                    table.column(DeptColIndex)
                         .search($('#institution').val()).draw()
                 }
                 if ($('#theme').val() != "") {
                     table.column(ThemeColIndex).search($('#theme').val()).draw()
                 }
             });
-            $('#deptINV', this).on('keyup change', function () {
-                if (this.value == "") {
-                    if ($('#sectionINV').val() != "" || $('#themeINV').val() != "") {
-                        table.column(DeptColIndex).search("").draw()
-                    }
+            $('#deptFA', this).on('keyup change', function () {
+                const sectionValue =  $('#sectionFA').val().trim();
+                const themeValue = $('#themeFA').val().trim();
+                const deptValue = this.value.trim();
+                if (deptValue === "") {
+                    table.column(DeptColIndex).search("").draw()
                 }
-                if (this.value != "") {
-                    table.column(DeptColIndex).search(this.value + " ~").column(ThemeColIndex).search($('#themeINV').val() + " ~").column(SectionColIndex).search($('#sectionINV').val() + " ~")
+                if (deptValue !== "") {
+                    table.column(DeptColIndex).search(deptValue + " ~").column(ThemeColIndex).search(themeValue + " ~").column(SectionColIndex).search(sectionValue + " ~")
                     init_feedback_admin_view();
                 }
-                if ($('#sectionINV').val() != "") {
-                    table.column(SectionColIndex) //change these to const values
-                        .search($('#sectionINV').val() + " ~").draw()
+                if (sectionValue !== "") {
+                    table.column(SectionColIndex).search(sectionValue + " ~").draw()
                 }
-                if ($('#themeINV').val() != "") {
-                    table.column(ThemeColIndex) //change these to const values
-                        .search($('#themeINV').val() + " ~").draw()
+                if ($('#themeFA').val() != "") {
+                    table.column(ThemeColIndex).search(themeValue + " ~").draw()
                 }
             });
-            $('#sectionINV', this).on('keyup change', function () {
-                if (this.value == "") {
+            $('#sectionFA', this).on('keyup change', function () {
+                const sectionValue = this.value.trim();
+                const themeValue = $('#themeFA').val().trim();
+                const deptValue = $('#deptFA').val().trim();
+                if (sectionValue === "") {
                     table.column(SectionColIndex).search("").draw()
                 }
-                if (this.value != "") {
-                    table.column(SectionColIndex).search(this.value + " ~").column(ThemeColIndex).search($('#themeINV').val() + " ~").column(deptINV).search($('#deptINV').val() + " ~")
+                if (sectionValue !== "") {
+                    table.column(SectionColIndex).search(sectionValue + " ~").column(ThemeColIndex).search(themeValue + " ~").column(deptFA).search(deptValue + " ~")
                     init_feedback_admin_view();
                 }
-                if ($('#deptINV').val() != "") {
-                    table.column(DeptColIndex) //change these to const values
-                        .search($('#deptINV').val() + " ~").draw()
+                if (deptValue !== "") {
+                    table.column(DeptColIndex).search(deptValue + " ~").draw()
                 }
-                if ($('#themeINV').val() != "") {
-                    table.column(ThemeColIndex) //change these to const values
-                        .search($('#themeINV').val() + " ~").draw()
+                if (themeValue !== "") {
+                    table.column(ThemeColIndex).search(themeValue+ " ~").draw()
                 }
             });
-            $('#themeINV', this).on('keyup change', function () {
-                if (this.value == "") {
+
+            $('#themeFA', this).on('keyup change', function () {
+                const themeValue = this.value.trim();
+                const sectionValue = $('#sectionFA').val().trim();
+                const deptValue = $('#deptFA').val().trim();
+                if (themeValue === "") {
                     table.column(ThemeColIndex).search("").draw()
                 }
-                if (this.value != "") {
-                    table.column(ThemeColIndex).search(this.value + " ~").column(SectionColIndex).search($('#sectionINV').val() + " ~").column(deptINV).search($('#deptINV').val() + " ~")
+                if (themeValue !== "") {
+                    table.column(ThemeColIndex).search(themeValue + " ~").column(SectionColIndex).search(sectionValue + " ~").column(deptFA).search(deptValue + " ~")
                     init_feedback_admin_view();
                 }
-                if ($('#deptINV').val() != "") {
-                    table.column(DeptColIndex).search($('#deptINV').val() + " ~").draw()
+                if (deptValue !== "") {
+                    table.column(DeptColIndex).search(deptValue + " ~").draw()
                 }
-                if ($('#sectionINV').val() != "") {
-                    table.column(SectionColIndex).search($('#sectionINV').val() + " ~").draw()
+                if (sectionValue !== "") {
+                    table.column(SectionColIndex).search(sectionValue + " ~").draw()
                 }
             });
+
+
         }
 
         );
