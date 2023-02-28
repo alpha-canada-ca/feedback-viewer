@@ -455,6 +455,7 @@
                     action: newexportaction
                 },],
             });
+            
             const COLUMNS = ["Date", "TimeStamp", "Comment", "Problem", "Url", "Title", "Lang", "UrlEntries", "Section", "Theme", "Dept"]
             const DateColIndex = 0;
             const TimestampColIndex = 1;
@@ -473,17 +474,16 @@
                 var string = string.replace(/[.?]/g, '\\$&');
                 return string;
             }
+            
 
             // This function fetches the total count of comments for the page using an API call
             function fetchTotalCommentsCount() {
-                fetch('/pageFeedback/totalCommentsCount').then(function (response) {
-                    // If the API call was successful, the response is returned as a text string
-                    return response.text();
-                }).then(function (totalCommentsCount) {
-                    // The total count of comments is displayed on the web page
+                fetch('/pageFeedback/totalCommentsCount')
+                .then(response => response.text())
+                .then(totalCommentsCount => {
                     $('#total_comments').text(String(totalCommentsCount));
-                }).catch(function (err) {
-                    // If there was an error, a warning message is displayed in the console
+                })
+                .catch(err => {
                     console.warn('Something went wrong.', err);
                 });
             }
@@ -506,11 +506,11 @@
             $('#problemTable thead tr:eq(1) th:eq(' + urlEntriesColIndex + ')').attr('id', 'total_comments');
 
             // The table view is reset to default settings when the page is loaded
-            reset_table_view_to_default();
-            $("#reset-to-default").click(reset_table_view_to_default);
+            resetTableViewToDefault();
+            $("#reset-to-default").click(resetTableViewToDefault);
 
             // This function initializes the feedback admin view by resetting search boxes and hiding columns
-            function init_feedback_admin_view() {
+            function initFeedbackAdminView() {
                 $('#institution, #theme, #section, #min, #max, #rangeSelection').val("");
                 $('#searchBoxDate, #searchBoxComment, #searchBoxProblem, #searchBoxTimeStamp').closest('th').hide();
                 $('#searchBoxUrlEntries, #searchBoxTitle').closest('th').show()
@@ -520,7 +520,7 @@
             }
 
             // This function resets the table view to its default settings
-            function reset_table_view_to_default() {
+            function resetTableViewToDefault() {
                 // Clear the values in all of the search boxes when the 'reset to defaults' button is clicked
                 $('#searchBoxDate, #searchBoxTimeStamp, #searchBoxComment, #searchBoxProblem, #searchBoxUrl, #searchBoxUrlEntries, #searchBoxTitle, #searchBoxLang').val('');
                 $('#themeFA, #sectionFA, #deptFA').val('');
@@ -534,7 +534,7 @@
             }
 
             $('#rangeSelection', this).on('keyup change', function () {
-                reset_table_view_to_default();
+                resetTableViewToDefault();
 
                 var rangeValue = this.value.trim();
                 var isRangeChosen = rangeValue !== "";
@@ -566,7 +566,7 @@
                 }
             });
             $('#min', this).on('keyup change', function () {
-                reset_table_view_to_default();
+                resetTableViewToDefault();
                 minMaxDateChosen = false;
                 if (this.value != "" && $('#max').val() != "") {
                     minMaxDateChosen = true;
@@ -584,7 +584,7 @@
                 }
             });
             $('#max', this).on('keyup change', function () {
-                reset_table_view_to_default();
+                resetTableViewToDefault();
                 minMaxDateChosen = false;
                 if (this.value != "" && $('#min').val() != "") {
                     minMaxDateChosen = true;
@@ -605,7 +605,7 @@
                 const sectionValue =  $('#section').val().trim();
                 const themeValue =  this.value.trim();
                 const institutionValue=  $('#section').val().trim();
-                reset_table_view_to_default();
+                resetTableViewToDefault();
                 if (themeValue === "") {
                     table.column(ThemeColIndex).search("").draw()
                 }
@@ -627,7 +627,7 @@
                 const sectionValue =  $('#section').val().trim();
                 const themeValue =  $('#theme').val().trim();
                 const institutionValue=  this.value.trim();
-                reset_table_view_to_default();
+                resetTableViewToDefault();
                 if (institutionValue === "") {
                     table.column(InstitutionColIndex).search("").draw()
                 }
@@ -648,7 +648,7 @@
                 const sectionValue =  this.value.trim();
                 const themeValue =  $('#theme').val().trim();
                 const institutionValue=  $('#section').val().trim();
-                reset_table_view_to_default();
+                resetTableViewToDefault();
                 if (sectionValue === "") {
                     table.column(SectionColIndex).search("").draw()
                 }
@@ -675,7 +675,7 @@
                 }
                 if (deptValue !== "") {
                     table.column(InstitutionColIndex).search(deptValue + " ~").column(ThemeColIndex).search(themeValue + " ~").column(SectionColIndex).search(sectionValue + " ~")
-                    init_feedback_admin_view();
+                    initFeedbackAdminView();
                 }
                 if (sectionValue !== "") {
                     table.column(SectionColIndex).search(sectionValue + " ~").draw()
@@ -693,7 +693,7 @@
                 }
                 if (sectionValue !== "") {
                     table.column(SectionColIndex).search(sectionValue + " ~").column(ThemeColIndex).search(themeValue + " ~").column(deptFA).search(deptValue + " ~")
-                    init_feedback_admin_view();
+                    initFeedbackAdminView();
                 }
                 if (deptValue !== "") {
                     table.column(InstitutionColIndex).search(deptValue + " ~").draw()
@@ -712,7 +712,7 @@
                 }
                 if (themeValue !== "") {
                     table.column(ThemeColIndex).search(themeValue + " ~").column(SectionColIndex).search(sectionValue + " ~").column(deptFA).search(deptValue + " ~")
-                    init_feedback_admin_view();
+                    initFeedbackAdminView();
                 }
                 if (deptValue !== "") {
                     table.column(InstitutionColIndex).search(deptValue + " ~").draw()
