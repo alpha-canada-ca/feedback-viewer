@@ -172,13 +172,15 @@
                                 <option value="Defence">Defence</option>
                                 <option value="Education/Research">Education/Research</option>
                                 <option value="Employment Insurance">Employment Insurance</option>
-                                <option value="Environment and natural resources">Environment and Natural Resources</option>
+                                <option value="Environment and natural resources">Environment and Natural Resources
+                                </option>
                                 <option value="Funding">Funding</option>
                                 <option value="Health">Health</option>
                                 <option value="Jobs">Jobs</option>
                                 <option value="Money and finances">Money and Finances</option>
                                 <option value="Policies">Policies</option>
-                                <option value="Policing, justice and emergencies">Policing, justice and emergencies </option>
+                                <option value="Policing, justice and emergencies">Policing, justice and emergencies
+                                </option>
                                 <option value="Public Service">Public Service</option>
                                 <option value="Science and innovation">Science and Innovation</option>
                                 <option value="Taxes">Taxes</option>
@@ -198,7 +200,8 @@
                         </div>
                         <div class="form-group">
                             <div class="form-inline">
-                                <label for="rangeSelection">or choose <span class="wb-inv">from start date</span></label>
+                                <label for="rangeSelection">or choose <span class="wb-inv">from start
+                                        date</span></label>
                                 <select class="form-control" id="rangeSelection" name="rangeSelection">
                                     <option value="">Duration</option>
                                     <option value="today">Today</option>
@@ -240,7 +243,8 @@
                             </select>
                         </div>
                         <div class="form-group"><label for="sectionFA">Section</label>
-                            <select class="form-control" id="sectionFA" name="sectionFA" data-column="8"><!-- SECTIONS -->
+                            <select class="form-control" id="sectionFA" name="sectionFA"
+                                data-column="8"><!-- SECTIONS -->
                                 <option value="">All</option>
                                 <option value="Business">Business</option>
                                 <option value="Canada's Parliamentary Precinct">Canada's Parliamentary Precinct</option>
@@ -278,7 +282,8 @@
                                 <option value="Retirement planning">Retirement planning</option>
                                 <option value="Sign in">Sign in</option>
                                 <option value="Skills for Success">Skills for Success</option>
-                                <option value="Social Development Partnerships Program">Social Development Partnerships Program</option>
+                                <option value="Social Development Partnerships Program">Social Development Partnerships
+                                    Program</option>
                                 <option value="travel-wizard">travel-wizard</option>
                                 <option value="Ukraine">Ukraine</option>
                                 <option value="Vaccines">Vaccines</option>
@@ -297,13 +302,15 @@
                                 <option value="Defence">Defence</option>
                                 <option value="Education/Research">Education/Research</option>
                                 <option value="Employment Insurance">Employment Insurance</option>
-                                <option value="Environment and natural resources">Environment and Natural Resources </option>
+                                <option value="Environment and natural resources">Environment and Natural Resources
+                                </option>
                                 <option value="Funding">Funding</option>
                                 <option value="Health">Health</option>
                                 <option value="Jobs">Jobs</option>
                                 <option value="Money and finances">Money and Finances</option>
                                 <option value="Policies">Policies</option>
-                                <option value="Policing, justice and emergencies">Policing, justice and emergencies </option>
+                                <option value="Policing, justice and emergencies">Policing, justice and emergencies
+                                </option>
                                 <option value="Public Service">Public Service</option>
                                 <option value="Science and innovation">Science and Innovation</option>
                                 <option value="Taxes">Taxes</option>
@@ -455,7 +462,7 @@
                     action: newexportaction
                 },],
             });
-            
+
             const COLUMNS = ["Date", "TimeStamp", "Comment", "Problem", "Url", "Title", "Lang", "UrlEntries", "Section", "Theme", "Dept"]
             const DateColIndex = 0;
             const TimestampColIndex = 1;
@@ -474,18 +481,18 @@
                 var string = string.replace(/[.?]/g, '\\$&');
                 return string;
             }
-            
+
 
             // This function fetches the total count of comments for the page using an API call
             function fetchTotalCommentsCount() {
                 fetch('/pageFeedback/totalCommentsCount')
-                .then(response => response.text())
-                .then(totalCommentsCount => {
-                    $('#total_comments').text(String(totalCommentsCount));
-                })
-                .catch(err => {
-                    console.warn('Something went wrong.', err);
-                });
+                    .then(response => response.text())
+                    .then(totalCommentsCount => {
+                        $('#total_comments').text(String(totalCommentsCount));
+                    })
+                    .catch(err => {
+                        console.warn('Something went wrong.', err);
+                    });
             }
 
             // This code clones the first row of a table and appends it to the table header
@@ -571,7 +578,7 @@
                 if (this.value != "" && $('#max').val() != "") {
                     minMaxDateChosen = true;
                     table.column(DateColIndex).search(this.value + ":" + $('#max').val()).page.len(10).draw();
-       
+
                 }
                 if ($('#theme').val() != "" && minMaxDateChosen) {
                     table.column(ThemeColIndex).search($('#theme').val()).draw()
@@ -602,9 +609,9 @@
                 }
             });
             $('#theme', this).on('keyup change', function () {
-                const sectionValue =  $('#section').val().trim();
-                const themeValue =  this.value.trim();
-                const institutionValue=  $('#section').val().trim();
+                const sectionValue = $('#section').val().trim();
+                const themeValue = this.value.trim();
+                const institutionValue = $('#section').val().trim();
                 resetTableViewToDefault();
                 if (themeValue === "") {
                     table.column(ThemeColIndex).search("").draw()
@@ -624,9 +631,9 @@
                 }
             });
             $('#institution', this).on('keyup change', function () {
-                const sectionValue =  $('#section').val().trim();
-                const themeValue =  $('#theme').val().trim();
-                const institutionValue=  this.value.trim();
+                const sectionValue = $('#section').val().trim();
+                const themeValue = $('#theme').val().trim();
+                const institutionValue = this.value.trim();
                 resetTableViewToDefault();
                 if (institutionValue === "") {
                     table.column(InstitutionColIndex).search("").draw()
@@ -645,9 +652,9 @@
                 }
             });
             $('#section', this).on('keyup change', function () {
-                const sectionValue =  this.value.trim();
-                const themeValue =  $('#theme').val().trim();
-                const institutionValue=  $('#section').val().trim();
+                const sectionValue = this.value.trim();
+                const themeValue = $('#theme').val().trim();
+                const institutionValue = $('#section').val().trim();
                 resetTableViewToDefault();
                 if (sectionValue === "") {
                     table.column(SectionColIndex).search("").draw()
@@ -667,7 +674,7 @@
                 }
             });
             $('#deptFA', this).on('keyup change', function () {
-                const sectionValue =  $('#sectionFA').val().trim();
+                const sectionValue = $('#sectionFA').val().trim();
                 const themeValue = $('#themeFA').val().trim();
                 const deptValue = this.value.trim();
                 if (deptValue === "") {
@@ -699,7 +706,7 @@
                     table.column(InstitutionColIndex).search(deptValue + " ~").draw()
                 }
                 if (themeValue !== "") {
-                    table.column(ThemeColIndex).search(themeValue+ " ~").draw()
+                    table.column(ThemeColIndex).search(themeValue + " ~").draw()
                 }
             });
 

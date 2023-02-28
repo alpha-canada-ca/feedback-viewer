@@ -559,18 +559,18 @@
                 var string = string.replace(/[.?]/g, '\\$&');
                 return string;
             }
-            
+
 
             // This function fetches the total count of comments for the page using an API call
             function fetchTotalCommentsCount() {
                 fetch('/pageFeedback/totalCommentsCount')
-                .then(response => response.text())
-                .then(totalCommentsCount => {
-                    $('#total_comments').text(String(totalCommentsCount));
-                })
-                .catch(err => {
-                    console.warn('Something went wrong.', err);
-                });
+                    .then(response => response.text())
+                    .then(totalCommentsCount => {
+                        $('#total_comments').text(String(totalCommentsCount));
+                    })
+                    .catch(err => {
+                        console.warn('Something went wrong.', err);
+                    });
             }
 
             // This code clones the first row of a table and appends it to the table header
@@ -656,7 +656,7 @@
                 if (this.value != "" && $('#max').val() != "") {
                     minMaxDateChosen = true;
                     table.column(DateColIndex).search(this.value + ":" + $('#max').val()).page.len(10).draw();
-       
+
                 }
                 if ($('#theme').val() != "" && minMaxDateChosen) {
                     table.column(ThemeColIndex).search($('#theme').val()).draw()
@@ -687,9 +687,9 @@
                 }
             });
             $('#theme', this).on('keyup change', function () {
-                const sectionValue =  $('#section').val().trim();
-                const themeValue =  this.value.trim();
-                const institutionValue=  $('#section').val().trim();
+                const sectionValue = $('#section').val().trim();
+                const themeValue = this.value.trim();
+                const institutionValue = $('#section').val().trim();
                 resetTableViewToDefault();
                 if (themeValue === "") {
                     table.column(ThemeColIndex).search("").draw()
@@ -709,9 +709,9 @@
                 }
             });
             $('#institution', this).on('keyup change', function () {
-                const sectionValue =  $('#section').val().trim();
-                const themeValue =  $('#theme').val().trim();
-                const institutionValue=  this.value.trim();
+                const sectionValue = $('#section').val().trim();
+                const themeValue = $('#theme').val().trim();
+                const institutionValue = this.value.trim();
                 resetTableViewToDefault();
                 if (institutionValue === "") {
                     table.column(InstitutionColIndex).search("").draw()
@@ -730,9 +730,9 @@
                 }
             });
             $('#section', this).on('keyup change', function () {
-                const sectionValue =  this.value.trim();
-                const themeValue =  $('#theme').val().trim();
-                const institutionValue=  $('#section').val().trim();
+                const sectionValue = this.value.trim();
+                const themeValue = $('#theme').val().trim();
+                const institutionValue = $('#section').val().trim();
                 resetTableViewToDefault();
                 if (sectionValue === "") {
                     table.column(SectionColIndex).search("").draw()
@@ -752,7 +752,7 @@
                 }
             });
             $('#deptFA', this).on('keyup change', function () {
-                const sectionValue =  $('#sectionFA').val().trim();
+                const sectionValue = $('#sectionFA').val().trim();
                 const themeValue = $('#themeFA').val().trim();
                 const deptValue = this.value.trim();
                 if (deptValue === "") {
@@ -784,7 +784,7 @@
                     table.column(InstitutionColIndex).search(deptValue + " ~").draw()
                 }
                 if (themeValue !== "") {
-                    table.column(ThemeColIndex).search(themeValue+ " ~").draw()
+                    table.column(ThemeColIndex).search(themeValue + " ~").draw()
                 }
             });
 
