@@ -32,11 +32,10 @@ public class LoginController {
     public ModelAndView login(HttpServletRequest request) throws Exception {
         ModelAndView modelAndView = new ModelAndView();
         String lang = (String) request.getSession().getAttribute("lang");
-        //System.out.println(lang);
+        // System.out.println(lang);
         modelAndView.setViewName("login_" + lang);
         return modelAndView;
     }
-
 
     @RequestMapping(value = "/signup", method = RequestMethod.GET)
     public ModelAndView signup(HttpServletRequest request) {
@@ -50,8 +49,7 @@ public class LoginController {
     }
 
     @GetMapping("/checkExists")
-    public @ResponseBody
-    String checkExists(@RequestParam String email) {
+    public @ResponseBody String checkExists(@RequestParam String email) {
         // verify that one has not already been created.
         User userExists = userService.findUserByEmail(email);
         if (userExists != null) {
@@ -70,8 +68,7 @@ public class LoginController {
         return new RedirectView("success");
     }
 
-
-    @RequestMapping(value = {"/success"}, method = RequestMethod.GET)
+    @RequestMapping(value = { "/success" }, method = RequestMethod.GET)
     public ModelAndView success(HttpServletRequest request) {
         String lang = (String) request.getSession().getAttribute("lang");
         ModelAndView mav = new ModelAndView();
@@ -79,8 +76,8 @@ public class LoginController {
         return mav;
     }
 
-    //redirects localhost to sign in page.
-    @RequestMapping(value = {"/"}, method = RequestMethod.GET)
+    // redirects localhost to sign in page.
+    @RequestMapping(value = { "/" }, method = RequestMethod.GET)
     public View home(@Valid User user) {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("home");
@@ -88,7 +85,7 @@ public class LoginController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         RedirectView view = new RedirectView("/pageFeedback");
 
-        //if user is not logged in, redirect to signin
+        // if user is not logged in, redirect to signin
         if (auth.getName().equals("anonymousUser")) {
             view = new RedirectView("signin");
         }

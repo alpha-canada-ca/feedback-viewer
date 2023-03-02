@@ -7,17 +7,17 @@ metadata:
     cert-manager.io/cluster-issuer: "letsencrypt-prod"
 spec:
   tls:
-  - hosts:
-    - feedback-viewer.tbs.alpha.canada.ca
-    secretName: feedback-viewer-tls-secret-prod
+    - hosts:
+        - feedback-viewer.tbs.alpha.canada.ca
+      secretName: feedback-viewer-tls-secret-prod
   rules:
-  - host: feedback-viewer.tbs.alpha.canada.ca
-    http:
-      paths:
-      - backend:
-          service:
-            name: feedback-viewer
-            port:
-              number: 8080
-        path: /
-        pathType: Prefix
+    - host: feedback-viewer.tbs.alpha.canada.ca
+      http:
+        paths:
+          - backend:
+              service:
+                name: feedback-viewer
+                port:
+                  number: 8080
+            path: /
+            pathType: Prefix

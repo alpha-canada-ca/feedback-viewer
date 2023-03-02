@@ -35,11 +35,11 @@ import static org.springframework.data.mongodb.core.query.Criteria.where;
 @Controller
 public class ProblemController {
 
-	public  static final long DAY_IN_MS = 1000 * 60 * 60 * 24;
-	private static final Logger LOG     = LoggerFactory.getLogger(ProblemController.class);
-	private static final boolean ASC    = true;
-	private static final boolean DESC   = false;
-	private int totalComments           = 0;
+	public static final long DAY_IN_MS = 1000 * 60 * 60 * 24;
+	private static final Logger LOG = LoggerFactory.getLogger(ProblemController.class);
+	private static final boolean ASC = true;
+	private static final boolean DESC = false;
+	private int totalComments = 0;
 
 	String[][] translations = {
 			/* ENGLISH, FRENCH */{ "The answer I need is missing", "La réponse dont j’ai besoin n’est pas là" },
@@ -77,8 +77,8 @@ public class ProblemController {
 		// Sorting the list based on values
 		list.sort((o1, o2) -> order ? o1.getValue().compareTo(o2.getValue()) == 0
 				? o1.getKey().compareTo(o2.getKey())
-				:  o1.getValue().compareTo(o2.getValue())
-				:  o2.getValue().compareTo(o1.getValue()) == 0
+				: o1.getValue().compareTo(o2.getValue())
+				: o2.getValue().compareTo(o1.getValue()) == 0
 						? o2.getKey().compareTo(o1.getKey())
 						: o2.getValue().compareTo(o1.getValue()));
 		return list.stream().collect(Collectors.toMap(Entry::getKey, Entry::getValue, (a, b) -> b, LinkedHashMap::new));
@@ -145,7 +145,6 @@ public class ProblemController {
 		String themeSearchVal = input.getColumn("theme").get().getSearch().getValue();
 		String pattern = "yyyy-MM-dd";
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-
 
 		if (dateSearchVal.contains(":")) {
 
@@ -302,8 +301,6 @@ public class ProblemController {
 		}
 		return problems;
 
-
-
 	}
 
 	@RequestMapping(value = "/pageFeedback/totalCommentsCount")
@@ -321,7 +318,7 @@ public class ProblemController {
 	 * 
 	 * try {
 	 * String problemDetails = request.getParameter("problemDetails");
-	 * Problem problem       = new Problem(System.currentTimeMillis() + "",
+	 * Problem problem = new Problem(System.currentTimeMillis() + "",
 	 * request.getParameter("url"),
 	 * DATE_FORMAT.format(new Date()), request.getParameter("problem"),
 	 * problemDetails,
@@ -352,8 +349,8 @@ public class ProblemController {
 	 * @PostMapping(value = "/deleteTag")
 	 * public @ResponseBody String deleteTag(HttpServletRequest request) {
 	 * try {
-	 * String tag            = request.getParameter("tag");
-	 * Optional<Problem> opt = 
+	 * String tag = request.getParameter("tag");
+	 * Optional<Problem> opt =
 	 * problemRepository.findById(request.getParameter("id"));
 	 * Problem problem = opt.get();
 	 * problem.getTags().remove(tag);
@@ -367,7 +364,7 @@ public class ProblemController {
 	 * @PostMapping(value = "/updateTags")
 	 * public @ResponseBody String updateTags(HttpServletRequest request) {
 	 * try {
-	 * Optional<Problem> opt = 
+	 * Optional<Problem> opt =
 	 * problemRepository.findById(request.getParameter("id"));
 	 * String tags[] = request.getParameter("tags").split(",");
 	 * for (int i = 0; i < tags.length; i++) {
@@ -385,7 +382,7 @@ public class ProblemController {
 	 * @PostMapping(value = "/updateProblem")
 	 * public @ResponseBody String updateProblem(HttpServletRequest request) {
 	 * try {
-	 * Optional<Problem> opt = 
+	 * Optional<Problem> opt =
 	 * problemRepository.findById(request.getParameter("id"));
 	 * Problem problem = opt.get();
 	 * problem.setResolution(request.getParameter("resolution"));
@@ -419,7 +416,6 @@ public class ProblemController {
 	 * }
 	 * 
 	 */
-
 
 	public UserService getUserService() {
 		return userService;

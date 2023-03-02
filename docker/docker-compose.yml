@@ -3,17 +3,17 @@ services:
   mongodb:
     image: mongo:latest
     ports:
-    - 27017:27017
+      - 27017:27017
     volumes:
-    - mongodb_data_container:/data/db
+      - mongodb_data_container:/data/db
   pagesuccess:
     build: .
     working_dir: /app
     ports:
-    - 8181:8080
-    - 8000:8000
+      - 8181:8080
+      - 8000:8000
     command: mvn -X clean spring-boot:run
     depends_on:
-    - mongodb
+      - mongodb
 volumes:
   mongodb_data_container:

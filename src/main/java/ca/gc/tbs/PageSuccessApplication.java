@@ -12,7 +12,6 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 
 //
 
-
 @SpringBootApplication
 @EnableMongoRepositories(repositoryFactoryBeanClass = DataTablesRepositoryFactoryBean.class)
 public class PageSuccessApplication {
@@ -20,7 +19,7 @@ public class PageSuccessApplication {
     public static void main(String[] args) {
         SpringApplication.run(PageSuccessApplication.class, args);
     }
-    
+
     @Bean
     CommandLineRunner init(RoleRepository roleRepository) {
 
@@ -32,7 +31,7 @@ public class PageSuccessApplication {
                 newAdminRole.setRole("ADMIN");
                 roleRepository.save(newAdminRole);
             }
-            
+
             Role userRole = roleRepository.findByRole("USER");
             if (userRole == null) {
                 Role newUserRole = new Role();

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{default_fr}" lang="fr">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{default_fr}" lang="fr">
 <th:block layout:fragment="content">
     <style>
         ​ .dt-button {
@@ -8,11 +9,11 @@
             text-align: center;
             visibility: visible;
         }
-        
+
         .dataTables_processing {
             background: none !important;
         }
-        
+
         .fa {
             position: fixed;
             left: 50%;
@@ -20,7 +21,7 @@
             transform: translate(-50%, -50%);
             visibility: visible;
         }
-        
+
         .autocomplete-result-list {
             margin: 0;
             border: 1px solid rgba(0, 0, 0, .12);
@@ -32,21 +33,21 @@
             list-style: none;
             box-shadow: 0 2px 2px rgba(0, 0, 0, .16)
         }
-        
+
         [data-position=below] .autocomplete-result-list {
             margin-top: -1px;
             border-top-color: transparent;
             border-radius: 0 0 8px 8px;
             padding-bottom: 8px
         }
-        
+
         [data-position=above] .autocomplete-result-list {
             margin-bottom: -1px;
             border-bottom-color: transparent;
             border-radius: 8px 8px 0 0;
             padding-top: 8px
         }
-        
+
         .autocomplete-result {
             cursor: default;
             padding: 12px 12px 12px 48px;
@@ -54,16 +55,17 @@
             background-repeat: no-repeat;
             background-position: 12px
         }
-        
+
         .autocomplete-result:hover,
         .autocomplete-result[aria-selected=true] {
             background-color: rgba(0, 0, 0, .06)
         }
-        
+
         @keyframes rotate {
             0% {
                 transform: translateY(-50%) rotate(0deg)
             }
+
             to {
                 transform: translateY(-50%) rotate(359deg)
             }
@@ -71,7 +73,8 @@
     </style>
     <!--  -->
     <h1>Sondage sur la réussite de tâches</h1>
-    <p class="mrgn-tp-md">Pour accéder aux résultats de l'enquête sur la réussite des tâches, faites des sélections à l'aide des filtres, puis téléchargez vos données sous forme de fichier Excel ou CSV.</p>
+    <p class="mrgn-tp-md">Pour accéder aux résultats de l'enquête sur la réussite des tâches, faites des sélections à
+        l'aide des filtres, puis téléchargez vos données sous forme de fichier Excel ou CSV.</p>
     <h2 class="mrgn-lft-md h3">Filtre</h2>
     <div class="row">
         <form class="wb-tables-filter col-md-10" data-bind-to="topTaskTable">
@@ -113,7 +116,8 @@
                 <br>
                 <label for="autocomplete-input">Task</label>
                 <div id="autocomplete" class="autocomplete">
-                    <input class="autocomplete-input form-control" placeholder="Recherche d'une tâche" aria-label="Recherche d'une tâche">
+                    <input class="autocomplete-input form-control" placeholder="Recherche d'une tâche"
+                        aria-label="Recherche d'une tâche">
                     <ul class="autocomplete-result-list"></ul>
                 </div>
                 <h2 class="mrgn-lft h3">ET</h2>
@@ -196,17 +200,17 @@
 
     <script type="text/javascript" src="js/spring-friendly.min.js"></script>
     <script th:inline="javascript">
-        $(document).ready(function() {
+        $(document).ready(function () {
             function newexportaction(e, dt, button, config) {
                 var self = this;
                 var oldStart = dt
                     .settings()[0]
                     ._iDisplayStart;
-                dt.one('preXhr', function(e, s, data) {
+                dt.one('preXhr', function (e, s, data) {
                     // Just this once, load all data from the server...
                     data.start = 0;
                     data.length = 2147483647;
-                    dt.one('preDraw', function(e, settings) {
+                    dt.one('preDraw', function (e, settings) {
                         // Call the original action function
                         if (button[0].className.indexOf('buttons-copy') >= 0) {
                             $
@@ -226,21 +230,21 @@
                                 .excelHtml5
                                 .available(dt, config) ?
                                 $
-                                .fn
-                                .dataTable
-                                .ext
-                                .buttons
-                                .excelHtml5
-                                .action
-                                .call(self, e, dt, button, config) :
+                                    .fn
+                                    .dataTable
+                                    .ext
+                                    .buttons
+                                    .excelHtml5
+                                    .action
+                                    .call(self, e, dt, button, config) :
                                 $
-                                .fn
-                                .dataTable
-                                .ext
-                                .buttons
-                                .excelFlash
-                                .action
-                                .call(self, e, dt, button, config);
+                                    .fn
+                                    .dataTable
+                                    .ext
+                                    .buttons
+                                    .excelFlash
+                                    .action
+                                    .call(self, e, dt, button, config);
                         } else if (button[0].className.indexOf('buttons-csv') >= 0) {
                             $
                                 .fn
@@ -250,21 +254,21 @@
                                 .csvHtml5
                                 .available(dt, config) ?
                                 $
-                                .fn
-                                .dataTable
-                                .ext
-                                .buttons
-                                .csvHtml5
-                                .action
-                                .call(self, e, dt, button, config) :
+                                    .fn
+                                    .dataTable
+                                    .ext
+                                    .buttons
+                                    .csvHtml5
+                                    .action
+                                    .call(self, e, dt, button, config) :
                                 $
-                                .fn
-                                .dataTable
-                                .ext
-                                .buttons
-                                .csvFlash
-                                .action
-                                .call(self, e, dt, button, config);
+                                    .fn
+                                    .dataTable
+                                    .ext
+                                    .buttons
+                                    .csvFlash
+                                    .action
+                                    .call(self, e, dt, button, config);
                         } else if (button[0].className.indexOf('buttons-pdf') >= 0) {
                             $
                                 .fn
@@ -274,21 +278,21 @@
                                 .pdfHtml5
                                 .available(dt, config) ?
                                 $
-                                .fn
-                                .dataTable
-                                .ext
-                                .buttons
-                                .pdfHtml5
-                                .action
-                                .call(self, e, dt, button, config) :
+                                    .fn
+                                    .dataTable
+                                    .ext
+                                    .buttons
+                                    .pdfHtml5
+                                    .action
+                                    .call(self, e, dt, button, config) :
                                 $
-                                .fn
-                                .dataTable
-                                .ext
-                                .buttons
-                                .pdfFlash
-                                .action
-                                .call(self, e, dt, button, config);
+                                    .fn
+                                    .dataTable
+                                    .ext
+                                    .buttons
+                                    .pdfFlash
+                                    .action
+                                    .call(self, e, dt, button, config);
                         } else if (button[0].className.indexOf('buttons-print') >= 0) {
                             $
                                 .fn
@@ -298,7 +302,7 @@
                                 .print
                                 .action(e, dt, button, config);
                         }
-                        dt.one('preXhr', function(e, s, data) {
+                        dt.one('preXhr', function (e, s, data) {
                             // DataTables thinks the first item displayed is index 0, but we're not drawing that.
                             // Set the property to what it was before exporting.
                             settings._iDisplayStart = oldStart;
@@ -403,11 +407,11 @@
             });
 
             fetch('/topTaskSurvey/departments')
-                .then(function(response) {
+                .then(function (response) {
                     // The API call was successful!
                     return response.text();
                 })
-                .then(function(html) {
+                .then(function (html) {
                     // This is the HTML from our response as a text string
                     data = html;
                     data = data.split(",");
@@ -418,22 +422,22 @@
                     }
 
                 })
-                .catch(function(err) {
+                .catch(function (err) {
                     // There was an error
                     console.warn('Something went wrong.', err);
                 });
 
 
 
-                (async () => {
-                    const raw = await fetch('/topTaskSurvey/taskList/fr');
-                    return JSON.parse(await raw.text());
-                    })().then((taskList) => {
-                        autocomplete(taskList);
-                    console.log(taskList);
-                    }).catch((e) => {
-                    console.error("Something went horribly wrong", e);
-                });
+            (async () => {
+                const raw = await fetch('/topTaskSurvey/taskList/fr');
+                return JSON.parse(await raw.text());
+            })().then((taskList) => {
+                autocomplete(taskList);
+                console.log(taskList);
+            }).catch((e) => {
+                console.error("Something went horribly wrong", e);
+            });
 
 
 
@@ -446,7 +450,7 @@
 
             var flag = false;
             var flag2 = false;
-            $('#min', this).on('keyup change', function() {
+            $('#min', this).on('keyup change', function () {
                 if (this.value != "" && $('#max').val() != "") {
                     flag = true;
                     table
@@ -468,7 +472,7 @@
                 }
             });
 
-            $('#max', this).on('keyup change', function() {
+            $('#max', this).on('keyup change', function () {
                 if (this.value != "" && $('#min').val() != "") {
                     flag2 = true;
                     table
@@ -490,7 +494,7 @@
                 }
             });
 
-            $('#dt_theme', this).on('keyup change', function() {
+            $('#dt_theme', this).on('keyup change', function () {
                 if (this.value == "") {
                     table
                         .column(ThemeColumn)
@@ -516,7 +520,7 @@
                         .draw()
                 }
             });
-            $('#Department', this).on('keyup change', function() {
+            $('#Department', this).on('keyup change', function () {
                 if (this.value == "") {
                     table
                         .column(DepartmentColumn)
@@ -542,7 +546,7 @@
                         .draw()
                 }
             });
-            $('#dataSet', this).on('keyup change', function() {
+            $('#dataSet', this).on('keyup change', function () {
                 if (this.value == "") {
                     table
                         .column(TaskOtherColumn)
@@ -556,27 +560,27 @@
                 }
             });
 
-            function autocomplete(taskList){
+            function autocomplete(taskList) {
                 new Autocomplete('#autocomplete', {
-                        search: input => {
-                            if (input.length < 1) {
-                                return []
-                            }
-                            return taskList.filter(task => {
-                                return task.toLowerCase()
-                                    .startsWith(input.toLowerCase())
-                            })
-                        },
-                        //TODO: make sure that the filter is working with the dataset, themes, and departments without any side effects.
-                        onSubmit: result => {
-                            table
-                                .column(TaskColumn)
-                                .search(result)
-                                .draw();
+                    search: input => {
+                        if (input.length < 1) {
+                            return []
                         }
-                    })
-                }
-    });
+                        return taskList.filter(task => {
+                            return task.toLowerCase()
+                                .startsWith(input.toLowerCase())
+                        })
+                    },
+                    //TODO: make sure that the filter is working with the dataset, themes, and departments without any side effects.
+                    onSubmit: result => {
+                        table
+                            .column(TaskColumn)
+                            .search(result)
+                            .draw();
+                    }
+                })
+            }
+        });
     </script>
 </th:block>
 

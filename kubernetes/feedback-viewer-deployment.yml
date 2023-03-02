@@ -16,14 +16,13 @@ spec:
         app: feedback-viewer
     spec:
       containers:
-      - image: tbsacr.azurecr.io/feedback-viewer:1.0.0
-        imagePullPolicy: Always
-        name: feedback-viewer
-        resources: 
-          limits:
-            cpu: 2000m
-            memory: 4Gi
-          requests:
-            cpu: 500m
-            memory: 512Mi
-
+        - image: tbsacr.azurecr.io/feedback-viewer:1.0.0
+          imagePullPolicy: Always
+          name: feedback-viewer
+          resources:
+            limits:
+              cpu: 2000m
+              memory: 4Gi
+            requests:
+              cpu: 500m
+              memory: 512Mi

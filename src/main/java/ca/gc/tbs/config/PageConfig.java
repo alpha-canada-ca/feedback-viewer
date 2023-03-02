@@ -46,7 +46,7 @@ public class PageConfig implements WebMvcConfigurer {
 				.addResourceLocations("classpath:/templates/static/");
 
 		// File located on disk
-		registry.addResourceHandler("/python/**").addResourceLocations("file://"+this.pythonScriptPath);
+		registry.addResourceHandler("/python/**").addResourceLocations("file://" + this.pythonScriptPath);
 	}
 
 }

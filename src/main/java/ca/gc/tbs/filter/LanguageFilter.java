@@ -62,7 +62,6 @@ public class LanguageFilter implements Filter {
         return queryString;
     }
 
-
     private String getSelectedLang(HttpServletRequest req) {
         String lang = (String) req.getSession().getAttribute("lang");
 

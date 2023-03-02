@@ -10,7 +10,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
@@ -31,14 +30,14 @@ public class CustomizeAuthenticationSuccessHandler extends SimpleUrlAuthenticati
 			Authentication authentication) throws IOException, ServletException {
 
 		SavedRequest savedRequest = requestCache.getRequest(request, response);
-		
+
 		if (savedRequest == null || savedRequest.getRedirectUrl().contains("signin")) {
 			for (GrantedAuthority auth : authentication.getAuthorities()) {
 				if ("ADMIN".equals(auth.getAuthority())) {
 					response.sendRedirect("/u/index");
 				} else {
 					response.sendRedirect("/pageFeedback");
-					
+
 				}
 			}
 			return;

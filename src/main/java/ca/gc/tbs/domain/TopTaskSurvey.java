@@ -7,9 +7,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class TopTaskSurvey {
 
 	@Id
-	private String id="";
+	private String id = "";
 
-	
 	private String dateTime;
 	private String timeStamp;
 	private String surveyReferrer;
@@ -33,21 +32,24 @@ public class TopTaskSurvey {
 	private String samplingInvitation;
 	private String samplingGC;
 	private String samplingCanada;
-    private String samplingTheme;
+	private String samplingTheme;
 	private String samplingInstitution;
 	private String samplingGrouping;
 	private String samplingTask;
-	
+
 	// pipeline fields
 	private String processed;
 	private String topTaskAirTableSync;
 	private String personalInfoProcessed;
 	private String autoTagProcessed;
-	
-	public TopTaskSurvey() {}
-	
-	public TopTaskSurvey(String id, String dateTime, String timeStamp, String surveyReferrer, String language, String device,
-			String screener, String dept, String theme, String themeOther, String grouping, String task, String taskOther,
+
+	public TopTaskSurvey() {
+	}
+
+	public TopTaskSurvey(String id, String dateTime, String timeStamp, String surveyReferrer, String language,
+			String device,
+			String screener, String dept, String theme, String themeOther, String grouping, String task,
+			String taskOther,
 			String taskSatisfaction,
 			String taskEase, String taskCompletion, String taskImprove, String taskImproveComment, String taskWhyNot,
 			String taskWhyNotComment, String taskSampling, String samplingInvitation, String samplingGC,
@@ -83,7 +85,7 @@ public class TopTaskSurvey {
 		this.samplingGrouping = samplingGrouping;
 		this.samplingTask = samplingTask;
 	}
-	
+
 	public String getId() {
 		return id;
 	}
@@ -99,6 +101,7 @@ public class TopTaskSurvey {
 	public void setDateTime(String dateTime) {
 		this.dateTime = dateTime;
 	}
+
 	public String getTimeStamp() {
 		return timeStamp;
 	}
@@ -338,6 +341,5 @@ public class TopTaskSurvey {
 	public void setAutoTagProcessed(String autoTagProcessed) {
 		this.autoTagProcessed = autoTagProcessed;
 	}
-	
 
 }

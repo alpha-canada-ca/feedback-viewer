@@ -86,9 +86,9 @@ public class UserService implements UserDetailsService {
 		user.setRoles(new HashSet<>(Arrays.asList(userRole)));
 		userRepository.save(user);
 	}
-	
+
 	public boolean isAdmin(User user) {
-		
+
 		for (Role role : user.getRoles()) {
 			if (role.getRole().contentEquals(ADMIN_ROLE)) {
 				return true;

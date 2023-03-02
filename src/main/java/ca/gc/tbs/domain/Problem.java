@@ -5,36 +5,39 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.data.annotation.Id;
+
 //@Entity
 public class Problem {
 	@Id
-	private String id="";
-	private String url="";
-	private int urlEntries=0;
-	private String problem="";
-	private String problemDetails="";
-	private String language="";
-	private String resolutionDate="";
-	private String resolution="";
-	private String topic="";
-	private String problemDate="";
-	private String timeStamp="";
-	private String title="";
-	private String dataOrigin="";
+	private String id = "";
+	private String url = "";
+	private int urlEntries = 0;
+	private String problem = "";
+	private String problemDetails = "";
+	private String language = "";
+	private String resolutionDate = "";
+	private String resolution = "";
+	private String topic = "";
+	private String problemDate = "";
+	private String timeStamp = "";
+	private String title = "";
+	private String dataOrigin = "";
 	private List<String> tags = new ArrayList<>();
-	public String institution="";
-	public String theme="";
-	public String section="";
+	public String institution = "";
+	public String theme = "";
+	public String section = "";
 
 	// pipeline fields
 	private String processed;
 	private String airTableSync;
 	private String personalInfoProcessed;
 	private String autoTagProcessed;
-	
-	public Problem() {}
 
-	public Problem(String id, String url, int urlEntries, String problemDate, String timeStamp, String problem, String problemDetails, String language,
+	public Problem() {
+	}
+
+	public Problem(String id, String url, int urlEntries, String problemDate, String timeStamp, String problem,
+			String problemDetails, String language,
 			String resolutionDate, String resolution, String topic, String title, String institution,
 			String theme, String section) {
 		super();
@@ -70,6 +73,7 @@ public class Problem {
 	public void setUrl(String url) {
 		this.url = url;
 	}
+
 	public int getUrlEntries() {
 		return urlEntries;
 	}
@@ -133,6 +137,7 @@ public class Problem {
 	public void setProblemDate(String problemDate) {
 		this.problemDate = problemDate;
 	}
+
 	public String getTimeStamp() {
 		return timeStamp;
 	}

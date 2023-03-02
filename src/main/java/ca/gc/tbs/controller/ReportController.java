@@ -63,12 +63,12 @@ public class ReportController {
 
 		return new RedirectView("/reports/view");
 	}
-	
+
 	@GetMapping("/reports/view")
 	public String viewReports() {
 		return "reports";
 	}
- 
+
 	public int executePython() throws Exception {
 		File pathToExecutable = new File(this.pythonPath);
 		ProcessBuilder builder = new ProcessBuilder(pathToExecutable.getAbsolutePath(), PYTHON_SCRIPT);

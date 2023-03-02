@@ -22,7 +22,7 @@ public class EmailService {
 	private String userActivationRequestKey;
 	@Value("${notify.templateid.useractivationrequest}")
 	private String accountEnabledKey;
-	
+
 	@Value("${pagesuccess.loginURL}")
 	private String loginURL;
 

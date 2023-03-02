@@ -26,8 +26,7 @@ public class UserController {
 	private UserService service;
 
 	@GetMapping(value = "/u/update")
-	public @ResponseBody
-	String updateUser(HttpServletRequest request) {
+	public @ResponseBody String updateUser(HttpServletRequest request) {
 		try {
 			this.service.enable(request.getParameter("id"));
 			return "Updated";
@@ -37,8 +36,7 @@ public class UserController {
 	}
 
 	@GetMapping(value = "/u/delete")
-	public @ResponseBody
-	String deleteUser(HttpServletRequest request) {
+	public @ResponseBody String deleteUser(HttpServletRequest request) {
 		try {
 			this.service.deleteUserById(request.getParameter("id"));
 			return "deleted";
@@ -71,7 +69,8 @@ public class UserController {
 					builder.append("<tr><td>" + user.getEmail() + "</td>");
 
 					builder.append("<td>" + user.getInstitution() + "</td>");
-					List<String> roles = user.getRoles().stream().map(role -> role.getRole()).collect(Collectors.toList());
+					List<String> roles = user.getRoles().stream().map(role -> role.getRole())
+							.collect(Collectors.toList());
 
 					builder.append("<td>" + roles + "</td>");
 					builder.append("<td>" + user.getDateCreated() + "</td>");
@@ -82,9 +81,11 @@ public class UserController {
 								"<button id='enable" + user.getId() + "' class='btn btn-xs enableBtn'>Enable</button>");
 					} else {
 						builder.append(
-								"<button id='disable" + user.getId() + "' class='btn btn-xs disableBtn'>Disable</button>");
+								"<button id='disable" + user.getId()
+										+ "' class='btn btn-xs disableBtn'>Disable</button>");
 					}
-					builder.append("<button id='delete" + user.getId() + "' class='btn btn-xs deleteBtn'>Delete</button>");
+					builder.append(
+							"<button id='delete" + user.getId() + "' class='btn btn-xs deleteBtn'>Delete</button>");
 
 					builder.append("</div></td>");
 					builder.append("</tr>");
@@ -94,7 +95,8 @@ public class UserController {
 					builder.append("<tr><td>" + user.getEmail() + "</td>");
 
 					builder.append("<td>" + user.getInstitution() + "</td>");
-					List<String> roles = user.getRoles().stream().map(role -> role.getRole()).collect(Collectors.toList());
+					List<String> roles = user.getRoles().stream().map(role -> role.getRole())
+							.collect(Collectors.toList());
 
 					builder.append("<td>" + roles + "</td>");
 					builder.append("<td>" + user.getDateCreated() + "</td>");
@@ -102,12 +104,15 @@ public class UserController {
 					builder.append("<td><div class='btn-group'>");
 					if (!user.isEnabled()) {
 						builder.append(
-								"<button id='enable" + user.getId() + "' class='btn btn-xs enableBtn'>Activer</button>");
+								"<button id='enable" + user.getId()
+										+ "' class='btn btn-xs enableBtn'>Activer</button>");
 					} else {
 						builder.append(
-								"<button id='disable" + user.getId() + "' class='btn btn-xs disableBtn'>Désactiver</button>");
+								"<button id='disable" + user.getId()
+										+ "' class='btn btn-xs disableBtn'>Désactiver</button>");
 					}
-					builder.append("<button id='delete" + user.getId() + "' class='btn btn-xs deleteBtn'>Supprimer</button>");
+					builder.append(
+							"<button id='delete" + user.getId() + "' class='btn btn-xs deleteBtn'>Supprimer</button>");
 
 					builder.append("</div></td>");
 					builder.append("</tr>");
@@ -120,7 +125,6 @@ public class UserController {
 		}
 		return returnData;
 	}
-
 
 	@GetMapping(value = "/u/index")
 	public ModelAndView dashboard(HttpServletRequest request) throws Exception {

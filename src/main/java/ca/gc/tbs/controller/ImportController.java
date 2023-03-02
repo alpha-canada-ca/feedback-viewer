@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.view.RedirectView;
 
-
 import ca.gc.tbs.domain.Problem;
 import ca.gc.tbs.repository.ProblemRepository;
 import ca.gc.tbs.service.ContentService;
@@ -26,7 +25,6 @@ public class ImportController {
 	@Autowired
 	ProblemRepository problemRepository;
 
-
 	@Autowired
 	ContentService contentService;
 
@@ -36,7 +34,7 @@ public class ImportController {
 	public View importData() throws Exception {
 		final Reader reader = new InputStreamReader(new URL(
 				"https://docs.google.com/spreadsheets/d/1tTNrPJqKyNNkJo1UaCoSp1RMpSz3dJsRKmieDglSAOU/export?format=csv")
-						.openConnection().getInputStream(),
+				.openConnection().getInputStream(),
 				"UTF-8");
 		final CSVParser parser = new CSVParser(reader, CSVFormat.DEFAULT.withHeader());
 		try {
