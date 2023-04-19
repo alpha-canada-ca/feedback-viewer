@@ -523,8 +523,8 @@
                     data: 'language',
                     width: '10%'
                 }, {
-                    data: 'urlEntries',
-                    width: '10%'
+                    data: 'institution',
+                    visible: false
                 }, {
                     data: 'section',
                     visible: false
@@ -532,9 +532,9 @@
                     data: 'theme',
                     visible: false
                 }, {
-                    data: 'institution',
-                    visible: false
-                },],
+                    data: 'urlEntries',
+                    width: '10%'
+                }],
 
                 orderCellsTop: true,
                 fixedHeader: true,
@@ -551,7 +551,7 @@
                     "action": newexportaction
                 }]
             });
-            const COLUMNS = ["Date", "TimeStamp", "Comment", "Problem", "Url", "Title", "Lang", "UrlEntries", "Section", "Theme", "Institution"]
+            const COLUMNS = ["Date", "TimeStamp", "Comment", "Problem", "Url", "Title", "Lang", "Institution", "Section", "Theme", "UrlEntries"]
             const DateColIndex = 0;
             const TimestampColIndex = 1;
             const CommentColIndex = 2;
@@ -559,10 +559,10 @@
             const UrlColIndex = 4;
             const TitleColIndex = 5;
             const LangColIndex = 6;
-            const urlEntriesColIndex = 7;
+            const InstitutionColIndex = 7;
             const SectionColIndex = 8;
             const ThemeColIndex = 9;
-            const InstitutionColIndex = 10;
+            const urlEntriesColIndex = 10;
             var minMaxDateChosen = false;
 
             function replaceSpecialChars(string) {
