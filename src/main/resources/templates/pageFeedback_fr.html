@@ -224,8 +224,8 @@
                         </div>
                     </div>
                     <div class="col-sm-6">
-                        <div class="form-group"><label for="deptINV">Département</label>
-                            <select class="form-control" id="deptINV" name="deptINV" data-column="10">
+                        <div class="form-group"><label for="institutionFA">Département</label>
+                            <select class="form-control" id="institutionFA" name="institutionFA" data-column="10">
                                 <option value="">Tous</option>
                                 <option value="CCG">GCC/CCG</option>
                                 <option value="CRA">ARC/CRA</option>
@@ -551,7 +551,7 @@
                     "action": newexportaction
                 }]
             });
-            const COLUMNS = ["Date", "TimeStamp", "Comment", "Problem", "Url", "Title", "Lang", "UrlEntries", "Section", "Theme", "Dept"]
+            const COLUMNS = ["Date", "TimeStamp", "Comment", "Problem", "Url", "Title", "Lang", "UrlEntries", "Section", "Theme", "Institution"]
             const DateColIndex = 0;
             const TimestampColIndex = 1;
             const CommentColIndex = 2;
@@ -618,7 +618,7 @@
             function resetTableViewToDefault() {
                 // Clear the values in all of the search boxes when the 'reset to defaults' button is clicked
                 $('#searchBoxDate, #searchBoxTimeStamp, #searchBoxComment, #searchBoxProblem, #searchBoxUrl, #searchBoxUrlEntries, #searchBoxTitle, #searchBoxLang').val('');
-                $('#themeFA, #sectionFA, #deptFA').val('');
+                $('#themeFA, #sectionFA, #institutionFA').val('');
                 $('#searchBoxDate, #searchBoxComment, #searchBoxProblem').closest('th').show();
                 $('#searchBoxUrlEntries, #searchBoxTitle, #searchBoxTimeStamp').closest('th').hide();
                 $('#total_comments').hide().closest('th').hide()
@@ -697,9 +697,9 @@
                 }
             });
             $('#theme', this).on('keyup change', function () {
-                const sectionValue = $('#section').val().trim();
                 const themeValue = this.value.trim();
-                const institutionValue = $('#section').val().trim();
+                const sectionValue = $('#section').val().trim();
+                const institutionValue = $('#institution').val().trim();
                 resetTableViewToDefault();
                 if (themeValue === "") {
                     table.column(ThemeColIndex).search("").draw()
@@ -719,9 +719,9 @@
                 }
             });
             $('#institution', this).on('keyup change', function () {
+                const institutionValue = this.value.trim();
                 const sectionValue = $('#section').val().trim();
                 const themeValue = $('#theme').val().trim();
-                const institutionValue = this.value.trim();
                 resetTableViewToDefault();
                 if (institutionValue === "") {
                     table.column(InstitutionColIndex).search("").draw()
@@ -742,7 +742,7 @@
             $('#section', this).on('keyup change', function () {
                 const sectionValue = this.value.trim();
                 const themeValue = $('#theme').val().trim();
-                const institutionValue = $('#section').val().trim();
+                const institutionValue = $('#institution').val().trim();
                 resetTableViewToDefault();
                 if (sectionValue === "") {
                     table.column(SectionColIndex).search("").draw()
@@ -761,15 +761,15 @@
                     table.column(ThemeColIndex).search(themeValue).draw()
                 }
             });
-            $('#deptFA', this).on('keyup change', function () {
+            $('#institutionFA', this).on('keyup change', function () {
+                const institutionValue = this.value.trim();
                 const sectionValue = $('#sectionFA').val().trim();
                 const themeValue = $('#themeFA').val().trim();
-                const deptValue = this.value.trim();
-                if (deptValue === "") {
+                if (institutionValue === "") {
                     table.column(InstitutionColIndex).search("").draw()
                 }
-                if (deptValue !== "") {
-                    table.column(InstitutionColIndex).search(deptValue + " ~").column(ThemeColIndex).search(themeValue + " ~").column(SectionColIndex).search(sectionValue + " ~")
+                if (institutionValue !== "") {
+                    table.column(InstitutionColIndex).search(institutionValue + " ~").column(ThemeColIndex).search(themeValue + " ~").column(SectionColIndex).search(sectionValue + " ~")
                     initFeedbackAdminView();
                 }
                 if (sectionValue !== "") {
@@ -782,16 +782,16 @@
             $('#sectionFA', this).on('keyup change', function () {
                 const sectionValue = this.value.trim();
                 const themeValue = $('#themeFA').val().trim();
-                const deptValue = $('#deptFA').val().trim();
+                const institutionValue = $('#institutionFA').val().trim();
                 if (sectionValue === "") {
                     table.column(SectionColIndex).search("").draw()
                 }
                 if (sectionValue !== "") {
-                    table.column(SectionColIndex).search(sectionValue + " ~").column(ThemeColIndex).search(themeValue + " ~").column(deptFA).search(deptValue + " ~")
+                    table.column(SectionColIndex).search(sectionValue + " ~").column(ThemeColIndex).search(themeValue + " ~").column(institutionFA).search(institutionValue + " ~")
                     initFeedbackAdminView();
                 }
-                if (deptValue !== "") {
-                    table.column(InstitutionColIndex).search(deptValue + " ~").draw()
+                if (institutionValue !== "") {
+                    table.column(InstitutionColIndex).search(institutionValue + " ~").draw()
                 }
                 if (themeValue !== "") {
                     table.column(ThemeColIndex).search(themeValue + " ~").draw()
@@ -801,16 +801,16 @@
             $('#themeFA', this).on('keyup change', function () {
                 const themeValue = this.value.trim();
                 const sectionValue = $('#sectionFA').val().trim();
-                const deptValue = $('#deptFA').val().trim();
+                const institutionValue = $('#institutionFA').val().trim();
                 if (themeValue === "") {
                     table.column(ThemeColIndex).search("").draw()
                 }
                 if (themeValue !== "") {
-                    table.column(ThemeColIndex).search(themeValue + " ~").column(SectionColIndex).search(sectionValue + " ~").column(deptFA).search(deptValue + " ~")
+                    table.column(ThemeColIndex).search(themeValue + " ~").column(SectionColIndex).search(sectionValue + " ~").column(institutionFA).search(institutionValue + " ~")
                     initFeedbackAdminView();
                 }
-                if (deptValue !== "") {
-                    table.column(InstitutionColIndex).search(deptValue + " ~").draw()
+                if (institutionValue !== "") {
+                    table.column(InstitutionColIndex).search(institutionValue + " ~").draw()
                 }
                 if (sectionValue !== "") {
                     table.column(SectionColIndex).search(sectionValue + " ~").draw()
