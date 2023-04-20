@@ -471,7 +471,7 @@
                 },],
             });
 
-            const COLUMNS = ["Date", "TimeStamp", "Comment", "Problem", "Url", "Title", "Lang", "Institution", "Section", "Theme", "UrlEntries"]
+            const COLUMNS = ["Date", "TimeStamp", "Comment", "Problem", "Url", "Title", "Lang", "UrlEntries", "Institution", "Section", "Theme"]
             const DateColIndex = 0;
             const TimestampColIndex = 1;
             const CommentColIndex = 2;
@@ -508,14 +508,15 @@
 
             // This code adds a search box to each column of the table header row
             $('#problemTable thead tr:eq(1) th').each(function (i) {
-                var title = $(this).text();
-                $(this).html('<input type="text" id="searchBox' + COLUMNS[i] + '" placeholder="Search ' + title + '" />');
-                $('input', this).unbind().bind('keyup change', function (e) {
-                    if (e.keyCode == 13 || this.value == "") {
+                const title = $(this).text();
+                $(this).html(`<input type="text" id="searchBox${COLUMNS[i]}" placeholder="Search ${title}" />`);
+                $('input', this).unbind().on('keyup change', function (e) {
+                    if (e.keyCode === 13 || this.value === "") {
                         table.column(i).search(replaceSpecialChars(this.value)).draw();
                     }
                 });
             });
+
 
             // This code sets the ID of the column header for the total comments count to 'total_comments'
             $('#problemTable thead tr:eq(1) th:eq(' + urlEntriesColIndex + ')').attr('id', 'total_comments');
