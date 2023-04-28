@@ -141,7 +141,7 @@ public class ProblemController {
         String themeSearchVal = input.getColumn("theme").get().getSearch().getValue();
         String pattern = "yyyy-MM-dd";
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-
+        input.getColumn("problemDate").get().getSearch().setValue("");
         Criteria dateCriteria = buildDateCriteria(dateSearchVal, simpleDateFormat);
         if (dateCriteria != null) {
             return findProblemsWithCriteria(input, findProcessed, dateCriteria, lang);
@@ -152,6 +152,49 @@ public class ProblemController {
         }
 
         return findProblemsWithCriteria(input, findProcessed, null, lang);
+    }
+
+
+    private DataTablesOutput<Problem> findProblemsWithCriteria(DataTablesInput input, Criteria findProcessed, Criteria dateCriteria, String lang) {
+        DataTablesOutput<Problem> problems;
+        problems = problemRepository.findAll(input, dateCriteria, findProcessed);
+
+        if (lang.equals("fr")) {
+            for (int i = 0; i < problems.getData().size(); i++) {
+                problems.getData().get(i)
+                        .setInstitution(translationsMap.get(problems.getData().get(i).getInstitution()));
+                problems.getData().get(i).setProblem(translationsMap.get(problems.getData().get(i).getProblem()));
+                problems.getData().get(i).setTheme(translationsMap.get(problems.getData().get(i).getTheme()));
+                problems.getData().get(i).setSection(translationsMap.get(problems.getData().get(i).getSection()));
+
+                List<String> tags = problems.getData().get(i).getTags();
+                for (int j = 0; j < tags.size(); j++) {
+                    if (tagTranslations.containsKey(tags.get(j)))
+                        tags.set(j, tagTranslations.get(tags.get(j)));
+                }
+            }
+        }
+        return problems;
+    }
+
+    private Criteria buildDateCriteria(String dateSearchVal, SimpleDateFormat simpleDateFormat) {
+        if (dateSearchVal.contains(":")) {
+            return buildDateRangeCriteria(dateSearchVal);
+        } else {
+            return buildSingleDateCriteria(dateSearchVal, simpleDateFormat);
+        }
+    }
+
+    private Criteria buildDateRangeCriteria(String dateSearchVal) {
+        String[] ret = dateSearchVal.split(":");
+
+        if (ret.length == 2) {
+            String dateSearchValA = ret[0];
+            String dateSearchValB = ret[1];
+
+            return where("problemDate").gte(dateSearchValA).lte(dateSearchValB);
+        }
+        return null;
     }
 
     private Criteria buildSingleDateCriteria(String dateSearchVal, SimpleDateFormat simpleDateFormat) {
@@ -171,44 +214,6 @@ public class ProblemController {
             return where("problemDate").gte(date);
         }
         return null;
-    }
-
-    private DataTablesOutput<Problem> findProblemsWithCriteria(DataTablesInput input, Criteria findProcessed,
-                                                               Criteria dateCriteria, String lang) {
-        DataTablesOutput<Problem> problems;
-
-        if (dateCriteria != null) {
-            problems = problemRepository.findAll(input, dateCriteria, findProcessed);
-        } else {
-            problems = problemRepository.findAll(input, findProcessed);
-        }
-
-        if (lang.equals("fr")) {
-            for (int i = 0; i < problems.getData().size(); i++) {
-                problems.getData().get(i)
-                        .setInstitution(translationsMap.get(problems.getData().get(i).getInstitution()));
-                problems.getData().get(i).setProblem(translationsMap.get(problems.getData().get(i).getProblem()));
-                problems.getData().get(i).setTheme(translationsMap.get(problems.getData().get(i).getTheme()));
-                problems.getData().get(i).setSection(translationsMap.get(problems.getData().get(i).getSection()));
-
-                List<String> tags = problems.getData().get(i).getTags();
-                for (int j = 0; j < tags.size(); j++) {
-                    if (tagTranslations.containsKey(tags.get(j)))
-                        tags.set(j, tagTranslations.get(tags.get(j)));
-                }
-            }
-        }
-
-        return problems;
-    }
-
-
-    private Criteria buildDateCriteria(String dateSearchVal, SimpleDateFormat simpleDateFormat) {
-        if (dateSearchVal.contains(":")) {
-            return buildDateRangeCriteria(dateSearchVal);
-        } else {
-            return buildSingleDateCriteria(dateSearchVal, simpleDateFormat);
-        }
     }
 
     private boolean containsTilde(String... searchValues) {
@@ -279,17 +284,6 @@ public class ProblemController {
         return urls;
     }
 
-    private Criteria buildDateRangeCriteria(String dateSearchVal) {
-        String[] ret = dateSearchVal.split(":");
-
-        if (ret.length == 2) {
-            String dateSearchValA = ret[0];
-            String dateSearchValB = ret[1];
-
-            return where("problemDate").gte(dateSearchValA).lte(dateSearchValB);
-        }
-        return null;
-    }
 
     @RequestMapping(value = "/pageFeedback/totalCommentsCount")
     @ResponseBody
