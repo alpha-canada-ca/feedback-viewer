@@ -25,3 +25,4 @@ PageSuccess.iml
 .idea/vcs.xml
 .idea/misc.xml
 .idea/.name
+kubernetes/feedback-viewer-ingress.yml
