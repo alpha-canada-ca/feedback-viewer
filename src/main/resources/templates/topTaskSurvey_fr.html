@@ -141,7 +141,8 @@
             </div>
             <div class="clearfix"></div>
             <div class="btn-group-lg mrgn-bttm-lg mrgn-tp-lg col-md-12">
-                <button type="reset" class="btn btn-default" id="reset">Rétablir les valeurs par défaut</button>
+                <button type="reset" class="btn btn-default" id="reset-to-default">Rétablir les valeurs par
+                    défaut</button>
             </div>
         </form>
 
@@ -440,7 +441,23 @@
             });
 
 
+            function resetFilters() {
+                // clear all search boxes and select dropdowns
+                $('#searchBoxDate, #searchBoxTimeStamp, #searchBoxComment, #searchBoxProblem, #searchBoxUrl, #searchBoxUrlEntries, #searchBoxTitle, #searchBoxLang').val('');
+                $('#Department').val('');
+                $('#dt_theme').val('');
+                $('.autocomplete-input').val('');
 
+                // reset all search filters to empty
+                table.columns().search('').draw();
+
+                // reset the tasklist filter input field
+                $('.autocomplete-input').trigger('keyup');
+            }
+
+            $('#reset-to-default').on('click', function () {
+                resetFilters();
+            });
 
             const DateColumn = 0;
             const DepartmentColumn = 6;
