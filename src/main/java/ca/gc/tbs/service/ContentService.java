@@ -1,7 +1,12 @@
 package ca.gc.tbs.service;
 
+import edu.stanford.nlp.pipeline.CoreDocument;
+import edu.stanford.nlp.pipeline.CoreEntityMention;
+import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+
+import java.util.*;
 
 @Service
 public class ContentService {
@@ -42,6 +47,11 @@ public class ContentService {
         if (!newContent.contentEquals(content)) {
             content = newContent;
             System.out.println("Email Address cleaned: " + content);
+        }
+        newContent = this.cleanNames(content);
+        if (!newContent.contentEquals(content)) {
+            content = newContent;
+            System.out.println("Names cleaned: " + content);
         }
         return content;
     }
@@ -107,6 +117,40 @@ public class ContentService {
     private String cleanEmailAddress(String content) {
         return content.replaceAll("([a-zA-Z0-9_\\-\\.]+)\\s*@([\\sa-zA-Z0-9_\\-\\.]+)[\\.\\,]([a-zA-Z]{1,5})",
                 "####@####.####");
+    }
+
+    /*
+     * Cleans the names of persons in the provided content by replacing them with '#' characters.
+     * Uses StanfordCoreNLP for natural language processing and entity recognition.
+     * Reverses the list of entity mentions to replace them from the end of the string,
+     * preserving the indices of earlier mentions when replacing later ones.
+     */
+    public String cleanNames(String content) {
+        Properties props = new Properties();
+        props.setProperty("annotators", "tokenize,ssplit,pos,lemma,ner");
+        StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
+        CoreDocument doc = new CoreDocument(content);
+
+        pipeline.annotate(doc);
+
+        List<CoreEntityMention> entityMentions = new ArrayList<>(doc.entityMentions());
+
+        // Reverse the list to replace from the end of the string. This prevents messing up the start indices of
+        // earlier entity mentions when replacing later ones.
+        Collections.reverse(entityMentions);
+
+        StringBuilder sb = new StringBuilder(content);
+
+        for (CoreEntityMention em : entityMentions) {
+            if (em.entityType().equals("PERSON")) {
+                int start = em.charOffsets().first();
+                int end = em.charOffsets().second();
+                char[] replacement = new char[end - start];
+                Arrays.fill(replacement, '#');
+                sb.replace(start, end, new String(replacement));
+            }
+        }
+        return sb.toString();
     }
 
 }
