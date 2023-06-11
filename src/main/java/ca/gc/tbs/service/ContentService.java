@@ -17,6 +17,9 @@ public class ContentService {
     }
 
     public String cleanContent(String content) {
+        if (content.isEmpty()) {
+            return content; // Return empty string if content is empty
+        }
         content = StringUtils.normalizeSpace(content);
         String newContent = BadWords.censor(content);
         if (!newContent.contentEquals(content) && newContent.contains("#")) {
