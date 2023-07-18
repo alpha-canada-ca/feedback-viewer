@@ -41,26 +41,26 @@ public class ProblemController {
     private static final boolean DESC = false;
     private final HashMap<String, String> tagTranslations = new HashMap<>();
     String[][] translations = {
-            /* ENGLISH, FRENCH */{ "The answer I need is missing", "La réponse dont j’ai besoin n’est pas là" },
-            { "The information isn't clear", "L'information n'est pas claire" },
-            { "I can't find the information", "Je ne peux pas trouver l'information" },
-            { "The information isn’t clear", "L'information n'est pas claire" },
-            { "I’m not in the right place", "Je ne suis pas au bon endroit" },
-            { "I'm not in the right place", "Je ne suis pas au bon endroit" },
-            { "Something is broken or incorrect", "Quelque chose est brisé ou incorrect" },
-            { "Other reason", "Autre raison" },
-            { "The information is hard to understand", "l'information est difficile à comprendre" },
-            { "Health", "Santé" }, { "Taxes", "Impôt" }, { "Travel", "Voyage" },
-            { "Public Health Agency of Canada", "Agence de santé publique du Canada" },
-            { "Health Canada", "Santé Canada" }, { "CRA", "ARC" }, { "ISED", "ISDE" }, { "Example", "Exemple" },
-            { "CEWS", "SSUC" }, { "CRSB", "PCMRE" }, { "CRB", "PCRE" }, { "CRCB", "PCREPA" }, { "CERS", "SUCL" },
-            { "Vaccines", "Vaccins" }, { "Business", "Entreprises" }, { "WFHE", "DTDE" },
-            { "travel-wizard", "assistant-voyage" }, { "PTR", "DRP" }, { "COVID Alert", "Alerte COVID" },
-            { "Financial Consumer Agency of Canada", "Agence de la consommation en matière financière du Canada" },
-            { "National Research Council", "Conseil national de recherches" },
-            { "Department of Fisheries and Oceans", "Pêches et Océans Canada" },
-            { "Money and finances", "Argent et finances" }, { "Science and innovation", "Science et innovation" },
-            { "Environment and natural resources", "Environnement et ressources naturelles" } };
+            /* ENGLISH, FRENCH */{"The answer I need is missing", "La réponse dont j’ai besoin n’est pas là"},
+            {"The information isn't clear", "L'information n'est pas claire"},
+            {"I can't find the information", "Je ne peux pas trouver l'information"},
+            {"The information isn’t clear", "L'information n'est pas claire"},
+            {"I’m not in the right place", "Je ne suis pas au bon endroit"},
+            {"I'm not in the right place", "Je ne suis pas au bon endroit"},
+            {"Something is broken or incorrect", "Quelque chose est brisé ou incorrect"},
+            {"Other reason", "Autre raison"},
+            {"The information is hard to understand", "l'information est difficile à comprendre"},
+            {"Health", "Santé"}, {"Taxes", "Impôt"}, {"Travel", "Voyage"},
+            {"Public Health Agency of Canada", "Agence de santé publique du Canada"},
+            {"Health Canada", "Santé Canada"}, {"CRA", "ARC"}, {"ISED", "ISDE"}, {"Example", "Exemple"},
+            {"CEWS", "SSUC"}, {"CRSB", "PCMRE"}, {"CRB", "PCRE"}, {"CRCB", "PCREPA"}, {"CERS", "SUCL"},
+            {"Vaccines", "Vaccins"}, {"Business", "Entreprises"}, {"WFHE", "DTDE"},
+            {"travel-wizard", "assistant-voyage"}, {"PTR", "DRP"}, {"COVID Alert", "Alerte COVID"},
+            {"Financial Consumer Agency of Canada", "Agence de la consommation en matière financière du Canada"},
+            {"National Research Council", "Conseil national de recherches"},
+            {"Department of Fisheries and Oceans", "Pêches et Océans Canada"},
+            {"Money and finances", "Argent et finances"}, {"Science and innovation", "Science et innovation"},
+            {"Environment and natural resources", "Environnement et ressources naturelles"}};
     private final HashMap<String, String> translationsMap = new HashMap<>(translations.length);
     private int totalComments = 0;
     @Autowired
@@ -77,8 +77,8 @@ public class ProblemController {
                 ? o1.getKey().compareTo(o2.getKey())
                 : o1.getValue().compareTo(o2.getValue())
                 : o2.getValue().compareTo(o1.getValue()) == 0
-                        ? o2.getKey().compareTo(o1.getKey())
-                        : o2.getValue().compareTo(o1.getValue()));
+                ? o2.getKey().compareTo(o1.getKey())
+                : o2.getValue().compareTo(o1.getValue()));
         return list.stream().collect(Collectors.toMap(Entry::getKey, Entry::getValue, (a, b) -> b, LinkedHashMap::new));
 
     }
@@ -157,7 +157,7 @@ public class ProblemController {
     }
 
     private DataTablesOutput<Problem> findProblemsWithCriteria(DataTablesInput input, Criteria findProcessed,
-            Criteria dateCriteria, String lang) {
+                                                               Criteria dateCriteria, String lang) {
         DataTablesOutput<Problem> problems;
         problems = problemRepository.findAll(input, dateCriteria, findProcessed);
 
@@ -200,31 +200,40 @@ public class ProblemController {
     }
 
     private Criteria buildSingleDateCriteria(String dateSearchVal, SimpleDateFormat simpleDateFormat) {
-        String date = null;
+        String startDate = null;
+        String endDate = null;
+
         if (dateSearchVal.contains("today")) {
-            date = simpleDateFormat.format(new Date(System.currentTimeMillis()));
+            startDate = simpleDateFormat.format(new Date(System.currentTimeMillis()));
         } else if (dateSearchVal.contains("yesterday")) {
-            date = simpleDateFormat.format(new Date(System.currentTimeMillis() - DAY_IN_MS));
+            startDate = simpleDateFormat.format(new Date(System.currentTimeMillis() - DAY_IN_MS));
+            endDate = simpleDateFormat.format(new Date(System.currentTimeMillis()));
         } else if (dateSearchVal.contains("seven")) {
-            date = simpleDateFormat.format(new Date(System.currentTimeMillis() - (7 * DAY_IN_MS)));
+            startDate = simpleDateFormat.format(new Date(System.currentTimeMillis() - (7 * DAY_IN_MS)));
         } else if (dateSearchVal.contains("fifteen")) {
-            date = simpleDateFormat.format(new Date(System.currentTimeMillis() - (15 * DAY_IN_MS)));
+            startDate = simpleDateFormat.format(new Date(System.currentTimeMillis() - (15 * DAY_IN_MS)));
         } else if (dateSearchVal.contains("thirty")) {
-            date = simpleDateFormat.format(new Date(System.currentTimeMillis() - (30 * DAY_IN_MS)));
+            startDate = simpleDateFormat.format(new Date(System.currentTimeMillis() - (30 * DAY_IN_MS)));
         }
-        if (date != null) {
-            return where("problemDate").gte(date);
+
+        if (startDate != null) {
+            if (endDate != null) {
+                return where("problemDate").gte(startDate).lt(endDate);
+            } else {
+                return where("problemDate").gte(startDate);
+            }
         }
         return null;
     }
+
 
     private boolean containsTilde(String... searchValues) {
         return Arrays.stream(searchValues).anyMatch(searchVal -> searchVal.contains("~"));
     }
 
     private DataTablesOutput<Problem> processProblemsWithTilde(DataTablesInput input, String lang,
-            Criteria findProcessed,
-            String deptSearchVal, String sectionSearchVal, String themeSearchVal) {
+                                                               Criteria findProcessed,
+                                                               String deptSearchVal, String sectionSearchVal, String themeSearchVal) {
         String deptValue = deptSearchVal.equals("") ? "" : deptSearchVal.substring(0, deptSearchVal.length() - 2);
         String sectionValue = sectionSearchVal.equals("") ? ""
                 : sectionSearchVal.substring(0, sectionSearchVal.length() - 2);
