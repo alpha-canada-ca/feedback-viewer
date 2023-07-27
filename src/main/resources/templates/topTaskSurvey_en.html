@@ -128,17 +128,31 @@
                     <option value="true">Entries with comments</option>
                 </select>
             </div>
-            <div class="form-horizontal col-md-5">
-                <label for="date">Date range</label>
-                <div class="form-group">
-                    <label for="min" class="col-sm-4 control-label">Start date:</label>
-                    <input type="date" class="col-sm-8 form-control" id="min" name="min">
-                </div>
-                <div class="form-group">
-                    <label for="max" class="col-sm-4 control-label">End date:</label>
-                    <input type="date" class="col-sm-8 form-control" id="max" name="max">
+
+            <div class="form-group">
+                <label for="date">Custom Date Range <span class="wb-inv">selection</span></label>
+                <div class="form-inline">
+                    <input type="date" class="form-control" id="min" name="min">
+                    <label for="min" class="ml-2 mr-2"><span class="wb-inv">Start date</span></label>
+                    <span><strong>To &nbsp;</strong></span>
+                    <input type="date" class="form-control" id="max" name="max">
+                    <label for="max" class="ml-2"><span class="wb-inv">End date</span></label>
                 </div>
             </div>
+
+            <div class="form-inline">
+                <label for="rangeSelection" class="d-block mt-3">Or choose <span class="wb-inv">a predefined
+                        range</span></label>
+                <select class="form-control" id="rangeSelection" name="rangeSelection">
+                    <option value="">Duration</option>
+                    <option value="today">Today</option>
+                    <option value="yesterday">Yesterday</option>
+                    <option value="seven">Last 7 days</option>
+                    <option value="fifteen">Last 15 days</option>
+                    <option value="thirty">Last 30 days</option>
+                </select>
+            </div>
+
             <div class="clearfix"></div>
             <div class="btn-group-lg mrgn-bttm-lg mrgn-tp-lg col-md-12">
                 <!-- <button type="submit" class="btn btn-primary" aria-controls="topTaskTable" id="filter">Filter</button> -->
