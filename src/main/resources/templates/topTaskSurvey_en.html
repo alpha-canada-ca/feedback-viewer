@@ -116,7 +116,7 @@
                 <br>
                 <label for="autocomplete-input">Task</label>
                 <div id="autocomplete" class="autocomplete">
-                    <input class="autocomplete-input form-control" placeholder="Search for a task"
+                    <input id="taskValue" class="autocomplete-input form-control" placeholder="Search for a task"
                         aria-label="Search for a task">
                     <ul class="autocomplete-result-list"></ul>
                 </div>
@@ -459,13 +459,13 @@
                 $('#searchBoxDate, #searchBoxTimeStamp, #searchBoxComment, #searchBoxProblem, #searchBoxUrl, #searchBoxUrlEntries, #searchBoxTitle, #searchBoxLang').val('');
                 $('#Department').val('');
                 $('#theme').val('');
-                $('.autocomplete-input').val('');
+                $('#taskvalue').val('');
 
                 // reset all search filters to empty
                 table.columns().search('').draw();
 
                 // reset the tasklist filter input field
-                $('.autocomplete-input').trigger('keyup');
+                $('#taskvalue').trigger('keyup');
             }
 
             $('#reset-to-default').on('click', function () {
@@ -478,6 +478,36 @@
             const TaskOtherColumn = 11;
 
             var minMaxDateChosen = false;
+
+            $('#rangeSelection', this).on('keyup change', function () {
+
+                var rangeValue = this.value.trim();
+                var rangeChosen = rangeValue !== "";
+
+                if (rangeChosen) {
+                    table.column(DateColIndex).search(rangeValue).draw();
+                } else {
+                    table.column(DateColIndex).search("").draw();
+                }
+
+                if ($('#Department, #theme, #taskvalue').filter(function () {
+                    return this.value.trim() !== "";
+                }).length === 3) {
+                    table.columns([DepartmentColumn, ThemeColumn, TaskColumn])
+                        .search([$('#Department').val(), $('#theme').val(), $('#taskvalue').val()])
+                        .draw();
+                } else {
+                    if ($('#Department').val() && rangeChosen) {
+                        table.column(DepartmentColumn).search($('#Department').val()).draw();
+                    }
+                    if ($('#theme').val() && rangeChosen) {
+                        table.column(ThemeColIndex).search($('#theme').val()).draw();
+                    }
+                    if ($('#taskvalue').val() && rangeChosen) {
+                        table.column(TaskColumn).search($('#taskvalue').val()).draw();
+                    }
+                }
+            })
 
             $('#min', this).on('keyup change', function () {
                 minMaxDateChosen = false;
@@ -497,10 +527,10 @@
                         .column(DepartmentColumn)
                         .search($('#Department').val())
                 }
-                if ($('.autocomplete-input').val() != "" && minMaxDateChosen) {
+                if ($('#taskvalue').val() != "" && minMaxDateChosen) {
                     table
                         .column(TaskColumn)
-                        .search($('.autocomplete-input').val())
+                        .search($('#taskvalue').val())
                 }
                 table.draw();
             });
@@ -523,10 +553,10 @@
                         .column(DepartmentColumn)
                         .search($('#Department').val())
                 }
-                if ($('.autocomplete-input').val() != "" && minMaxDateChosen) {
+                if ($('#taskvalue').val() != "" && minMaxDateChosen) {
                     table
                         .column(TaskColumn)
-                        .search($('.autocomplete-input').val())
+                        .search($('#taskvalue').val())
                 }
                 table.draw();
             });
@@ -556,10 +586,10 @@
                         .search($('#Department').val())
                         .draw()
                 }
-                if ($('.autocomplete-input').val() != "") {
+                if ($('#taskvalue').val() != "") {
                     table
                         .column(TaskColumn)
-                        .search($('.autocomplete-input').val())
+                        .search($('#taskvalue').val())
                         .draw()
                 }
             });
@@ -588,10 +618,10 @@
                         .search($('#theme').val())
                         .draw()
                 }
-                if ($('.autocomplete-input').val() != "") {
+                if ($('#taskvalue').val() != "") {
                     table
                         .column(TaskColumn)
-                        .search($('.autocomplete-input').val())
+                        .search($('#taskvalue').val())
                         .draw()
                 }
             });
