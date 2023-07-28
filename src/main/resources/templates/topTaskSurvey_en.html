@@ -86,8 +86,8 @@
                 </select>
                 <h2 class="mrgn-lft h3">OR</h2>
                 <br>
-                <label for="dt_theme">Theme</label>
-                <select class="form-control" id="dt_theme" name="dt_theme" data-column="6">
+                <label for="theme">Theme</label>
+                <select class="form-control" id="theme" name="theme" data-column="6">
                     <option value="">All</option>
                     <option value="AboutGov">AboutGov</option>
                     <option value="Benefits">Benefits</option>
@@ -458,7 +458,7 @@
                 // clear all search boxes and select dropdowns
                 $('#searchBoxDate, #searchBoxTimeStamp, #searchBoxComment, #searchBoxProblem, #searchBoxUrl, #searchBoxUrlEntries, #searchBoxTitle, #searchBoxLang').val('');
                 $('#Department').val('');
-                $('#dt_theme').val('');
+                $('#theme').val('');
                 $('.autocomplete-input').val('');
 
                 // reset all search filters to empty
@@ -487,10 +487,10 @@
                         .column(DateColumn)
                         .search(this.value + ":" + $('#max').val())
                 }
-                if ($('#dt_theme').val() != "" && minMaxDateChosen) {
+                if ($('#theme').val() != "" && minMaxDateChosen) {
                     table
                         .column(ThemeColumn)
-                        .search($('#dt_theme').val())
+                        .search($('#theme').val())
                 }
                 if ($('#Department').val() != "" && minMaxDateChosen) {
                     table
@@ -513,10 +513,10 @@
                         .column(DateColumn)
                         .search($('#min').val() + ":" + this.value)
                 }
-                if ($('#dt_theme').val() != "" && minMaxDateChosen) {
+                if ($('#theme').val() != "" && minMaxDateChosen) {
                     table
                         .column(ThemeColumn)
-                        .search($('#dt_theme').val())
+                        .search($('#theme').val())
                 }
                 if ($('#Department').val() != "" && minMaxDateChosen) {
                     table
@@ -531,7 +531,7 @@
                 table.draw();
             });
 
-            $('#dt_theme', this).on('keyup change', function () {
+            $('#theme', this).on('keyup change', function () {
                 if (this.value == "") {
                     table
                         .column(ThemeColumn)
@@ -582,10 +582,10 @@
                         .search($('#min').val() + ":" + $('#max').val())
                         .draw();
                 }
-                if ($('#dt_theme').val() != "") {
+                if ($('#theme').val() != "") {
                     table
                         .column(ThemeColumn)
-                        .search($('#dt_theme').val())
+                        .search($('#theme').val())
                         .draw()
                 }
                 if ($('.autocomplete-input').val() != "") {
