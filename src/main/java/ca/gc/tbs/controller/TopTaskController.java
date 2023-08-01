@@ -18,6 +18,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
@@ -25,7 +27,7 @@ import static org.springframework.data.mongodb.core.query.Criteria.where;
 public class TopTaskController {
 
     private static final Logger LOG = LoggerFactory.getLogger(TopTaskController.class);
-
+    public static final long DAY_IN_MS = 1000 * 60 * 60 * 24;
     @Autowired
     private TopTaskRepository topTaskRepository;
 
@@ -39,6 +41,9 @@ public class TopTaskController {
         String dateSearchVal = getInputSearchValue(input, "dateTime");
         String dataSetVal = getInputSearchValue(input, "taskOther");
         String taskValue = getInputSearchValue(input, "task");
+
+        String pattern = "yyyy-MM-dd";
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 
         // escape all the brackets so that the input can return a result.
         taskValue = escapeBrackets(taskValue);
@@ -105,6 +110,33 @@ public class TopTaskController {
 
     private Criteria createDateCriteria(String startDate, String endDate) {
         return where("dateTime").gte(startDate).lte(endDate);
+    }
+
+    private Criteria buildSingleDateCriteria(String dateSearchVal, SimpleDateFormat simpleDateFormat) {
+        String startDate = null;
+        String endDate = null;
+
+        if (dateSearchVal.contains("today")) {
+            startDate = simpleDateFormat.format(new Date(System.currentTimeMillis()));
+        } else if (dateSearchVal.contains("yesterday")) {
+            startDate = simpleDateFormat.format(new Date(System.currentTimeMillis() - DAY_IN_MS));
+            endDate = simpleDateFormat.format(new Date(System.currentTimeMillis()));
+        } else if (dateSearchVal.contains("seven")) {
+            startDate = simpleDateFormat.format(new Date(System.currentTimeMillis() - (7 * DAY_IN_MS)));
+        } else if (dateSearchVal.contains("fifteen")) {
+            startDate = simpleDateFormat.format(new Date(System.currentTimeMillis() - (15 * DAY_IN_MS)));
+        } else if (dateSearchVal.contains("thirty")) {
+            startDate = simpleDateFormat.format(new Date(System.currentTimeMillis() - (30 * DAY_IN_MS)));
+        }
+
+        if (startDate != null) {
+            if (endDate != null) {
+                return where("problemDate").gte(startDate).lt(endDate);
+            } else {
+                return where("problemDate").gte(startDate);
+            }
+        }
+        return null;
     }
 
     private Criteria createNonEmptyCriteria() {
