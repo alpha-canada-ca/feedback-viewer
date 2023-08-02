@@ -485,9 +485,9 @@
                 var rangeChosen = rangeValue !== "";
 
                 if (rangeChosen) {
-                    table.column(DateColIndex).search(rangeValue).draw();
+                    table.column(DateColumn).search(rangeValue).draw();
                 } else {
-                    table.column(DateColIndex).search("").draw();
+                    table.column(DateColumn).search("").draw();
                 }
 
                 if ($('#Department, #theme, #taskvalue').filter(function () {
