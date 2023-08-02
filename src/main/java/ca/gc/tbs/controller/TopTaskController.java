@@ -18,8 +18,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
@@ -27,7 +27,6 @@ import static org.springframework.data.mongodb.core.query.Criteria.where;
 public class TopTaskController {
 
     private static final Logger LOG = LoggerFactory.getLogger(TopTaskController.class);
-    public static final long DAY_IN_MS = 1000 * 60 * 60 * 24;
     @Autowired
     private TopTaskRepository topTaskRepository;
 
@@ -38,63 +37,48 @@ public class TopTaskController {
     @ResponseBody
     public DataTablesOutput<TopTaskSurvey> list(@Valid DataTablesInput input) {
 
+        String taskValue = getInputSearchValue(input, "task");
         String dateSearchVal = getInputSearchValue(input, "dateTime");
         String dataSetVal = getInputSearchValue(input, "taskOther");
-        String taskValue = getInputSearchValue(input, "task");
 
-        String pattern = "yyyy-MM-dd";
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-
+        Criteria dateCriteria = buildDateCriteria(dateSearchVal);
+        System.out.println("Built date criteria: " + dateCriteria);
         // escape all the brackets so that the input can return a result.
         taskValue = escapeBrackets(taskValue);
         setInputSearchValue(input, "task", taskValue);
+        setInputSearchValue(input, "dateTime", "");
+        setInputSearchValue(input, "taskOther", "");
 
-        printColumns(input);
+        // printColumns(input);
 
         Criteria findProcessed = where("processed").is("true");
 
-        if (dataSetVal.contains("nonEmpty") && dateSearchVal.contains(":")) {
-            String[] dateRange = dateSearchVal.split(":");
-
-            if (dateRange.length == 2) {
-                setInputSearchValue(input, "taskOther", "");
-                setInputSearchValue(input, "dateTime", "");
-
-                Criteria dateCriteria = createDateCriteria(dateRange[0], dateRange[1]);
-
-                if (!dateRange[0].equals("") && !dateRange[1].equals("")) {
-                    return topTaskRepository.findAll(input, createNonEmptyCriteria(), dateCriteria);
-                }
-            }
-        }
-
-        if (dateSearchVal.contains(":")) {
-            String[] dateRange = dateSearchVal.split(":");
-            if (dateRange.length == 2) {
-                setInputSearchValue(input, "dateTime", "");
-
-                Criteria dateCriteria = createDateCriteria(dateRange[0], dateRange[1]);
-
-                if (!dateRange[0].equals("") && !dateRange[1].equals("")) {
-                    return topTaskRepository.findAll(input, findProcessed, dateCriteria);
-                }
-            }
+        if (dataSetVal.contains("nonEmpty") && dateCriteria != null) {
+            return topTaskRepository.findAll(input, createNonEmptyCriteria(), dateCriteria);
         }
 
         if (dataSetVal.contains("nonEmpty")) {
-            setInputSearchValue(input, "taskOther", "");
             return topTaskRepository.findAll(input, findProcessed, createNonEmptyCriteria());
+        }
+
+        if (dateCriteria != null) {
+            System.out.println(input.getColumns());
+            Criteria test = where("dateTime").gte("2023-08-01");
+            return topTaskRepository.findAll(input, dateCriteria);
         }
 
         return topTaskRepository.findAll(input, findProcessed);
     }
 
     private String getInputSearchValue(DataTablesInput input, String columnName) {
-        return input.getColumn(columnName).get().getSearch().getValue();
+        return input.getColumn(columnName)
+                .map(column -> column.getSearch().getValue())
+                .orElse(null);
     }
 
     private void setInputSearchValue(DataTablesInput input, String columnName, String value) {
-        input.getColumn(columnName).get().getSearch().setValue(value);
+        input.getColumn(columnName)
+                .ifPresent(column -> column.getSearch().setValue(value));
     }
 
     private String escapeBrackets(String value) {
@@ -108,32 +92,53 @@ public class TopTaskController {
         System.out.println("---------------------");
     }
 
-    private Criteria createDateCriteria(String startDate, String endDate) {
-        return where("dateTime").gte(startDate).lte(endDate);
+    private Criteria buildDateCriteria(String dateSearchVal) {
+        if (dateSearchVal.contains(":")) {
+            return buildDateRangeCriteria(dateSearchVal);
+        } else {
+            return buildSingleDateCriteria(dateSearchVal);
+        }
     }
 
-    private Criteria buildSingleDateCriteria(String dateSearchVal, SimpleDateFormat simpleDateFormat) {
-        String startDate = null;
-        String endDate = null;
+    private Criteria buildDateRangeCriteria(String dateSearchVal) {
+        String[] ret = dateSearchVal.split(":");
+
+        if (ret.length == 2) {
+            String startDate = ret[0];
+            String endDate = ret[1];
+
+            return where("dateTime").gte(startDate).lte(endDate);
+        }
+        return null;
+    }
+
+    private Criteria buildSingleDateCriteria(String dateSearchVal) {
+        LocalDate startDate = null;
+        LocalDate endDate = null;
+        LocalDate now = LocalDate.now();
 
         if (dateSearchVal.contains("today")) {
-            startDate = simpleDateFormat.format(new Date(System.currentTimeMillis()));
+            startDate = now;
         } else if (dateSearchVal.contains("yesterday")) {
-            startDate = simpleDateFormat.format(new Date(System.currentTimeMillis() - DAY_IN_MS));
-            endDate = simpleDateFormat.format(new Date(System.currentTimeMillis()));
+            startDate = now.minusDays(1);
+            endDate = now;
         } else if (dateSearchVal.contains("seven")) {
-            startDate = simpleDateFormat.format(new Date(System.currentTimeMillis() - (7 * DAY_IN_MS)));
+            startDate = now.minusDays(7);
         } else if (dateSearchVal.contains("fifteen")) {
-            startDate = simpleDateFormat.format(new Date(System.currentTimeMillis() - (15 * DAY_IN_MS)));
+            startDate = now.minusDays(15);
         } else if (dateSearchVal.contains("thirty")) {
-            startDate = simpleDateFormat.format(new Date(System.currentTimeMillis() - (30 * DAY_IN_MS)));
+            startDate = now.minusDays(30);
         }
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
         if (startDate != null) {
             if (endDate != null) {
-                return where("problemDate").gte(startDate).lt(endDate);
+                System.out.println("startDate: " + startDate.format(formatter));
+                System.out.println("endDate: " + endDate.format(formatter));
+                return where("dateTime").gte(startDate.format(formatter)).lt(endDate.format(formatter));
             } else {
-                return where("problemDate").gte(startDate);
+                return where("dateTime").gte(startDate.format(formatter));
             }
         }
         return null;
