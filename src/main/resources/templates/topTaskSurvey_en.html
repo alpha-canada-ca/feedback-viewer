@@ -485,6 +485,8 @@
                 var rangeChosen = rangeValue !== "";
 
                 if (rangeChosen) {
+                    $('#min, #max').val('');
+                    minMaxDateChosen = false;
                     table.column(DateColumn).search(rangeValue).draw();
                 } else {
                     table.column(DateColumn).search("").draw();
@@ -513,6 +515,7 @@
                 minMaxDateChosen = false;
                 if (this.value != "" && $('#max').val() != "") {
                     minMaxDateChosen = true;
+                    $('#rangeSelection').val('');
                     table
                         .column(DateColumn)
                         .search(this.value + ":" + $('#max').val())
@@ -539,6 +542,7 @@
                 minMaxDateChosen = false;
                 if (this.value != "" && $('#min').val() != "") {
                     minMaxDateChosen = true;
+                    $('#rangeSelection').val('');
                     table
                         .column(DateColumn)
                         .search($('#min').val() + ":" + this.value)
