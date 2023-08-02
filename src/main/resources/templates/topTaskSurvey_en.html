@@ -459,13 +459,13 @@
                 $('#searchBoxDate, #searchBoxTimeStamp, #searchBoxComment, #searchBoxProblem, #searchBoxUrl, #searchBoxUrlEntries, #searchBoxTitle, #searchBoxLang').val('');
                 $('#Department').val('');
                 $('#theme').val('');
-                $('#taskvalue').val('');
+                $('#taskValue').val('');
 
                 // reset all search filters to empty
                 table.columns().search('').draw();
 
                 // reset the tasklist filter input field
-                $('#taskvalue').trigger('keyup');
+                $('#taskValue').trigger('keyup');
             }
 
             $('#reset-to-default').on('click', function () {
@@ -490,11 +490,11 @@
                     table.column(DateColumn).search("").draw();
                 }
 
-                if ($('#Department, #theme, #taskvalue').filter(function () {
+                if ($('#Department, #theme, #taskValue').filter(function () {
                     return this.value.trim() !== "";
                 }).length === 3) {
                     table.columns([DepartmentColumn, ThemeColumn, TaskColumn])
-                        .search([$('#Department').val(), $('#theme').val(), $('#taskvalue').val()])
+                        .search([$('#Department').val(), $('#theme').val(), $('#taskValue').val()])
                         .draw();
                 } else {
                     if ($('#Department').val() && rangeChosen) {
@@ -503,8 +503,8 @@
                     if ($('#theme').val() && rangeChosen) {
                         table.column(ThemeColIndex).search($('#theme').val()).draw();
                     }
-                    if ($('#taskvalue').val() && rangeChosen) {
-                        table.column(TaskColumn).search($('#taskvalue').val()).draw();
+                    if ($('#taskValue').val() && rangeChosen) {
+                        table.column(TaskColumn).search($('#taskValue').val()).draw();
                     }
                 }
             })
@@ -527,10 +527,10 @@
                         .column(DepartmentColumn)
                         .search($('#Department').val())
                 }
-                if ($('#taskvalue').val() != "" && minMaxDateChosen) {
+                if ($('#taskValue').val() != "" && minMaxDateChosen) {
                     table
                         .column(TaskColumn)
-                        .search($('#taskvalue').val())
+                        .search($('#taskValue').val())
                 }
                 table.draw();
             });
@@ -553,10 +553,10 @@
                         .column(DepartmentColumn)
                         .search($('#Department').val())
                 }
-                if ($('#taskvalue').val() != "" && minMaxDateChosen) {
+                if ($('#taskValue').val() != "" && minMaxDateChosen) {
                     table
                         .column(TaskColumn)
-                        .search($('#taskvalue').val())
+                        .search($('#taskValue').val())
                 }
                 table.draw();
             });
@@ -586,10 +586,10 @@
                         .search($('#Department').val())
                         .draw()
                 }
-                if ($('#taskvalue').val() != "") {
+                if ($('#taskValue').val() != "") {
                     table
                         .column(TaskColumn)
-                        .search($('#taskvalue').val())
+                        .search($('#taskValue').val())
                         .draw()
                 }
             });
@@ -618,10 +618,10 @@
                         .search($('#theme').val())
                         .draw()
                 }
-                if ($('#taskvalue').val() != "") {
+                if ($('#taskValue').val() != "") {
                     table
                         .column(TaskColumn)
-                        .search($('#taskvalue').val())
+                        .search($('#taskValue').val())
                         .draw()
                 }
             });
