@@ -86,8 +86,8 @@
                 </select>
                 <h2 class="mrgn-lft h3">OU</h2>
                 <br>
-                <label for="dt_theme">Thème</label>
-                <select class="form-control" id="dt_theme" name="dt_theme" data-column="6">
+                <label for="theme">Thème</label>
+                <select class="form-control" id="theme" name="theme" data-column="6">
                     <option value="">Tout</option>
                     <option value="AboutGov">A propos de gov</option>
                     <option value="Benefits">Avantages</option>
@@ -112,11 +112,11 @@
                     <option value="Other">Autre</option>
                     <!-- THEMES -->
                 </select>
-                <h2 class="mrgn-lft h3">ET</h2>
+                <h2 class="mrgn-lft h3">OU</h2>
                 <br>
                 <label for="autocomplete-input">Task</label>
                 <div id="autocomplete" class="autocomplete">
-                    <input class="autocomplete-input form-control" placeholder="Recherche d'une tâche"
+                    <input id="taskValue" class="autocomplete-input form-control" placeholder="Recherche d'une tâche"
                         aria-label="Recherche d'une tâche">
                     <ul class="autocomplete-result-list"></ul>
                 </div>
@@ -128,17 +128,31 @@
                     <option value="true">Entrées avec commentaires</option>
                 </select>
             </div>
-            <div class="form-horizontal col-md-5">
-                <label for="date">Période</label>
-                <div class="form-group">
-                    <label for="min" class="col-sm-4 control-label">Date de début:</label>
-                    <input type="date" class="col-sm-8 form-control" id="min" name="min">
-                </div>
-                <div class="form-group">
-                    <label for="max" class="col-sm-4 control-label">Date de fin:</label>
-                    <input type="date" class="col-sm-8 form-control" id="max" name="max">
+
+            <div class="form-group">
+                <label for="date">Date Période <span class="wb-inv">sélection</span></label>
+                <div class="form-inline">
+                    <input type="date" class="form-control" id="min" name="min">
+                    <label for="min" class="ml-2 mr-2"><span class="wb-inv">Date de début</span></label>
+                    <span><strong>à &nbsp;</strong></span>
+                    <input type="date" class="form-control" id="max" name="max">
+                    <label for="max" class="ml-2"><span class="wb-inv">Date de fin</span></label>
                 </div>
             </div>
+
+            <div class="form-inline">
+                <label for="rangeSelection" class="d-block mt-3">ou choisir <span class="wb-inv">une plage
+                        prédéfinie</span></label>
+                <select class="form-control" id="rangeSelection" name="rangeSelection">
+                    <option value="">Durée</option>
+                    <option value="today">Aujourd'hui</option>
+                    <option value="yesterday">Hier</option>
+                    <option value="seven">7 derniers jours</option>
+                    <option value="fifteen">15 derniers jours</option>
+                    <option value="thirty">30 derniers jours</option>
+                </select>
+            </div>
+
             <div class="clearfix"></div>
             <div class="btn-group-lg mrgn-bttm-lg mrgn-tp-lg col-md-12">
                 <button type="reset" class="btn btn-default" id="reset-to-default">Rétablir les valeurs par
@@ -440,78 +454,118 @@
                 console.error("Something went horribly wrong", e);
             });
 
-
             function resetFilters() {
                 // clear all search boxes and select dropdowns
                 $('#searchBoxDate, #searchBoxTimeStamp, #searchBoxComment, #searchBoxProblem, #searchBoxUrl, #searchBoxUrlEntries, #searchBoxTitle, #searchBoxLang').val('');
                 $('#Department').val('');
-                $('#dt_theme').val('');
-                $('.autocomplete-input').val('');
+                $('#theme').val('');
+                $('#taskValue').val('');
 
                 // reset all search filters to empty
                 table.columns().search('').draw();
 
                 // reset the tasklist filter input field
-                $('.autocomplete-input').trigger('keyup');
+                $('#taskValue').trigger('keyup');
             }
 
             $('#reset-to-default').on('click', function () {
                 resetFilters();
             });
-
             const DateColumn = 0;
             const DepartmentColumn = 6;
             const ThemeColumn = 7;
             const TaskColumn = 10;
             const TaskOtherColumn = 11;
 
-            var flag = false;
-            var flag2 = false;
+            var minMaxDateChosen = false;
+
+            $('#rangeSelection', this).on('keyup change', function () {
+
+                var rangeValue = this.value.trim();
+                var rangeChosen = rangeValue !== "";
+
+                if (rangeChosen) {
+                    $('#min, #max').val('');
+                    minMaxDateChosen = false;
+                    table.column(DateColumn).search(rangeValue).draw();
+                } else {
+                    table.column(DateColumn).search("").draw();
+                }
+
+                if ($('#Department, #theme, #taskValue').filter(function () {
+                    return this.value.trim() !== "";
+                }).length === 3) {
+                    table.columns([DepartmentColumn, ThemeColumn, TaskColumn])
+                        .search([$('#Department').val(), $('#theme').val(), $('#taskValue').val()])
+                        .draw();
+                } else {
+                    if ($('#Department').val() && rangeChosen) {
+                        table.column(DepartmentColumn).search($('#Department').val()).draw();
+                    }
+                    if ($('#theme').val() && rangeChosen) {
+                        table.column(ThemeColIndex).search($('#theme').val()).draw();
+                    }
+                    if ($('#taskValue').val() && rangeChosen) {
+                        table.column(TaskColumn).search($('#taskValue').val()).draw();
+                    }
+                }
+            })
+
             $('#min', this).on('keyup change', function () {
+                minMaxDateChosen = false;
                 if (this.value != "" && $('#max').val() != "") {
-                    flag = true;
+                    minMaxDateChosen = true;
+                    $('#rangeSelection').val('');
                     table
                         .column(DateColumn)
                         .search(this.value + ":" + $('#max').val())
-                        .draw();
                 }
-                if ($('#dt_theme').val() != "" && flag) {
+                if ($('#theme').val() != "" && minMaxDateChosen) {
                     table
                         .column(ThemeColumn)
-                        .search($('#dt_theme').val())
-                        .draw()
+                        .search($('#theme').val())
                 }
-                if ($('#Department').val() != "" && flag) {
+                if ($('#Department').val() != "" && minMaxDateChosen) {
                     table
                         .column(DepartmentColumn)
                         .search($('#Department').val())
-                        .draw()
                 }
+                if ($('#taskValue').val() != "" && minMaxDateChosen) {
+                    table
+                        .column(TaskColumn)
+                        .search($('#taskValue').val())
+                }
+                table.draw();
             });
 
             $('#max', this).on('keyup change', function () {
+                minMaxDateChosen = false;
                 if (this.value != "" && $('#min').val() != "") {
-                    flag2 = true;
+                    minMaxDateChosen = true;
+                    $('#rangeSelection').val('');
                     table
                         .column(DateColumn)
                         .search($('#min').val() + ":" + this.value)
-                        .draw();
                 }
-                if ($('#dt_theme').val() != "" && flag2) {
+                if ($('#theme').val() != "" && minMaxDateChosen) {
                     table
                         .column(ThemeColumn)
-                        .search($('#dt_theme').val())
-                        .draw()
+                        .search($('#theme').val())
                 }
-                if ($('#Department').val() != "" && flag2) {
+                if ($('#Department').val() != "" && minMaxDateChosen) {
                     table
                         .column(DepartmentColumn)
                         .search($('#Department').val())
-                        .draw()
                 }
+                if ($('#taskValue').val() != "" && minMaxDateChosen) {
+                    table
+                        .column(TaskColumn)
+                        .search($('#taskValue').val())
+                }
+                table.draw();
             });
 
-            $('#dt_theme', this).on('keyup change', function () {
+            $('#theme', this).on('keyup change', function () {
                 if (this.value == "") {
                     table
                         .column(ThemeColumn)
@@ -524,7 +578,7 @@
                         .search(this.value)
                         .draw()
                 }
-                if (flag && flag2) {
+                if (minMaxDateChosen) {
                     table
                         .column(DateColumn)
                         .search($('#min').val() + ":" + $('#max').val())
@@ -534,6 +588,12 @@
                     table
                         .column(DepartmentColumn)
                         .search($('#Department').val())
+                        .draw()
+                }
+                if ($('#taskValue').val() != "") {
+                    table
+                        .column(TaskColumn)
+                        .search($('#taskValue').val())
                         .draw()
                 }
             });
@@ -550,16 +610,22 @@
                         .search(this.value)
                         .draw()
                 }
-                if (flag && flag2) {
+                if (minMaxDateChosen) {
                     table
                         .column(DateColumn)
                         .search($('#min').val() + ":" + $('#max').val())
                         .draw();
                 }
-                if ($('#dt_theme').val() != "") {
+                if ($('#theme').val() != "") {
                     table
                         .column(ThemeColumn)
-                        .search($('#dt_theme').val())
+                        .search($('#theme').val())
+                        .draw()
+                }
+                if ($('#taskValue').val() != "") {
+                    table
+                        .column(TaskColumn)
+                        .search($('#taskValue').val())
                         .draw()
                 }
             });
