@@ -249,8 +249,8 @@
                                 <option value="TBS">SCT/TBS</option>
                             </select>
                         </div>
-                        <div class="form-group"><label for="sectionINV">Section</label>
-                            <select class="form-control" id="sectionINV" name="sectionINV"
+                        <div class="form-group"><label for="sectionFA">Section</label>
+                            <select class="form-control" id="sectionFA" name="sectionFA"
                                 data-column="8"><!-- SECTIONS -->
                                 <option value="">Tous</option>
                                 <option value="Business">Entreprise</option>
@@ -303,8 +303,8 @@
                                 <option value="WFHE">FTD</option>
                             </select>
                         </div>
-                        <div class="form-group"><label for="themeINV">Thème</label>
-                            <select class="form-control" id="themeINV" name="themeINV" data-column="9">
+                        <div class="form-group"><label for="themeFA">Thème</label>
+                            <select class="form-control" id="themeFA" name="themeFA" data-column="9">
                                 <option value="">Tous</option>
                                 <option value="AboutGov">À propos du gouvernement</option>
                                 <option value="Application status">Statut des applications</option>
@@ -513,7 +513,7 @@
                     width: '20%'
                 }, {
                     data: 'url',
-                    width: '30%',
+                    width: '30%'
                 }, {
                     data: 'title',
                     width: '50%'
@@ -549,7 +549,7 @@
                     "action": newexportaction
                 }]
             });
-            const COLUMNS = ["Date", "TimeStamp", "Comment", "Problem", "Url", "Title", "Lang", "Institution", "Section", "Theme", "UrlEntries"]
+            const COLUMNS = ["Date", "TimeStamp", "Comment", "Problem", "Url", "Title", "Lang", "UrlEntries", "Institution", "Section", "Theme"]
             const DateColIndex = 0;
             const TimestampColIndex = 1;
             const CommentColIndex = 2;
