@@ -484,6 +484,10 @@
             const SectionColIndex = 8;
             const ThemeColIndex = 9;
             const urlEntriesColIndex = 10;
+
+            const totalCommentsColumnIndex = 7;
+            const totalCommentsColumnSelector = '#problemTable thead tr:eq(1) th:eq(' + totalCommentsColumnIndex + ')';
+
             var minMaxDateChosen = false;
 
             function replaceSpecialChars(string) {
@@ -497,30 +501,34 @@
                 fetch('/pageFeedback/totalCommentsCount')
                     .then(response => response.text())
                     .then(totalCommentsCount => {
-                        $('#total_comments').text(String(totalCommentsCount));
+                        // Update the total comments count directly in the appropriate header cell
+                        $('#problemTable thead tr:eq(1) th:eq(' + totalCommentsColumnIndex + ')').text(String(totalCommentsCount));
                     })
                     .catch(err => {
                         console.warn('Something went wrong.', err);
                     });
             }
 
+
             // This code clones the first row of a table and appends it to the table header
             $('#problemTable thead tr').clone(false).appendTo('#problemTable thead');
 
+
             // This code adds a search box to each column of the table header row
             $('#problemTable thead tr:eq(1) th').each(function (i) {
-                const title = $(this).text();
-                $(this).html(`<input type="text" id="searchBox${COLUMNS[i]}" placeholder="Search ${title}" />`);
-                $('input', this).unbind().on('keyup change', function (e) {
-                    if (e.keyCode === 13 || this.value === "") {
-                        table.column(i).search(replaceSpecialChars(this.value)).draw();
-                    }
-                });
+                // Skip the total comments column
+                if (i !== totalCommentsColumnIndex) {
+                    const title = $(this).text();
+                    $(this).html(`<input type="text" id="searchBox${COLUMNS[i]}" placeholder="Search ${title}" />`);
+                    $('input', this).unbind().on('keyup change', function (e) {
+                        if (e.keyCode === 13 || this.value === "") {
+                            table.column(i).search(replaceSpecialChars(this.value)).draw();
+                        }
+                    });
+                }
             });
 
 
-            // This code sets the ID of the column header for the total comments count to 'total_comments'
-            $('#problemTable thead tr:eq(1) th:eq(' + urlEntriesColIndex + ')').attr('id', 'total_comments');
 
             // The table view is reset to default settings when the page is loaded
             resetTableViewToDefault();
@@ -531,7 +539,7 @@
                 $('#institution, #theme, #section, #min, #max, #rangeSelection').val("");
                 $('#searchBoxDate, #searchBoxComment, #searchBoxProblem, #searchBoxTimeStamp').closest('th').hide();
                 $('#searchBoxUrlEntries, #searchBoxTitle').closest('th').show()
-                $('#total_comments').show()
+                $(totalCommentsColumnSelector).show();
                 table.columns([CommentColIndex, ProblemColIndex, DateColIndex]).visible(false);
                 table.columns([urlEntriesColIndex, TitleColIndex]).visible(true).page.len(-1).draw();
             }
@@ -543,7 +551,7 @@
                 $('#themeFA, #sectionFA, #institutionFA').val('');
                 $('#searchBoxDate, #searchBoxComment, #searchBoxProblem').closest('th').show();
                 $('#searchBoxUrlEntries, #searchBoxTitle, #searchBoxTimeStamp').closest('th').hide();
-                $('#total_comments').hide().closest('th').hide()
+                $(totalCommentsColumnSelector).hide();
                 // Reset the search filters and column visibility to their default values
                 table.columns([UrlColIndex, LangColIndex, InstitutionColIndex, SectionColIndex, ThemeColIndex]).search("")
                 table.columns([CommentColIndex, ProblemColIndex, DateColIndex]).search("").visible(true)
