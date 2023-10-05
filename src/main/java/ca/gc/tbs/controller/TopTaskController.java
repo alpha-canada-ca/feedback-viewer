@@ -63,7 +63,6 @@ public class TopTaskController {
 
         if (dateCriteria != null) {
             System.out.println(input.getColumns());
-            Criteria test = where("dateTime").gte("2023-08-01");
             return topTaskRepository.findAll(input, dateCriteria);
         }
 
