@@ -593,6 +593,7 @@ public class TopTaskController {
                 "Canada's health care system",
                 "Canada’s national anthem",
                 "Canadian forests and forest conservation",
+                "Canada’s response to conflicts, crisis and disasters",
                 "Cannabis (health effects, medical use, legalization)",
                 "Charitable organizations (look up, tax credits)",
                 "Check health advice before travelling",
