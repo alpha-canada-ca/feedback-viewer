@@ -1,1 +1,1 @@
-bomb,gun,knife,sword,kill,murder,suicide,death,maim,die
+bomb,gun,knife,sword,kill,murder,suicide,maim,die
