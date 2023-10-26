@@ -20,8 +20,7 @@ public class BadWords {
 
     private static final Set<String> words = Collections.newSetFromMap(new ConcurrentHashMap<>());
     private static final String[] DEFAULT_FILES = {
-            "static/badwords/facebook_badwords_en.txt",
-            "static/badwords/youtube_badwords_en.txt",
+            "static/badwords/badwords_en.txt",
             "static/badwords/badwords_fr.txt",
             "static/badwords/threats_fr.txt",
             "static/badwords/threats_en.txt"
