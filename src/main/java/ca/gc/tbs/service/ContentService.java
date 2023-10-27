@@ -21,12 +21,12 @@ public class ContentService {
             return content; // Return empty string if content is empty
         }
         content = StringUtils.normalizeSpace(content);
-        String newContent = BadWords.censor(content);
-        if (!newContent.contentEquals(content) && newContent.contains("#")) {
-            content = newContent;
-            System.out.println("curse words cleaned: " + content);
-        }
-        newContent = this.cleanPostalCode(content);
+//        String newContent = BadWords.censor(content);
+//        if (!newContent.contentEquals(content) && newContent.contains("#")) {
+//            content = newContent;
+//            System.out.println("curse words cleaned: " + content);
+//        }
+        String newContent = this.cleanPostalCode(content);
         if (!newContent.contentEquals(content)) {
             content = newContent;
             System.out.println("Postal code cleaned: " + content);
