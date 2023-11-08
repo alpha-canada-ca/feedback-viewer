@@ -22,8 +22,8 @@ public class BadWords {
     private static final String[] DEFAULT_FILES = {
             "static/badwords/badwords_en.txt",
             "static/badwords/badwords_fr.txt",
-            "static/badwords/threats_fr.txt",
-            "static/badwords/threats_en.txt"
+//            "static/badwords/threats_fr.txt",
+//            "static/badwords/threats_en.txt"
     };
 
     public static void loadConfigs() {
