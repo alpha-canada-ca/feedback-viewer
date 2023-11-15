@@ -182,6 +182,7 @@ public class TopTaskController {
     public String[] taskListEN(HttpServletRequest request) {
         return new String[]{
                 "COVID-19 cases, statistics",
+                "Canada Dental Benefit",
                 "Vaccines and treatment",
                 "Get your Canadian COVID-19 proof of vaccination",
                 "Symptoms of COVID-19",
@@ -691,6 +692,7 @@ public class TopTaskController {
                 "Communiquez avec Immigration, Réfugiés et Citoyenneté Canada",
                 "Conseils de santé aux voyageurs en vigueur pour un pays",
                 "Consulter le budget fédéral",
+                "Prestation dentaire canadienne",
                 "Déterminer ce que vous pouvez emporter en avion",
                 "Mon dossier Service Canada – Créer un compte",
                 "Mon dossier Service Canada – Ouvrir une session",
