@@ -33,25 +33,27 @@ public class Problem {
     private String personalInfoProcessed;
     private String autoTagProcessed;
 
+    private String deviceType = "";
+
+    private String browser = "";
 
     public Problem() {
     }
 
-    public Problem(String id, String url, int urlEntries, String problemDate, String timeStamp, String problem,
-                   String problemDetails, String language,
-                   String resolutionDate, String resolution, String topic, String title, String institution,
-                   String theme, String section, String oppositeLang, String contact) {
+    public Problem(String id, String url, int urlEntries, String deviceType, String browser, String problemDate,
+            String timeStamp, String problem,
+            String problemDetails, String language, String title, String institution,
+            String theme, String section, String oppositeLang, String contact) {
         super();
         this.id = id;
         this.url = url;
         this.urlEntries = urlEntries;
+        this.deviceType = deviceType;
+        this.browser = browser;
         this.problem = problem;
         this.problemDetails = problemDetails;
         this.problemDate = problemDate;
         this.timeStamp = timeStamp;
-        this.resolutionDate = resolutionDate;
-        this.resolution = resolution;
-        this.topic = topic;
         this.language = language;
         this.title = title;
         this.institution = institution;
@@ -83,6 +85,22 @@ public class Problem {
 
     public void setUrlEntries(int urlEntries) {
         this.urlEntries = urlEntries;
+    }
+
+    public String getBrowser() {
+        return browser;
+    }
+
+    public void setBrowser(String browser) {
+        this.browser = browser;
+    }
+
+    public String getDeviceType() {
+        return deviceType;
+    }
+
+    public void setDeviceType(String deviceType) {
+        this.deviceType = deviceType;
     }
 
     public String getProblem() {
