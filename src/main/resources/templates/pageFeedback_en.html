@@ -369,6 +369,8 @@
                         <th>Section</th>
                         <th>Theme</th>
                         <th>Total comments</th>
+                        <th>Device type</th>
+                        <th>Browser</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
@@ -471,6 +473,12 @@
                 }, {
                     data: 'urlEntries',
                     width: '10%'
+                }, {
+                    data: 'deviceType',
+                    visible:false
+                }, {
+                    data: 'browser',
+                    visible:false
                 }],
                 orderCellsTop: true,
                 fixedHeader: true,
@@ -488,7 +496,7 @@
                 },],
             });
 
-            const COLUMNS = ["Date", "TimeStamp", "Comment", "Problem", "Url", "Title", "Lang", "UrlEntries", "Institution", "Section", "Theme"]
+            const COLUMNS = ["Date", "TimeStamp", "Comment", "Problem", "Url", "Title", "Lang", "UrlEntries", "Institution", "Section", "Theme","DeviceType","Browser"]
             const DateColIndex = 0;
             const TimestampColIndex = 1;
             const CommentColIndex = 2;
@@ -500,6 +508,8 @@
             const SectionColIndex = 8;
             const ThemeColIndex = 9;
             const urlEntriesColIndex = 10;
+            const deviceTypeColIndex = 11;
+            const browserColIndex = 12;
 
             const totalCommentsColumnIndex = 7;
             const totalCommentsColumnSelector = '#problemTable thead tr:eq(1) th:eq(' + totalCommentsColumnIndex + ')';
