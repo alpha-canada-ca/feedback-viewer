@@ -41,7 +41,8 @@ public class ProblemController {
     private static final boolean DESC = false;
     private final HashMap<String, String> tagTranslations = new HashMap<>();
     String[][] translations = {
-            /* ENGLISH, FRENCH */{"The answer I need is missing", "La réponse dont j’ai besoin n’est pas là"},
+            /* ENGLISH, FRENCH */
+            {"The answer I need is missing", "La réponse dont j’ai besoin n’est pas là"},
             {"The information isn't clear", "L'information n'est pas claire"},
             {"I can't find the information", "Je ne peux pas trouver l'information"},
             {"The information isn’t clear", "L'information n'est pas claire"},
@@ -68,6 +69,69 @@ public class ProblemController {
 
     @Autowired
     private UserService userService;
+
+    private static final Map<String, List<String>> institutionMappings = new HashMap<>();
+
+    static {
+        institutionMappings.put("AAFC", Arrays.asList("AAC", "AGRICULTURE AND AGRI-FOOD CANADA", "AGRICULTURE ET AGROALIMENTAIRE CANADA"));
+        institutionMappings.put("ATSSC", Arrays.asList("SCDATA", "ADMINISTRATIVE TRIBUNALS SUPPORT SERVICE OF CANADA", "SERVICE CANADIEN D’APPUI AUX TRIBUNAUX ADMINISTRATIFS"));
+        institutionMappings.put("CATSA", Arrays.asList("ACSTA", "CANADIAN AIR TRANSPORT SECURITY AUTHORITY", "ADMINISTRATION CANADIENNE DE LA SÛRETÉ DU TRANSPORT AÉRIEN"));
+        institutionMappings.put("CFIA", Arrays.asList("ACIA", "CANADIAN FOOD INSPECTION AGENCY", "AGENCE CANADIENNE D’INSPECTION DES ALIMENTS"));
+        institutionMappings.put("CIRNAC", Arrays.asList("RCAANC", "CROWN-INDIGENOUS RELATIONS AND NORTHERN AFFAIRS CANADA", "RELATIONS COURONNE-AUTOCHTONES ET AFFAIRES DU NORD CANADA"));
+        institutionMappings.put("NSERC", Arrays.asList("CRSNG", "NATURAL SCIENCES AND ENGINEERING RESEARCH CANADA", "CONSEIL DE RECHERCHES EN SCIENCES NATURELLES ET EN GÉNIE DU CANADA"));
+        institutionMappings.put("CBSA", Arrays.asList("ASFC", "CANADA BORDER SERVICES AGENCY", "AGENCE DES SERVICES FRONTALIERS DU CANADA"));
+        institutionMappings.put("CCG", Arrays.asList("GCC", "CANADIAN COAST GUARD", "GARDE CÔTIÈRE CANADIENNE"));
+        institutionMappings.put("CGC", Arrays.asList("CCG", "CANADIAN GRAIN COMMISSION", "COMMISSION CANADIENNE DES GRAINS"));
+        institutionMappings.put("CIHR", Arrays.asList("IRSC", "CANADIAN INSTITUTES OF HEALTH RESEARCH", "INSTITUTS DE RECHERCHE EN SANTÉ DU CANADA"));
+        institutionMappings.put("CIPO", Arrays.asList("OPIC", "CANADIAN INTELLECTUAL PROPERTY OFFICE", "OFFICE DE LA PROPRIÉTÉ INTELLECTUELLE DU CANADA"));
+        institutionMappings.put("CRA", Arrays.asList("ARC", "CANADA REVENUE AGENCY", "AGENCE DU REVENU DU CANADA"));
+        institutionMappings.put("CRTC", Arrays.asList("CRTC", "CANADIAN RADIO-TELEVISION AND TELECOMMUNICATIONS COMMISSION", "CONSEIL DE LA RADIODIFFUSION ET DES TÉLÉCOMMUNICATIONS CANADIENNES"));
+        institutionMappings.put("CSA", Arrays.asList("ASC", "CANADIAN SPACE AGENCY", "AGENCE SPATIALE CANADIENNE"));
+        institutionMappings.put("CSEC", Arrays.asList("CSTC", "COMMUNICATIONS SECURITY ESTABLISHMENT CANADA", "CENTRE DE LA SÉCURITÉ DES TÉLÉCOMMUNICATIONS CANADA"));
+        institutionMappings.put("CSPS", Arrays.asList("EFPC", "CANADA SCHOOL OF PUBLIC SERVICE", "ÉCOLE DE LA FONCTION PUBLIQUE DU CANADA"));
+        institutionMappings.put("DFO", Arrays.asList("MPO", "FISHERIES AND OCEANS CANADA", "PÊCHES ET OCÉANS CANADA"));
+        institutionMappings.put("DND", Arrays.asList("MDN", "NATIONAL DEFENCE", "DÉFENSE NATIONALE"));
+        institutionMappings.put("ECCC", Arrays.asList("ECCC", "ENVIRONMENT AND CLIMATE CHANGE CANADA", "ENVIRONNEMENT ET CHANGEMENT CLIMATIQUE CANADA"));
+        institutionMappings.put("ESDC", Arrays.asList("EDSC", "EMPLOYMENT AND SOCIAL DEVELOPMENT CANADA", "EMPLOI ET DÉVELOPPEMENT SOCIAL CANADA"));
+        institutionMappings.put("FCAC", Arrays.asList("ACFC", "FINANCIAL CONSUMER AGENCY OF CANADA", "AGENCE DE LA CONSOMMATION EN MATIÈRE FINANCIÈRE DU CANADA"));
+        institutionMappings.put("FIN", Arrays.asList("FIN", "FINANCE CANADA", "MINISTÈRE DES FINANCES CANADA"));
+        institutionMappings.put("GAC", Arrays.asList("AMC", "GLOBAL AFFAIRS CANADA", "AFFAIRES MONDIALES CANADA"));
+        institutionMappings.put("HC", Arrays.asList("SC", "HEALTH CANADA", "SANTÉ CANADA"));
+        institutionMappings.put("INFC", Arrays.asList("INFC", "INFRASTRUCTURE CANADA", "INFRASTRUCTURE CANADA"));
+        institutionMappings.put("IRCC", Arrays.asList("IRCC", "IMMIGRATION, REFUGEES AND CITIZENSHIP CANADA", "IMMIGRATION, RÉFUGIÉS ET CITOYENNETÉ CANADA"));
+        institutionMappings.put("ISC", Arrays.asList("SAC", "INDIGENOUS SERVICES CANADA", "SERVICES AUX AUTOCHTONES CANADA"));
+        institutionMappings.put("ISED", Arrays.asList("ISDE", "INNOVATION, SCIENCE AND ECONOMIC DEVELOPMENT CANADA", "INNOVATION, SCIENCES ET DÉVELOPPEMENT ÉCONOMIQUE CANADA"));
+        institutionMappings.put("JUS", Arrays.asList("JUS", "JUSTICE CANADA", "MINISTÈRE DE LA JUSTICE CANADA"));
+        institutionMappings.put("LAC", Arrays.asList("BAC", "LIBRARY AND ARCHIVES CANADA", "BIBLIOTHÈQUE ET ARCHIVES CANADA"));
+        institutionMappings.put("NFB", Arrays.asList("ONF", "NATIONAL FILM BOARD", "OFFICE NATIONAL DU FILM"));
+        institutionMappings.put("NRC", Arrays.asList("CNRC", "NATIONAL RESEARCH COUNCIL", "CONSEIL NATIONAL DE RECHERCHES CANADA"));
+        institutionMappings.put("NRCAN", Arrays.asList("RNCAN", "NATURAL RESOURCES CANADA", "RESSOURCES NATURELLES CANADA"));
+        institutionMappings.put("OSB", Arrays.asList("BSF", "SUPERINTENDENT OF BANKRUPTCY CANADA", "BUREAU DU SURINTENDANT DES FAILLITES CANADA"));
+        institutionMappings.put("PBC", Arrays.asList("CLCC", "PAROLE BOARD OF CANADA", "COMMISSION DES LIBÉRATIONS CONDITIONNELLES DU CANADA"));
+        institutionMappings.put("PC", Arrays.asList("PC", "PARKS CANADA", "PARCS CANADA"));
+        institutionMappings.put("PCH", Arrays.asList("PCH", "CANADIAN HERITAGE", "PATRIMOINE CANADIEN"));
+        institutionMappings.put("PCO", Arrays.asList("BCP", "PRIVY COUNCIL OFFICE", "BUREAU DU CONSEIL PRIVÉ"));
+        institutionMappings.put("PHAC", Arrays.asList("ASPC", "PUBLIC HEALTH AGENCY OF CANADA", "AGENCE DE LA SANTÉ PUBLIQUE DU CANADA"));
+        institutionMappings.put("PS", Arrays.asList("SP", "PUBLIC SAFETY CANADA", "SÉCURITÉ PUBLIQUE CANADA"));
+        institutionMappings.put("PSC", Arrays.asList("CFP", "PUBLIC SERVICE COMMISSION OF CANADA", "COMMISSION DE LA FONCTION PUBLIQUE DU CANADA"));
+        institutionMappings.put("SSC", Arrays.asList("PSC", "SHARED SERVICES CANADA", "SERVICES PARTAGÉS CANADA"));
+        institutionMappings.put("PSPC", Arrays.asList("SPAC", "PUBLIC SERVICES AND PROCUREMENT CANADA", "SERVICES PUBLICS ET APPROVISIONNEMENT CANADA"));
+        institutionMappings.put("RCMP", Arrays.asList("GRC", "ROYAL CANADIAN MOUNTED POLICE", "GENDARMERIE ROYALE DU CANADA"));
+        institutionMappings.put("STATCAN", Arrays.asList("STATCAN", "STATISTICS CANADA", "STATISTIQUE CANADA"));
+        institutionMappings.put("TBS", Arrays.asList("SCT", "TREASURY BOARD OF CANADA SECRETARIAT", "SECRÉTARIAT DU CONSEIL DU TRÉSOR DU CANADA"));
+        institutionMappings.put("TC", Arrays.asList("TC", "TRANSPORT CANADA", "TRANSPORTS CANADA"));
+        institutionMappings.put("VAC", Arrays.asList("ACC", "VETERANS AFFAIRS CANADA", "ANCIENS COMBATTANTS CANADA"));
+        institutionMappings.put("WAGE", Arrays.asList("FEGC", "WOMEN AND GENDER EQUALITY CANADA", "FEMMES ET ÉGALITÉ DES GENRES CANADA"));
+        institutionMappings.put("WD", Arrays.asList("DEO", "WESTERN ECONOMIC DIVERSIFICATION CANADA", "DIVERSIFICATION DE L’ÉCONOMIE DE L’OUEST CANADA"));
+        institutionMappings.put("OMBDNDCAF", Arrays.asList("OMBMDNFAC", "DND/CAF OMBUDSMAN", "OMBUDSMAN DU MDN/FAC"));
+        // Add other mappings as needed
+    }
+
+    @GetMapping("/institutionMappings")
+    @ResponseBody
+    public Map<String, List<String>> getInstitutionMappings() {
+        return institutionMappings;
+    }
 
     private static HashMap<String, Integer> sortByValue(HashMap<String, Integer> unsortMap, final boolean order) {
         List<Entry<String, Integer>> list = new LinkedList<>(unsortMap.entrySet());
@@ -137,9 +201,10 @@ public class ProblemController {
 
         String lang = (String) request.getSession().getAttribute("lang");
         String dateSearchVal = input.getColumn("problemDate").get().getSearch().getValue();
-        String deptSearchVal = input.getColumn("institution").get().getSearch().getValue();
+        String institutionSearchVal = input.getColumn("institution").get().getSearch().getValue();
         String sectionSearchVal = input.getColumn("section").get().getSearch().getValue();
         String themeSearchVal = input.getColumn("theme").get().getSearch().getValue();
+
         String pattern = "yyyy-MM-dd";
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
         input.getColumn("problemDate").get().getSearch().setValue("");
@@ -148,13 +213,14 @@ public class ProblemController {
             return findProblemsWithCriteria(input, findProcessed, dateCriteria, lang);
         }
 
-        if (containsTilde(deptSearchVal, sectionSearchVal, themeSearchVal)) {
-            return processProblemsWithTilde(input, lang, findProcessed, deptSearchVal, sectionSearchVal,
+        if (containsTilde(institutionSearchVal, sectionSearchVal, themeSearchVal)) {
+            return processProblemsWithTilde(input, lang, findProcessed, institutionSearchVal, sectionSearchVal,
                     themeSearchVal);
         }
 
         return findProblemsWithCriteria(input, findProcessed, null, lang);
     }
+
 
     private DataTablesOutput<Problem> findProblemsWithCriteria(DataTablesInput input, Criteria findProcessed,
                                                                Criteria dateCriteria, String lang) {
