@@ -182,6 +182,8 @@ public class TopTaskController {
     public String[] taskListEN(HttpServletRequest request) {
         return new String[]{
                 "COVID-19 cases, statistics",
+                "Dental benefit for children (eligibility, apply)",
+                "Dental insurance (eligibility, apply)",
                 "Canada Dental Benefit",
                 "Vaccines and treatment",
                 "Get your Canadian COVID-19 proof of vaccination",
@@ -683,6 +685,8 @@ public class TopTaskController {
     public String[] taskListFR(HttpServletRequest request) {
         return new String[]{
                 "Autre - La raison de ma visite n'est pas sur cette liste",
+                "Prestation dentaire pour les enfants (éligibilité, demande)",
+                "Assurance dentaire (éligibilité, demande)",
                 "S’enregistrer pour le dépôt direct ou mettre à jour ses renseignements bancaires",
                 "Présenter une demande de permis de travail",
                 "Visiter un parc national ou un lieu historique",
