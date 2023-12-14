@@ -702,20 +702,21 @@
                     table.column(ThemeColIndex).search("").draw();
                 }
             }
-            $('#rangeSelection').on('change', function () {
-                $('#min, #max').val(""); // Clear min and max when range is changed
+            $('#rangeSelection, #min, #max, #institution, #section, #theme').on('change', function (event) {
+                // Identify the source of the event
+                var source = event.target.id;
+
+                // Reset other filters based on the source
+                if (source === 'rangeSelection') {
+                    $('#min, #max').val(""); // Clear min and max when range is changed
+                } else if (source === 'min' || source === 'max') {
+                    $('#rangeSelection').val(""); // Clear range when min or max is changed
+                }
+                // No need to reset for institution, section, or theme changes
+
+                // Apply all filters
                 applyFilters();
             });
-
-            $('#min, #max').on('change', function () {
-                $('#rangeSelection').val(""); // Clear range when min or max is changed
-                applyFilters();
-            });
-
-            $('#institution, #section, #theme').on('change', function () {
-                applyFilters();
-            });
-
 
             $('#institutionFA, #sectionFA, #themeFA').on('change', function () {
                 applyFeedbackAdminFilters();
