@@ -64,10 +64,9 @@
         }
     </style>
     <div class="container">
-        <h1>Page feedback tool</h1>
+        <h1>Outil de rétroaction sur les pages</h1>
         <details open="true">
             <summary>Retour de filtre</summary>
-            <h4 class="wb-inv">Filtering options</h4>
             <form class="wb-tables-filter" data-bind-to="problemTable">
                 <div class="row">
                     <div class="col-sm-6">
@@ -262,6 +261,7 @@
                         <div class="form-group"><label for="sectionFA">Section</label>
                             <select class="form-control" id="sectionFA" name="sectionFA"
                                 data-column="8"><!-- SECTIONS -->
+                                <option value="">Tous</option>
                                 <option value="budget">Budget</option>
                                 <option value="business">Entreprise</option>
                                 <option value="canada's parliamentary precinct">Cité parlementaire du Canada</option>
@@ -374,6 +374,8 @@
                         <th>Section</th>
                         <th>Thème</th>
                         <th>Total des commentaires</th>
+                        <th>Type d'appareil</th>
+                        <th>Navigateur</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
@@ -549,6 +551,12 @@
                 }, {
                     data: 'urlEntries',
                     width: '10%'
+                }, {
+                    data: 'deviceType',
+                    visible: false
+                }, {
+                    data: 'browser',
+                    visible: false
                 }],
 
                 orderCellsTop: true,
@@ -566,7 +574,38 @@
                     "action": newexportaction
                 }]
             });
-            const COLUMNS = ["Date", "TimeStamp", "Comment", "Problem", "Url", "Title", "Lang", "UrlEntries", "Institution", "Section", "Theme"]
+            async function loadInstitutionMappings() {
+                try {
+                    const response = await fetch('/institutionMappings');
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    INSTITUTION_MAPPINGS = await response.json();
+                    console.log(INSTITUTION_MAPPINGS);
+                } catch (error) {
+                    console.error("Error loading institution mappings", error);
+                }
+            }
+            function replaceSpecialChars(str) {
+                return str.replace(/[.?]/g, '\\$&');
+            }
+
+            // This function fetches the total count of comments for the page using an API call
+            function fetchTotalCommentsCount() {
+                fetch('/pageFeedback/totalCommentsCount')
+                    .then(response => response.text())
+                    .then(totalCommentsCount => {
+                        // Update the total comments count directly in the appropriate header cell
+                        $(`#problemTable thead tr:eq(1) th:eq(${totalCommentsColumnIndex})`).text(String(totalCommentsCount));
+                    })
+                    .catch(err => {
+                        console.warn('Something went wrong.', err);
+                    });
+            }
+            let INSTITUTION_MAPPINGS = {};
+            loadInstitutionMappings();
+
+            const COLUMNS = ["Date", "TimeStamp", "Comment", "Problem", "Url", "Title", "Lang", "UrlEntries", "Institution", "Section", "Theme", "DeviceType", "Browser"]
             const DateColIndex = 0;
             const TimestampColIndex = 1;
             const CommentColIndex = 2;
@@ -578,53 +617,41 @@
             const SectionColIndex = 8;
             const ThemeColIndex = 9;
             const urlEntriesColIndex = 10;
+            const deviceTypeColIndex = 11;
+            const browserColIndex = 12;
 
             const totalCommentsColumnIndex = 7;
             const totalCommentsColumnSelector = '#problemTable thead tr:eq(1) th:eq(' + totalCommentsColumnIndex + ')';
 
             var minMaxDateChosen = false;
 
-            function replaceSpecialChars(string) {
-                var string = string.replace(/[.?]/g, '\\$&');
-                return string;
-            }
 
-
-            // This function fetches the total count of comments for the page using an API call
-            function fetchTotalCommentsCount() {
-                fetch('/pageFeedback/totalCommentsCount')
-                    .then(response => response.text())
-                    .then(totalCommentsCount => {
-                        // Update the total comments count directly in the appropriate header cell
-                        $('#problemTable thead tr:eq(1) th:eq(' + totalCommentsColumnIndex + ')').text(String(totalCommentsCount));
-                    })
-                    .catch(err => {
-                        console.warn('Something went wrong.', err);
-                    });
-            }
 
             // This code clones the first row of a table and appends it to the table header
             $('#problemTable thead tr').clone(false).appendTo('#problemTable thead');
 
+
             // This code adds a search box to each column of the table header row
             $('#problemTable thead tr:eq(1) th').each(function (i) {
+                // Skip the total comments column
                 if (i !== totalCommentsColumnIndex) {
                     const title = $(this).text();
-                    $(this).html('<input type="text" id="searchBox' + COLUMNS[i] + '" placeholder="Rechercher ' + title + '" />');
-                    $('input', this).unbind().bind('keyup change', function (e) {
-                        if (e.keyCode == 13 || this.value == "") {
+                    $(this).html(`<input type="text" id="searchBox${COLUMNS[i]}" placeholder="Rechercher ${title}" />`);
+                    $('input', this).unbind().on('keyup change', function (e) {
+                        if (e.keyCode === 13 || this.value === "") {
                             table.column(i).search(replaceSpecialChars(this.value)).draw();
                         }
                     });
                 }
             });
 
-            // This code sets the ID of the column header for the total comments count to 'total_comments'
-            $('#problemTable thead tr:eq(1) th:eq(' + urlEntriesColIndex + ')').attr('id', 'total_comments');
+
 
             // The table view is reset to default settings when the page is loaded
             resetTableViewToDefault();
             $("#reset-to-default").click(resetTableViewToDefault);
+
+
 
             // This function initializes the feedback admin view by resetting search boxes and hiding columns
             function initFeedbackAdminView() {
@@ -649,196 +676,103 @@
                 table.columns([CommentColIndex, ProblemColIndex, DateColIndex]).search("").visible(true)
                 table.columns([urlEntriesColIndex, TimestampColIndex, TitleColIndex]).search("").visible(false).page.len(10).draw()
             }
-
-            $('#rangeSelection', this).on('keyup change', function () {
+            function filterInstitutionMappings(institutionValue, addTilde) {
+                let filterCriteria = INSTITUTION_MAPPINGS[institutionValue] || [institutionValue];
+                filterCriteria = filterCriteria.concat(institutionValue);
+                let searchString = filterCriteria.join('|') + (addTilde ? " ~" : "");
+                // Apply the search with regex true, smart search false, and case-insensitive
+                table.column(InstitutionColIndex).search(searchString, true, false, false).draw();
+            }
+            function applyFilters() {
+                var rangeValue = $('#rangeSelection').val().trim();
+                var institutionValue = $('#institution').val().trim();
+                var sectionValue = $('#section').val().trim();
+                var themeValue = $('#theme').val().trim();
+                var minValue = $('#min').val().trim();
+                var maxValue = $('#max').val().trim();
                 resetTableViewToDefault();
 
-                var rangeValue = this.value.trim();
-                var isRangeChosen = rangeValue !== "";
-
-                if (!isRangeChosen) {
-                    rangeChosen = false;
-                    table.column(DateColIndex).search("").draw();
-                } else {
-                    rangeChosen = true;
+                // Apply rangeValue if set
+                if (rangeValue) {
                     table.column(DateColIndex).search(rangeValue).page.len(10).draw();
                 }
-
-                if ($('#institution, #section, #theme').filter(function () {
-                    return this.value.trim() !== "";
-                }).length === 3) {
-                    table.columns([ThemeColIndex, InstitutionColIndex, SectionColIndex])
-                        .search([$('#theme').val(), $('#institution').val(), $('#section').val()])
-                        .draw();
-                } else {
-                    if ($('#institution').val() && isRangeChosen) {
-                        table.column(InstitutionColIndex).search($('#institution').val()).draw();
-                    }
-                    if ($('#section').val() && isRangeChosen) {
-                        table.column(SectionColIndex).search($('#section').val()).draw();
-                    }
-                    if ($('#theme').val() && isRangeChosen) {
-                        table.column(ThemeColIndex).search($('#theme').val()).draw();
+                // Apply min/max values if set
+                else if (minValue || maxValue) {
+                    if (minValue && maxValue) {
+                        table.column(DateColIndex).search(minValue + ":" + maxValue).page.len(10).draw();
+                    } else {
+                        table.column(DateColIndex).search("").draw();
                     }
                 }
-            });
-            $('#min', this).on('keyup change', function () {
-                resetTableViewToDefault();
-                minMaxDateChosen = false;
-                if (this.value != "" && $('#max').val() != "") {
-                    minMaxDateChosen = true;
-                    table.column(DateColIndex).search(this.value + ":" + $('#max').val()).page.len(10).draw();
-
+                // Reset the filter if none are set
+                else {
+                    table.column(DateColIndex).search("").draw();
                 }
-                if ($('#theme').val() != "" && minMaxDateChosen) {
-                    table.column(ThemeColIndex).search($('#theme').val()).draw()
-                }
-                if ($('#institution').val() != "" && minMaxDateChosen) {
-                    table.column(InstitutionColIndex).search($('#institution').val()).draw()
-                }
-                if ($('#section').val() != "" && minMaxDateChosen) {
-                    table.column(SectionColIndex).search($('#section').val()).draw()
-                }
-            });
-            $('#max', this).on('keyup change', function () {
-                resetTableViewToDefault();
-                minMaxDateChosen = false;
-                if (this.value != "" && $('#min').val() != "") {
-                    minMaxDateChosen = true;
-                    table.column(DateColIndex).search($('#min').val() + ":" + this.value).page.len(10).draw();
-
-                }
-                if ($('#theme').val() != "" && minMaxDateChosen) {
-                    table.column(ThemeColIndex).search($('#theme').val()).draw()
-                }
-                if ($('#institution').val() != "" && minMaxDateChosen) {
-                    table.column(InstitutionColIndex).search($('#institution').val()).draw()
-                }
-                if ($('#section').val() != "" && minMaxDateChosen) {
-                    table.column(SectionColIndex).search($('#section').val()).draw()
-                }
-            });
-            $('#theme', this).on('keyup change', function () {
-                const themeValue = this.value.trim();
-                const sectionValue = $('#section').val().trim();
-                const institutionValue = $('#institution').val().trim();
-                resetTableViewToDefault();
-                if (themeValue === "") {
-                    table.column(ThemeColIndex).search("").draw()
-                }
-                if (themeValue !== "") {
-                    table.column(ThemeColIndex).search(themeValue).page.len(10).draw()
-
-                }
-                if (minMaxDateChosen) {
-                    table.column(DateColIndex).search($('#min').val() + ":" + $('#max').val()).draw();
-                }
+                // Apply or clear the individual filters as needed
                 if (institutionValue) {
-                    table.column(InstitutionColIndex).search(institutionValue).draw()
+                    filterInstitutionMappings(institutionValue, false);
+                } else {
+                    table.column(InstitutionColIndex).search("").draw();
                 }
+
                 if (sectionValue) {
-                    table.column(SectionColIndex).search(sectionValue).draw()
+                    table.column(SectionColIndex).search(sectionValue).draw();
+                } else {
+                    table.column(SectionColIndex).search("").draw();
                 }
-            });
-            $('#institution', this).on('keyup change', function () {
-                const institutionValue = this.value.trim();
-                const sectionValue = $('#section').val().trim();
-                const themeValue = $('#theme').val().trim();
-                resetTableViewToDefault();
-                if (institutionValue === "") {
-                    table.column(InstitutionColIndex).search("").draw()
-                }
-                if (institutionValue !== "") {
-                    table.column(InstitutionColIndex).search(institutionValue).page.len(10).draw()
-                }
-                if (minMaxDateChosen) {
-                    table.column(DateColIndex).search($('#min').val() + ":" + $('#max').val()).draw();
-                }
-                if (themeValue !== "") {
-                    table.column(ThemeColIndex).search(themeValue).draw()
-                }
-                if (sectionValue !== "") {
-                    table.column(SectionColIndex).search(sectionValue).draw()
-                }
-            });
-            $('#section', this).on('keyup change', function () {
-                const sectionValue = this.value.trim();
-                const themeValue = $('#theme').val().trim();
-                const institutionValue = $('#institution').val().trim();
-                resetTableViewToDefault();
-                if (sectionValue === "") {
-                    table.column(SectionColIndex).search("").draw()
-                }
-                if (sectionValue !== "") {
-                    table.column(SectionColIndex).search(this.value).page.len(10).draw()
 
+                if (themeValue) {
+                    table.column(ThemeColIndex).search(themeValue).draw();
+                } else {
+                    table.column(ThemeColIndex).search("").draw();
                 }
-                if (minMaxDateChosen) {
-                    table.column(DateColIndex).search($('#min').val() + ":" + $('#max').val()).draw();
+            }
+
+
+            function applyFeedbackAdminFilters() {
+                var institutionValue = $('#institutionFA').val().trim();
+                var sectionValue = $('#sectionFA').val().trim();
+                var themeValue = $('#themeFA').val().trim();
+                initFeedbackAdminView();
+
+                if (institutionValue) {
+                    filterInstitutionMappings(institutionValue, true)
                 }
-                if (institutionValue !== "") {
-                    table.column(InstitutionColIndex).search(institutionValue).draw()
+                else {
+                    table.column(InstitutionColIndex).search("").draw();
                 }
-                if (themeValue !== "") {
-                    table.column(ThemeColIndex).search(themeValue).draw()
+
+                if (sectionValue) {
+                    table.column(SectionColIndex).search(sectionValue + " ~").draw();
+                } else {
+                    table.column(SectionColIndex).search("").draw();
                 }
-            });
-            $('#institutionFA', this).on('keyup change', function () {
-                const institutionValue = this.value.trim();
-                const sectionValue = $('#sectionFA').val().trim();
-                const themeValue = $('#themeFA').val().trim();
-                if (institutionValue === "") {
-                    table.column(InstitutionColIndex).search("").draw()
+
+                if (themeValue) {
+                    table.column(ThemeColIndex).search(themeValue + " ~").draw();
+                } else {
+                    table.column(ThemeColIndex).search("").draw();
                 }
-                if (institutionValue !== "") {
-                    table.column(InstitutionColIndex).search(institutionValue + " ~").column(ThemeColIndex).search(themeValue + " ~").column(SectionColIndex).search(sectionValue + " ~")
-                    initFeedbackAdminView();
+            }
+            $('#rangeSelection, #min, #max, #institution, #section, #theme').on('change', function (event) {
+                // Identify the source of the event
+                var source = event.target.id;
+
+                // Reset other filters based on the source
+                if (source === 'rangeSelection') {
+                    $('#min, #max').val(""); // Clear min and max when range is changed
+                } else if (source === 'min' || source === 'max') {
+                    $('#rangeSelection').val(""); // Clear range when min or max is changed
                 }
-                if (sectionValue !== "") {
-                    table.column(SectionColIndex).search(sectionValue + " ~").draw()
-                }
-                if ($('#themeFA').val() != "") {
-                    table.column(ThemeColIndex).search(themeValue + " ~").draw()
-                }
-            });
-            $('#sectionFA', this).on('keyup change', function () {
-                const sectionValue = this.value.trim();
-                const themeValue = $('#themeFA').val().trim();
-                const institutionValue = $('#institutionFA').val().trim();
-                if (sectionValue === "") {
-                    table.column(SectionColIndex).search("").draw()
-                }
-                if (sectionValue !== "") {
-                    table.column(SectionColIndex).search(sectionValue + " ~").column(ThemeColIndex).search(themeValue + " ~").column(institutionFA).search(institutionValue + " ~")
-                    initFeedbackAdminView();
-                }
-                if (institutionValue !== "") {
-                    table.column(InstitutionColIndex).search(institutionValue + " ~").draw()
-                }
-                if (themeValue !== "") {
-                    table.column(ThemeColIndex).search(themeValue + " ~").draw()
-                }
+                // No need to reset for institution, section, or theme changes
+
+                // Apply all filters
+                applyFilters();
             });
 
-            $('#themeFA', this).on('keyup change', function () {
-                const themeValue = this.value.trim();
-                const sectionValue = $('#sectionFA').val().trim();
-                const institutionValue = $('#institutionFA').val().trim();
-                if (themeValue === "") {
-                    table.column(ThemeColIndex).search("").draw()
-                }
-                if (themeValue !== "") {
-                    table.column(ThemeColIndex).search(themeValue + " ~").column(SectionColIndex).search(sectionValue + " ~").column(institutionFA).search(institutionValue + " ~")
-                    initFeedbackAdminView();
-                }
-                if (institutionValue !== "") {
-                    table.column(InstitutionColIndex).search(institutionValue + " ~").draw()
-                }
-                if (sectionValue !== "") {
-                    table.column(SectionColIndex).search(sectionValue + " ~").draw()
-                }
+            $('#institutionFA, #sectionFA, #themeFA').on('change', function () {
+                applyFeedbackAdminFilters();
             });
-
 
         }
 
