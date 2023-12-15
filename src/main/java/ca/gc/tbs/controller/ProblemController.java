@@ -232,8 +232,6 @@ public class ProblemController {
                 problems.getData().get(i)
                         .setInstitution(translationsMap.get(problems.getData().get(i).getInstitution()));
                 problems.getData().get(i).setProblem(translationsMap.get(problems.getData().get(i).getProblem()));
-                problems.getData().get(i).setTheme(translationsMap.get(problems.getData().get(i).getTheme()));
-                problems.getData().get(i).setSection(translationsMap.get(problems.getData().get(i).getSection()));
 
                 List<String> tags = problems.getData().get(i).getTags();
                 for (int j = 0; j < tags.size(); j++) {
@@ -350,8 +348,6 @@ public class ProblemController {
             for (int i = 0; i < urls.getData().size(); i++) {
                 urls.getData().get(i).setInstitution(translationsMap.get(urls.getData().get(i).getInstitution()));
                 urls.getData().get(i).setProblem(translationsMap.get(urls.getData().get(i).getProblem()));
-                urls.getData().get(i).setTheme(translationsMap.get(urls.getData().get(i).getTheme()));
-                urls.getData().get(i).setSection(translationsMap.get(urls.getData().get(i).getSection()));
 
                 List<String> tags = urls.getData().get(i).getTags();
                 for (int j = 0; j < tags.size(); j++) {
