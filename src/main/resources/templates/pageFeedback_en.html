@@ -626,7 +626,6 @@
             }
             function filterInstitutionMappings(institutionValue, addTilde) {
                 let filterCriteria = INSTITUTION_MAPPINGS[institutionValue] || [institutionValue];
-                filterCriteria = filterCriteria.concat(institutionValue);
                 let searchString = filterCriteria.join('|') + (addTilde ? " ~" : "");
                 // Apply the search with regex true, smart search false, and case-insensitive
                 table.column(InstitutionColIndex).search(searchString, true, false, false).draw();
