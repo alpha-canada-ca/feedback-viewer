@@ -72,13 +72,6 @@ public class ProblemController {
 
     private static final Map<String, List<String>> institutionMappings = new HashMap<>();
 
-
-//            "NNC",  "CER",
-//            "SERVICE CANADA",
-//            "GUIDE DU DEMANDEUR D'EMPLOIS D'ÉTÉ CANADA - PRÉSENTER UNE DEMANDE", "GUIDE DU DEMANDEUR D'EMPLOIS D'ÉTÉ CANADA - APERÇU",
-//            "GUIDE DU DEMANDEUR D'EMPLOIS D'ÉTÉ CANADA - SUIVI", "GUIDE DU DEMANDEUR D'EMPLOIS D'ÉTÉ CANADA - ÉCRIRE VOTRE DEMANDE",
-//            "GOVERNMENT OF CANADA, PUBLIC SERVICES AND PROCUREMENT CANADA, CLIENT CONTACT"
-
     static {
         institutionMappings.put("AAFC", Arrays.asList("AAFC", "AAC", "AGRICULTURE AND AGRI-FOOD CANADA", "AGRICULTURE ET AGROALIMENTAIRE CANADA", "AAFC/AAC"));
         institutionMappings.put("ATSSC", Arrays.asList("ATSSC", "SCDATA", "ADMINISTRATIVE TRIBUNALS SUPPORT SERVICE OF CANADA", "SERVICE CANADIEN D’APPUI AUX TRIBUNAUX ADMINISTRATIFS", "ATSSC/SCDATA"));
@@ -93,7 +86,7 @@ public class ProblemController {
         institutionMappings.put("CIHR", Arrays.asList("CIHR", "IRSC", "CANADIAN INSTITUTES OF HEALTH RESEARCH", "INSTITUTS DE RECHERCHE EN SANTÉ DU CANADA", "CIHR/IRSC"));
         institutionMappings.put("CIPO", Arrays.asList("CIPO", "OPIC", "CANADIAN INTELLECTUAL PROPERTY OFFICE", "OFFICE DE LA PROPRIÉTÉ INTELLECTUELLE DU CANADA", "CIPO/OPIC"));
         institutionMappings.put("CRA", Arrays.asList("CRA", "ARC", "CANADA REVENUE AGENCY", "AGENCE DU REVENU DU CANADA", "CRA/ARC"));
-        institutionMappings.put("CRTC", Arrays.asList("CRTC", "CANADIAN RADIO-TELEVISION AND TELECOMMUNICATIONS COMMISSION", "CONSEIL DE LA RADIODIFFUSION ET DES TÉLÉCOMMUNICATIONS CANADIENNES"));
+        institutionMappings.put("CRTC", Arrays.asList("CRTC", "CRTC", "CANADIAN RADIO-TELEVISION AND TELECOMMUNICATIONS COMMISSION", "CONSEIL DE LA RADIODIFFUSION ET DES TÉLÉCOMMUNICATIONS CANADIENNES"));
         institutionMappings.put("CSA", Arrays.asList("CSA", "ASC", "CANADIAN SPACE AGENCY", "AGENCE SPATIALE CANADIENNE", "CSA/ASC"));
         institutionMappings.put("CSEC", Arrays.asList("CSEC", "CSTC", "COMMUNICATIONS SECURITY ESTABLISHMENT CANADA", "CENTRE DE LA SÉCURITÉ DES TÉLÉCOMMUNICATIONS CANADA", "CSEC/CSTC"));
         institutionMappings.put("CSPS", Arrays.asList("CSPS", "EFPC", "CANADA SCHOOL OF PUBLIC SERVICE", "ÉCOLE DE LA FONCTION PUBLIQUE DU CANADA", "CSPS/EFPC"));
@@ -102,11 +95,11 @@ public class ProblemController {
         institutionMappings.put("ECCC", Arrays.asList("ECCC", "ENVIRONMENT AND CLIMATE CHANGE CANADA", "ENVIRONNEMENT ET CHANGEMENT CLIMATIQUE CANADA", "ECCC"));
         institutionMappings.put("ESDC", Arrays.asList("ESDC", "EDSC", "EMPLOYMENT AND SOCIAL DEVELOPMENT CANADA", "EMPLOI ET DÉVELOPPEMENT SOCIAL CANADA", "ESDC/EDSC", "EMPLOI ET DÉVÉLOPPEMENT SOCIALE CANADA"));
         institutionMappings.put("FCAC", Arrays.asList("FCAC", "ACFC", "FINANCIAL CONSUMER AGENCY OF CANADA", "AGENCE DE LA CONSOMMATION EN MATIÈRE FINANCIÈRE DU CANADA", "FCAC/ACFC"));
-        institutionMappings.put("FIN", Arrays.asList("FIN", "FINANCE CANADA", "MINISTÈRE DES FINANCES CANADA", "DEPARTMENT OF FINANCE CANADA", "GOVERNMENT OF CANADA, DEPARTMENT OF FINANCE", "MINISTÈRE DES FINANCES", "FIN"));
+        institutionMappings.put("FIN", Arrays.asList("FIN", "FIN", "FINANCE CANADA", "MINISTÈRE DES FINANCES CANADA", "DEPARTMENT OF FINANCE CANADA", "GOVERNMENT OF CANADA, DEPARTMENT OF FINANCE", "MINISTÈRE DES FINANCES", "FIN"));
         institutionMappings.put("GAC", Arrays.asList("GAC", "AMC", "GLOBAL AFFAIRS CANADA", "AFFAIRES MONDIALES CANADA", "GAC/AMC"));
         institutionMappings.put("HC", Arrays.asList("HC", "SC", "HEALTH CANADA", "SANTÉ CANADA", "HC/SC"));
-        institutionMappings.put("INFC", Arrays.asList("INFC", "INFRASTRUCTURE CANADA", "INFRASTRUCTURE CANADA", "INFC"));
-        institutionMappings.put("IRCC", Arrays.asList("IRCC", "IMMIGRATION, REFUGEES AND CITIZENSHIP CANADA", "IMMIGRATION, RÉFUGIÉS ET CITOYENNETÉ CANADA", "IRCC"));
+        institutionMappings.put("INFC", Arrays.asList("INFC", "INFC", "INFRASTRUCTURE CANADA", "INFRASTRUCTURE CANADA"));
+        institutionMappings.put("IRCC", Arrays.asList("IRCC", "IRCC", "IMMIGRATION, REFUGEES AND CITIZENSHIP CANADA", "IMMIGRATION, RÉFUGIÉS ET CITOYENNETÉ CANADA"));
         institutionMappings.put("ISC", Arrays.asList("ISC", "SAC", "INDIGENOUS SERVICES CANADA", "SERVICES AUX AUTOCHTONES CANADA", "ISC/SAC"));
         institutionMappings.put("ISED", Arrays.asList("ISED", "ISDE", "INNOVATION, SCIENCE AND ECONOMIC DEVELOPMENT CANADA", "INNOVATION, SCIENCES ET DÉVELOPPEMENT ÉCONOMIQUE CANADA", "ISED/ISDE"));
         institutionMappings.put("JUS", Arrays.asList("JUS", "JUSTICE CANADA", "MINISTÈRE DE LA JUSTICE CANADA", "JUS"));
@@ -116,8 +109,8 @@ public class ProblemController {
         institutionMappings.put("NRCAN", Arrays.asList("NRCAN", "RNCAN", "NATURAL RESOURCES CANADA", "RESSOURCES NATURELLES CANADA", "NRCAN/RNCAN"));
         institutionMappings.put("OSB", Arrays.asList("OSB", "BSF", "SUPERINTENDENT OF BANKRUPTCY CANADA", "BUREAU DU SURINTENDANT DES FAILLITES CANADA", "OSB/BSF"));
         institutionMappings.put("PBC", Arrays.asList("PBC", "CLCC", "PAROLE BOARD OF CANADA", "COMMISSION DES LIBÉRATIONS CONDITIONNELLES DU CANADA", "PBC/CLCC"));
-        institutionMappings.put("PC", Arrays.asList("PC", "PARCS CANADA", "PARKS CANADA", "PC"));
-        institutionMappings.put("PCH", Arrays.asList("PCH", "CANADIAN HERITAGE", "PATRIMOINE CANADIEN", "PCH"));
+        institutionMappings.put("PC", Arrays.asList("PC", "PC", "PARCS CANADA", "PARKS CANADA"));
+        institutionMappings.put("PCH", Arrays.asList("PCH", "PCH", "CANADIAN HERITAGE", "PATRIMOINE CANADIEN"));
         institutionMappings.put("PCO", Arrays.asList("PCO", "BCP", "PRIVY COUNCIL OFFICE", "BUREAU DU CONSEIL PRIVÉ", "PCO/BCP"));
         institutionMappings.put("PHAC", Arrays.asList("PHAC", "ASPC", "PUBLIC HEALTH AGENCY OF CANADA", "AGENCE DE LA SANTÉ PUBLIQUE DU CANADA", "PHAC/ASPC"));
         institutionMappings.put("PS", Arrays.asList("PS", "SP", "PUBLIC SAFETY CANADA", "SÉCURITÉ PUBLIQUE CANADA", "PS/SP"));
@@ -127,7 +120,7 @@ public class ProblemController {
         institutionMappings.put("RCMP", Arrays.asList("RCMP", "GRC", "ROYAL CANADIAN MOUNTED POLICE", "GENDARMERIE ROYALE DU CANADA", "RCMP/GRC"));
         institutionMappings.put("STATCAN", Arrays.asList("STATCAN", "STATISTIQUE CANADA"));
         institutionMappings.put("TBS", Arrays.asList("TBS", "SCT", "TREASURY BOARD OF CANADA SECRETARIAT", "SECRÉTARIAT DU CONSEIL DU TRÉSOR DU CANADA", "TBS/SCT"));
-        institutionMappings.put("TC", Arrays.asList("TC", "TRANSPORT CANADA", "TRANSPORTS CANADA"));
+        institutionMappings.put("TC", Arrays.asList("TC", "TC", "TRANSPORT CANADA", "TRANSPORTS CANADA"));
         institutionMappings.put("VAC", Arrays.asList("VAC", "ACC", "VETERANS AFFAIRS CANADA", "ANCIENS COMBATTANTS CANADA", "VAC/ACC"));
         institutionMappings.put("WAGE", Arrays.asList("WAGE", "FEGC", "WOMEN AND GENDER EQUALITY CANADA", "FEMMES ET ÉGALITÉ DES GENRES CANADA", "WAGE/FEGC"));
         institutionMappings.put("WD", Arrays.asList("WD", "DEO", "WESTERN ECONOMIC DIVERSIFICATION CANADA", "DIVERSIFICATION DE L’ÉCONOMIE DE L’OUEST CANADA", "WD/DEO"));
@@ -193,6 +186,31 @@ public class ProblemController {
         }
     }
 
+    private void setInstitutionAndTags(DataTablesOutput<Problem> problems, String lang) {
+        for (Problem problem : problems.getData()) {
+            String currentInstitution = problem.getInstitution();
+
+            for (Map.Entry<String, List<String>> entry : institutionMappings.entrySet()) {
+                if (entry.getValue().contains(currentInstitution)) {
+                    // Assuming the translated institution name is at index 1 for French and index 0 for other languages
+                    problem.setInstitution(entry.getValue().get(lang.equalsIgnoreCase("fr") ? 1 : 0));
+                    break; // Exit the loop once the institution is found and updated
+                }
+            }
+
+            if (lang.equalsIgnoreCase("fr")) {
+                problem.setProblem(translationsMap.get(problem.getProblem()));
+
+                List<String> tags = problem.getTags();
+                for (int j = 0; j < tags.size(); j++) {
+                    if (tagTranslations.containsKey(tags.get(j)))
+                        tags.set(j, tagTranslations.get(tags.get(j)));
+                }
+            }
+        }
+    }
+
+
     @GetMapping(value = "/pageFeedback")
     public ModelAndView pageFeedback(HttpServletRequest request) throws Exception {
         ModelAndView mav = new ModelAndView();
@@ -243,19 +261,7 @@ public class ProblemController {
             problems = problemRepository.findAll(input, findProcessed);
         }
 
-        if (lang.equals("fr")) {
-            for (int i = 0; i < problems.getData().size(); i++) {
-                problems.getData().get(i)
-                        .setInstitution(translationsMap.get(problems.getData().get(i).getInstitution()));
-                problems.getData().get(i).setProblem(translationsMap.get(problems.getData().get(i).getProblem()));
-
-                List<String> tags = problems.getData().get(i).getTags();
-                for (int j = 0; j < tags.size(); j++) {
-                    if (tagTranslations.containsKey(tags.get(j)))
-                        tags.set(j, tagTranslations.get(tags.get(j)));
-                }
-            }
-        }
+        setInstitutionAndTags(problems, lang);
         return problems;
     }
 
@@ -330,17 +336,19 @@ public class ProblemController {
         return Arrays.stream(searchValues).anyMatch(searchVal -> searchVal.contains("~"));
     }
 
+    private void updateInputSearchValuesWithTilde(DataTablesInput input, String searchVal, String columnName) {
+        if (!searchVal.isEmpty()) {
+            String updatedValue = searchVal.substring(0, searchVal.length() - 2);
+            input.getColumn(columnName).get().getSearch().setValue(updatedValue);
+        }
+    }
+
     private DataTablesOutput<Problem> processProblemsWithTilde(DataTablesInput input, String lang,
                                                                Criteria findProcessed, Criteria instCriteria,
                                                                String deptSearchVal, String sectionSearchVal, String themeSearchVal) {
-        String deptValue = deptSearchVal.equals("") ? "" : deptSearchVal.substring(0, deptSearchVal.length() - 2);
-        String sectionValue = sectionSearchVal.equals("") ? ""
-                : sectionSearchVal.substring(0, sectionSearchVal.length() - 2);
-        String themeValue = themeSearchVal.equals("") ? "" : themeSearchVal.substring(0, themeSearchVal.length() - 2);
-
-        input.getColumn("institution").get().getSearch().setValue(deptValue);
-        input.getColumn("section").get().getSearch().setValue(sectionValue);
-        input.getColumn("theme").get().getSearch().setValue(themeValue);
+        updateInputSearchValuesWithTilde(input, deptSearchVal, "institution");
+        updateInputSearchValuesWithTilde(input, sectionSearchVal, "section");
+        updateInputSearchValuesWithTilde(input, themeSearchVal, "theme");
 
         input.setStart(0);
         input.setLength(-1);
@@ -379,18 +387,7 @@ public class ProblemController {
         urls.setRecordsFiltered(sortedUrlCountMap.size());
         urls.setData(urlList);
 
-        if (lang.equals("fr")) {
-            for (int i = 0; i < urls.getData().size(); i++) {
-                urls.getData().get(i).setInstitution(translationsMap.get(urls.getData().get(i).getInstitution()));
-                urls.getData().get(i).setProblem(translationsMap.get(urls.getData().get(i).getProblem()));
-
-                List<String> tags = urls.getData().get(i).getTags();
-                for (int j = 0; j < tags.size(); j++) {
-                    if (tagTranslations.containsKey(tags.get(j)))
-                        tags.set(j, tagTranslations.get(tags.get(j)));
-                }
-            }
-        }
+        setInstitutionAndTags(urls, lang);
         return urls;
     }
 
