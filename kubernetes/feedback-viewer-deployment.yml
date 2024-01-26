@@ -9,20 +9,27 @@ spec:
   selector:
     matchLabels:
       app: feedback-viewer
-  strategy: {}
   template:
     metadata:
       labels:
         app: feedback-viewer
     spec:
       containers:
-        - image: tbsacr.azurecr.io/feedback-viewer:1.0.0
+        - name: feedback-viewer
+          image: tbsacr.azurecr.io/feedback-viewer:1.0.0
           imagePullPolicy: Always
-          name: feedback-viewer
           resources:
             limits:
-              cpu: 2000m
-              memory: 4Gi
+              cpu: "2"
+              memory: 8Gi
             requests:
               cpu: 500m
-              memory: 512Mi
+              memory: 2Gi
+          livenessProbe:
+            httpGet:
+              path: /health # The endpoint in your application that indicates it is healthy
+              port: 8080
+            initialDelaySeconds: 60 # Adjust based on your application startup time
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
