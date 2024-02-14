@@ -220,31 +220,41 @@ public class ProblemController {
         return mav;
     }
 
-    @GetMapping(value = "/problemData")
+    @GetMapping(value = "/feedbackData")
     @ResponseBody
     public DataTablesOutput<Problem> list(@Valid DataTablesInput input, HttpServletRequest request) {
         Criteria findProcessed = where("processed").is("true");
+        DataTablesOutput<Problem> problems;
+        problems = problemRepository.findAll(input, findProcessed);
 
-        String lang = (String) request.getSession().getAttribute("lang");
-        String dateSearchVal = input.getColumn("problemDate").get().getSearch().getValue();
-        String institutionSearchVal = input.getColumn("institution").get().getSearch().getValue();
-        String sectionSearchVal = input.getColumn("section").get().getSearch().getValue();
-        String themeSearchVal = input.getColumn("theme").get().getSearch().getValue();
-
-        String pattern = "yyyy-MM-dd";
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-        input.getColumn("problemDate").get().getSearch().setValue("");
-        Criteria dateCriteria = buildDateCriteria(dateSearchVal, simpleDateFormat);
-
-        Criteria institutionCriteria = buildInstitutionCriteria(institutionSearchVal);
-
-        if (containsTilde(institutionSearchVal, sectionSearchVal, themeSearchVal)) {
-            return processProblemsWithTilde(input, lang, findProcessed, institutionCriteria, institutionSearchVal, sectionSearchVal,
-                    themeSearchVal);
-        }
-
-        return findProblemsWithCriteria(input, findProcessed, dateCriteria, institutionCriteria, lang);
+        return problems;
     }
+//
+//    @GetMapping(value = "/problemData")
+//    @ResponseBody
+//    public DataTablesOutput<Problem> list(@Valid DataTablesInput input, HttpServletRequest request) {
+//        Criteria findProcessed = where("processed").is("true");
+//
+//        String lang = (String) request.getSession().getAttribute("lang");
+//        String dateSearchVal = input.getColumn("problemDate").get().getSearch().getValue();
+//        String institutionSearchVal = input.getColumn("institution").get().getSearch().getValue();
+//        String sectionSearchVal = input.getColumn("section").get().getSearch().getValue();
+//        String themeSearchVal = input.getColumn("theme").get().getSearch().getValue();
+//
+//        String pattern = "yyyy-MM-dd";
+//        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+//        input.getColumn("problemDate").get().getSearch().setValue("");
+//        Criteria dateCriteria = buildDateCriteria(dateSearchVal, simpleDateFormat);
+//
+//        Criteria institutionCriteria = buildInstitutionCriteria(institutionSearchVal);
+//
+//        if (containsTilde(institutionSearchVal, sectionSearchVal, themeSearchVal)) {
+//            return processProblemsWithTilde(input, lang, findProcessed, institutionCriteria, institutionSearchVal, sectionSearchVal,
+//                    themeSearchVal);
+//        }
+//
+//        return findProblemsWithCriteria(input, findProcessed, dateCriteria, institutionCriteria, lang);
+//    }
 
 
     private DataTablesOutput<Problem> findProblemsWithCriteria(DataTablesInput input, Criteria findProcessed,
