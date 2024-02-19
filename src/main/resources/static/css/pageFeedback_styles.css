@@ -1,0 +1,215 @@
+body {
+    font-family: Arial, sans-serif;
+}
+
+main>* {
+    width: 75%;
+    margin: 0 auto;
+}
+
+.feedback-tool {
+    padding: 1em;
+    border: 5px solid #000000;
+    margin-top: 1ch;
+    display: grid;
+    grid-template-columns: 1fr 1fr 3fr;
+    grid-auto-rows: auto;
+    position: relative;
+    /* Add position relative to the feedback tool */
+}
+
+
+.feedback-tool-data {
+    width: 80%;
+    padding: 1em;
+    border: 2px solid #000000;
+    margin-top: 2ch;
+}
+
+.feedback-tool label {
+    font-weight: bold;
+}
+
+.feedback-tool label+label {
+    margin-top: 1ch;
+}
+
+.feedback-tool>h3 {
+    grid-column: 1 / 1;
+    margin: 0;
+    font-weight: normal;
+}
+
+.feedback-tool> :not(.download-section):not(h3) {
+    grid-column: 2 / span 2;
+    display: grid;
+    grid-template-columns: subgrid;
+    align-items: center;
+}
+
+.feedback-tool>details>label {
+    display: grid;
+    grid-template-columns: subgrid;
+    grid-column: span 2;
+}
+
+.feedback-tool input,
+.feedback-tool select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.download-section {
+    text-align: right;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: flex-end;
+    grid-column: 3;
+    padding: 0;
+    margin: 0;
+}
+
+.download-section>button {
+    width: max-content;
+}
+
+.download-section>button+button {
+    margin-left: 1em;
+}
+
+#downloadCSV,
+#downloadExcel {
+    padding: 10px 20px;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#downloadCSV:hover,
+#downloadExcel:hover {
+    background-color: #0056b3;
+}
+
+.feedback-tool>details>summary~* {
+    display: grid;
+    grid-template-columns: 1fr 3fr;
+}
+
+.feedback-tool>details {
+    margin-top: 1em;
+}
+
+.feedback-tool input,
+.feedback-tool select {
+    width: max-content;
+}
+
+#dateRange option {
+    padding: 5px;
+    /* Adjust the padding as needed */
+}
+
+.feedback-tool>details>p {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+}
+
+.feedback-tool>details>p>label {
+    display: flex;
+    flex-flow: row nowrap;
+    width: 30%;
+    align-items: center;
+}
+
+.feedback-tool>details select {
+    margin-left: 1em;
+}
+
+.spacer {
+    margin: 0 2em;
+}
+
+summary {
+    cursor: pointer;
+}
+
+summary {
+    display: list-item !important;
+    list-style-type: none;
+    list-style-type: disclosure-closed;
+    visibility: visible !important
+}
+
+details .out details summary,
+details:not([open]) details summary {
+    display: none !important
+}
+
+details {
+    margin-bottom: .25em
+}
+
+
+details summary {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    color: #000000;
+    padding: 5px 15px
+}
+
+#dateRange .separator::after {
+    content: ' ';
+    display: block;
+    height: 10px;
+}
+
+
+details summary:focus,
+details summary:hover {
+    background-color: transparent;
+    color: #000000;
+    text-decoration: underline
+}
+
+details summary:focus {
+    outline-style: dotted;
+    outline-width: 1px
+}
+
+details[open] {
+    border: 1px solid #ddd;
+    border-radius: 4px
+}
+
+
+details:not([open]) {
+    visibility: hidden
+}
+
+details:not([open])>*,
+details:not([open])>details {
+    display: none
+}
+
+.feedback-tool-header {
+    display: flex;
+    justify-content: flex-end;
+    /* Align items to the right */
+    position: absolute;
+    /* Absolute position */
+    right: 1em;
+    /* Same as padding to align with the form fields */
+    top: 1em;
+    /* Same as padding from the top */
+}
+
+.reset-filters {
+    cursor: pointer;
+    text-decoration: underline;
+    white-space: nowrap;
+}
