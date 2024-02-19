@@ -5,199 +5,11 @@
 <head>
     <link href='https://fonts.googleapis.com/css?family=Open Sans' rel='stylesheet'>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
-
-
     <link
-        href="https://cdn.datatables.net/v/dt/jq-3.7.0/jszip-3.10.1/dt-1.13.10/b-2.4.2/b-html5-2.4.2/cr-1.7.0/date-1.5.1/fh-3.4.0/r-2.5.0/datatables.min.css"
+        href="https://cdn.datatables.net/v/dt/jq-3.7.0/jszip-3.10.1/dt-1.13.10/b-2.4.2/b-html5-2.4.2/cr-1.7.0/fh-3.4.0/r-2.5.0/datatables.min.css"
         rel="stylesheet">
-
-
-
-
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-        }
-
-        main>* {
-            width: 75%;
-            margin: 0 auto;
-        }
-
-        .feedback-tool {
-            padding: 1em;
-            border: 2px solid #000000;
-            margin-top: 1ch;
-            display: grid;
-            grid-template-columns: 1fr 1fr 3fr;
-            grid-auto-rows: auto;
-        }
-
-        .feedback-tool-data {
-            width: 80%;
-            padding: 1em;
-            border: 2px solid #000000;
-            margin-top: 2ch;
-        }
-
-        .feedback-tool label {
-            font-weight: bold;
-        }
-
-        .feedback-tool label+label {
-            margin-top: 1ch;
-        }
-
-        .feedback-tool>h3 {
-            grid-column: 1 / 1;
-            margin: 0;
-            font-weight: normal;
-        }
-
-        .feedback-tool> :not(.download-section):not(h3) {
-            grid-column: 2 / span 2;
-            display: grid;
-            grid-template-columns: subgrid;
-            align-items: center;
-        }
-
-        .feedback-tool>details>label {
-            display: grid;
-            grid-template-columns: subgrid;
-            grid-column: span 2;
-        }
-
-        .feedback-tool input,
-        .feedback-tool select {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-
-        .download-section {
-            text-align: right;
-            display: flex;
-            flex-flow: row nowrap;
-            justify-content: flex-end;
-            grid-column: 3;
-            padding: 0;
-            margin: 0;
-        }
-
-        .download-section>button {
-            width: max-content;
-        }
-
-        .download-section>button+button {
-            margin-left: 1em;
-        }
-
-        #downloadCSV,
-        #downloadExcel {
-            padding: 10px 20px;
-            border: none;
-            background-color: #007bff;
-            color: white;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        #downloadCSV:hover,
-        #downloadExcel:hover {
-            background-color: #0056b3;
-        }
-
-        .feedback-tool>details>summary~* {
-            display: grid;
-            grid-template-columns: 1fr 3fr;
-        }
-
-        .feedback-tool>details {
-            margin-top: 1em;
-        }
-
-        .feedback-tool input,
-        .feedback-tool select {
-            width: max-content;
-        }
-
-        .feedback-tool>details>p {
-            display: flex;
-            flex-flow: row nowrap;
-            align-items: center;
-        }
-
-        .feedback-tool>details>p>label {
-            display: flex;
-            flex-flow: row nowrap;
-            width: 30%;
-            align-items: center;
-        }
-
-        .feedback-tool>details select {
-            margin-left: 1em;
-        }
-
-        .spacer {
-            margin: 0 2em;
-        }
-
-        summary {
-            cursor: pointer;
-        }
-
-        summary {
-            display: list-item !important;
-            list-style-type: none;
-            list-style-type: disclosure-closed;
-            visibility: visible !important
-        }
-
-        details .out details summary,
-        details:not([open]) details summary {
-            display: none !important
-        }
-
-        details {
-            margin-bottom: .25em
-        }
-
-
-        details summary {
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            color: #000000;
-            padding: 5px 15px
-        }
-
-        details summary:focus,
-        details summary:hover {
-            background-color: transparent;
-            color: #000000;
-            text-decoration: underline
-        }
-
-        details summary:focus {
-            outline-style: dotted;
-            outline-width: 1px
-        }
-
-        details[open] {
-            border: 1px solid #ddd;
-            border-radius: 4px
-        }
-
-
-        details:not([open]) {
-            visibility: hidden
-        }
-
-        details:not([open])>*,
-        details:not([open])>details {
-            display: none
-        }
-    </style>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+    <link rel="stylesheet" type="text/css" href="/css/pageFeedback_styles.css" />
 </head>
 
 <body>
@@ -205,31 +17,64 @@
         <main>
             <h2>Page Feedback Tool</h2>
             <form class="feedback-tool">
+                <div class="feedback-tool-header">
+                    <div class="reset-filters" onclick="resetFilters()">Reset Filters</div>
+                </div>
                 <h3>Filter by:</h3>
-                <label for="department">Department(s)
-                    <input type="text" id="department" placeholder="CCG/GCC, CFIA/ACIA"></label>
+                <div class="form-group">
+                    <label for="department">Department(s)</label>
+                    <select class="form-control" id="department" name="department">
+                        <option value>All</option>
+                        <option value="CCG">CCG/GCC</option>
+                        <option value="CFIA">CFIA/ACIA</option>
+                        <option value="CIRNAC">CIRNAC/RCAANC</option>
+                        <option value="CRA">CRA/ARC</option>
+                        <option value="CSE">CSE/CST</option>
+                        <option value="DFO">DFO/MPO</option>
+                        <option value="DND">DND/MND</option>
+                        <option value="ECCC">ECCC/ECCC</option>
+                        <option value="ESDC">ESDC/EDSC</option>
+                        <option value="FCAC">FCAC/ACFC</option>
+                        <option value="FIN">FIN/FIN</option>
+                        <option value="GAC">GAC/AMC</option>
+                        <option value="HC">HC/SC</option>
+                        <option value="IRCC">IRCC/IRCC</option>
+                        <option value="ISC">ISC/SAC</option>
+                        <option value="ISED">ISED/ISDE</option>
+                        <option value="LAC">LAC/BAC</option>
+                        <option value="NRC">NRC/CNRC</option>
+                        <option value="OMBDNDCAF">OMBDNDCAF/OMBMDNFAC</option>
+                        <option value="PS">PS/SP</option>
+                        <option value="PSPC">PSPC/SPAC</option>
+                        <option value="PHAC">PHAC/ASPC</option>
+                        <option value="SC">SC/SC</option>
+                        <option value="SST">SST/TSS</option>
+                        <option value="TBS">TBS/SCT</option>
+                    </select>
+                </div>
                 <label for="dateRange">Date Range
-                    <select id="dateRange">
-                        <option value="all">All</option>
-                        <!-- Additional options -->
-                    </select>
+                    <input type="text" id="dateRangePicker" name="dateRangePicker" readonly="readonly"
+                        style="background-color: white; cursor: pointer;" />
                 </label>
-
-                <label for="language">Language(s)
-                    <select id="language">
-                        <option value="all">All</option>
-                        <!-- Additional options -->
+                <div class="form-group">
+                    <label for="language">Language(s)</label>
+                    <select class="form-control" id="language" name="language">
+                        <option value>All</option>
+                        <option value="en">English</option>
+                        <option value="fr">French</option>
                     </select>
-                </label>
-
+                </div>
+                <div class="form-group">
+                    <label for="url">URL</label>
+                    <input type="text" id="url" name="url" placeholder="Filter by keyword">
+                </div>
                 <label for="pages">Page(s)
                     <input type="text" id="pages" placeholder="Programme des services...">
                 </label>
-
-                <label for="comments">Comments
-                    <input type="text" id="comments" placeholder="Filter by keyword">
-                </label>
-
+                <div class="form-group">
+                    <label for="comments">Comment(s)</label>
+                    <input type="text" id="comments" name="comments" placeholder="Filter by keyword">
+                </div>
                 <details open>
                     <summary>More filters</summary>
                     <p>
@@ -247,12 +92,7 @@
                             </select>
                         </label>
                     </p>
-
-                    <label for="url">URL
-                        <input type="text" id="url" placeholder="Filter by url">
-                    </label>
                 </details>
-
                 <p class="download-section">
                     <button id="downloadCSV">Download CSV</button>
                     <button id="downloadExcel">Download Excel</button>
@@ -279,92 +119,21 @@
                 <tbody></tbody>
             </table>
         </div>
-
     </th:block>
     <th:block layout:fragment="script">
-
-
         <script
-            src="https://cdn.datatables.net/v/dt/jq-3.7.0/jszip-3.10.1/dt-1.13.10/b-2.4.2/b-html5-2.4.2/cr-1.7.0/date-1.5.1/fh-3.4.0/r-2.5.0/datatables.min.js"></script>
+            src="https://cdn.datatables.net/v/dt/jq-3.7.0/jszip-3.10.1/dt-1.13.10/b-2.4.2/b-html5-2.4.2/cr-1.7.0/fh-3.4.0/r-2.5.0/datatables.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
         <script type="text/javascript" src="js/spring-friendly.min.js"></script>
         <script th:inline="javascript">
-            $(document).ready(function () {
-                var table = $('#myTable').DataTable({
-                    "order": [
-                        [0, "desc"]
-                    ],
-                    processing: true,
-                    serverSide: true,
-                    retrieve: true,
-                    lengthMenu: false,
-                    orderCellsTop: true,
-                    fixedHeader: true,
-                    dom: 'Br<"table-responsive"t>tip',
-                    ajax: {
-                        url: '/feedbackData',
-                        type: 'GET',
-                        error: function (xhr, error, thrown) {
-                            alert("Error retrieving data. Please refresh the page and try again.");
-                            console.log("xhr: " + xhr);
-                            console.log("error: " + error);
-                            console.log("thrown : " + thrown);
-                        }
-                    },
-                    buttons: [
-                        {
-                            extend: 'csvHtml5',
-                            text: 'Download CSV',
-                            className: 'btn btn-default',
-                            exportOptions: {
-                                columns: ':visible' // This will export only visible columns
-                            },
-                            filename: 'data_export_' + new Date().toLocaleDateString()
-                        },
-                        {
-                            extend: 'excelHtml5',
-                            text: 'Download Excel',
-                            className: 'btn btn-default',
-                            exportOptions: {
-                                columns: ':visible' // This will export only visible columns
-                            },
-                            filename: 'data_export_' + new Date().toLocaleDateString()
-                        }
-                    ],
-                    columns: [{
-                        data: 'problemDate',
-                    }, {
-                        data: 'institution',
-                    }, {
-                        data: 'title',
-                    }, {
-                        data: 'problemDetails',
-                    }, {
-                        data: 'timeStamp',
-                        visible: false
-                    }, {
-                        data: 'url',
-                        visible: false
-                    }, {
-                        data: 'language',
-                        visible: false
-                    }, {
-                        data: 'section',
-                        visible: false
-                    }, {
-                        data: 'theme',
-                        visible: false
-                    }, {
-                        data: 'deviceType',
-                        visible: false
-                    }, {
-                        data: 'browser',
-                        visible: false
-                    }],
-                });
-            });
+            /*<![CDATA[*/
+            var earliestDate = /*[[${earliestDate}]]*/ '';
+            var latestDate = /*[[${latestDate}]]*/ '';
+            /*]]>*/
         </script>
+        <script src="/js/pageFeedback.js"></script>
     </th:block>
-
 </body>
 
 </html>
