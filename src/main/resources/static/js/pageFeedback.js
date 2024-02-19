@@ -66,11 +66,17 @@ $(document).ready(function () {
         ],
         columns: [
             { data: 'problemDate' }, // Date (visible in table)
+            { data: 'problemDetails' }, // Comments (visible in table)
             { data: 'institution' }, // Dept (visible in table)
             { data: 'title' }, // Page title (visible in table)
-            { data: 'problemDetails' }, // Comments (visible in table)
+            {
+                data: 'url',
+                render: function(data, type, row) {
+                    // Wrap any content of the 'url' column with an anchor tag
+                    return '<a href="' + data + '" target="_blank">' + data + '</a>';
+                }
+            }, // URL (visible in table)
             { data: 'timeStamp', visible: false }, // Time (hidden in table, but in CSV)
-            { data: 'url', visible: false }, // URL (hidden in table, but in CSV)
             { data: 'language', visible: false }, // Language (hidden in table, but in CSV)
             { data: 'section', visible: false }, // Section (hidden in table, but in CSV)
             { data: 'theme', visible: false }, // Theme (hidden in table, but in CSV)
