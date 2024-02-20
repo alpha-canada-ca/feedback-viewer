@@ -84,46 +84,15 @@ $(document).ready(function () {
             { data: 'browser', visible: false } // Browser (hidden in table, but in CSV)
         ],
     });
-    $('.reset-filters').on('click', function () {
-        resetFilters();
-    });
-    $('#dateRangePicker').daterangepicker({
-        opens: 'left',
-        startDate: moment(earliestDate),
-        endDate: moment(latestDate),
-        alwaysShowCalendars: true,
-        locale: {
-            format: 'YYYY-MM-DD',
-            cancelLabel: 'Clear',
-            applyLabel: 'Apply'
-        },
-        ranges: {
-            'All Dates': [moment(earliestDate), moment(latestDate)],
-            'Today': [moment(), moment()],
-            'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-            'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-            'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-            'This Month': [moment().startOf('month'), moment().endOf('month')],
-            'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
-        }
-    }, function (start, end, label) {
-        $('#dateRangePicker').val(start.format('YYYY-MM-DD') + ' - ' + end.format('YYYY-MM-DD'));
-
-        // Reload the DataTable with the new date range from the input value.
-        table.ajax.reload();
-    });
-
-    $('#dateRangePicker').on('cancel.daterangepicker', function (ev, picker) {
-        // Set the date range picker to the earliest and latest dates
-        picker.setStartDate(moment(earliestDate));
-        picker.setEndDate(moment(latestDate));
-
-        // Update the input field to show the earliest and latest dates
-        $('#dateRangePicker').val(moment(earliestDate).format('YYYY-MM-DD') + ' - ' + moment(latestDate).format('YYYY-MM-DD'));
-
-        // Reload DataTables to reflect the reset date range
-        table.ajax.reload();
-    });
+      function debounce(func, delay) {
+        let debounceTimer;
+        return function() {
+            const context = this;
+            const args = arguments;
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(() => func.apply(context, args), delay);
+        };
+    } 
     function resetFilters() {
         // Reset select elements to their default option (usually the first one)
         $('#department').val('');
@@ -168,14 +137,54 @@ $(document).ready(function () {
         dt.ajax.reload();
     };
 
+    $('.reset-filters').on('click', function () {
+        resetFilters();
+    });
+    $('#dateRangePicker').daterangepicker({
+        opens: 'left',
+        startDate: moment(earliestDate),
+        endDate: moment(latestDate),
+        alwaysShowCalendars: true,
+        locale: {
+            format: 'YYYY-MM-DD',
+            cancelLabel: 'Clear',
+            applyLabel: 'Apply'
+        },
+        ranges: {
+            'All Dates': [moment(earliestDate), moment(latestDate)],
+            'Today': [moment(), moment()],
+            'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+            'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+            'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+            'This Month': [moment().startOf('month'), moment().endOf('month')],
+            'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+        }
+    }, function (start, end, label) {
+        $('#dateRangePicker').val(start.format('YYYY-MM-DD') + ' - ' + end.format('YYYY-MM-DD'));
+
+        // Reload the DataTable with the new date range from the input value.
+        table.ajax.reload();
+    });
+
+    $('#dateRangePicker').on('cancel.daterangepicker', function (ev, picker) {
+        // Set the date range picker to the earliest and latest dates
+        picker.setStartDate(moment(earliestDate));
+        picker.setEndDate(moment(latestDate));
+
+        // Update the input field to show the earliest and latest dates
+        $('#dateRangePicker').val(moment(earliestDate).format('YYYY-MM-DD') + ' - ' + moment(latestDate).format('YYYY-MM-DD'));
+
+        // Reload DataTables to reflect the reset date range
+        table.ajax.reload();
+    });
+
+
     $('#language, #department').on('change', function () {
         table.ajax.reload(); // Reload the table when the language or department selection changes
     });
 
-    $('#comments, #url').on('keypress', function (e) {
-        if (e.which == 13) { // 13 is the Enter key
-            e.preventDefault();  // Prevent the default action (form submission)
-            table.ajax.reload(null, false); // Reload the table without resetting pagination
-        }
-    });
+    $('#comments, #url').on('keyup', debounce(function (e) {
+        table.ajax.reload(); // Reload the table without resetting pagination
+    }, 800)); // Adjust the 500ms delay as needed
+
 });
