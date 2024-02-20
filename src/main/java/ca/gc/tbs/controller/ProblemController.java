@@ -239,8 +239,9 @@ public class ProblemController {
 
         // URL filtering
         if (url != null && !url.isEmpty()) {
-            criteria.and("url").is(url);
+            criteria.and("url").regex(url, "i"); // 'i' for case-insensitive matching
         }
+
         // Department filtering based on institutionMappings
         if (departmentKey != null && !departmentKey.isEmpty()) {
             List<String> departmentVariations = institutionMappings.get(departmentKey); // Get variations for the department key
