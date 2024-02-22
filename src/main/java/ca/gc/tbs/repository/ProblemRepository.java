@@ -33,4 +33,18 @@ public interface ProblemRepository extends DataTablesRepository<Problem, String>
             "{ '$project': { '_id': 0, 'earliestDate': 1, 'latestDate': 1 } }"
     })
     AggregationResults<Map> findEarliestAndLatestProblemDate();
+
+    @Aggregation(pipeline = {
+            "{ '$match': { 'processed': 'true' } }", // Optional, adjust based on your requirements
+            "{ '$group': { '_id': '$title' } }",
+            "{ '$sort': { '_id': 1 } }" // Optional, sorts the page names alphabetically
+    })
+    List<String> findDistinctPageNames();
+
+    @Aggregation(pipeline = {
+            "{ '$match': { 'processed': 'true', 'title': { '$regex': ?0, '$options': 'i' } } }",
+            "{ '$group': { '_id': '$title' } }",
+            "{ '$sort': { '_id': 1 } }"
+    })
+    List<String> findPageTitlesBySearch(String search);
 }
