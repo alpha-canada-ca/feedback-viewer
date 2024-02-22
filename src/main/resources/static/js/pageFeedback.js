@@ -1,11 +1,12 @@
 
 $(document).ready(function () {
     var pageSelect = new SlimSelect({
-        select: '#multiple',
+        select: '#pages',
         settings: {
             hideSelected: true,
             keepOrder: true,
             placeholderText: 'Custom Placeholder Text',
+            closeOnSelect: false,
         },
         events: {
             search: (search, currentData) => {
@@ -50,7 +51,10 @@ $(document).ready(function () {
         }
         
     }); 
-
+    $('#pages').on('change', function () {
+        // This function gets called when a selection is made
+        table.ajax.reload(); // Reload the DataTable
+    });
     var table = $('#myTable').DataTable({
         "order": [
             [0, "desc"]
@@ -66,7 +70,7 @@ $(document).ready(function () {
             url: '/feedbackData',
             type: 'GET',
             data: function (d) { 
-                d.titles = $('#multiple').val();
+                d.titles = $('#pages').val();
                 d.language = $('#language').val();
                 d.department = $('#department').val();
                 d.comments = $('#comments').val();
@@ -152,7 +156,9 @@ $(document).ready(function () {
         // Clear text input fields
         $('#url').val('');
         $('#comments').val('');
-        $('#multiple').val('');
+        pageSelect.set([]);
+        pageSelect.setSelected([]);
+        $('#pages').val('');
 
         // Reset the Date Range Picker to the initial dates
         $('#dateRangePicker').data('daterangepicker').setStartDate(moment(earliestDate));
