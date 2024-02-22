@@ -16,6 +16,7 @@ import org.springframework.data.mongodb.datatables.DataTablesOutput;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -141,6 +142,18 @@ public class ProblemController {
         return institutionMappings;
     }
 
+    @GetMapping("/pageTitles")
+    @ResponseBody
+    public List<String> getPageTitles(@RequestParam(name = "search", required = false) String search) {
+        if (search != null && !search.isEmpty()) {
+            // Use the new repository method to filter page titles based on the search term
+            return problemRepository.findPageTitlesBySearch(search);
+        } else {
+            // Return all page titles if no search term is provided
+            return problemRepository.findDistinctPageNames();
+        }
+    }
+
     private static HashMap<String, Integer> sortByValue(HashMap<String, Integer> unsortMap, final boolean order) {
         List<Entry<String, Integer>> list = new LinkedList<>(unsortMap.entrySet());
 
@@ -222,9 +235,11 @@ public class ProblemController {
         String url = request.getParameter("url"); // Retrieve the url filter parameter
         String startDate = request.getParameter("startDate");
         String endDate = request.getParameter("endDate");
-
+        String[] titles = request.getParameterValues("titles[]");
 
         Criteria criteria = Criteria.where("processed").is("true");
+
+
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         if (startDate != null && endDate != null) {
             LocalDate start = LocalDate.parse(startDate, formatter);
@@ -236,7 +251,22 @@ public class ProblemController {
         if (language != null && !language.isEmpty()) {
             criteria.and("language").is(language);
         }
+        if (titles != null && titles.length > 0) {
+            // Create a list to hold the title criteria
+            List<Criteria> titleCriterias = new ArrayList<>();
 
+            // Iterate over the titles and add each one as a criterion
+            for (String title : titles) {
+                titleCriterias.add(Criteria.where("title").is(title));
+            }
+
+            // Combine all title criteria using AND operation
+            criteria.orOperator(titleCriterias.toArray(new Criteria[0]));
+
+            System.out.println("Titles received: " + Arrays.toString(titles));
+        } else {
+            System.out.println("No titles received.");
+        }
         // URL filtering
         if (url != null && !url.isEmpty()) {
             criteria.and("url").regex(url, "i"); // 'i' for case-insensitive matching
