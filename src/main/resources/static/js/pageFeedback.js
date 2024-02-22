@@ -1,5 +1,55 @@
 
 $(document).ready(function () {
+    var pageSelect = new SlimSelect({
+        select: '#multiple',
+        settings: {
+            hideSelected: true,
+            keepOrder: true,
+            placeholderText: 'Custom Placeholder Text',
+        },
+        events: {
+            search: (search, currentData) => {
+                return new Promise((resolve, reject) => {
+                    // Debounce logic inside the Promise
+                    clearTimeout(pageSelect.debounceTimer); // Clear existing timer
+                    pageSelect.debounceTimer = setTimeout(() => {
+                        if (search.length < 2) {
+                            return reject('Search must be at least 2 characters');
+                        }
+    
+                        fetch('/pageTitles?search=' + encodeURIComponent(search), {
+                            method: 'GET',
+                            headers: {
+                                'Accept': 'application/json',
+                            }
+                        })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Network response was not ok');
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            const options = data
+                                .filter(title => {
+                                    return !currentData.some(optionData => optionData.value === title);
+                                })
+                                .map(title => {
+                                    return { text: title, value: title };
+                                });
+    
+                            resolve(options);
+                        })
+                        .catch(error => {
+                            console.error('Error fetching page titles:', error);
+                            reject(error);
+                        });
+                    }, 800); // 300ms debounce time
+                });
+            }
+        }
+        
+    }); 
 
     var table = $('#myTable').DataTable({
         "order": [
@@ -15,11 +65,12 @@ $(document).ready(function () {
         ajax: {
             url: '/feedbackData',
             type: 'GET',
-            data: function (d) {
+            data: function (d) { 
+                d.titles = $('#multiple').val();
                 d.language = $('#language').val();
                 d.department = $('#department').val();
                 d.comments = $('#comments').val();
-                d.url = $('#url').val();
+                d.url = $('#url').val(); 
                 var dateRangePickerValue = $('#dateRangePicker').val();
                 if (dateRangePickerValue) {
                     var dateRange = $('#dateRangePicker').data('daterangepicker');
@@ -71,7 +122,7 @@ $(document).ready(function () {
             { data: 'title' }, // Page title (visible in table)
             {
                 data: 'url',
-                render: function(data, type, row) {
+                render: function (data, type, row) {
                     // Wrap any content of the 'url' column with an anchor tag
                     return '<a href="' + data + '" target="_blank">' + data + '</a>';
                 }
@@ -84,15 +135,15 @@ $(document).ready(function () {
             { data: 'browser', visible: false } // Browser (hidden in table, but in CSV)
         ],
     });
-      function debounce(func, delay) {
+    function debounce(func, delay) {
         let debounceTimer;
-        return function() {
+        return function () {
             const context = this;
             const args = arguments;
             clearTimeout(debounceTimer);
             debounceTimer = setTimeout(() => func.apply(context, args), delay);
         };
-    } 
+    }
     function resetFilters() {
         // Reset select elements to their default option (usually the first one)
         $('#department').val('');
@@ -101,7 +152,7 @@ $(document).ready(function () {
         // Clear text input fields
         $('#url').val('');
         $('#comments').val('');
-        $('#pages').val('');
+        $('#multiple').val('');
 
         // Reset the Date Range Picker to the initial dates
         $('#dateRangePicker').data('daterangepicker').setStartDate(moment(earliestDate));
@@ -178,13 +229,11 @@ $(document).ready(function () {
         table.ajax.reload();
     });
 
-
     $('#language, #department').on('change', function () {
-        table.ajax.reload(); // Reload the table when the language or department selection changes
+        table.ajax.reload();
     });
-
     $('#comments, #url').on('keyup', debounce(function (e) {
         table.ajax.reload(); // Reload the table without resetting pagination
-    }, 800)); // Adjust the 500ms delay as needed
+    }, 800));
 
 });
