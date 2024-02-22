@@ -3,14 +3,18 @@
     xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{wide_en}" lang="en">
 
 <head>
-    <link href='https://fonts.googleapis.com/css?family=Open Sans' rel='stylesheet'>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+    <script src="https://unpkg.com/slim-select@latest/dist/slimselect.min.js"></script>
+    <link href="https://unpkg.com/slim-select@latest/dist/slimselect.css" rel="stylesheet" type="text/css" />
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css' />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css"
+        type="text/css" />
     <link
         href="https://cdn.datatables.net/v/dt/jq-3.7.0/jszip-3.10.1/dt-1.13.10/b-2.4.2/b-html5-2.4.2/cr-1.7.0/fh-3.4.0/r-2.5.0/datatables.min.css"
-        rel="stylesheet">
+        rel="stylesheet" type="text/css" />
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
     <link rel="stylesheet" type="text/css" href="/css/pageFeedback_styles.css" />
 </head>
+
 
 <body>
     <th:block layout:fragment="content">
@@ -68,8 +72,12 @@
                     <label for="url">URL</label>
                     <input type="text" id="url" name="url" placeholder="Filter by keyword">
                 </div>
-                <label for="pages">Page(s)
-                    <input type="text" id="pages" placeholder="Programme des services...">
+                <label for="multiple">Page(s)
+                    <select id="multiple" multiple>
+                        <option value="value 1">Value 1</option>
+                        <option value="value 2">Value 2</option>
+                        <option value="value 3">Value 3</option>
+                    </select>
                 </label>
                 <div class="form-group">
                     <label for="comments">Comment(s)</label>
