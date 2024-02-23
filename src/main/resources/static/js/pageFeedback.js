@@ -156,7 +156,7 @@ $(document).ready(function () {
         // Clear text input fields
         $('#url').val('');
         $('#comments').val('');
-        pageSelect.set([]);
+        pageSelect.setData([]);
         pageSelect.setSelected([]);
         $('#pages').val('');
 
