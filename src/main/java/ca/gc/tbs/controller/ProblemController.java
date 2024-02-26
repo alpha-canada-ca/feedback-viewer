@@ -232,6 +232,8 @@ public class ProblemController {
         String language = request.getParameter("language"); // Existing language parameter handling
         String departmentKey = request.getParameter("department"); // Retrieve the department parameter
         String comments = request.getParameter("comments"); // Retrieve the comments filter parameter
+        String theme = request.getParameter("theme"); // Retrieve the theme filter parameter
+        String section = request.getParameter("section"); // Retrieve the section filter parameter
         String url = request.getParameter("url"); // Retrieve the url filter parameter
         String startDate = request.getParameter("startDate");
         String endDate = request.getParameter("endDate");
@@ -247,6 +249,12 @@ public class ProblemController {
             criteria.and("problemDate").gte(start.format(formatter)).lte(end.format(formatter));
         }
 
+        if (theme != null && !theme.isEmpty()) {
+            criteria.and("theme").is(theme);
+        }
+        if (section != null && !section.isEmpty()) {
+            criteria.and("section").is(section);
+        }
         // Language filtering (existing logic)
         if (language != null && !language.isEmpty()) {
             criteria.and("language").is(language);
