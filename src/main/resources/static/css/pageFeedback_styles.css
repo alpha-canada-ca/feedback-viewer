@@ -195,7 +195,9 @@ details:not([open])>*,
 details:not([open])>details {
     display: none
 }
-
+.dt-buttons {
+    display: none;
+}
 .feedback-tool-header {
     display: flex;
     justify-content: flex-end;
