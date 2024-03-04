@@ -56,6 +56,8 @@ $(document).ready(function () {
     table.ajax.reload(); // Reload the DataTable
   });
   var table = $("#myTable").DataTable({
+    stripeClasses: [],
+    "bSortClasses": false,
     order: [[0, "desc"]],
     processing: true,
     serverSide: true,
@@ -63,6 +65,7 @@ $(document).ready(function () {
     lengthMenu: false,
     orderCellsTop: true,
     fixedHeader: true,
+    responsive: true,
     dom: 'Br<"table-responsive"t>tip',
     ajax: {
       url: "/feedbackData",
@@ -122,7 +125,7 @@ $(document).ready(function () {
       },
     ],
     columns: [
-      { data: "problemDate" }, // Date (visible in table)
+      { data: "problemDate", width:'8%' }, // Date (visible in table)
       { data: "problemDetails" }, // Comments (visible in table)
       { data: "institution" }, // Dept (visible in table)
       { data: "title" }, // Page title (visible in table)
