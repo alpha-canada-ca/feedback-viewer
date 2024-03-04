@@ -292,7 +292,13 @@ $('#downloadCSV').on('click', function() { // Removed the 'e' parameter
 $('#downloadExcel').on('click', function() { // Removed the 'e' parameter
     table.button('.buttons-excel').trigger();
 });
+$(document).on('click', "a[href*='design.canada.ca']", function (e) {
+    // Prevent the default action
+    e.preventDefault();
 
+    // Open the link in a new tab
+    window.open($(this).attr('href'), '_blank');
+});
  var detailsElement = $('#filterDetails'); // Assuming you have an ID for the <details> tag
   var summaryElement = $('#filterSummary'); // Assuming you have an ID for the <summary> tag
 
