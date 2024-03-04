@@ -136,6 +136,15 @@ table.dataTable.display tbody td, table.dataTable.display tbody th, table.dataTa
     margin-left: 1em;
 }
 
+#downloadCSV,
+#downloadExcel {
+    padding: 10px 20px;
+    margin-top: 10px;
+    border: 1px solid #dcdee1;
+    border-radius: 4px;
+}
+
+
 .feedback-tool>details>summary~* {
     display: grid;
     grid-template-columns: 1fr 3fr;
