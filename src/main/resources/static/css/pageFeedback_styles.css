@@ -74,13 +74,14 @@ table.dataTable.display tbody td, table.dataTable.display tbody th, table.dataTa
 }
 
 .feedback-tool-data {
-    width: 75%; /* Or your desired width */
+    width: 85%; /* Or your desired width */
     padding: 1em;
     border: 1px solid #333;
     border-radius: 6px;
     margin-top: 2ch;
     margin-left: auto; /* Center the div horizontally */
     margin-right: auto; /* Center the div horizontally */
+    margin-bottom: 4ch;
 }
 
 
@@ -251,7 +252,11 @@ main {
     margin-left: 0;
     margin-right: 0;
 }
-
+.pagedetails {
+  max-width: 1140px; /* Adjust based on your main container's width */
+  margin-right: auto;
+  margin-left: auto;
+}
 
 details[open] {
     border: 1px solid #ddd;
