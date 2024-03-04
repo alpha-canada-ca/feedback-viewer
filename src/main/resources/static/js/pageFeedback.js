@@ -4,7 +4,7 @@ $(document).ready(function () {
     settings: {
       hideSelected: true,
       keepOrder: true,
-      placeholderText: "Custom Placeholder Text",
+      placeholderText: "Filter by full or partial page title",
       closeOnSelect: false,
     },
     events: {
@@ -108,7 +108,7 @@ $(document).ready(function () {
           },
         },
         action: newexportaction,
-        filename: "data_export_" + new Date().toLocaleDateString(),
+        filename: "Page_feedback-" + new Date().toLocaleDateString(),
       },
       {
         extend: "excelHtml5",
@@ -121,7 +121,7 @@ $(document).ready(function () {
           },
         },
         action: newexportaction,
-        filename: "data_export_" + new Date().toLocaleDateString(),
+        filename: "Page_feedback-" + new Date().toLocaleDateString(),
       },
     ],
     columns: [
@@ -178,6 +178,7 @@ $(document).ready(function () {
     // Reload the DataTable to reflect the reset filters
     table.ajax.reload();
   }
+
   function newexportaction(e, dt, button, config) {
     var self = this;
     var oldStart = dt.settings()[0]._iDisplayStart;
@@ -212,6 +213,8 @@ $(document).ready(function () {
       opens: "left",
       startDate: moment(earliestDate),
       endDate: moment(latestDate),
+       minDate: moment(earliestDate), // Set the earliest selectable date
+        maxDate: moment(latestDate),
       alwaysShowCalendars: true,
       locale: {
         format: "YYYY-MM-DD",
@@ -229,6 +232,7 @@ $(document).ready(function () {
           moment().subtract(1, "month").startOf("month"),
           moment().subtract(1, "month").endOf("month"),
         ],
+           "Last Quarter": getLastFiscalQuarter(),
       },
     },
     function (start, end, label) {
@@ -240,7 +244,32 @@ $(document).ready(function () {
       table.ajax.reload();
     }
   );
+  function getLastFiscalQuarter() {
+    let today = moment();
+    let fiscalYearStart = moment().month() < 3 ? moment().subtract(1, "year").month(3).startOf("month") : moment().month(3).startOf("month"); // Adjust based on fiscal year starting in April
+    let quarterStart, quarterEnd;
 
+    // Determine the current fiscal quarter
+    if (today.isBetween(fiscalYearStart, fiscalYearStart.clone().add(2, "months").endOf("month"))) {
+      // Last quarter is Q4 of the previous fiscal year
+      quarterStart = fiscalYearStart.clone().subtract(1, "year").add(9, "months");
+      quarterEnd = fiscalYearStart.clone().subtract(1, "day");
+    } else if (today.isBefore(fiscalYearStart.clone().add(6, "months"))) {
+      // Last quarter is Q1
+      quarterStart = fiscalYearStart;
+      quarterEnd = fiscalYearStart.clone().add(2, "months").endOf("month");
+    } else if (today.isBefore(fiscalYearStart.clone().add(9, "months"))) {
+      // Last quarter is Q2
+      quarterStart = fiscalYearStart.clone().add(3, "months");
+      quarterEnd = fiscalYearStart.clone().add(5, "months").endOf("month");
+    } else {
+      // Last quarter is Q3
+      quarterStart = fiscalYearStart.clone().add(6, "months");
+      quarterEnd = fiscalYearStart.clone().add(8, "months").endOf("month");
+    }
+
+    return [quarterStart, quarterEnd];
+  }
   $("#dateRangePicker").on("cancel.daterangepicker", function (ev, picker) {
     // Set the date range picker to the earliest and latest dates
     picker.setStartDate(moment(earliestDate));
@@ -264,7 +293,16 @@ $('#downloadExcel').on('click', function() { // Removed the 'e' parameter
     table.button('.buttons-excel').trigger();
 });
 
+ var detailsElement = $('#filterDetails'); // Assuming you have an ID for the <details> tag
+  var summaryElement = $('#filterSummary'); // Assuming you have an ID for the <summary> tag
 
+  detailsElement.on('toggle', function() {
+    if (detailsElement.prop('open')) {
+      summaryElement.text('See less filters');
+    } else {
+      summaryElement.text('See more filters');
+    }
+  });
   $("#language, #department, #section, #theme").on("change", function () {
     table.ajax.reload();
   });

@@ -22,11 +22,11 @@
     <main class="container">
         <div class="col-lg-12">
             <div class="row">
-                <h1 id="wb-cont">Page feedback comments</h1>
+                <h1 id="wb-cont">Page Feedback - Comments</h1>
                 <form class="feedback-tool">
                     <h2 class="h4">Filter by:</h2>
                     <div class="form-group">
-                        <label for="department">Department(s)</label>
+                        <label for="department">Department</label>
                         <select class="form-control" id="department" name="department">
                             <option value="">All</option>
                             <option value="CCG">CCG/GCC</option>
@@ -61,7 +61,7 @@
                                style="background-color: white; cursor: pointer;" />
                     </label>
                     <div class="form-group">
-                        <label for="language">Language(s)</label>
+                        <label for="language">Page Language</label>
                         <select class="form-control" id="language" name="language">
                             <option value>All</option>
                             <option value="en">English</option>
@@ -70,18 +70,18 @@
                     </div>
                     <div class="form-group">
                         <label for="url">URL</label>
-                        <input type="text" id="url" name="url" placeholder="Filter by keyword">
+                        <input type="text" id="url" name="url" placeholder="Filter by full or partial URL">
                     </div>
                     <label for="pages">Page(s)
                         <select id="pages" multiple>
                         </select>
                     </label>
                     <div class="form-group">
-                        <label for="comments">Comment(s)</label>
+                        <label for="comments">Comments</label>
                         <input type="text" id="comments" name="comments" placeholder="Filter by keyword">
                     </div>
-                    <details>
-                        <summary>More filters</summary>
+                    <details id="filterDetails">
+                        <summary id="filterSummary">See more filters</summary>
                         <p>
                             <label for="section">Section
                                 <select id="section">
@@ -180,9 +180,9 @@
                         <tr>
                             <th>Date</th>
                             <th>Comments</th>
-                            <th>Dept</th>
+                            <th>Department</th>
                             <th>Page title</th>
-                            <th>URL</th>
+                            <th>Page URL</th>
                             <th>Time stamp</th>
                             <th>Language</th>
                             <th>Section</th>
