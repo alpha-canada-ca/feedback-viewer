@@ -74,12 +74,15 @@ table.dataTable.display tbody td, table.dataTable.display tbody th, table.dataTa
 }
 
 .feedback-tool-data {
-    /* width: 120%; */
+    width: 75%; /* Or your desired width */
     padding: 1em;
     border: 1px solid #333;
     border-radius: 6px;
     margin-top: 2ch;
+    margin-left: auto; /* Center the div horizontally */
+    margin-right: auto; /* Center the div horizontally */
 }
+
 
 .feedback-tool label {
     font-weight: bold;
@@ -234,6 +237,21 @@ details summary:focus {
     outline-style: dotted;
     outline-width: 1px
 }
+main {
+/*    font-size: 16px !important;*/
+    line-height: 1em !important;
+}
+.dataTables_paginate {
+    font-size: 16px; /* Adjust the font size as needed */
+}
+.dataTables_info {
+    font-size: 16px; /* Adjust the font size as needed */
+}
+.custom-row {
+    margin-left: 0;
+    margin-right: 0;
+}
+
 
 details[open] {
     border: 1px solid #ddd;
