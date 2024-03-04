@@ -125,12 +125,12 @@ $(document).ready(function () {
       },
     ],
     columns: [
-      { data: "problemDate", width:'5%' }, // Date (visible in table)
+      { data: "problemDate", width:'6%' }, // Date (visible in table)
       { data: "problemDetails", width:'50%' }, // Comments (visible in table)
-      { data: "institution",width: '5%'}, // Dept (visible in table)
-      { data: "title", width: '15%' }, // Page title (visible in table)
+      { data: "institution",width: '6%'}, // Dept (visible in table)
+      { data: "title", width: '14%' }, // Page title (visible in table)
       {
-        data: "url", width: '25%',
+        data: "url", width: '24%',
         render: function (data, type, row) {
           // Wrap any content of the 'url' column with an anchor tag
           return '<a href="' + data + '" target="_blank">' + data + "</a>";

@@ -2,11 +2,11 @@ body {
     font-family: Arial, sans-serif;
 }
 
-.dateRangePicker .ranges li.active {
+.daterangepicker .ranges li.active {
     background-color: #26374a;
 }
-.dateRangePicker td.active, .dateRangePicker td.active:hover {
-    background-color: #2572b4;
+.daterangepicker td.active, .daterangepicker td.active:hover {
+    background-color: #26374a;
 }
 
 h1#wb-cont {
