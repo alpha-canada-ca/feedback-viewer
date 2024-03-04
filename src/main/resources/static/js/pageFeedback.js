@@ -62,11 +62,11 @@ $(document).ready(function () {
     processing: true,
     serverSide: true,
     retrieve: true,
-    lengthMenu: false,
+    lengthMenu: [ [10, 25, 50, 100], [10, 25, 50, 100] ],
     orderCellsTop: true,
     fixedHeader: true,
     responsive: true,
-    dom: 'Br<"table-responsive"t>tip',
+    dom: 'Br<"table-responsive"t>tilp',
     ajax: {
       url: "/feedbackData",
       type: "GET",

@@ -241,6 +241,13 @@ main {
 .dataTables_info {
     font-size: 16px; /* Adjust the font size as needed */
 }
+.dataTables_length label {
+
+    font-weight: 400; /* Make the text bold */
+    font-size: 16px; /* Adjust the font size */
+    margin-top: 2pt;
+}
+
 .custom-row {
     margin-left: 0;
     margin-right: 0;
