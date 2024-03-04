@@ -272,9 +272,8 @@ public class ProblemController {
             criteria.orOperator(titleCriterias.toArray(new Criteria[0]));
 
             System.out.println("Titles received: " + Arrays.toString(titles));
-        } else {
-            System.out.println("No titles received.");
         }
+
         // URL filtering
         if (url != null && !url.isEmpty()) {
             criteria.and("url").regex(url, "i"); // 'i' for case-insensitive matching
