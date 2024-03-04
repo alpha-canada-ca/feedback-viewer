@@ -125,12 +125,12 @@ $(document).ready(function () {
       },
     ],
     columns: [
-      { data: "problemDate", width:'8%' }, // Date (visible in table)
-      { data: "problemDetails" }, // Comments (visible in table)
-      { data: "institution" }, // Dept (visible in table)
-      { data: "title" }, // Page title (visible in table)
+      { data: "problemDate", width:'5%' }, // Date (visible in table)
+      { data: "problemDetails", width:'50%' }, // Comments (visible in table)
+      { data: "institution",width: '5%'}, // Dept (visible in table)
+      { data: "title", width: '15%' }, // Page title (visible in table)
       {
-        data: "url",
+        data: "url", width: '25%',
         render: function (data, type, row) {
           // Wrap any content of the 'url' column with an anchor tag
           return '<a href="' + data + '" target="_blank">' + data + "</a>";
@@ -256,15 +256,14 @@ $(document).ready(function () {
     // Reload DataTables to reflect the reset date range
     table.ajax.reload();
   });
-  $('#downloadCSV').on('click', function(e) { // Notice the 'e' parameter here
-    e.preventDefault(); // Use the passed event object
+$('#downloadCSV').on('click', function() { // Removed the 'e' parameter
     table.button('.buttons-csv').trigger();
 });
 
-$('#downloadExcel').on('click', function(e) { // Notice the 'e' parameter here
-    e.preventDefault(); // Use the passed event object
+$('#downloadExcel').on('click', function() { // Removed the 'e' parameter
     table.button('.buttons-excel').trigger();
 });
+
 
   $("#language, #department, #section, #theme").on("change", function () {
     table.ajax.reload();
