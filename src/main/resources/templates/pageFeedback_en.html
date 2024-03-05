@@ -83,7 +83,7 @@
                     <details id="filterDetails">
                         <summary id="filterSummary">See more filters</summary>
                         <p>
-                            <label for="section">Section
+                            <label for="section">Section<a href="#tooltip-section" aria-controls="tooltip-section" class="wb-lbx" role="button"><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span></a>
                                 <select id="section">
                                     <option value="">All</option>
                                     <!-- Additional options -->
@@ -129,7 +129,7 @@
                                 </select>
                             </label>
                             <span class="spacer">OR</span>
-                            <label for="theme">Theme
+                            <label for="theme">Theme<a href="#tooltip-theme" aria-controls="tooltip-theme" class="wb-lbx" role="button"><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span></a>
                                 <select id="theme">
                                     <option value="">All</option>
                                     <!-- aboutgov option -->
@@ -168,6 +168,23 @@
                 </form>
             </div>
         </div>
+        <section id="tooltip-section" class="mfp-hide modal-dialog modal-content overlay-def">
+            <header class="modal-header">
+                <h2 class="modal-title">Centred popup (Lightbox)</h2>
+            </header>
+            <div class="modal-body">
+                content for Section
+            </div>
+        </section>
+
+        <section id="tooltip-theme" class="mfp-hide modal-dialog modal-content overlay-def">
+            <header class="modal-header">
+                <h2 class="modal-title">Centred popup (Lightbox)</h2>
+            </header>
+            <div class="modal-body">
+                content for Theme
+            </div>
+        </section>
         <div class="clearfix"></div>
     </main>
 

@@ -1,5 +1,5 @@
 body {
-    font-family: Arial, sans-serif;
+    font-family: "Noto sans", sans-serif;
 }
 
 .daterangepicker .ranges li.active {
@@ -247,7 +247,13 @@ main {
     font-size: 16px; /* Adjust the font size */
     margin-top: 2pt;
 }
-
+.feedback-tool a:visited {
+    color: #284162;
+}
+.feedback-tool .glyphicon {
+    opacity:.5;
+    padding-left: 5px;
+}
 .custom-row {
     margin-left: 0;
     margin-right: 0;
