@@ -1,210 +1,253 @@
 <!DOCTYPE html>
-<html class="no-js" dir="ltr" th:lang="${session.lang}" xmlns:th="http://www.thymeleaf.org"
-  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-  xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
-
-<head>
-  <meta charset="utf-8" />
-  <!-- Web Experience Toolkit (WET) / Boîte à outils de l'expérience Web (BOEW) wet-boew.github.io/wet-boew/License-en.html / wet-boew.github.io/wet-boew/Licence-fr.html -->
-  <title th:text="#{title}"></title>
-  <meta content="width=device-width,initial-scale=1" name="viewport" />
-  <!-- Meta data -->
-  <meta name="description" th:content="#{description}" />
-  <!-- Meta data-->
-  <!-- Load closure template scripts -->
-
-  <script src="https://www.canada.ca/etc/designs/canada/cdts/gcweb/rn/cdts/compiled/soyutils.js"></script>
-  <script th:src="${'https://www.canada.ca/etc/designs/canada/cdts/gcweb/v4_0_44/cdts/compiled/wet-fr.js'}"></script>
-
-  <noscript>
-    <!-- Write closure fall-back static file -->
-    <!-- /ROOT/etc/designs/canada/cdts/gcweb/v4_0_31/cdts/static/refTop.html -->
-  </noscript>
-  <!-- Write closure template -->
-  <script>
-    document.write(wet.builder.refTop({ isApplication: true, cdnEnv: "prod" }));
-  </script>
-  <style>
-    .alpha-top {
-      font-size: 1.5rem;
-      background-color: #b8d7ff;
-      z-index: 100;
-      font-family: "Poppins", sans-serif;
-      box-shadow: rgba(60, 64, 67, 0.1) 0 1px 2px 3px, rgba(60, 64, 67, 0.35) 0 2px 6px 2px;
-    }
-
-    .app-bar {
-      background: #334d6f !important;
-    }
-
-    #wb-sm {
-      background: rgb(27 27 27) !important;
-      border-top: 3px solid black !important;
-      border-bottom: 3px solid #ffffff !important;
-    }
-
-    #wb-sm .menu>li a:hover {
-      background-color: rgb(103, 109, 152) !important;
-      color: white !important;
-      transition-duration: 0.3s !important;
-    }
-
-    #wb-sm .menu .wb-navcurr {
-      color: white !important;
-      background: white !important;
-    }
-
-    #wb-sm .menu>li>.wb-navcurr {
-      color: black !important;
-    }
-
-    #wb-sm .menu>li>.wb-navcurr:hover {
-      color: black !important;
-      background-color: white !important;
-    }
-
-    #wb-sm .menu>li>a {
-      color: white !important;
-      transition-duration: 0.3s !important;
-    }
-
-    #wb-sm .menu>li a:focus,
-    #wb-sm .menu .active,
-    #wb-sm .menu .selected,
-    #wb-sm .sm.open li a:focus,
-    #wb-sm .sm.open li a:active,
-    #wb-sm .sm.open li summary:focus,
-    #wb-sm .sm.open li summary:active {
-      background: rgb(27, 27, 27) !important;
-    }
-
-    /*Menu bar - list items*/
-    #wb-sm .menu>li,
-    #wb-sm .menu>li:last-child {
-      border-color: rgb(27, 27, 27) !important;
-      border-width: 3px;
-    }
-
-    label {
-      margin-bottom: 0 !important;
-    }
-  </style>
-</head>
-
-<body vocab="http://schema.org/" typeof="WebPage">
-  <section class="experimental alpha-top">
-    <h2 class="wb-inv">Alpha</h2>
-    <div class="container">
-      <label class="alpha-label">Alpha</label>
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-      <p style="display: inline">Ceci est une version expérimentale de Canada.ca destinée à être testée par le public.
-      </p>
-    </div>
-  </section>
-  <div id="def-top">
-    <!-- Write closure fall-back static file -->
-    <!-- /ROOT/etc/designs/canada/cdts/gcweb/v4_0_28/cdts/static/top-${lang}.html -->
-  </div>
-
-  <!-- Write closure template -->
-  <script sec:authorize="hasAuthority('ADMIN')">
-    var defTop = document.getElementById("def-top");
-    defTop.outerHTML = wet.builder.appTop({
-      cdnEnv: "prod",
-      appName: [
-        {
-          text: "[[#{title}]]",
-          href: "/pageFeedback",
-        },
-      ],
-      menuPath: "/menu/admin_[[${session.lang}]].html",
-      signOut: [
-        {
-          href: "/logout",
-        },
-      ],
-      lngLinks: [
-        {
-          lang: "[[${session.altLang}]]",
-          href: "[[${session.langUrl}]]",
-          text: "[[${session.altLangText}]]",
-        },
-      ],
-    });
-  </script>
-  <script sec:authorize="hasAuthority('USER')">
-    var defTop = document.getElementById("def-top");
-    defTop.outerHTML = wet.builder.appTop({
-      cdnEnv: "prod",
-      appName: [
-        {
-          text: "[[#{title}]]",
-          href: "/pageFeedback",
-        },
-      ],
-      menuPath: "/menu/user_[[${session.lang}]].html",
-      signOut: [
-        {
-          href: "/logout",
-        },
-      ],
-      lngLinks: [
-        {
-          lang: "[[${session.altLang}]]",
-          href: "[[${session.langUrl}]]",
-          text: "[[${session.altLangText}]]",
-        },
-      ],
-    });
-  </script>
-  <script sec:authorize="isAnonymous()">
-    var defTop = document.getElementById("def-top");
-    defTop.outerHTML = wet.builder.appTop({
-      cdnEnv: "prod",
-      appName: [
-        {
-          text: "[[#{title}]]",
-          href: "/pageFeedback",
-        },
-      ],
-      lngLinks: [
-        {
-          lang: "[[${session.altLang}]]",
-          href: "[[${session.langUrl}]]",
-          text: "[[${session.altLangText}]]",
-        },
-      ],
-    });
-  </script>
-  <main role="main" property="mainContentOfPage" class="container-fluid">
-    <br />
-    <th:block layout:fragment="content"></th:block>
-    <div id="def-preFooter">
+<html class="no-js" dir="ltr" th:lang="${session.lang}" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+  <head>
+    <meta charset="utf-8" />
+    <!-- Web Experience Toolkit (WET) / Boîte à outils de l'expérience Web (BOEW) wet-boew.github.io/wet-boew/License-en.html / wet-boew.github.io/wet-boew/Licence-fr.html -->
+    <title th:text="#{title}"></title>
+    <meta content="width=device-width,initial-scale=1" name="viewport" />
+    <!-- Meta data -->
+    <meta name="description" th:content="#{description}" />
+    <!-- Meta data-->
+    <!-- Load closure template scripts -->
+    <script src="https://www.canada.ca/etc/designs/canada/cdts/gcweb/rn/cdts/compiled/soyutils.js"></script>
+    <script th:src="${'https://www.canada.ca/etc/designs/canada/cdts/gcweb/rn/cdts/compiled/wet-fr.js'}"></script>
+    <noscript>
       <!-- Write closure fall-back static file -->
-      <!-- /ROOT/etc/designs/canada/cdts/gcweb/v4_0_28/cdts/static/preFooter-${lang}.html -->
+      <!-- /ROOT/etc/designs/canada/cdts/gcweb/v4_0_28/cdts/static/refTop.html -->
+      <!--#include virtual="/app/cls/WET/gcweb/v4_0_28/cdts/static/refTop.html" -->
+    </noscript>
+    <!-- Write closure template -->
+    <script>
+      document.write(
+        wet.builder.refTop({
+          isApplication: true,
+          cdnEnv: "prod",
+        })
+      );
+    </script>
+    <style>
+      .alpha-top {
+        font-size: 1.5rem;
+        background-color: #b8d7ff;
+        z-index: 100;
+        font-family: "Poppins", sans-serif;
+        box-shadow: rgba(60, 64, 67, 0.1) 0 1px 2px 3px, rgba(60, 64, 67, 0.35) 0 2px 6px 2px;
+      }
+
+      .app-bar {
+        background: #334d6f !important;
+      }
+
+      #wb-sm {
+        background: rgb(27 27 27) !important;
+        border-top: 3px solid black !important;
+        border-bottom: 3px solid #ffffff !important;
+      }
+
+      #wb-sm .menu > li a:hover {
+        background-color: rgb(103, 109, 152) !important;
+        color: white !important;
+        transition-duration: 0.3s !important;
+      }
+
+      #wb-sm .menu .wb-navcurr {
+        color: white !important;
+        background: white !important;
+      }
+
+      #wb-sm .menu > li > a:not(.wb-navcurr) {
+        box-shadow: inset 0 -4px 8px -4px rgba(0, 0, 0, 0.5);
+      }
+
+      #wb-sm .menu > li > .wb-navcurr {
+        color: black !important;
+      }
+
+      #wb-sm .menu > li > .wb-navcurr:hover {
+        color: black !important;
+        background-color: white !important;
+      }
+
+      #wb-sm .menu > li > a {
+        color: black;
+        transition-duration: 0.3s !important;
+        background-color: #d9d9d9;
+      }
+
+      #wb-sm .menu > li a:focus,
+      #wb-sm .menu .active,
+      #wb-sm .menu .selected,
+      #wb-sm .sm.open li a:focus,
+      #wb-sm .sm.open li a:active,
+      #wb-sm .sm.open li summary:focus,
+      #wb-sm .sm.open li summary:active {
+        background: rgb(27, 27, 27) !important;
+      }
+
+      /*Menu bar - list items*/
+      #wb-sm .menu > li,
+      #wb-sm .menu > li:last-child {
+        border-color: rgb(27, 27, 27) !important;
+        border-width: 3px;
+      }
+
+      .get-help-button {
+        color: white !important;
+        background-color: #0066bd !important;
+        /* Blue background color */
+      }
+
+      .get-help-button:hover {
+        background-color: #0056b3 !important;
+        /* Darker blue background color on hover */
+      }
+
+      label {
+        margin-bottom: 0 !important;
+      }
+    </style>
+  </head>
+  <body vocab="http://schema.org/" typeof="WebPage">
+    <section class="experimental alpha-top">
+      <h2 class="wb-inv">Alpha</h2>
+      <div class="container">
+        <label class="alpha-label">Alpha</label>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <p style="display: inline">Ceci est une version expérimentale de Canada.ca destinée à être testée par le public.</p>
+      </div>
+    </section>
+    <div id="def-top">
+      <!-- Write closure fall-back static file -->
+      <!-- /ROOT/etc/designs/canada/cdts/gcweb/v4_0_28/cdts/static/top-${lang}.html -->
+      <!--#include virtual="/app/cls/WET/gcweb/v4_0_28/cdts/static/top-${lang}.html" -->
     </div>
     <!-- Write closure template -->
-  </main>
-  <div id="def-footer">
-    <!-- Write closure fall-back static file -->
-    <!-- /ROOT/etc/designs/canada/cdts/gcweb/v4_0_28/cdts/static/footer-${lang}.html -->
-  </div>
-  <!-- Write closure template -->
-  <script>
-    var defFooter = document.getElementById("def-footer");
-    defFooter.outerHTML = wet.builder.appFooter({
-      dateModified: "9 Jan. 2024",
-      showShare: false,
-      showFeedback: false,
-      cdnEnv: "prod",
-      showFeatures: false,
-    });
-  </script>
-  <!-- Write closure template -->
-  <script>
-    document.write(wet.builder.refFooter({ cdnEnv: "prod", isApplication: true }));
-  </script>
-  <th:block layout:fragment="script"></th:block>
-</body>
-
+    <script sec:authorize="hasAuthority('ADMIN')">
+      var defTop = document.getElementById("def-top");
+      defTop.outerHTML = wet.builder.appTop({
+        cdnEnv: "prod",
+        appName: [
+          {
+            text: "[[#{title}]]",
+            href: "/pageFeedback",
+          },
+        ],
+        menuPath: "/menu/admin_[[${session.lang}]].html",
+        signOut: [
+          {
+            href: "/logout",
+          },
+        ],
+        lngLinks: [
+          {
+            lang: "[[${session.altLang}]]",
+            href: "[[${session.langUrl}]]",
+            text: "[[${session.altLangText}]]",
+          },
+        ],
+      });
+    </script>
+    <script sec:authorize="hasAuthority('USER')">
+      var defTop = document.getElementById("def-top");
+      defTop.outerHTML = wet.builder.appTop({
+        cdnEnv: "prod",
+        appName: [
+          {
+            text: "[[#{title}]]",
+            href: "/pageFeedback",
+          },
+        ],
+        menuPath: "/menu/user_[[${session.lang}]].html",
+        signOut: [
+          {
+            href: "/logout",
+          },
+        ],
+        lngLinks: [
+          {
+            lang: "[[${session.altLang}]]",
+            href: "[[${session.langUrl}]]",
+            text: "[[${session.altLangText}]]",
+          },
+        ],
+      });
+    </script>
+    <script sec:authorize="isAnonymous()">
+      var defTop = document.getElementById("def-top");
+      defTop.outerHTML = wet.builder.appTop({
+        cdnEnv: "prod",
+        appName: [
+          {
+            text: "[[#{title}]]",
+            href: "/pageFeedback",
+          },
+        ],
+        lngLinks: [
+          {
+            lang: "[[${session.altLang}]]",
+            href: "[[${session.langUrl}]]",
+            text: "[[${session.altLangText}]]",
+          },
+        ],
+      });
+    </script>
+    <main role="main" property="mainContentOfPage" class="container-fluid">
+      <br />
+      <th:block layout:fragment="content"></th:block>
+      <div id="def-preFooter">
+        <!-- Write closure fall-back static file -->
+        <!-- /ROOT/etc/designs/canada/cdts/gcweb/v4_0_28/cdts/static/preFooter-${lang}.html -->
+        <!--#include virtual="/app/cls/WET/gcweb/v4_0_28/cdts/static/preFooter-${lang}.html" -->
+      </div>
+      <!-- Write closure template -->
+      <script>
+        var defPreFooter = document.getElementById("def-preFooter");
+        defPreFooter.outerHTML = wet.builder.preFooter({
+          dateModified: "9 janv. 2024",
+          showShare: false,
+          showFeedback: false,
+        });
+      </script>
+    </main>
+    <div id="def-footer">
+      <!-- Write closure fall-back static file -->
+      <!-- /ROOT/app/cls/WET/gcweb/v4_0_29/cdts/static/footer-${lang}.html -->
+      <!--#include virtual="/app/cls/WET/gcweb/v4_0_29/cdts/static/footer-${lang}.html" -->
+    </div>
+    <!-- Write closure template -->
+    <script>
+      var defFooter = document.getElementById("def-footer");
+      defFooter.outerHTML = wet.builder.appFooter({
+        cdnEnv: "prod",
+        showFeatures: false,
+        footerSections: [
+          {
+            href: "https://conception.canada.ca/retroaction/index.html",
+            text: "Instructions sur l’outil de rétroaction sur la page",
+            newWindow: true,
+          },
+          {
+            href: "https://conception.canada.ca/sondage/index.html",
+            text: "Instructions sur le Sondage sur la réussite des tâches du GC",
+            newWindow: true,
+          },
+          {
+            href: "mailto:cds.dto-btn.snc@servicecanada.gc.ca",
+            text: "Contactez-nous",
+            newWindow: true,
+          },
+        ],
+      });
+    </script>
+    <!-- Write closure template -->
+    <script>
+      document.write(
+        wet.builder.refFooter({
+          cdnEnv: "prod",
+          isApplication: true,
+        })
+      );
+    </script>
+    <th:block layout:fragment="script"></th:block>
+  </body>
 </html>
