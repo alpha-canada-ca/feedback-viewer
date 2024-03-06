@@ -299,6 +299,12 @@ $(document).on('click', "a[href*='design.canada.ca']", function (e) {
     // Open the link in a new tab
     window.open($(this).attr('href'), '_blank');
 });
+     tippy('#section-tool-tip', {
+        content: 'My tooltip!',
+      });
+        tippy('#theme-tool-tip', {
+              content: 'My dasfsdaf!',
+            });
  var detailsElement = $('#filterDetails'); // Assuming you have an ID for the <details> tag
   var summaryElement = $('#filterSummary'); // Assuming you have an ID for the <summary> tag
 
