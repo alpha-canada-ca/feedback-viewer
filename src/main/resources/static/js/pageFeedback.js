@@ -6,7 +6,7 @@ $(document).ready(function () {
   }
 
   // Check if the 'lang' query parameter is set to 'fr'
-  var isFrench = getQueryParam("lang") === "fr";
+  var isFrench = langSession === "fr";
   var now = new Date();
   var formattedDate = now.getMonth() + 1 + "/" + now.getDate() + "/" + now.getFullYear();
 
