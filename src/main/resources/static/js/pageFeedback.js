@@ -1,4 +1,15 @@
 $(document).ready(function () {
+  // Function to parse the query string and get the value of a specific parameter
+  function getQueryParam(param) {
+    var searchParams = new URLSearchParams(window.location.search);
+    return searchParams.get(param);
+  }
+
+  // Check if the 'lang' query parameter is set to 'fr'
+  var isFrench = getQueryParam("lang") === "fr";
+  var now = new Date();
+  var formattedDate = now.getMonth() + 1 + "/" + now.getDate() + "/" + now.getFullYear();
+
   // Utility functions
   function debounce(func, delay) {
     let debounceTimer;
@@ -18,37 +29,9 @@ $(document).ready(function () {
       data.length = 2147483647;
       dt.one("preDraw", function (e, settings) {
         if (button[0].className.indexOf("buttons-excel") >= 0) {
-          $.fn.dataTable.ext.buttons.excelHtml5.available(dt, config)
-            ? $.fn.dataTable.ext.buttons.excelHtml5.action.call(
-                self,
-                e,
-                dt,
-                button,
-                config
-              )
-            : $.fn.dataTable.ext.buttons.excelFlash.action.call(
-                self,
-                e,
-                dt,
-                button,
-                config
-              );
+          $.fn.dataTable.ext.buttons.excelHtml5.available(dt, config) ? $.fn.dataTable.ext.buttons.excelHtml5.action.call(self, e, dt, button, config) : $.fn.dataTable.ext.buttons.excelFlash.action.call(self, e, dt, button, config);
         } else if (button[0].className.indexOf("buttons-csv") >= 0) {
-          $.fn.dataTable.ext.buttons.csvHtml5.available(dt, config)
-            ? $.fn.dataTable.ext.buttons.csvHtml5.action.call(
-                self,
-                e,
-                dt,
-                button,
-                config
-              )
-            : $.fn.dataTable.ext.buttons.csvFlash.action.call(
-                self,
-                e,
-                dt,
-                button,
-                config
-              );
+          $.fn.dataTable.ext.buttons.csvHtml5.available(dt, config) ? $.fn.dataTable.ext.buttons.csvHtml5.action.call(self, e, dt, button, config) : $.fn.dataTable.ext.buttons.csvFlash.action.call(self, e, dt, button, config);
         }
         dt.one("preXhr", function (e, s, data) {
           // DataTables thinks the first item displayed is index 0, but we're not drawing that.
@@ -77,12 +60,8 @@ $(document).ready(function () {
     $("#pages").val("");
 
     // Reset the Date Range Picker to the initial dates
-    $("#dateRangePicker")
-      .data("daterangepicker")
-      .setStartDate(moment(earliestDate));
-    $("#dateRangePicker")
-      .data("daterangepicker")
-      .setEndDate(moment(latestDate));
+    $("#dateRangePicker").data("daterangepicker").setStartDate(moment(earliestDate));
+    $("#dateRangePicker").data("daterangepicker").setEndDate(moment(latestDate));
     $("#dateRangePicker").val(earliestDate + " - " + latestDate); // Update the display
 
     // Reload the DataTable to reflect the reset filters
@@ -91,24 +70,13 @@ $(document).ready(function () {
 
   function getLastFiscalQuarter() {
     let today = moment();
-    let fiscalYearStart =
-      moment().month() < 3
-        ? moment().subtract(1, "year").month(3).startOf("month")
-        : moment().month(3).startOf("month"); // Adjust based on fiscal year starting in April
+    let fiscalYearStart = moment().month() < 3 ? moment().subtract(1, "year").month(3).startOf("month") : moment().month(3).startOf("month"); // Adjust based on fiscal year starting in April
     let quarterStart, quarterEnd;
 
     // Determine the current fiscal quarter
-    if (
-      today.isBetween(
-        fiscalYearStart,
-        fiscalYearStart.clone().add(2, "months").endOf("month")
-      )
-    ) {
+    if (today.isBetween(fiscalYearStart, fiscalYearStart.clone().add(2, "months").endOf("month"))) {
       // Last quarter is Q4 of the previous fiscal year
-      quarterStart = fiscalYearStart
-        .clone()
-        .subtract(1, "year")
-        .add(9, "months");
+      quarterStart = fiscalYearStart.clone().subtract(1, "year").add(9, "months");
       quarterEnd = fiscalYearStart.clone().subtract(1, "day");
     } else if (today.isBefore(fiscalYearStart.clone().add(6, "months"))) {
       // Last quarter is Q1
@@ -129,6 +97,7 @@ $(document).ready(function () {
 
   // DataTable initialization
   var table = $("#myTable").DataTable({
+    language: isFrench ? { url: "//cdn.datatables.net/plug-ins/1.10.21/i18n/French.json" } : undefined,
     stripeClasses: [],
     bSortClasses: false,
     order: [[0, "desc"]],
@@ -166,7 +135,7 @@ $(document).ready(function () {
         }
       },
       error: function (xhr, error, thrown) {
-        alert("Error retrieving data. Please refresh the page and try again.");
+        alert(isFrench ? "Erreur lors de la récupération des données. Veuillez rafraîchir la page et réessayer." : "Error retrieving data. Please refresh the page and try again.");
         console.log("xhr: " + xhr);
         console.log("error: " + error);
         console.log("thrown : " + thrown);
@@ -175,7 +144,6 @@ $(document).ready(function () {
     buttons: [
       {
         extend: "csvHtml5",
-        text: "Download CSV",
         className: "btn btn-default",
         exportOptions: {
           columns: [0, 4, 3, 2, 5, 6, 1, 7, 8, 9, 10], // This will export only visible columns
@@ -184,11 +152,10 @@ $(document).ready(function () {
           },
         },
         action: newexportaction,
-        filename: "Page_feedback-" + new Date().toLocaleDateString(),
+        filename: (isFrench ? "Outil_de_retroaction-" : "Page_feedback-") + new Date().getFullYear() + "-" + ("0" + (new Date().getMonth() + 1)).slice(-2) + "-" + ("0" + new Date().getDate()).slice(-2),
       },
       {
         extend: "excelHtml5",
-        text: "Download Excel",
         className: "btn btn-default",
         exportOptions: {
           columns: [0, 4, 3, 2, 5, 6, 1, 7, 8, 9, 10], // This will export only visible columns
@@ -197,7 +164,7 @@ $(document).ready(function () {
           },
         },
         action: newexportaction,
-        filename: "Page_feedback-" + new Date().toLocaleDateString(),
+        filename: (isFrench ? "Outil_de_retroaction-" : "Page_feedback-") + new Date().getFullYear() + "-" + ("0" + (new Date().getMonth() + 1)).slice(-2) + "-" + ("0" + new Date().getDate()).slice(-2),
       },
     ],
     columns: [
@@ -228,7 +195,7 @@ $(document).ready(function () {
     settings: {
       hideSelected: true,
       keepOrder: true,
-      placeholderText: "Filter by full or partial page title",
+      placeholderText: isFrench ? "Filtre par URL complet ou partiel" : "Filter by full or partial page title",
       closeOnSelect: false,
     },
     events: {
@@ -238,7 +205,7 @@ $(document).ready(function () {
           clearTimeout(pageSelect.debounceTimer); // Clear existing timer
           pageSelect.debounceTimer = setTimeout(() => {
             if (search.length < 2) {
-              return reject("Search must be at least 2 characters");
+              return reject(isFrench ? "La recherche doit comporter au moins 2 caractères" : "Search must be at least 2 characters");
             }
 
             fetch("/pageTitles?search=" + encodeURIComponent(search), {
@@ -249,16 +216,14 @@ $(document).ready(function () {
             })
               .then((response) => {
                 if (!response.ok) {
-                  throw new Error("Network response was not ok");
+                  throw new Error(isFrench ? "La réponse du réseau n'était pas correcte" : "Network response was not ok");
                 }
                 return response.json();
               })
               .then((data) => {
                 const options = data
                   .filter((title) => {
-                    return !currentData.some(
-                      (optionData) => optionData.value === title
-                    );
+                    return !currentData.some((optionData) => optionData.value === title);
                   })
                   .map((title) => {
                     return { text: title, value: title };
@@ -294,28 +259,27 @@ $(document).ready(function () {
       maxDate: moment(latestDate),
       alwaysShowCalendars: true,
       locale: {
-        format: "YYYY-MM-DD",
-        cancelLabel: "Clear",
-        applyLabel: "Apply",
+        format: "YYYY/MM/DD",
+        cancelLabel: isFrench ? "Effacer" : "Clear",
+        applyLabel: isFrench ? "Appliquer" : "Apply",
+        customRangeLabel: isFrench ? "Période spécifique" : "Custom Range",
+        firstDay: isFrench ? 1 : 0, // Start with Monday
+        daysOfWeek: isFrench ? ["Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"] : undefined, // Define days for French
+        monthNames: isFrench ? ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"] : undefined, // Define months for French
       },
       ranges: {
-        "All Dates": [moment(earliestDate), moment(latestDate)],
-        Today: [moment(), moment()],
-        Yesterday: [moment().subtract(1, "days"), moment().subtract(1, "days")],
-        "Last 7 Days": [moment().subtract(6, "days"), moment()],
-        "Last 30 Days": [moment().subtract(29, "days"), moment()],
-        "This Month": [moment().startOf("month"), moment().endOf("month")],
-        "Last Month": [
-          moment().subtract(1, "month").startOf("month"),
-          moment().subtract(1, "month").endOf("month"),
-        ],
-        "Last Quarter": getLastFiscalQuarter(),
+        [isFrench ? "Toutes les dates" : "All Dates"]: [moment(earliestDate), moment(latestDate)],
+        [isFrench ? "Aujourd'hui" : "Today"]: [moment(), moment()],
+        [isFrench ? "Hier" : "Yesterday"]: [moment().subtract(1, "days"), moment().subtract(1, "days")],
+        [isFrench ? "7 derniers jours" : "Last 7 Days"]: [moment().subtract(6, "days"), moment()],
+        [isFrench ? "30 derniers jours" : "Last 30 Days"]: [moment().subtract(29, "days"), moment()],
+        [isFrench ? "Ce mois-ci" : "This Month"]: [moment().startOf("month"), moment().endOf("month")],
+        [isFrench ? "Le mois dernier" : "Last Month"]: [moment().subtract(1, "month").startOf("month"), moment().subtract(1, "month").endOf("month")],
+        [isFrench ? "Dernier trimestre" : "Last Quarter"]: getLastFiscalQuarter(),
       },
     },
     function (start, end, label) {
-      $("#dateRangePicker").val(
-        start.format("YYYY-MM-DD") + " - " + end.format("YYYY-MM-DD")
-      );
+      $("#dateRangePicker").val(start.format("YYYY/MM/DD") + " - " + end.format("YYYY/MM/DD"));
       // Reload the DataTable with the new date range from the input value.
       table.ajax.reload();
     }
@@ -326,11 +290,7 @@ $(document).ready(function () {
     picker.setStartDate(moment(earliestDate));
     picker.setEndDate(moment(latestDate));
     // Update the input field to show the earliest and latest dates
-    $("#dateRangePicker").val(
-      moment(earliestDate).format("YYYY-MM-DD") +
-        " - " +
-        moment(latestDate).format("YYYY-MM-DD")
-    );
+    $("#dateRangePicker").val(moment(earliestDate).format("YYYY/MM/DD") + " - " + moment(latestDate).format("YYYY/MM/DD"));
     // Reload DataTables to reflect the reset date range
     table.ajax.reload();
   });
@@ -343,17 +303,17 @@ $(document).ready(function () {
     table.button(".buttons-excel").trigger();
   });
 
-  $(document).on("click", "a[href*='design.canada.ca']", function (e) {
-    e.preventDefault();
-    window.open($(this).attr("href"), "_blank");
+  $(document).on("click", "a[href*='design.canada.ca'], a[href*='conception.canada.ca']", function (e) {
+    e.preventDefault(); // Prevent the default link behavior
+    window.open($(this).attr("href"), "_blank"); // Open the link in a new tab/window
   });
 
   tippy("#section-tool-tip", {
-    content: "A value manually added to select pages",
+    content: isFrench ? "Une valeur ajoutée manuellement à certaines pages" : "A value manually added to select pages",
   });
 
   tippy("#theme-tool-tip", {
-    content: "Canada.ca navigation themes",
+    content: isFrench ? "Thèmes de navigation de Canada.ca " : "Canada.ca navigation themes ",
   });
 
   var detailsElement = $("#filterDetails");
@@ -361,9 +321,9 @@ $(document).ready(function () {
 
   detailsElement.on("toggle", function () {
     if (detailsElement.prop("open")) {
-      summaryElement.text("See less filters");
+      summaryElement.text(isFrench ? "Voir moins de filtres" : "See less filters");
     } else {
-      summaryElement.text("See more filters");
+      summaryElement.text(isFrench ? "Voir plus de filtres" : "See more filters");
     }
   });
 
