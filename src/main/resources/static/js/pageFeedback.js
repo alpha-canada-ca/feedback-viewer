@@ -57,12 +57,15 @@ $(document).ready(function () {
   });
   var table = $("#myTable").DataTable({
     stripeClasses: [],
-    "bSortClasses": false,
+    bSortClasses: false,
     order: [[0, "desc"]],
     processing: true,
     serverSide: true,
     retrieve: true,
-    lengthMenu: [ [10, 25, 50, 100], [10, 25, 50, 100] ],
+    lengthMenu: [
+      [10, 25, 50, 100],
+      [10, 25, 50, 100],
+    ],
     orderCellsTop: true,
     fixedHeader: true,
     responsive: true,
@@ -125,12 +128,13 @@ $(document).ready(function () {
       },
     ],
     columns: [
-      { data: "problemDate", width:'6%' }, // Date (visible in table)
-      { data: "problemDetails", width:'50%' }, // Comments (visible in table)
-      { data: "institution",width: '6%'}, // Dept (visible in table)
-      { data: "title", width: '14%' }, // Page title (visible in table)
+      { data: "problemDate", width: "6%" }, // Date (visible in table)
+      { data: "problemDetails", width: "50%" }, // Comments (visible in table)
+      { data: "institution", width: "6%" }, // Dept (visible in table)
+      { data: "title", width: "14%" }, // Page title (visible in table)
       {
-        data: "url", width: '24%',
+        data: "url",
+        width: "24%",
         render: function (data, type, row) {
           // Wrap any content of the 'url' column with an anchor tag
           return '<a href="' + data + '" target="_blank">' + data + "</a>";
@@ -182,28 +186,56 @@ $(document).ready(function () {
   function newexportaction(e, dt, button, config) {
     var self = this;
     var oldStart = dt.settings()[0]._iDisplayStart;
-    dt.one('preXhr', function (e, s, data) {
-        // Just this once, load all data from the server...
-        data.start = 0;
-        data.length = 2147483647;
-        dt.one('preDraw', function (e, settings) {
-            if (button[0].className.indexOf('buttons-excel') >= 0) {
-                $.fn.dataTable.ext.buttons.excelHtml5.available(dt, config) ? $.fn.dataTable.ext.buttons.excelHtml5.action.call(self, e, dt, button, config) : $.fn.dataTable.ext.buttons.excelFlash.action.call(self, e, dt, button, config);
-            } else if (button[0].className.indexOf('buttons-csv') >= 0) {
-                $.fn.dataTable.ext.buttons.csvHtml5.available(dt, config) ? $.fn.dataTable.ext.buttons.csvHtml5.action.call(self, e, dt, button, config) : $.fn.dataTable.ext.buttons.csvFlash.action.call(self, e, dt, button, config);
-            }
-            dt.one('preXhr', function (e, s, data) {
-                // DataTables thinks the first item displayed is index 0, but we're not drawing that.
-                // Set the property to what it was before exporting.
-                settings._iDisplayStart = oldStart;
-                data.start = oldStart;
-            }); // Reload the grid with the original page. Otherwise, API functions like table.cell(this) don't work properly.
-            setTimeout(dt.ajax.reload, 0); // Prevent rendering of the full data to the DOM
-            return false;
-        });
+    dt.one("preXhr", function (e, s, data) {
+      // Just this once, load all data from the server...
+      data.start = 0;
+      data.length = 2147483647;
+      dt.one("preDraw", function (e, settings) {
+        if (button[0].className.indexOf("buttons-excel") >= 0) {
+          $.fn.dataTable.ext.buttons.excelHtml5.available(dt, config)
+            ? $.fn.dataTable.ext.buttons.excelHtml5.action.call(
+                self,
+                e,
+                dt,
+                button,
+                config
+              )
+            : $.fn.dataTable.ext.buttons.excelFlash.action.call(
+                self,
+                e,
+                dt,
+                button,
+                config
+              );
+        } else if (button[0].className.indexOf("buttons-csv") >= 0) {
+          $.fn.dataTable.ext.buttons.csvHtml5.available(dt, config)
+            ? $.fn.dataTable.ext.buttons.csvHtml5.action.call(
+                self,
+                e,
+                dt,
+                button,
+                config
+              )
+            : $.fn.dataTable.ext.buttons.csvFlash.action.call(
+                self,
+                e,
+                dt,
+                button,
+                config
+              );
+        }
+        dt.one("preXhr", function (e, s, data) {
+          // DataTables thinks the first item displayed is index 0, but we're not drawing that.
+          // Set the property to what it was before exporting.
+          settings._iDisplayStart = oldStart;
+          data.start = oldStart;
+        }); // Reload the grid with the original page. Otherwise, API functions like table.cell(this) don't work properly.
+        setTimeout(dt.ajax.reload, 0); // Prevent rendering of the full data to the DOM
+        return false;
+      });
     }); // Requery the server with the new one-time export settings
     dt.ajax.reload();
-};
+  }
 
   $(".reset-filters").on("click", function () {
     resetFilters();
@@ -213,8 +245,8 @@ $(document).ready(function () {
       opens: "left",
       startDate: moment(earliestDate),
       endDate: moment(latestDate),
-       minDate: moment(earliestDate), // Set the earliest selectable date
-        maxDate: moment(latestDate),
+      minDate: moment(earliestDate), // Set the earliest selectable date
+      maxDate: moment(latestDate),
       alwaysShowCalendars: true,
       locale: {
         format: "YYYY-MM-DD",
@@ -232,7 +264,7 @@ $(document).ready(function () {
           moment().subtract(1, "month").startOf("month"),
           moment().subtract(1, "month").endOf("month"),
         ],
-           "Last Quarter": getLastFiscalQuarter(),
+        "Last Quarter": getLastFiscalQuarter(),
       },
     },
     function (start, end, label) {
@@ -246,13 +278,24 @@ $(document).ready(function () {
   );
   function getLastFiscalQuarter() {
     let today = moment();
-    let fiscalYearStart = moment().month() < 3 ? moment().subtract(1, "year").month(3).startOf("month") : moment().month(3).startOf("month"); // Adjust based on fiscal year starting in April
+    let fiscalYearStart =
+      moment().month() < 3
+        ? moment().subtract(1, "year").month(3).startOf("month")
+        : moment().month(3).startOf("month"); // Adjust based on fiscal year starting in April
     let quarterStart, quarterEnd;
 
     // Determine the current fiscal quarter
-    if (today.isBetween(fiscalYearStart, fiscalYearStart.clone().add(2, "months").endOf("month"))) {
+    if (
+      today.isBetween(
+        fiscalYearStart,
+        fiscalYearStart.clone().add(2, "months").endOf("month")
+      )
+    ) {
       // Last quarter is Q4 of the previous fiscal year
-      quarterStart = fiscalYearStart.clone().subtract(1, "year").add(9, "months");
+      quarterStart = fiscalYearStart
+        .clone()
+        .subtract(1, "year")
+        .add(9, "months");
       quarterEnd = fiscalYearStart.clone().subtract(1, "day");
     } else if (today.isBefore(fiscalYearStart.clone().add(6, "months"))) {
       // Last quarter is Q1
@@ -285,34 +328,36 @@ $(document).ready(function () {
     // Reload DataTables to reflect the reset date range
     table.ajax.reload();
   });
-$('#downloadCSV').on('click', function() { // Removed the 'e' parameter
-    table.button('.buttons-csv').trigger();
-});
+  $("#downloadCSV").on("click", function () {
+    // Removed the 'e' parameter
+    table.button(".buttons-csv").trigger();
+  });
 
-$('#downloadExcel').on('click', function() { // Removed the 'e' parameter
-    table.button('.buttons-excel').trigger();
-});
-$(document).on('click', "a[href*='design.canada.ca']", function (e) {
+  $("#downloadExcel").on("click", function () {
+    // Removed the 'e' parameter
+    table.button(".buttons-excel").trigger();
+  });
+  $(document).on("click", "a[href*='design.canada.ca']", function (e) {
     // Prevent the default action
     e.preventDefault();
 
     // Open the link in a new tab
-    window.open($(this).attr('href'), '_blank');
-});
-     tippy('#section-tool-tip', {
-        content: 'A value manually added to select pages',
-      });
-        tippy('#theme-tool-tip', {
-              content: 'Canada.ca navigation themes',
-            });
- var detailsElement = $('#filterDetails'); // Assuming you have an ID for the <details> tag
-  var summaryElement = $('#filterSummary'); // Assuming you have an ID for the <summary> tag
+    window.open($(this).attr("href"), "_blank");
+  });
+  tippy("#section-tool-tip", {
+    content: "A value manually added to select pages",
+  });
+  tippy("#theme-tool-tip", {
+    content: "Canada.ca navigation themes",
+  });
+  var detailsElement = $("#filterDetails"); // Assuming you have an ID for the <details> tag
+  var summaryElement = $("#filterSummary"); // Assuming you have an ID for the <summary> tag
 
-  detailsElement.on('toggle', function() {
-    if (detailsElement.prop('open')) {
-      summaryElement.text('See less filters');
+  detailsElement.on("toggle", function () {
+    if (detailsElement.prop("open")) {
+      summaryElement.text("See less filters");
     } else {
-      summaryElement.text('See more filters');
+      summaryElement.text("See more filters");
     }
   });
   $("#language, #department, #section, #theme").on("change", function () {
