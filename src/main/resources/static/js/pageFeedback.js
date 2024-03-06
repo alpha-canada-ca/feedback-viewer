@@ -300,10 +300,10 @@ $(document).on('click', "a[href*='design.canada.ca']", function (e) {
     window.open($(this).attr('href'), '_blank');
 });
      tippy('#section-tool-tip', {
-        content: 'My tooltip!',
+        content: 'A value manually added to select pages',
       });
         tippy('#theme-tool-tip', {
-              content: 'My dasfsdaf!',
+              content: 'Canada.ca navigation themes',
             });
  var detailsElement = $('#filterDetails'); // Assuming you have an ID for the <details> tag
   var summaryElement = $('#filterSummary'); // Assuming you have an ID for the <summary> tag
