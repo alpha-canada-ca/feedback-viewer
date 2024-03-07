@@ -197,7 +197,8 @@ $(document).ready(function () {
       keepOrder: true,
       placeholderText: isFrench ? "Filtre par URL complet ou partiel" : "Filter by full or partial page title",
       searchText: isFrench ? 'Aucun résultat trouvé' : 'No results found',
-      searchPlaceholder: isFrench ? 'Recherche en cours...' : 'Searching...',
+      searchPlaceholder: isFrench ? 'Recherche' : 'Search',
+      searchingText : isFrench ? 'Recherche en cours...' : 'Searching...',
       closeOnSelect: false,
     },
     events: {
