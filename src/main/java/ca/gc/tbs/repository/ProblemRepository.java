@@ -29,6 +29,12 @@ public interface ProblemRepository extends DataTablesRepository<Problem, String>
     // New method to find the earliest and latest problemDate
 
     @Aggregation(pipeline = {
+            "{ '$group': { '_id': null, 'earliestDate': { '$min': '$problemDate' }, 'latestDate': { '$max': '$problemDate' } } }",
+            "{ '$project': { '_id': 0, 'earliestDate': 1, 'latestDate': 1 } }"
+    })
+    AggregationResults<Map> findEarliestAndLatestProblemDate();
+
+    @Aggregation(pipeline = {
             "{ '$match': { 'processed': 'true' } }", // Optional, adjust based on your requirements
             "{ '$group': { '_id': '$title' } }",
             "{ '$sort': { '_id': 1 } }" // Optional, sorts the page names alphabetically
