@@ -9,12 +9,14 @@ import org.apache.commons.csv.CSVRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.datatables.DataTablesInput;
 import org.springframework.data.mongodb.datatables.DataTablesOutput;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -25,6 +27,8 @@ import java.io.Reader;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
@@ -35,35 +39,8 @@ import static org.springframework.data.mongodb.core.query.Criteria.where;
 @Controller
 public class ProblemController {
 
-    public static final long DAY_IN_MS = 1000 * 60 * 60 * 24;
     private static final Logger LOG = LoggerFactory.getLogger(ProblemController.class);
-    private static final boolean ASC = true;
-    private static final boolean DESC = false;
-    private final HashMap<String, String> tagTranslations = new HashMap<>();
-    String[][] translations = {
-            /* ENGLISH, FRENCH */
-            {"The answer I need is missing", "La réponse dont j’ai besoin n’est pas là"},
-            {"The information isn't clear", "L'information n'est pas claire"},
-            {"I can't find the information", "Je ne peux pas trouver l'information"},
-            {"The information isn’t clear", "L'information n'est pas claire"},
-            {"I’m not in the right place", "Je ne suis pas au bon endroit"},
-            {"I'm not in the right place", "Je ne suis pas au bon endroit"},
-            {"Something is broken or incorrect", "Quelque chose est brisé ou incorrect"},
-            {"Other reason", "Autre raison"},
-            {"The information is hard to understand", "l'information est difficile à comprendre"},
-            {"Health", "Santé"}, {"Taxes", "Impôt"}, {"Travel", "Voyage"},
-            {"Public Health Agency of Canada", "Agence de santé publique du Canada"},
-            {"Health Canada", "Santé Canada"}, {"CRA", "ARC"}, {"ISED", "ISDE"}, {"Example", "Exemple"},
-            {"CEWS", "SSUC"}, {"CRSB", "PCMRE"}, {"CRB", "PCRE"}, {"CRCB", "PCREPA"}, {"CERS", "SUCL"},
-            {"Vaccines", "Vaccins"}, {"Business", "Entreprises"}, {"WFHE", "DTDE"},
-            {"travel-wizard", "assistant-voyage"}, {"PTR", "DRP"}, {"COVID Alert", "Alerte COVID"},
-            {"Financial Consumer Agency of Canada", "Agence de la consommation en matière financière du Canada"},
-            {"National Research Council", "Conseil national de recherches"},
-            {"Department of Fisheries and Oceans", "Pêches et Océans Canada"},
-            {"Money and finances", "Argent et finances"}, {"Science and innovation", "Science et innovation"},
-            {"Environment and natural resources", "Environnement et ressources naturelles"}};
-    private final HashMap<String, String> translationsMap = new HashMap<>(translations.length);
-    private int totalComments = 0;
+
     @Autowired
     private ProblemRepository problemRepository;
 
@@ -118,6 +95,7 @@ public class ProblemController {
         institutionMappings.put("PSPC", Arrays.asList("PSPC", "SPAC", "PUBLIC SERVICES AND PROCUREMENT CANADA", "SERVICES PUBLICS ET APPROVISIONNEMENT CANADA", "GOUVERNEMENT DU CANADA, SERVICES PUBLICS ET APPROVISIONNEMENT CANADA", "GOVERNMENT OF CANADA, PUBLIC SERVICES AND PROCUREMENT CANADA", "PSPC/SPAC"));
         institutionMappings.put("RCMP", Arrays.asList("RCMP", "GRC", "ROYAL CANADIAN MOUNTED POLICE", "GENDARMERIE ROYALE DU CANADA", "RCMP/GRC"));
         institutionMappings.put("STATCAN", Arrays.asList("STATCAN", "STATISTIQUE CANADA"));
+        institutionMappings.put("SC", Arrays.asList("SC", "SC", "SERVICE CANADA", "SERVICE CANADA", "SC/SC"));
         institutionMappings.put("TBS", Arrays.asList("TBS", "SCT", "TREASURY BOARD OF CANADA SECRETARIAT", "SECRÉTARIAT DU CONSEIL DU TRÉSOR DU CANADA", "TBS/SCT"));
         institutionMappings.put("TC", Arrays.asList("TC", "TC", "TRANSPORT CANADA", "TRANSPORTS CANADA"));
         institutionMappings.put("VAC", Arrays.asList("VAC", "ACC", "VETERANS AFFAIRS CANADA", "ANCIENS COMBATTANTS CANADA", "VAC/ACC"));
@@ -128,67 +106,121 @@ public class ProblemController {
         institutionMappings.put("IOGC", Arrays.asList("IOGC", "BPGI", "INDIAN OIL AND GAS CANADA", "BUREAU DU PÉTROLE ET DU GAZ DES INDIENS", "IOGC/BPGI"));
         institutionMappings.put("CANNOR", Arrays.asList("CANNOR", "RNCAN", "CANADIAN NORTHERN ECONOMIC DEVELOPMENT AGENCY", "AGENCE CANADIENNE DE DÉVELOPPEMENT ÉCONOMIQUE DU NORD", "CANNOR/RNCAN"));
         institutionMappings.put("SST", Arrays.asList("SST", "TSS", "SOCIAL SECURITY TRIBUNAL OF CANADA", "TRIBUNAL DE LA SÉCURITÉ SOCIALE DU CANADA", "SST/TSS"));
-
     }
 
-    @GetMapping("/institutionMappings")
+    @GetMapping("/pageTitles")
     @ResponseBody
-    public Map<String, List<String>> getInstitutionMappings() {
-        return institutionMappings;
-    }
-
-    private static HashMap<String, Integer> sortByValue(HashMap<String, Integer> unsortMap, final boolean order) {
-        List<Entry<String, Integer>> list = new LinkedList<>(unsortMap.entrySet());
-
-        // Sorting the list based on values
-        list.sort((o1, o2) -> order ? o1.getValue().compareTo(o2.getValue()) == 0
-                ? o1.getKey().compareTo(o2.getKey())
-                : o1.getValue().compareTo(o2.getValue())
-                : o2.getValue().compareTo(o1.getValue()) == 0
-                ? o2.getKey().compareTo(o1.getKey())
-                : o2.getValue().compareTo(o1.getValue()));
-        return list.stream().collect(Collectors.toMap(Entry::getKey, Entry::getValue, (a, b) -> b, LinkedHashMap::new));
-
-    }
-
-    private static void printMap(HashMap<String, Integer> map) {
-        map.forEach((key, value) -> System.out.println("Key : " + key + " Value : " + value));
-    }
-
-    public void populateTranslationsMap() {
-        for (String[] translation : translations) {
-            translationsMap.put(translation[0], translation[1]);
+    public List<String> getPageTitles(@RequestParam(name = "search", required = false) String search) {
+        if (search != null && !search.isEmpty()) {
+            // Use the new repository method to filter page titles based on the search term
+            return problemRepository.findPageTitlesBySearch(search);
+        } else {
+            // Return all page titles if no search term is provided
+            return problemRepository.findDistinctPageNames();
         }
     }
 
-    // This function grabs all the models and associated URLs from the google
-    // spreadsheet.
-    public void importTagTranslations() throws Exception {
-        final Reader reader = new InputStreamReader(new URL(
-                "https://docs.google.com/spreadsheets/d/1xcoSXKwH0-_N_t056pfeEXzAXseZhpFMnvUsvmF0OBw/export?format=csv")
-                .openConnection().getInputStream(),
-                StandardCharsets.UTF_8);
-        final CSVParser parser = new CSVParser(reader, CSVFormat.DEFAULT.withHeader());
-        try {
-            for (final CSVRecord record : parser) {
-                try {
-                    if (!record.get("FRENCH_TAG").equals(""))
-                        tagTranslations.put(record.get("ENGLISH_TAG"), record.get("FRENCH_TAG"));
-                } catch (Exception e) {
-                    System.out.println(e.getMessage());
-                    e.printStackTrace();
+    @GetMapping(value = "/pageFeedback")
+    public ModelAndView pageFeedback(HttpServletRequest request) throws Exception {
+        ModelAndView mav = new ModelAndView();
+        String lang = (String) request.getSession().getAttribute("lang");
+
+        // Fetch the aggregation results
+        AggregationResults<Map> results = problemRepository.findEarliestAndLatestProblemDate();
+        Map<String, String> dateMap = results.getUniqueMappedResult();
+
+        if (dateMap != null) {
+            mav.addObject("earliestDate", dateMap.get("earliestDate"));
+            mav.addObject("latestDate", dateMap.get("latestDate"));
+        } else {
+            // Handle the case where no dates are returned
+            mav.addObject("earliestDate", "N/A");
+            mav.addObject("latestDate", "N/A");
+        }
+        mav.addObject("lang", lang);
+
+        mav.setViewName("pageFeedback_" + lang);
+        return mav;
+    }
+
+    @GetMapping(value = "/feedbackData")
+    @ResponseBody
+    public DataTablesOutput<Problem> list(@Valid DataTablesInput input, HttpServletRequest request) {
+        String pageLang = (String) request.getSession().getAttribute("lang");
+        String language = request.getParameter("language"); // Existing language parameter handling
+        String department = request.getParameter("department"); // Retrieve the department parameter
+        String comments = request.getParameter("comments"); // Retrieve the comments filter parameter
+        String theme = request.getParameter("theme"); // Retrieve the theme filter parameter
+        String section = request.getParameter("section"); // Retrieve the section filter parameter
+        String url = request.getParameter("url"); // Retrieve the url filter parameter
+        String startDate = request.getParameter("startDate");
+        String endDate = request.getParameter("endDate");
+        String[] titles = request.getParameterValues("titles[]");
+
+        Criteria criteria = Criteria.where("processed").is("true");
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        if (startDate != null && endDate != null) {
+            LocalDate start = LocalDate.parse(startDate, formatter);
+            LocalDate end = LocalDate.parse(endDate, formatter);
+            criteria.and("problemDate").gte(start.format(formatter)).lte(end.format(formatter));
+        }
+
+        if (theme != null && !theme.isEmpty()) {
+            criteria.and("theme").is(theme);
+        }
+        if (section != null && !section.isEmpty()) {
+            criteria.and("section").is(section);
+        }
+        // Language filtering (existing logic)
+        if (language != null && !language.isEmpty()) {
+            criteria.and("language").is(language);
+        }
+        if (titles != null && titles.length > 0) {
+            // Create a list to hold the title criteria
+            List<Criteria> titleCriterias = new ArrayList<>();
+            // Iterate over the titles and add each one as a criterion
+            for (String title : titles) {
+                titleCriterias.add(Criteria.where("title").is(title));
+            }
+            // Combine all title criteria using AND operation
+            criteria.orOperator(titleCriterias.toArray(new Criteria[0]));
+            System.out.println("Titles received: " + Arrays.toString(titles));
+        }
+        // URL filtering
+        if (url != null && !url.isEmpty()) {
+            criteria.and("url").regex(url, "i"); // 'i' for case-insensitive matching
+        }
+        // Department filtering based on institutionMappings
+        if (department != null && !department.isEmpty()) {
+            Set<String> matchingVariations = new HashSet<>();
+            // Filter variations based on department:
+            for (Map.Entry<String, List<String>> entry : institutionMappings.entrySet()) {
+                if (entry.getValue().stream().anyMatch(variation -> variation.equalsIgnoreCase(department))) {
+                    matchingVariations.addAll(entry.getValue());
                 }
             }
-        } finally {
-            parser.close();
-            reader.close();
+            if (!matchingVariations.isEmpty()) {
+                criteria.and("institution").in(matchingVariations);
+            }
         }
+        // Comments filtering
+        if (comments != null && !comments.isEmpty()) {
+            // Assuming 'problemDetails' field contains the comments
+            criteria.and("problemDetails").regex(comments, "i"); // 'i' for case-insensitive matching
+        }
+        // Execute the query with the built criteria
+        DataTablesOutput<Problem> results = problemRepository.findAll(input, criteria);
+        // Update institution names in the results based on the language
+        setInstitution(results, pageLang);
+        // Return the updated results
+        return results;
     }
 
-    private void setInstitutionAndTags(DataTablesOutput<Problem> problems, String lang) {
+
+    private void setInstitution(DataTablesOutput<Problem> problems, String lang) {
         for (Problem problem : problems.getData()) {
             String currentInstitution = problem.getInstitution();
-
             for (Map.Entry<String, List<String>> entry : institutionMappings.entrySet()) {
                 if (entry.getValue().contains(currentInstitution)) {
                     // Assuming the translated institution name is at index 1 for French and index 0 for other languages
@@ -196,204 +228,7 @@ public class ProblemController {
                     break; // Exit the loop once the institution is found and updated
                 }
             }
-
-            if (lang.equalsIgnoreCase("fr")) {
-                problem.setProblem(translationsMap.get(problem.getProblem()));
-
-                List<String> tags = problem.getTags();
-                for (int j = 0; j < tags.size(); j++) {
-                    if (tagTranslations.containsKey(tags.get(j)))
-                        tags.set(j, tagTranslations.get(tags.get(j)));
-                }
-            }
         }
-    }
-
-
-    @GetMapping(value = "/pageFeedback")
-    public ModelAndView pageFeedback(HttpServletRequest request) throws Exception {
-        ModelAndView mav = new ModelAndView();
-        String lang = (String) request.getSession().getAttribute("lang");
-        importTagTranslations();
-        populateTranslationsMap();
-        mav.setViewName("pageFeedback_" + lang);
-        return mav;
-    }
-
-    @GetMapping(value = "/problemData")
-    @ResponseBody
-    public DataTablesOutput<Problem> list(@Valid DataTablesInput input, HttpServletRequest request) {
-        Criteria findProcessed = where("processed").is("true");
-
-        String lang = (String) request.getSession().getAttribute("lang");
-        String dateSearchVal = input.getColumn("problemDate").get().getSearch().getValue();
-        String institutionSearchVal = input.getColumn("institution").get().getSearch().getValue();
-        String sectionSearchVal = input.getColumn("section").get().getSearch().getValue();
-        String themeSearchVal = input.getColumn("theme").get().getSearch().getValue();
-
-        String pattern = "yyyy-MM-dd";
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-        input.getColumn("problemDate").get().getSearch().setValue("");
-        Criteria dateCriteria = buildDateCriteria(dateSearchVal, simpleDateFormat);
-
-        Criteria institutionCriteria = buildInstitutionCriteria(institutionSearchVal);
-
-        if (containsTilde(institutionSearchVal, sectionSearchVal, themeSearchVal)) {
-            return processProblemsWithTilde(input, lang, findProcessed, institutionCriteria, institutionSearchVal, sectionSearchVal,
-                    themeSearchVal);
-        }
-
-        return findProblemsWithCriteria(input, findProcessed, dateCriteria, institutionCriteria, lang);
-    }
-
-
-    private DataTablesOutput<Problem> findProblemsWithCriteria(DataTablesInput input, Criteria findProcessed,
-                                                               Criteria dateCriteria, Criteria instCriteria, String lang) {
-        DataTablesOutput<Problem> problems;
-        if (dateCriteria != null && instCriteria != null) {
-            problems = problemRepository.findAll(input, dateCriteria.andOperator(instCriteria), findProcessed);
-        } else if (dateCriteria != null) {
-            problems = problemRepository.findAll(input, dateCriteria, findProcessed);
-        } else if (instCriteria != null) {
-            problems = problemRepository.findAll(input, instCriteria, findProcessed);
-        } else {
-            problems = problemRepository.findAll(input, findProcessed);
-        }
-
-        setInstitutionAndTags(problems, lang);
-        return problems;
-    }
-
-    private Criteria buildDateCriteria(String dateSearchVal, SimpleDateFormat simpleDateFormat) {
-        if (dateSearchVal.contains(":")) {
-            return buildDateRangeCriteria(dateSearchVal);
-        } else {
-            return buildSingleDateCriteria(dateSearchVal, simpleDateFormat);
-        }
-    }
-
-    private Criteria buildDateRangeCriteria(String dateSearchVal) {
-        String[] ret = dateSearchVal.split(":");
-
-        if (ret.length == 2) {
-            String dateSearchValA = ret[0];
-            String dateSearchValB = ret[1];
-
-            return where("problemDate").gte(dateSearchValA).lte(dateSearchValB);
-        }
-        return null;
-    }
-
-    private Criteria buildInstitutionCriteria(String instSearchVal) {
-        if (instSearchVal.contains("|")) {
-
-            String[] ret = instSearchVal.split("\\|");
-
-
-            //build a criteria for each value
-            Criteria[] criteria = new Criteria[ret.length];
-            for (int i = 0; i < ret.length; i++) {
-                criteria[i] = where("institution").is(ret[i]);
-            }
-
-            //return the criteria
-            return new Criteria().orOperator(criteria);
-        }
-        return null;
-
-    }
-
-    private Criteria buildSingleDateCriteria(String dateSearchVal, SimpleDateFormat simpleDateFormat) {
-        String startDate = null;
-        String endDate = null;
-
-        if (dateSearchVal.contains("today")) {
-            startDate = simpleDateFormat.format(new Date(System.currentTimeMillis()));
-        } else if (dateSearchVal.contains("yesterday")) {
-            startDate = simpleDateFormat.format(new Date(System.currentTimeMillis() - DAY_IN_MS));
-            endDate = simpleDateFormat.format(new Date(System.currentTimeMillis()));
-        } else if (dateSearchVal.contains("seven")) {
-            startDate = simpleDateFormat.format(new Date(System.currentTimeMillis() - (7 * DAY_IN_MS)));
-        } else if (dateSearchVal.contains("fifteen")) {
-            startDate = simpleDateFormat.format(new Date(System.currentTimeMillis() - (15 * DAY_IN_MS)));
-        } else if (dateSearchVal.contains("thirty")) {
-            startDate = simpleDateFormat.format(new Date(System.currentTimeMillis() - (30 * DAY_IN_MS)));
-        }
-
-        if (startDate != null) {
-            if (endDate != null) {
-                return where("problemDate").gte(startDate).lt(endDate);
-            } else {
-                return where("problemDate").gte(startDate);
-            }
-        }
-        return null;
-    }
-
-
-    private boolean containsTilde(String... searchValues) {
-        return Arrays.stream(searchValues).anyMatch(searchVal -> searchVal.contains("~"));
-    }
-
-    private void updateInputSearchValuesWithTilde(DataTablesInput input, String searchVal, String columnName) {
-        if (!searchVal.isEmpty()) {
-            String updatedValue = searchVal.substring(0, searchVal.length() - 2);
-            input.getColumn(columnName).get().getSearch().setValue(updatedValue);
-        }
-    }
-
-    private DataTablesOutput<Problem> processProblemsWithTilde(DataTablesInput input, String lang,
-                                                               Criteria findProcessed, Criteria instCriteria,
-                                                               String deptSearchVal, String sectionSearchVal, String themeSearchVal) {
-        updateInputSearchValuesWithTilde(input, deptSearchVal, "institution");
-        updateInputSearchValuesWithTilde(input, sectionSearchVal, "section");
-        updateInputSearchValuesWithTilde(input, themeSearchVal, "theme");
-
-        input.setStart(0);
-        input.setLength(-1);
-
-        DataTablesOutput<Problem> urls = problemRepository.findAll(input, instCriteria, findProcessed);
-
-        HashMap<String, Integer> urlCountMap = new HashMap<>();
-        HashMap<String, List<String>> urlCountMap2 = new HashMap<>();
-
-        for (int i = 0; i < urls.getData().size(); i++) {
-            int count = urlCountMap.getOrDefault(urls.getData().get(i).getUrl(), 0);
-            urlCountMap.put(urls.getData().get(i).getUrl(), count + 1);
-            urlCountMap2.put(urls.getData().get(i).getUrl(), Arrays.asList(urls.getData().get(i).getTitle(),
-                    urls.getData().get(i).getLanguage(), urls.getData().get(i).getInstitution(),
-                    urls.getData().get(i).getTheme(), urls.getData().get(i).getSection()));
-        }
-
-        HashMap<String, Integer> sortedUrlCountMap = sortByValue(urlCountMap, DESC);
-
-        ArrayList<Problem> urlList = new ArrayList<>();
-        int index = 0;
-        totalComments = 0;
-        for (String key : sortedUrlCountMap.keySet()) {
-            totalComments += urlCountMap.get(key);
-            urls.getData().get(index).setUrl(key);
-            urls.getData().get(index).setUrlEntries(sortedUrlCountMap.get(key));
-            urls.getData().get(index).setTitle(urlCountMap2.get(key).get(0));
-            urls.getData().get(index).setLanguage(urlCountMap2.get(key).get(1));
-            urls.getData().get(index).setInstitution(urlCountMap2.get(key).get(2));
-            urls.getData().get(index).setTheme(urlCountMap2.get(key).get(3));
-            urls.getData().get(index).setSection(urlCountMap2.get(key).get(4));
-            urlList.add(urls.getData().get(index));
-            index++;
-        }
-
-        urls.setRecordsFiltered(sortedUrlCountMap.size());
-        urls.setData(urlList);
-
-        setInstitutionAndTags(urls, lang);
-        return urls;
-    }
-
-    @RequestMapping(value = "/pageFeedback/totalCommentsCount")
-    @ResponseBody
-    public String totalCommentsCount() {
-        return String.valueOf(totalComments);
     }
 
     public UserService getUserService() {

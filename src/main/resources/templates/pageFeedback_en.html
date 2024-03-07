@@ -1,734 +1,199 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
-    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{wide_en}" lang="en">
-<th:block layout:fragment="content">
-    <link href='https://fonts.googleapis.com/css?family=Open Sans' rel='stylesheet'>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
-    <style>
-        th {
-            font-size: 12px;
-        }
-
-        td {
-            font-size: 12px;
-        }
-
-        .container .content {
-            padding: 5px;
-        }
-
-        .hidden {
-            display: none;
-        }
-
-        .table.dataTable {
-            font-family: Verdana, Geneva, Tahoma, sans-serif;
-            font-size: 12px;
-        }
-
-        .dataTables_filter input {
-            height: 35px;
-            width: 150px;
-        }
-
-        .dataTables_filter {
-            font-size: 15px;
-        }
-
-        .dataTables_length {
-            font-size: 12px;
-        }
-
-        .dataTables_info {
-            font-size: 12px;
-        }
-
-        .dataTables_paginate {
-            font-size: 12px;
-        }
-
-        .dt-button {
-            text-align: center;
-            font-size: 12px;
-        }
-
-        #rangeSelection {
-            margin-left: 1rem;
-        }
-
-        .fa {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-        }
-    </style>
-    <div class="container">
-        <h1>Page feedback tool</h1>
-        <details open="true">
-            <summary>Filter feedback </summary>
-            <h4 class="wb-inv">Filtering options</h4>
-            <form class="wb-tables-filter" data-bind-to="problemTable">
-                <div class="row">
-                    <div class="col-sm-6">
-                        <h4 class="h4">Filter options</h4>
-                        <p class="mrgn-tp-md">Use these filters to get page feedback</p>
-                    </div>
-                    <div class="col-sm-6">
-                        <h4 class="h4">Feedback admin</h4>
-                        <p class="mrgn-tp-md">Use these filters to get a list of pages using the
-                            feedback tool</p>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <label for="institution">Department</label>
-                            <select class="form-control" id="institution" name="institution" data-column="10">
-                                <option value="">All</option>
-                                <option value="CCG">CCG/GCC</option>
-                                <option value="CFIA">CFIA/ACIA</option>
-                                <option value="CIRNAC">CIRNAC/RCAANC</option>
-                                <option value="CRA">CRA/ARC</option>
-                                <option value="CSE">CSE/CST</option>
-                                <option value="DFO">DFO/MPO</option>
-                                <option value="DND">DND/MND</option>
-                                <option value="ECCC">ECCC/ECCC</option>
-                                <option value="ESDC">ESDC/EDSC</option>
-                                <option value="FCAC">FCAC/ACFC</option>
-                                <option value="FIN">FIN/FIN</option>
-                                <option value="GAC">GAC/AMC</option>
-                                <option value="HC">HC/SC</option>
-                                <option value="IRCC">IRCC/IRCC</option>
-                                <option value="ISC">ISC/SAC</option>
-                                <option value="ISED">ISED/ISDE</option>
-                                <option value="LAC">LAC/BAC</option>
-                                <option value="NRC">NRC/CNRC</option>
-                                <option value="SC">SC/SC</option>
-                                <option value="OMBDNDCAF">OMBDNDCAF/OMBMDNFAC</option>
-                                <option value="PS">PS/SP</option>
-                                <option value="PSPC">PSPC/SPAC</option>
-                                <option value="PHAC">PHAC/ASPC</option>
-                                <!-- <option value="SC">SC/SC</option> -->
-                                <option value="SST">SST/TSS</option>
-                                <option value="TBS">TBS/SCT</option>
-                                <!-- DEPARTMENTS -->
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="section">Section</label>
-                            <select class="form-control" id="section" name="section" data-column="8">
-                                <option value="">All</option>
-                                <option value="budget">Budget</option>
-                                <option value="business">Business</option>
-                                <option value="canada's parliamentary precinct">Canada's
-                                    Parliamentary Precinct</option>
-                                <option value="cerb">CERB</option>
-                                <option value="cers">CERS</option>
-                                <option value="cews-crhp">CEWS-CRHP</option>
-                                <option value="cews">CEWS</option>
-                                <option value="cig">CIG</option>
-                                <option value="corporate - job opportunities">corporate - job
-                                    opportunities</option>
-                                <option value="covid alert">COVID Alert</option>
-                                <option value="covid-19 data trends">COVID-19 data trends</option>
-                                <option value="covid">COVID</option>
-                                <option value="c&p">C&P</option>
-                                <option value="cpp retirement pension">CPP Retirement pension</option>
-                                <option value="crb">CRB</option>
-                                <option value="crsb">CRSB</option>
-                                <option value="dental">Dental</option>
-                                <option value="design system">Design system</option>
-                                <option value="disability">Disability</option>
-                                <option value="ecm">ECM</option>
-                                <option value="education">Education</option>
-                                <option value="employment insurance">Employment Insurance</option>
-                                <option value="eol">EOL</option>
-                                <option value="family">Family</option>
-                                <option value="fiona">Fiona</option>
-                                <option value="firearms">Firearms</option>
-                                <option value="funding">Funding</option>
-                                <option value="gst/hst">GST/HST</option>
-                                <option value="health">Health</option>
-                                <option value="health data">Health data</option>
-                                <option value="help centre">Help centre</option>
-                                <option value="housing">Housing</option>
-                                <option value="itb">ITB</option>
-                                <option value="job bank">Job bank</option>
-                                <option value="mortgages">Mortgages</option>
-                                <option value="msca">MSCA</option>
-                                <option value="msca-portal">MSCA-Portal</option>
-                                <option value="navigation">Navigation</option>
-                                <option value="obj">OBJ</option>
-                                <option value="old age security">Old Age Security</option>
-                                <option value="passports">Passports</option>
-                                <option value="pay">Pay</option>
-                                <option value="pensions">Pensions</option>
-                                <option value="pit">PIT</option>
-                                <option value="policy">Policy</option>
-                                <option value="ptr">PTR</option>
-                                <option value="r&a">Registration and Authentication</option>
-                                <option value="retirement planning">Retirement planning</option>
-                                <option value="sign in">Sign in</option>
-                                <option value="skills for success">Skills for Success</option>
-                                <option value="social development partnerships program">Social
-                                    Development Partnerships
-                                </option>
-                                <option value="travel-wizard">travel-wizard</option>
-                                <option value="ukraine">Ukraine</option>
-                                <option value="vaccines">Vaccines</option>
-                                <option value="wfhe">WFHE</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="theme">Theme</label>
-                            <select class="form-control" id="theme" name="theme" data-column="9"><!-- THEMES -->
-                                <option value="">All</option>
-                                <option value="aboutgov">About Gov</option>
-                                <option value="application status">Application status</option>
-                                <option value="benefits">Benefits</option>
-                                <option value="business">Business</option>
-                                <option value="canada and the world">Canada and the world</option>
-                                <option value="covid">COVID</option>
-                                <option value="culture, history and sport">Culture, history and
-                                    sport</option>
-                                <option value="defence">Defence</option>
-                                <option value="education/research">Education/Research</option>
-                                <option value="employment insurance">Employment Insurance</option>
-                                <option value="environment and natural resources">Environment
-                                    and Natural Resources
-                                </option>
-                                <option value="funding">Funding</option>
-                                <option value="health">Health</option>
-                                <option value="jobs">Jobs</option>
-                                <option value="money and finances">Money and Finances</option>
-                                <option value="policies">Policies</option>
-                                <option value="policing, justice and emergencies">Policing,
-                                    justice and emergencies
-                                </option>
-                                <option value="public service">Public Service</option>
-                                <option value="science and innovation">Science and Innovation</option>
-                                <option value="taxes">Taxes</option>
-                                <option value="top tasks">Top tasks</option>
-                                <option value="travel">Travel</option>
-                                <option value="youth">Youth</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="min">Custom Date Range <span class="wb-inv">from start
-                                    date</span></label>
-                            <div class="form-inline">
-                                <input type="date" class="form-control" id="min" name="min">
-                                <label for="max" class="ml-2 mr-2">to <span class="wb-inv">end
-                                        date</span></label>
-                                <input type="date" class="form-control" id="max" name="max">
-                            </div>
-                        </div>
-                        <div class="form-inline">
-                            <label for="rangeSelection">or choose <span class="wb-inv">from
-                                    start date</span></label>
-                            <select class="form-control" id="rangeSelection" name="rangeSelection">
-                                <option value="">Duration</option>
-                                <option value="today">Today</option>
-                                <option value="yesterday">Yesterday</option>
-                                <option value="seven">Last 7 days</option>
-                                <option value="fifteen">Last 15 days</option>
-                                <option value="thirty">Last 30 days</option>
-                            </select>
-                        </div>
-                        <br>
-                    </div>
-                    <div class="col-sm-6">
-                        <div class="form-group"><label for="institutionFA">Department</label>
-                            <select class="form-control" id="institutionFA" name="institutionFA" data-column="10">
-                                <option value="">All</option>
-                                <option value="CCG">CCG/GCC</option>
-                                <option value="CFIA">CFIA/ACIA</option>
-                                <option value="CIRNAC">CIRNAC/RCAANC</option>
-                                <option value="CRA">CRA/ARC</option>
-                                <option value="CSE">CSE/CST</option>
-                                <option value="DFO">DFO/MPO</option>
-                                <option value="DND">DND/MND</option>
-                                <option value="ECCC">ECCC/ECCC</option>
-                                <option value="EMPLOYMENT AND SOCIAL DEVELOPMENT CANADA">ESDC/EDSC</option>
-                                <option value="FCAC">FCAC/ACFC</option>
-                                <option value="FIN">FIN/FIN</option>
-                                <option value="GLOBAL AFFAIRS CANADA">GAC/AMC</option>
-                                <option value="HEALTH CANADA">HC/SC</option>
-                                <option value="IRCC">IRCC/IRCC</option>
-                                <option value="ISC">ISC/SAC</option>
-                                <option value="ISED">ISED/ISDE</option>
-                                <option value="LAC">LAC/BAC</option>
-                                <option value="NRC">NRC/CNRC</option>
-                                <option value="OMBDNDCAF">OMBDNDCAF/OMBMDNFAC</option>
-                                <option value="PS">PS/SP</option>
-                                <option value="PSPC">PSPC/SPAC</option>
-                                <option value="PUBLIC HEALTH AGENCY OF CANADA">PHAC/ASPC</option>
-                                <option value="SC">SC/SC</option>
-                                <option value="SST">SST/TSS</option>
-                                <option value="TBS">TBS/SCT</option>
-                                <!-- DEPARTMENTS -->
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="sectionFA">Section</label>
-                            <select class="form-control" id="sectionFA" name="sectionFA"
-                                data-column="8"><!-- SECTIONS -->
-                                <!--  -->
-                                <option value="">All</option>
-                                <option value="budget">Budget</option>
-                                <option value="business">Business</option>
-                                <option value="canada's parliamentary precinct">Canada's
-                                    Parliamentary Precinct</option>
-                                <option value="cerb">CERB</option>
-                                <option value="cers">CERS</option>
-                                <option value="cews-crhp">CEWS-CRHP</option>
-                                <option value="cews">CEWS</option>
-                                <option value="cig">CIG</option>
-                                <option value="corporate - job opportunities">corporate - job
-                                    opportunities</option>
-                                <option value="covid alert">COVID Alert</option>
-                                <option value="covid-19 data trends">COVID-19 data trends</option>
-                                <option value="covid">COVID</option>
-                                <option value="c&p">C&P</option>
-                                <option value="cpp retirement pension">CPP Retirement pension</option>
-                                <option value="crb">CRB</option>
-                                <option value="crsb">CRSB</option>
-                                <option value="dental">Dental</option>
-                                <option value="design system">Design system</option>
-                                <option value="disability">Disability</option>
-                                <option value="ecm">ECM</option>
-                                <option value="education">Education</option>
-                                <option value="employment insurance">Employment Insurance</option>
-                                <option value="eol">EOL</option>
-                                <option value="family">Family</option>
-                                <option value="fiona">Fiona</option>
-                                <option value="firearms">Firearms</option>
-                                <option value="funding">Funding</option>
-                                <option value="gst/hst">GST/HST</option>
-                                <option value="health">Health</option>
-                                <option value="health data">Health data</option>
-                                <option value="help centre">Help centre</option>
-                                <option value="housing">Housing</option>
-                                <option value="itb">ITB</option>
-                                <option value="job bank">Job bank</option>
-                                <option value="mortgages">Mortgages</option>
-                                <option value="msca">MSCA</option>
-                                <option value="msca-portal">MSCA-Portal</option>
-                                <option value="navigation">Navigation</option>
-                                <option value="obj">OBJ</option>
-                                <option value="old age security">Old Age Security</option>
-                                <option value="passports">Passports</option>
-                                <option value="pay">Pay</option>
-                                <option value="pensions">Pensions</option>
-                                <option value="pit">PIT</option>
-                                <option value="policy">Policy</option>
-                                <option value="ptr">PTR</option>
-                                <option value="r&a">Registration and Authentication</option>
-                                <option value="retirement planning">Retirement planning</option>
-                                <option value="sign in">Sign in</option>
-                                <option value="skills for success">Skills for Success</option>
-                                <option value="social development partnerships program">Social
-                                    Development Partnerships
-                                </option>
-                                <option value="travel-wizard">travel-wizard</option>
-                                <option value="ukraine">Ukraine</option>
-                                <option value="vaccines">Vaccines</option>
-                                <option value="wfhe">WFHE</option>
-                            </select>
-                        </div>
-                        <div class="form-group"><label for="themeFA">Theme</label>
-                            <select class="form-control" id="themeFA" name="themeFA" data-column="9">
-                                <option value="">All</option>
-                                <option value="aboutgov">About Gov</option>
-                                <option value="application status">Application status</option>
-                                <option value="benefits">Benefits</option>
-                                <option value="business">Business</option>
-                                <option value="canada and the world">Canada and the world</option>
-                                <option value="covid">COVID</option>
-                                <option value="culture, history and sport">Culture, history and
-                                    sport</option>
-                                <option value="defence">Defence</option>
-                                <option value="education/research">Education/Research</option>
-                                <option value="employment insurance">Employment Insurance</option>
-                                <option value="environment and natural resources">Environment
-                                    and Natural Resources
-                                </option>
-                                <option value="funding">Funding</option>
-                                <option value="health">Health</option>
-                                <option value="jobs">Jobs</option>
-                                <option value="money and finances">Money and Finances</option>
-                                <option value="policies">Policies</option>
-                                <option value="policing, justice and emergencies">Policing,
-                                    justice and emergencies
-                                </option>
-                                <option value="public service">Public Service</option>
-                                <option value="science and innovation">Science and Innovation</option>
-                                <option value="taxes">Taxes</option>
-                                <option value="top tasks">Top tasks</option>
-                                <option value="travel">Travel</option>
-                                <option value="youth">Youth</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                <div class="mrgn-lft-sm row">
-                    <!-- <button type="submit" class="btn btn-primary" aria-controls="problemTable">Filter</button>--><button
-                        type="reset" class="btn btn-primary" id="reset-to-default">Reset to
-                        defaults</button>
-                </div>
-                <br>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{wide_en}" lang="en">
+  <head>
+    <link href='https://fonts.googleapis.com/css?family=Noto+Sans' rel='stylesheet' type='text/css' />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" type="text/css" />
+    <link href="https://cdn.datatables.net/v/dt/jq-3.7.0/jszip-3.10.1/dt-1.13.10/b-2.4.2/b-html5-2.4.2/cr-1.7.0/fh-3.4.0/r-2.5.0/datatables.min.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+    <link rel="stylesheet" type="text/css" href="/css/pageFeedback_styles.css" />
+    <script src="https://unpkg.com/slim-select@latest/dist/slimselect.min.js"></script>
+    <link href="https://unpkg.com/slim-select@latest/dist/slimselect.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <th:block layout:fragment="content">
+      <main class="container">
+        <div class="col-lg-12">
+          <div class="row">
+            <h1 id="wb-cont">Page Feedback - Comments</h1>
+            <form class="feedback-tool">
+              <h2 class="h4">Filter by:</h2>
+              <div class="form-group">
+                <label for="department">Department</label>
+                <select class="form-control" id="department" name="department">
+                  <option value>All</option>
+                  <option value="CCG">CCG/GCC</option>
+                  <option value="CFIA">CFIA/ACIA</option>
+                  <option value="CIRNAC">CIRNAC/RCAANC</option>
+                  <option value="CRA">CRA/ARC</option>
+                  <option value="CSE">CSE/CST</option>
+                  <option value="DFO">DFO/MPO</option>
+                  <option value="DND">DND/MND</option>
+                  <option value="ECCC">ECCC/ECCC</option>
+                  <option value="ESDC">ESDC/EDSC</option>
+                  <option value="FCAC">FCAC/ACFC</option>
+                  <option value="FIN">FIN/FIN</option>
+                  <option value="GAC">GAC/AMC</option>
+                  <option value="HC">HC/SC</option>
+                  <option value="IRCC">IRCC/IRCC</option>
+                  <option value="ISC">ISC/SAC</option>
+                  <option value="ISED">ISED/ISDE</option>
+                  <option value="LAC">LAC/BAC</option>
+                  <option value="NRC">NRC/CNRC</option>
+                  <option value="OMBDNDCAF">OMBDNDCAF/OMBMDNFAC</option>
+                  <option value="PS">PS/SP</option>
+                  <option value="PSPC">PSPC/SPAC</option>
+                  <option value="PHAC">PHAC/ASPC</option>
+                  <option value="SC">SC/SC</option>
+                  <option value="SST">SST/TSS</option>
+                  <option value="TBS">TBS/SCT</option>
+                </select>
+              </div>
+              <label id="drp" for="dateRangePicker">Date Range <input type="text" id="dateRangePicker" name="dateRangePicker" readonly="readonly" style="background-color: white; cursor: pointer;" />
+              </label>
+              <div class="form-group">
+                <label for="language">Page Language</label>
+                <select class="form-control" id="language" name="language">
+                  <option value>All</option>
+                  <option value="en">English</option>
+                  <option value="fr">French</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="url">URL</label>
+                <input type="text" id="url" name="url" placeholder="Filter by full or partial URL">
+              </div>
+              <label for="pages">Page(s) <select id="pages" multiple></select>
+              </label>
+              <div class="form-group">
+                <label for="comments">Comments</label>
+                <input type="text" id="comments" name="comments" placeholder="Filter by keyword">
+              </div>
+              <details id="filterDetails">
+                <summary id="filterSummary">See more filters</summary>
+                <p>
+                  <label for="section">Section <span id="section-tool-tip" class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
+                    <select id="section">
+                      <option value>All</option>
+                      <!-- Additional options -->
+                      <option value="budget">Budget</option>
+                      <option value="business">Business</option>
+                      <option value="cig">CIG</option>
+                      <option value="corporate - job opportunities">corporate - job opportunities </option>
+                      <option value="covid-19 data trends">COVID-19 data trends</option>
+                      <option value="covid">COVID</option>
+                      <option value="c&p">C&P</option>
+                      <option value="cpp retirement pension">CPP Retirement pension</option>
+                      <option value="dental">Dental</option>
+                      <option value="disability">Disability</option>
+                      <option value="ecm">ECM</option>
+                      <option value="education">Education</option>
+                      <option value="employment insurance">Employment Insurance</option>
+                      <option value="eol">EOL</option>
+                      <option value="family">Family</option>
+                      <option value="funding">Funding</option>
+                      <option value="gst/hst">GST/HST</option>
+                      <option value="health">Health</option>
+                      <option value="health data">Health data</option>
+                      <option value="help centre">Help centre</option>
+                      <option value="housing">Housing</option>
+                      <option value="itb">ITB</option>
+                      <option value="job bank">Job bank</option>
+                      <option value="mortgages">Mortgages</option>
+                      <option value="msca">MSCA</option>
+                      <option value="navigation">Navigation</option>
+                      <option value="obj">OBJ</option>
+                      <option value="old age security">Old Age Security</option>
+                      <option value="passports">Passports</option>
+                      <option value="pay">Pay</option>
+                      <option value="pensions">Pensions</option>
+                      <option value="pit">PIT</option>
+                      <option value="ptr">PTR</option>
+                      <option value="retirement planning">Retirement planning</option>
+                      <option value="sign in">Sign in</option>
+                      <option value="skills for success">Skills for Success</option>
+                      <option value="ukraine">Ukraine</option>
+                      <option value="vaccines">Vaccines</option>
+                    </select>
+                  </label>
+                  <span class="spacer">OR</span>
+                  <label for="theme">Theme <span id="theme-tool-tip" class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
+                    <select id="theme">
+                      <option value>All</option>
+                      <!-- aboutgov option -->
+                      <option value="aboutgov">About Gov</option>
+                      <option value="benefits">Benefits</option>
+                      <option value="business">Business</option>
+                      <option value="canada and the world">Canada and the world</option>
+                      <option value="culture, history and sport">Culture, history and sport</option>
+                      <option value="defence">Defence</option>
+                      <option value="environment and natural resources">Environment and Natural Resources </option>
+                      <option value="health">Health</option>
+                      <option value="immigration">Immigration</option>
+                      <option value="indegeneous">Indigenous</option>
+                      <option value="jobs">Jobs</option>
+                      <option value="money and finances">Money and finances</option>
+                      <option value="policing, justice and emergencies">Policing, justice and emergencies </option>
+                      <option value="public service">Public service</option>
+                      <option value="science and innovation">Science and innovation</option>
+                      <option value="taxes">Taxes</option>
+                      <option value="travel">Travel</option>
+                      <option value="youth">Youth</option>
+                      <!-- Additional options -->
+                    </select>
+                  </label>
+                </p>
+              </details>
+              <div class="download-section">
+                <button type="button" class="btn btn-primary" id="downloadCSV">Download CSV</button>
+                <button type="button" class="btn btn-primary" id="downloadExcel">Download Excel</button>
+                <button type="button" class="btn-unstyled reset-filters" onclick="resetFilters()">Reset Filters</button>
+              </div>
             </form>
-        </details>
-    </div>
-    <div class="col-md-12">
-        <div class="table-responsive">
-            <table id="problemTable" class="small table hover display compact">
-                <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>Time stamp</th>
-                        <th>Comment</th>
-                        <th>Problem</th>
-                        <th>URL</th>
-                        <th>Page title</th>
-                        <th>Language</th>
-                        <th>Institution</th>
-                        <th>Section</th>
-                        <th>Theme</th>
-                        <th>Total comments</th>
-                        <th>Device type</th>
-                        <th>Browser</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
+          </div>
         </div>
-    </div>
-</th:block>
-<th:block layout:fragment="script">
-    <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/1.6.1/js/dataTables.buttons.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/1.6.1/js/buttons.flash.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
-    <script src="https://cdn.datatables.net/buttons/1.6.1/js/buttons.html5.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/1.6.1/js/buttons.print.min.js"></script>
-    <script src="https://cdn.datatables.net/colreorder/1.5.2/js/dataTables.colReorder.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/busy-load@0.1.2/src/index.min.js"></script>
-    <script type="text/javascript" src="js/spring-friendly.min.js"></script>
-    <script th:inline="javascript">
-        $(document).ready(function () {
-            function newexportaction(e, dt, button, config) {
-                var self = this;
-                var oldStart = dt.settings()[0]._iDisplayStart;
-                dt.one('preXhr', function (e, s, data) {
-                    // Just this once, load all data from the server...
-                    data.start = 0;
-                    data.length = 2147483647;
-                    dt.one('preDraw', function (e, settings) {
-                        if (button[0].className.indexOf('buttons-excel') >= 0) {
-                            $.fn.dataTable.ext.buttons.excelHtml5.available(dt, config) ? $.fn.dataTable.ext.buttons.excelHtml5.action.call(self, e, dt, button, config) : $.fn.dataTable.ext.buttons.excelFlash.action.call(self, e, dt, button, config);
-                        } else if (button[0].className.indexOf('buttons-csv') >= 0) {
-                            $.fn.dataTable.ext.buttons.csvHtml5.available(dt, config) ? $.fn.dataTable.ext.buttons.csvHtml5.action.call(self, e, dt, button, config) : $.fn.dataTable.ext.buttons.csvFlash.action.call(self, e, dt, button, config);
-                        }
-                        dt.one('preXhr', function (e, s, data) {
-                            // DataTables thinks the first item displayed is index 0, but we're not drawing that.
-                            // Set the property to what it was before exporting.
-                            settings._iDisplayStart = oldStart;
-                            data.start = oldStart;
-                        }); // Reload the grid with the original page. Otherwise, API functions like table.cell(this) don't work properly.
-                        setTimeout(dt.ajax.reload, 0); // Prevent rendering of the full data to the DOM
-                        return false;
-                    });
-                }); // Requery the server with the new one-time export settings
-                dt.ajax.reload();
-            };
-            const today = new Date().toLocaleDateString('en-CA');
-            $('#problemTable').find('thead th').append('<span class="sorting-cnt"><span class="sorting-icons"></span></span>')
-
-            var table = $('#problemTable').DataTable({
-                order: [
-                    [0, 'desc']
-                ],
-                processing: true,
-                language: {
-                    processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span>',
-                    "infoFiltered": "(filtered from _MAX_ total entries, 2023-10-01 to " + today + ")",
-                    error: 'Your session has timed out. Refresh the page and sign in again.'
-                },
-                lengthMenu: false,
-                drawCallback: fetchTotalCommentsCount,
-                retrieve: true,
-                ajax: {
-                    url: '/problemData',
-                    type: 'GET',
-                    error: function (xhr, error, thrown) {
-                        alert("Error retrieving data. Please refresh the page and try again.");
-                    }
-                },
-                serverSide: true,
-                columns: [{
-                    data: 'problemDate',
-                    width: '10%'
-                }, {
-                    data: 'timeStamp'
-                }, {
-                    data: 'problemDetails',
-                    width: '30%'
-                }, {
-                    data: 'problem',
-                    width: '20%'
-                }, {
-                    data: 'url',
-                    width: '30%'
-                }, {
-                    data: 'title',
-                    width: '50%'
-                }, {
-                    data: 'language',
-                    width: '10%'
-                }, {
-                    data: 'institution',
-                    visible: false
-                }, {
-                    data: 'section',
-                    visible: false
-                }, {
-                    data: 'theme',
-                    visible: false
-                }, {
-                    data: 'urlEntries',
-                    width: '10%'
-                }, {
-                    data: 'deviceType',
-                    visible: false
-                }, {
-                    data: 'browser',
-                    visible: false
-                }],
-                orderCellsTop: true,
-                fixedHeader: true,
-                dom: 'fBr<"table-responsive"t>tip',
-                buttons: [{
-                    extend: 'csv',
-                    text: 'Download CSV',
-                    className: 'btn btn-default',
-                    action: newexportaction
-                }, {
-                    extend: 'excel',
-                    text: 'Download Excel',
-                    className: 'btn btn-default',
-                    action: newexportaction
-                },],
-            });
-            async function loadInstitutionMappings() {
-                try {
-                    const response = await fetch('/institutionMappings');
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                    INSTITUTION_MAPPINGS = await response.json();
-                    console.log(INSTITUTION_MAPPINGS);
-                } catch (error) {
-                    console.error("Error loading institution mappings", error);
-                }
-            }
-
-
-            function replaceSpecialChars(str) {
-                return str.replace(/[.?]/g, '\\$&');
-            }
-
-            // This function fetches the total count of comments for the page using an API call
-            function fetchTotalCommentsCount() {
-                fetch('/pageFeedback/totalCommentsCount')
-                    .then(response => response.text())
-                    .then(totalCommentsCount => {
-                        // Update the total comments count directly in the appropriate header cell
-                        $(`#problemTable thead tr:eq(1) th:eq(${totalCommentsColumnIndex})`).text(String(totalCommentsCount));
-                    })
-                    .catch(err => {
-                        console.warn('Something went wrong.', err);
-                    });
-            }
-            let INSTITUTION_MAPPINGS = {};
-            loadInstitutionMappings();
-
-            const COLUMNS = ["Date", "TimeStamp", "Comment", "Problem", "Url", "Title", "Lang", "UrlEntries", "Institution", "Section", "Theme", "DeviceType", "Browser"]
-            const DateColIndex = 0;
-            const TimestampColIndex = 1;
-            const CommentColIndex = 2;
-            const ProblemColIndex = 3;
-            const UrlColIndex = 4;
-            const TitleColIndex = 5;
-            const LangColIndex = 6;
-            const InstitutionColIndex = 7;
-            const SectionColIndex = 8;
-            const ThemeColIndex = 9;
-            const urlEntriesColIndex = 10;
-            const deviceTypeColIndex = 11;
-            const browserColIndex = 12;
-
-            const totalCommentsColumnIndex = 7;
-            const totalCommentsColumnSelector = '#problemTable thead tr:eq(1) th:eq(' + totalCommentsColumnIndex + ')';
-
-            var minMaxDateChosen = false;
-
-
-
-            // This code clones the first row of a table and appends it to the table header
-            $('#problemTable thead tr').clone(false).appendTo('#problemTable thead');
-
-
-            // This code adds a search box to each column of the table header row
-            $('#problemTable thead tr:eq(1) th').each(function (i) {
-                // Skip the total comments column
-                if (i !== totalCommentsColumnIndex) {
-                    const title = $(this).text();
-                    $(this).html(`<input type="text" id="searchBox${COLUMNS[i]}" placeholder="Search ${title}" />`);
-                    $('input', this).unbind().on('keyup change', function (e) {
-                        if (e.keyCode === 13 || this.value === "") {
-                            table.column(i).search(replaceSpecialChars(this.value)).draw();
-                        }
-                    });
-                }
-            });
-
-
-
-            // The table view is reset to default settings when the page is loaded
-            resetTableViewToDefault();
-            $("#reset-to-default").click(resetTableViewToDefault);
-
-
-
-            // This function initializes the feedback admin view by resetting search boxes and hiding columns
-            function initFeedbackAdminView() {
-                $('#institution, #theme, #section, #min, #max, #rangeSelection').val("");
-                $('#searchBoxDate, #searchBoxComment, #searchBoxProblem, #searchBoxTimeStamp').closest('th').hide();
-                $('#searchBoxUrlEntries, #searchBoxTitle').closest('th').show()
-                $(totalCommentsColumnSelector).show();
-                table.columns([CommentColIndex, ProblemColIndex, DateColIndex]).visible(false);
-                table.columns([urlEntriesColIndex, TitleColIndex]).visible(true).page.len(-1).draw();
-            }
-
-            // This function resets the table view to its default settings
-            function resetTableViewToDefault() {
-                // Clear the values in all of the search boxes when the 'reset to defaults' button is clicked
-                $('#searchBoxDate, #searchBoxTimeStamp, #searchBoxComment, #searchBoxProblem, #searchBoxUrl, #searchBoxUrlEntries, #searchBoxTitle, #searchBoxLang').val('');
-                $('#themeFA, #sectionFA, #institutionFA').val('');
-                $('#searchBoxDate, #searchBoxComment, #searchBoxProblem').closest('th').show();
-                $('#searchBoxUrlEntries, #searchBoxTitle, #searchBoxTimeStamp').closest('th').hide();
-                $(totalCommentsColumnSelector).hide();
-                // Reset the search filters and column visibility to their default values
-                table.columns([UrlColIndex, LangColIndex, InstitutionColIndex, SectionColIndex, ThemeColIndex]).search("")
-                table.columns([CommentColIndex, ProblemColIndex, DateColIndex]).search("").visible(true)
-                table.columns([urlEntriesColIndex, TimestampColIndex, TitleColIndex]).search("").visible(false).page.len(10).draw()
-            }
-            function filterInstitutionMappings(institutionValue, addTilde) {
-                let filterCriteria = INSTITUTION_MAPPINGS[institutionValue] || [institutionValue];
-                let searchString = filterCriteria.join('|') + (addTilde ? " ~" : "");
-                console.log(searchString)
-                // Apply the search with regex true, smart search false, and case-insensitive
-                table.column(InstitutionColIndex).search(searchString, true, false, false).draw();
-            }
-            function applyFilters() {
-                var rangeValue = $('#rangeSelection').val().trim();
-                var institutionValue = $('#institution').val().trim();
-                var sectionValue = $('#section').val().trim();
-                var themeValue = $('#theme').val().trim();
-                var minValue = $('#min').val().trim();
-                var maxValue = $('#max').val().trim();
-                resetTableViewToDefault();
-
-                // Apply rangeValue if set
-                if (rangeValue) {
-                    table.column(DateColIndex).search(rangeValue).page.len(10).draw();
-                }
-                // Apply min/max values if set
-                else if (minValue || maxValue) {
-                    if (minValue && maxValue) {
-                        table.column(DateColIndex).search(minValue + ":" + maxValue).page.len(10).draw();
-                    } else {
-                        table.column(DateColIndex).search("").draw();
-                    }
-                }
-                // Reset the filter if none are set
-                else {
-                    table.column(DateColIndex).search("").draw();
-                }
-                // Apply or clear the individual filters as needed
-                if (institutionValue) {
-                    filterInstitutionMappings(institutionValue, false);
-                } else {
-                    table.column(InstitutionColIndex).search("").draw();
-                }
-
-                if (sectionValue) {
-                    table.column(SectionColIndex).search(sectionValue).draw();
-                } else {
-                    table.column(SectionColIndex).search("").draw();
-                }
-
-                if (themeValue) {
-                    table.column(ThemeColIndex).search(themeValue).draw();
-                } else {
-                    table.column(ThemeColIndex).search("").draw();
-                }
-            }
-
-
-            function applyFeedbackAdminFilters() {
-                var institutionValue = $('#institutionFA').val().trim();
-                var sectionValue = $('#sectionFA').val().trim();
-                var themeValue = $('#themeFA').val().trim();
-                initFeedbackAdminView();
-
-                if (institutionValue) {
-                    filterInstitutionMappings(institutionValue, true)
-                }
-                else {
-                    table.column(InstitutionColIndex).search("").draw();
-                }
-
-                if (sectionValue) {
-                    table.column(SectionColIndex).search(sectionValue + " ~").draw();
-                } else {
-                    table.column(SectionColIndex).search("").draw();
-                }
-
-                if (themeValue) {
-                    table.column(ThemeColIndex).search(themeValue + " ~").draw();
-                } else {
-                    table.column(ThemeColIndex).search("").draw();
-                }
-            }
-            $('#rangeSelection, #min, #max, #institution, #section, #theme').on('change', function (event) {
-                // Identify the source of the event
-                var source = event.target.id;
-
-                // Reset other filters based on the source
-                if (source === 'rangeSelection') {
-                    $('#min, #max').val(""); // Clear min and max when range is changed
-                } else if (source === 'min' || source === 'max') {
-                    $('#rangeSelection').val(""); // Clear range when min or max is changed
-                }
-                // No need to reset for institution, section, or theme changes
-
-                // Apply all filters
-                applyFilters();
-            });
-
-            $('#institutionFA, #sectionFA, #themeFA').on('change', function () {
-                applyFeedbackAdminFilters();
-            });
-
-        }
-
-        );
-    </script>
-</th:block>
-
+        <div class="clearfix"></div>
+      </main>
+      <div class="col-lg-12">
+        <div class="row custom-row">
+          <div class="feedback-tool-data">
+            <table id="myTable" class="display compact">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Comments</th>
+                  <th>Department</th>
+                  <th>Page title</th>
+                  <th>Page URL</th>
+                  <th>Time stamp</th>
+                  <th>Language</th>
+                  <th>Section</th>
+                  <th>Theme</th>
+                  <th>Device type</th>
+                  <th>Browser</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </th:block>
+    <th:block layout:fragment="script">
+      <script src="https://cdn.datatables.net/v/dt/jq-3.7.0/jszip-3.10.1/dt-1.13.10/b-2.4.2/b-html5-2.4.2/cr-1.7.0/fh-3.4.0/r-2.5.0/datatables.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+      <script type="text/javascript" src="js/spring-friendly.min.js"></script>
+      <script th:inline="javascript">
+        /*
+						<![CDATA[*/
+        var earliestDate = /*[[${earliestDate}]]*/ '';
+        var latestDate = /*[[${latestDate}]]*/ '';
+        var langSession = /*[[${session.lang}]]*/ '';
+        /*]]>*/
+      </script>
+      <script src="/js/pageFeedback.js"></script>
+      <script src="https://unpkg.com/@popperjs/core@2"></script>
+      <script src="https://unpkg.com/tippy.js@6"></script>
+    </th:block>
+  </body>
 </html>

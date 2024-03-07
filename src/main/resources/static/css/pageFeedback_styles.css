@@ -1,0 +1,302 @@
+body {
+  font-family: "Noto sans", sans-serif;
+}
+
+.daterangepicker .ranges li.active {
+  background-color: #26374a;
+}
+.daterangepicker td.active,
+.daterangepicker td.active:hover {
+  background-color: #26374a;
+}
+
+h1#wb-cont {
+  border-bottom: 5px solid #af3c43;
+  -o-border-image: linear-gradient(to right, #af3c43 71px, transparent 71px);
+  border-image: linear-gradient(to right, #af3c43 71px, transparent 71px);
+  border-image-slice: 1;
+  /* margin-top:12px; */
+}
+.feedback-tool .btn-unstyled {
+  background-color: white;
+  margin-top: 7px;
+  border: none;
+  margin-left: 2em;
+  font-size: 90%;
+}
+.feedback-tool .btn-unstyled:hover {
+  color: #3a00d1;
+}
+.feedback-tool {
+  padding: 1em 0em 2em;
+  /* border: 5px solid #000000; */
+  margin-top: 2ch;
+  display: grid;
+  grid-template-columns: 0.5fr 0.5fr 3fr;
+  grid-auto-rows: auto;
+  position: relative;
+  /* Add position relative to the feedback tool */
+}
+.feedback-tool .form-group {
+  margin-bottom: 10px;
+}
+
+#drp,
+.ss-main {
+  margin-bottom: 10px !important;
+  height: 38px;
+}
+.feedback-tool .ss-main {
+  width: 70%;
+}
+
+.feedback-tool .ss-main .ss-values .ss-placeholder {
+  font-weight: normal;
+  color: #797979;
+}
+
+.feedback-tool .ss-main .ss-arrow {
+  height: 9px;
+  width: 9px;
+  margin-right: -0.01em;
+}
+table.dataTable.compact tbody td {
+  padding: 4px;
+}
+table.dataTable.row-border > tbody > tr > *,
+table.dataTable.display > tbody > tr > * {
+  border-top: 1px solid rgba(0, 0, 0, 0.15);
+}
+table.dataTable > thead > tr > th,
+table.dataTable > thead > tr > td {
+  padding: 10px;
+  border-bottom: 6px solid rgba(0, 0, 0, 1);
+}
+
+table.dataTable.display tbody td,
+table.dataTable.display tbody th,
+table.dataTable.rowborder tbody td,
+table.dataTable.rowborder tbody th {
+  border-top: 3px solid #d8d8d8 !important;
+}
+
+.feedback-tool-data {
+  width: 85%; /* Or your desired width */
+  padding: 1em;
+  border: 1px solid #333;
+  border-radius: 6px;
+  margin-top: 2ch;
+  margin-left: auto; /* Center the div horizontally */
+  margin-right: auto; /* Center the div horizontally */
+  margin-bottom: 4ch;
+}
+
+.feedback-tool label {
+  font-weight: bold;
+}
+
+.feedback-tool label + label {
+  margin-top: 1ch;
+}
+
+.feedback-tool > h2 {
+  grid-column: 1 / 1;
+  margin-top: 0.4em;
+  /* font-weight: normal; */
+}
+
+.feedback-tool > :not(.download-section):not(h2) {
+  grid-column: 2 / span 2;
+  display: grid;
+  grid-template-columns: subgrid;
+  align-items: center;
+}
+
+.feedback-tool > details > label {
+  display: grid;
+  grid-template-columns: subgrid;
+  grid-column: span 2;
+}
+#myTable tbody td {
+  font-size: 14px; /* Set the font size for data rows */
+}
+.feedback-tool input,
+.feedback-tool select {
+  width: 70% !important;
+  padding: 6px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.download-section {
+  text-align: right;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: flex-end;
+  grid-column: 3;
+  padding: 0;
+  margin: 0;
+}
+
+.download-section > button + button {
+  margin-left: 1em;
+}
+
+#downloadCSV,
+#downloadExcel {
+  padding: 10px 20px;
+  margin-top: 10px;
+  border: 1px solid #dcdee1;
+  border-radius: 4px;
+}
+
+.feedback-tool > details > summary ~ * {
+  display: grid;
+  grid-template-columns: 1fr 3fr;
+}
+
+.feedback-tool > details {
+  margin-top: 1em;
+}
+
+.feedback-tool input,
+.feedback-tool select {
+  width: max-content;
+}
+
+#dateRange option {
+  padding: 5px;
+  /* Adjust the padding as needed */
+}
+
+.feedback-tool > details > p {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+}
+
+.feedback-tool > details > p > label {
+  display: flex;
+  flex-flow: row nowrap;
+  width: 100%;
+  align-items: center;
+}
+
+.feedback-tool > details select {
+  margin-left: 1em;
+}
+
+.spacer {
+  margin: 0 2em;
+}
+
+summary {
+  cursor: pointer;
+}
+
+summary {
+  display: list-item !important;
+  list-style-type: none;
+  list-style-type: disclosure-closed;
+  visibility: visible !important;
+}
+
+details .out details summary,
+details:not([open]) details summary {
+  display: none !important;
+}
+
+details {
+  margin-bottom: 0.25em;
+}
+
+details summary {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  color: #000000;
+  padding: 5px 15px;
+}
+
+#dateRange .separator::after {
+  content: " ";
+  display: block;
+  height: 10px;
+}
+
+details summary:focus,
+details summary:hover {
+  background-color: transparent;
+  color: #000000;
+  text-decoration: underline;
+}
+
+details summary:focus {
+  outline-style: dotted;
+  outline-width: 1px;
+}
+main {
+  /*    font-size: 16px !important;*/
+  line-height: 1em !important;
+}
+.dataTables_paginate {
+  font-size: 16px; /* Adjust the font size as needed */
+}
+.dataTables_info {
+  font-size: 16px; /* Adjust the font size as needed */
+}
+.dataTables_length label {
+  font-weight: 400; /* Make the text bold */
+  font-size: 16px; /* Adjust the font size */
+  margin-top: 2pt;
+}
+.feedback-tool a:visited {
+  color: #284162;
+}
+.feedback-tool .glyphicon {
+  opacity: 0.5;
+  padding-left: 6px;
+  margin-bottom: 3px;
+}
+.custom-row {
+  margin-left: 0;
+  margin-right: 0;
+}
+.pagedetails {
+  max-width: 1140px; /* Adjust based on your main container's width */
+  margin-right: auto;
+  margin-left: auto;
+}
+
+details[open] {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+details:not([open]) {
+  visibility: hidden;
+}
+
+details:not([open]) > *,
+details:not([open]) > details {
+  display: none;
+}
+.dt-buttons {
+  display: none;
+}
+.feedback-tool-header {
+  display: flex;
+  justify-content: flex-end;
+  /* Align items to the right */
+  position: absolute;
+  /* Absolute position */
+  right: 1em;
+  /* Same as padding to align with the form fields */
+  top: 1em;
+  /* Same as padding from the top */
+}
+
+.reset-filters {
+  cursor: pointer;
+  text-decoration: underline;
+  white-space: nowrap;
+}
