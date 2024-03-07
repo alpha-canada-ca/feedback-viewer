@@ -2,6 +2,7 @@ package ca.gc.tbs.controller;
 
 import ca.gc.tbs.domain.Problem;
 import ca.gc.tbs.repository.ProblemRepository;
+import ca.gc.tbs.service.ProblemDateService;
 import ca.gc.tbs.service.UserService;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
@@ -43,6 +44,9 @@ public class ProblemController {
 
     @Autowired
     private ProblemRepository problemRepository;
+
+    @Autowired
+    private ProblemDateService problemDateService;
 
     @Autowired
     private UserService userService;
@@ -126,8 +130,7 @@ public class ProblemController {
         String lang = (String) request.getSession().getAttribute("lang");
 
         // Fetch the aggregation results
-        AggregationResults<Map> results = problemRepository.findEarliestAndLatestProblemDate();
-        Map<String, String> dateMap = results.getUniqueMappedResult();
+        Map<String, String> dateMap = problemDateService.getProblemDates();
 
         if (dateMap != null) {
             mav.addObject("earliestDate", dateMap.get("earliestDate"));
