@@ -195,7 +195,7 @@ $(document).ready(function () {
     settings: {
       hideSelected: true,
       keepOrder: true,
-      placeholderText: isFrench ? "Filtre par URL complet ou partiel" : "Filter by full or partial page title",
+      placeholderText: isFrench ? "Filtrer par titre de page complet ou partiel" : "Filter by full or partial page title",
       searchText: isFrench ? 'Aucun résultat trouvé' : 'No results found',
       searchPlaceholder: isFrench ? 'Recherche' : 'Search',
       searchingText : isFrench ? 'Recherche en cours...' : 'Searching...',
