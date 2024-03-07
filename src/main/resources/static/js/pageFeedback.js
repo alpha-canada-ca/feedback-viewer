@@ -303,10 +303,10 @@ $(document).ready(function () {
     table.button(".buttons-excel").trigger();
   });
 
-  $(document).on("click", "a[href*='design.canada.ca'], a[href*='conception.canada.ca']", function (e) {
-    e.preventDefault(); // Prevent the default link behavior
-    window.open($(this).attr("href"), "_blank"); // Open the link in a new tab/window
-  });
+//  $(document).on("click", "a[href*='design.canada.ca'], a[href*='conception.canada.ca']", function (e) {
+//    e.preventDefault(); // Prevent the default link behavior
+//    window.open($(this).attr("href"), "_blank"); // Open the link in a new tab/window
+//  });
 
   tippy("#section-tool-tip", {
     content: isFrench ? "Une valeur ajoutée manuellement à certaines pages" : "A value manually added to select pages",
