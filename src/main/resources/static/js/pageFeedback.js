@@ -60,9 +60,8 @@ $(document).ready(function () {
     $("#pages").val("");
 
     // Reset the Date Range Picker to the initial dates
-    $("#dateRangePicker").data("daterangepicker").setStartDate(moment(earliestDate));
-    $("#dateRangePicker").data("daterangepicker").setEndDate(moment(latestDate));
-    $("#dateRangePicker").val(earliestDate + " - " + latestDate); // Update the display
+    $("#dateRangePicker").data("daterangepicker").setStartDate(moment(earliestDate).format("YYYY/MM/DD"));
+    $("#dateRangePicker").data("daterangepicker").setEndDate(moment(latestDate).format("YYYY/MM/DD"));
 
     // Reload the DataTable to reflect the reset filters
     table.ajax.reload();
@@ -196,9 +195,9 @@ $(document).ready(function () {
       hideSelected: true,
       keepOrder: true,
       placeholderText: isFrench ? "Filtrer par titre de page complet ou partiel" : "Filter by full or partial page title",
-      searchText: isFrench ? 'Aucun résultat trouvé' : 'No results found',
-      searchPlaceholder: isFrench ? 'Recherche' : 'Search',
-      searchingText : isFrench ? 'Recherche en cours...' : 'Searching...',
+      searchText: isFrench ? "Aucun résultat trouvé" : "No results found",
+      searchPlaceholder: isFrench ? "Recherche" : "Search",
+      searchingText: isFrench ? "Recherche en cours..." : "Searching...",
       closeOnSelect: false,
     },
     events: {
@@ -249,9 +248,7 @@ $(document).ready(function () {
     table.ajax.reload(); // Reload the DataTable
   });
 
-  $(".reset-filters").on("click", function () {
-    resetFilters();
-  });
+  $(".reset-filters").on("click", resetFilters);
 
   $("#dateRangePicker").daterangepicker(
     {
@@ -306,10 +303,10 @@ $(document).ready(function () {
     table.button(".buttons-excel").trigger();
   });
 
-//  $(document).on("click", "a[href*='design.canada.ca'], a[href*='conception.canada.ca']", function (e) {
-//    e.preventDefault(); // Prevent the default link behavior
-//    window.open($(this).attr("href"), "_blank"); // Open the link in a new tab/window
-//  });
+  //  $(document).on("click", "a[href*='design.canada.ca'], a[href*='conception.canada.ca']", function (e) {
+  //    e.preventDefault(); // Prevent the default link behavior
+  //    window.open($(this).attr("href"), "_blank"); // Open the link in a new tab/window
+  //  });
 
   tippy("#section-tool-tip", {
     content: isFrench ? "Une valeur ajoutée manuellement à certaines pages" : "A value manually added to select pages",
