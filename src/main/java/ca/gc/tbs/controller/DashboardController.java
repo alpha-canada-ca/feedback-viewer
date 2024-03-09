@@ -2,6 +2,7 @@ package ca.gc.tbs.controller;
 
 import ca.gc.tbs.domain.Problem;
 import ca.gc.tbs.repository.ProblemRepository;
+import ca.gc.tbs.service.ProblemCacheService;
 import ca.gc.tbs.service.ProblemDateService;
 import ca.gc.tbs.service.UserService;
 import org.apache.commons.csv.CSVFormat;
@@ -49,6 +50,8 @@ public class DashboardController {
     private static final boolean DESC = false;
     @Autowired
     private ProblemDateService problemDateService;
+    @Autowired
+    private ProblemCacheService problemCacheService;
     @Autowired
     private MongoTemplate mongoTemplate;
     private int totalComments = 0;
@@ -126,16 +129,6 @@ public class DashboardController {
         ModelAndView mav = new ModelAndView();
         String lang = (String) request.getSession().getAttribute("lang");
 
-        Map<String, String> dateMap = problemDateService.getProblemDates();
-
-        if (dateMap != null) {
-            mav.addObject("earliestDate", dateMap.get("earliestDate"));
-            mav.addObject("latestDate", dateMap.get("latestDate"));
-        } else {
-            // Handle the case where no dates are returned
-            mav.addObject("earliestDate", "N/A");
-            mav.addObject("latestDate", "N/A");
-        }
         mav.addObject("lang", lang);
 
         mav.setViewName("pageFeedbackDashboard_" + lang);
@@ -145,70 +138,47 @@ public class DashboardController {
     @ResponseBody
     public DataTablesOutput<Problem> list(@Valid DataTablesInput input, HttpServletRequest request) {
         String pageLang = (String) request.getSession().getAttribute("lang");
-//        String language = request.getParameter("language"); // Existing language parameter handling
-//        String department = request.getParameter("department"); // Retrieve the department parameter
-//        String comments = request.getParameter("comments"); // Retrieve the comments filter parameter
-//        String theme = request.getParameter("theme"); // Retrieve the theme filter parameter
-//        String section = request.getParameter("section"); // Retrieve the section filter parameter
-//        String url = request.getParameter("url"); // Retrieve the url filter parameter
-//        String startDate = request.getParameter("startDate");
-//        String endDate = request.getParameter("endDate");
-//        String[] titles = request.getParameterValues("titles[]");
 
-        Criteria criteria = Criteria.where("processed").is("true");
+        // Use cached aggregation results
+        AggregationResults<Map> aggregationResults = problemCacheService.refreshDistinctUrls();
 
-        input.setStart(0);
-        input.setLength(-1);
-        // Execute the query with the built criteria
-        DataTablesOutput<Problem> results = problemRepository.findAll(input, criteria);
+        // Convert AggregationResults to a list of Problem instances and sort them
+        List<Problem> allProblems = aggregationResults.getMappedResults().stream()
+                .map(result -> {
+                    Problem problem = new Problem();
+                    problem.setUrl((String) result.get("_id"));
+                    problem.setUrlEntries((Integer) result.get("count"));
+                    problem.setTitle((String) result.get("title"));
+                    problem.setLanguage((String) result.get("language"));
+                    problem.setInstitution((String) result.get("institution"));
+                    problem.setTheme((String) result.get("theme"));
+                    problem.setSection((String) result.get("section"));
+                    return problem;
+                })
+                .sorted(Comparator.comparingInt(Problem::getUrlEntries).reversed())
+                .collect(Collectors.toList());
 
-        // Map to store counts of URLs
+        // Apply manual pagination
+        int start = input.getStart();
+        int length = input.getLength();
+        List<Problem> paginatedProblems = allProblems.stream()
+                .skip(start)
+                .limit(length)
+                .collect(Collectors.toList());
 
+        // Create a DataTablesOutput instance and set the paginated data
+        DataTablesOutput<Problem> output = new DataTablesOutput<>();
+        output.setData(paginatedProblems);
+        output.setDraw(input.getDraw());
+        output.setRecordsTotal(allProblems.size()); // Total records before pagination
+        output.setRecordsFiltered(allProblems.size()); // Total records after filtering but before pagination
 
-        HashMap<String, Integer> urlCountMap = new HashMap<>();
-        HashMap<String, List<String>> urlCountMap2 = new HashMap<>();
+        // Adjust institution names based on language
+        setInstitution(output, pageLang);
 
-        for (Problem problem: results.getData()) {
-            System.out.println(problem.getUrl());
-            int count = urlCountMap.getOrDefault(problem.getUrl(), 0);
-            urlCountMap.put(problem.getUrl(), count + 1);
-            urlCountMap2.put(
-                problem.getUrl(),
-                Arrays.asList(
-                        problem.getTitle(),
-                        problem.getLanguage(),
-                        problem.getInstitution(),
-                        problem.getTheme(),
-                        problem.getSection())
-                );
-        }
-        HashMap<String, Integer> sortedUrlCountMap = sortByValue(urlCountMap, DESC);
-
-        ArrayList<Problem> urlList = new ArrayList<>();
-        int index = 0;
-        totalComments = 0;
-        for (String key : sortedUrlCountMap.keySet()) {
-            totalComments += urlCountMap.get(key);
-            results.getData().get(index).setUrl(key);
-            results.getData().get(index).setUrlEntries(sortedUrlCountMap.get(key));
-            results.getData().get(index).setTitle(urlCountMap2.get(key).get(0));
-            results.getData().get(index).setLanguage(urlCountMap2.get(key).get(1));
-            results.getData().get(index).setInstitution(urlCountMap2.get(key).get(2));
-            results.getData().get(index).setTheme(urlCountMap2.get(key).get(3));
-            results.getData().get(index).setSection(urlCountMap2.get(key).get(4));
-            urlList.add(results.getData().get(index));
-            index++;
-        }
-
-        results.setRecordsFiltered(sortedUrlCountMap.size());
-        results.setData(urlList);
-
-        setInstitution(results, pageLang);
-
-        // Update institution names in the results based on the language
-        // Return the updated results
-        return results;
+        return output;
     }
+
 
     /*
     Build a Spring Boot endpoint that fetches "Problem" entities marked as "processed" from a MongoDB database. For each unique URL, count the occurrences, and collect additional information like title, language, institution, theme, and section. Sort these aggregated results by the count of occurrences in descending order. Finally, update the institution names based on the user's language preference and package the data in a format suitable for a DataTables frontend component, ensuring pagination and sorting are handled correctly.
