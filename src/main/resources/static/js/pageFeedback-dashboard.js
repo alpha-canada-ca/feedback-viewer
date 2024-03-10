@@ -147,7 +147,7 @@ $(document).ready(function () {
         extend: "csvHtml5",
         className: "btn btn-default",
         exportOptions: {
-          columns: [2, 1, 3, 5, 0, 6, 7], // This will export only visible columns
+          columns: [2,1,3,4,0,5,6], // This will export only visible columns
           modifier: {
             page: "all", // This tells DataTables to export data from all pages, not just the current page
           },
@@ -159,7 +159,7 @@ $(document).ready(function () {
         extend: "excelHtml5",
         className: "btn btn-default",
         exportOptions: {
-          columns: [2, 1, 3, 5, 0, 6, 7], // This will export only visible columns
+          columns: [2,1,3,4,0,5,6], // This will export only visible columns
           modifier: {
             page: "all", // This tells DataTables to export data from all pages, not just the current page
           },
@@ -173,7 +173,6 @@ $(document).ready(function () {
       { data: "title" }, // Page title (visible in table)
       { data: "urlEntries" },
       { data: "url", visible: false }, // URL (visible in table)
-      { data: "problemDate", visible: false }, // Date (visible in table)
       { data: "language", visible: false }, // Language (hidden in table, but in CSV)
       { data: "section", visible: false }, // Section (hidden in table, but in CSV)
       { data: "theme", visible: false }, // Theme (hidden in table, but in CSV)
