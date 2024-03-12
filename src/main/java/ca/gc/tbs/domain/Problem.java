@@ -62,6 +62,20 @@ public class Problem {
         this.oppositeLang = oppositeLang;
         this.contact = contact;
     }
+    public Problem(Problem existingProblem) {
+        // Copy the properties from the existingProblem to the new object
+        this.url = existingProblem.url;
+        this.problemDate = existingProblem.problemDate;
+        this.urlEntries = existingProblem.urlEntries;
+        this.theme = existingProblem.theme;
+        this.section = existingProblem.section;
+        this.language = existingProblem.language;
+        this.institution = existingProblem.institution;
+        this.title = existingProblem.title;
+
+        // Copy any other properties you want to be copied
+    }
+
 
     public String getId() {
         return id;
