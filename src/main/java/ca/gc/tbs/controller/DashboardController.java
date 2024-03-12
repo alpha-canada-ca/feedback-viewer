@@ -55,6 +55,11 @@ public class DashboardController {
     @Autowired
     private MongoTemplate mongoTemplate;
     private int totalComments = 0;
+    private int totalPages = 0;
+
+    private List<Problem> mergedProblems;
+    private List<Problem> allProblems;
+
     @Autowired
     private UserService userService;
 
@@ -119,11 +124,22 @@ public class DashboardController {
         institutionMappings.put("SST", Arrays.asList("SST", "TSS", "SOCIAL SECURITY TRIBUNAL OF CANADA", "TRIBUNAL DE LA SÉCURITÉ SOCIALE DU CANADA", "SST/TSS"));
     }
 
+    public DashboardController() {
+    }
+
     @RequestMapping(value = "/pageFeedback/totalCommentsCount")
     @ResponseBody
     public String totalCommentsCount() {
         return String.valueOf(totalComments);
     }
+
+    @RequestMapping(value = "/pageFeedback/totalPagesCount")
+    @ResponseBody
+    public String totalPagesCount() {
+        return String.valueOf(totalPages);
+    }
+
+
     @GetMapping(value = "/dashboard")
     public ModelAndView pageFeedback(HttpServletRequest request) throws Exception {
         ModelAndView mav = new ModelAndView();
@@ -143,22 +159,65 @@ public class DashboardController {
         mav.setViewName("pageFeedbackDashboard_" + lang);
         return mav;
     }
+
+    @GetMapping(value = "/chartData")
+    @ResponseBody
+    public List<Map<String, Object>> commentsByDate(HttpServletRequest request) {
+        // Your existing logic to get the data...
+
+        // Assume mergedProblems is a List<Problem> after your filtering and merging
+        Map<String, Integer> dateToCommentCountMap = new HashMap<>();
+//sort mergedProblems by date
+        allProblems.sort(Comparator.comparing(Problem::getProblemDate));
+
+        for (Problem problem : allProblems) {
+            String date = problem.getProblemDate(); // Get the date from the current Problem
+            Integer urlEntries = problem.getUrlEntries(); // Get the urlEntries from the current Problem
+
+            // If the map already contains the date, add the current urlEntries to the total count
+            if (dateToCommentCountMap.containsKey(date)) {
+                Integer currentCount = dateToCommentCountMap.get(date);
+                dateToCommentCountMap.put(date, currentCount + urlEntries);
+            } else {
+                // If the map doesn't contain the date, add a new entry with the current urlEntries
+                dateToCommentCountMap.put(date, urlEntries);
+            }
+        }
+
+        List<Map<String, Object>> dailyCommentsList = new ArrayList<>();
+        dateToCommentCountMap.forEach((date, count) -> {
+            Map<String, Object> dateComments = new HashMap<>();
+            dateComments.put("date", date);
+            dateComments.put("comments", count);
+            dailyCommentsList.add(dateComments);
+        });
+
+        // Sort by date if necessary
+        dailyCommentsList.sort(Comparator.comparing(
+                map -> (String) map.get("date")
+        ));
+
+        return dailyCommentsList;
+    }
+
     @GetMapping(value = "/dashboardData")
     @ResponseBody
     public DataTablesOutput<Problem> list(@Valid DataTablesInput input, HttpServletRequest request) {
         String pageLang = (String) request.getSession().getAttribute("lang");
+
         String department = request.getParameter("department"); // Retrieve the department parameter
         String startDate = request.getParameter("startDate");
         String endDate = request.getParameter("endDate");
         String language = request.getParameter("language"); // Existing language parameter handling
         String url = request.getParameter("url"); // Retrieve the url filter parameter
-        String[] titles = request.getParameterValues("titles[]");
+        String section = request.getParameter("section");
+        String theme = request.getParameter("theme");
 
         // Use cached aggregation results
         AggregationResults<Map> aggregationResults = problemCacheService.refreshDistinctUrls();
-
+        // aggregationResults.getMappedResults().stream().filter(result -> "2024-03-10".equals(result.get("day"))).mapToInt(result -> (Integer) result.get("count")).sum()
         // Convert AggregationResults to a list of Problem instances and sort them
-        List<Problem> allProblems = aggregationResults.getMappedResults().stream()
+        allProblems = aggregationResults.getMappedResults().stream()
                 .map(result -> {
                     Problem problem = new Problem();
                     problem.setUrl((String) result.get("url"));
@@ -174,52 +233,139 @@ public class DashboardController {
                 .sorted(Comparator.comparingInt(Problem::getUrlEntries).reversed())
                 .collect(Collectors.toList());
 
-        Map<String, Problem> urlToProblemMap = new LinkedHashMap<>(); // Preserve insertion order
+        allProblems = applyDepartmentFilter(allProblems, department, institutionMappings);
+        allProblems = applyDateRangeFilter(allProblems, startDate, endDate);
+        allProblems = applyLanguageFilter(allProblems, language);
+        allProblems = applyUrlFilter(allProblems, url);
+        allProblems = applySectionFilter(allProblems, section);
+        allProblems = applyThemeFilter(allProblems, theme);
 
-        for (Problem problem : allProblems) {
+        allProblems.sort(Comparator.comparingInt(Problem::getUrlEntries).reversed());
+
+
+        List<Problem> tempProblems = new ArrayList<>(allProblems);
+        Map<String, Problem> urlToProblemMap = new LinkedHashMap<>();
+
+        for (Problem problem : tempProblems) {
             urlToProblemMap.merge(problem.getUrl(), problem, (existingProblem, newProblem) -> {
-                existingProblem.setUrlEntries(existingProblem.getUrlEntries() + newProblem.getUrlEntries());
-                return existingProblem; // Return the updated problem
+                Problem updatedProblem = new Problem(existingProblem);
+                updatedProblem.setUrlEntries(existingProblem.getUrlEntries() + newProblem.getUrlEntries());
+                return updatedProblem;
             });
         }
 
 // Create a new list from the values in the map
-        List<Problem> mergedProblems = new ArrayList<>(urlToProblemMap.values());
-        if (language != null && !language.isEmpty()) {
-            // Filter the problems based on the desired language
-            mergedProblems = mergedProblems.stream()
-                    .filter(problem -> problem.getLanguage().equals(language))
-                    .collect(Collectors.toList());
-        }
-        if (url != null && !url.isEmpty()) {
-            // Filter the problems based on the desired language
-            mergedProblems = mergedProblems.stream()
-                    .filter(problem -> problem.getUrl().equals(url))
-                    .collect(Collectors.toList());
-        }
-// If you need the final list to be sorted by urlEntries in reversed order
+        mergedProblems = new ArrayList<>(urlToProblemMap.values());
         mergedProblems.sort(Comparator.comparingInt(Problem::getUrlEntries).reversed());
-        // Apply manual pagination
-        int start = input.getStart();
-        int length = input.getLength();
-        List<Problem> paginatedProblems = mergedProblems.stream()
-                .skip(start)
-                .limit(length)
-                .collect(Collectors.toList());
 
+        totalComments = mergedProblems.stream()
+                .mapToInt(Problem::getUrlEntries)
+                .sum();
+        System.out.println("Total URL entries: " + totalComments);
+
+        totalPages = mergedProblems.size();
+        ArrayList<Problem> paginatedMergedProblems = new ArrayList<>(mergedProblems);
+
+        // Apply manual pagination
+        List<Problem> paginatedProblems = applyPagination(paginatedMergedProblems, input.getStart(), input.getLength());
         // Create a DataTablesOutput instance and set the paginated data
         DataTablesOutput<Problem> output = new DataTablesOutput<>();
 
         output.setData(paginatedProblems);
         output.setDraw(input.getDraw());
-        output.setRecordsTotal(mergedProblems.size()); // Total records before pagination
-        output.setRecordsFiltered(mergedProblems.size()); // Total records after filtering but before pagination
+        output.setRecordsTotal(paginatedMergedProblems.size()); // Total records before pagination
+        output.setRecordsFiltered(paginatedMergedProblems.size()); // Total records after filtering but before pagination
         // Adjust institution names based on language
         setInstitution(output, pageLang);
         return output;
     }
+    private List<Problem> applyLanguageFilter(List<Problem> problems, String language) {
+        if (language != null && !language.isEmpty()) {
+            return problems.stream()
+                    .filter(problem -> problem.getLanguage().equals(language))
+                    .collect(Collectors.toList());
+        }
+        return problems;
+    }
+    //DEPT
+    private List<Problem> applyDateRangeFilter(List<Problem> problems, String startDate, String endDate) {
+        if (startDate != null && endDate != null) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            LocalDate start = LocalDate.parse(startDate, formatter);
+            LocalDate end = LocalDate.parse(endDate, formatter);
 
+            return problems.stream()
+                    .filter(problem -> {
+                        LocalDate problemDate = LocalDate.parse(problem.getProblemDate(), formatter);
+                        return !problemDate.isBefore(start) && !problemDate.isAfter(end);
+                    })
+                    .collect(Collectors.toList());
+        }
+        return problems;
+    }
 
+    private List<Problem> applyDepartmentFilter(List<Problem> problems, String department, Map<String, List<String>> institutionMappings) {
+        if (department != null && !department.isEmpty()) {
+            Set<String> matchingVariations = new HashSet<>();
+            // Filter variations based on department:
+            for (Map.Entry<String, List<String>> entry : institutionMappings.entrySet()) {
+                if (entry.getValue().stream().anyMatch(variation -> variation.equalsIgnoreCase(department))) {
+                    matchingVariations.addAll(entry.getValue());
+                }
+            }
+            if (!matchingVariations.isEmpty()) {
+                return problems.stream()
+                        .filter(problem -> matchingVariations.contains(problem.getInstitution()))
+                        .collect(Collectors.toList());
+            }
+        }
+        return problems;
+    }
+
+private List<Problem> applySectionFilter(List<Problem> problems, String section) {
+        if (section != null && !section.isEmpty()) {
+            return problems.stream()
+                    .filter(problem -> problem.getSection().equals(section))
+                    .collect(Collectors.toList());
+        }
+        return problems;
+    }
+    //theme
+    private List<Problem> applyThemeFilter(List<Problem> problems, String theme) {
+        if (theme != null && !theme.isEmpty()) {
+            return problems.stream()
+                    .filter(problem -> problem.getTheme().equals(theme))
+                    .collect(Collectors.toList());
+        }
+        return problems;
+    }
+    private List<Problem> applyUrlFilter(List<Problem> problems, String url) {
+        if (url != null && !url.isEmpty()) {
+            return problems.stream()
+                    .filter(problem -> problem.getUrl().equals(url))
+                    .collect(Collectors.toList());
+        }
+        return problems;
+    }
+    private List<Problem> applyPagination(List<Problem> mergedProblems, int start, int length) {
+        return mergedProblems.stream()
+                .skip(start)
+                .limit(length)
+                .collect(Collectors.toList());
+    }
+    private List<Problem> filterProblems(List<Problem> mergedProblems, String language, String url) {
+        if (language != null && !language.isEmpty()) {
+            mergedProblems = mergedProblems.stream()
+                    .filter(problem -> problem.getLanguage().equals(language))
+                    .collect(Collectors.toList());
+        }
+        if (url != null && !url.isEmpty()) {
+            mergedProblems = mergedProblems.stream()
+                    .filter(problem -> problem.getUrl().equals(url))
+                    .collect(Collectors.toList());
+        }
+        return mergedProblems;
+    }
     /*
     Build a Spring Boot endpoint that fetches "Problem" entities marked as "processed" from a MongoDB database. For each unique URL, count the occurrences, and collect additional information like title, language, institution, theme, and section. Sort these aggregated results by the count of occurrences in descending order. Finally, update the institution names based on the user's language preference and package the data in a format suitable for a DataTables frontend component, ensuring pagination and sorting are handled correctly.
      */
