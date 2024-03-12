@@ -22,9 +22,9 @@ public interface ProblemRepository extends DataTablesRepository<Problem, String>
 
     @Aggregation(pipeline = {
             // Optional match stage
-            // "{ '$match': { 'processed': 'true' } }",
+            "{ '$match': { 'processed': 'true' } }",
             "{ '$group': { " +
-                    "'_id': '$url', " +
+                    "'_id': { 'url': '$url', 'day': { '$substr': ['$problemDate', 0, 10] } }, " + // Assuming 'problemDate' is in 'YYYY-MM-DD' format
                     "'count': { '$sum': 1 }, " +
                     "'institution': { '$first': '$institution' }, " +
                     "'title': { '$first': '$title' }, " +
@@ -34,7 +34,8 @@ public interface ProblemRepository extends DataTablesRepository<Problem, String>
                     "'theme': { '$first': '$theme' } " +
                     "}}, " +
                     "{ '$project': { " +
-                    "'url': '$_id', " +
+                    "'url': '$_id.url', " +
+                    "'day': '$_id.day', " +
                     "'_id': 0, " +
                     "'count': 1, " +
                     "'institution': 1, " +
@@ -46,6 +47,7 @@ public interface ProblemRepository extends DataTablesRepository<Problem, String>
                     "}}"
     })
     AggregationResults<Map> findDistinctUrlsWithDetails();
+
     List<Problem> findByProcessedAndInstitution(String processed, String institution);
 
     @Aggregation(pipeline = {"{ '$group': { '_id' : '$url' } }"})
