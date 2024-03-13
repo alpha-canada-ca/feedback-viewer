@@ -9,8 +9,8 @@ $(document).ready(function () {
   var isFrench = langSession === "fr";
   var now = new Date();
   var formattedDate = now.getMonth() + 1 + "/" + now.getDate() + "/" + now.getFullYear();
-    var formattedEarliestDate = moment(earliestDate).format("YYYY/MM/DD");
-    var formattedLatestDate = moment(latestDate).format("YYYY/MM/DD");
+  var formattedEarliestDate = moment(earliestDate).format("YYYY/MM/DD");
+  var formattedLatestDate = moment(latestDate).format("YYYY/MM/DD");
   // Utility functions
   function debounce(func, delay) {
     let debounceTimer;
@@ -59,7 +59,6 @@ $(document).ready(function () {
 
     // Reset the Date Range Picker to the initial dates
     // Format the earliest and latest dates in YYYY/MM/DD format
-
 
     // Reset the Date Range Picker to the initial dates with formatted strings
     $("#dateRangePicker").data("daterangepicker").setStartDate(formattedEarliestDate);
@@ -115,10 +114,10 @@ $(document).ready(function () {
     orderCellsTop: true,
     fixedHeader: true,
     responsive: true,
-    drawCallback: function() {
-        fetchTotalCommentsCount();
-        fetchTotalPagesCount();
-          fetchDataAndCreateChart();
+    drawCallback: function () {
+      fetchTotalCommentsCount();
+      fetchTotalPagesCount();
+      fetchDataAndCreateChart();
     },
     dom: 'Br<"table-responsive"t>tilp',
     ajax: {
@@ -154,7 +153,7 @@ $(document).ready(function () {
         extend: "csvHtml5",
         className: "btn btn-default",
         exportOptions: {
-          columns: [2,1,3,0,4,5], // This will export only visible columns
+          columns: [2, 1, 3, 0, 4, 5], // This will export only visible columns
           modifier: {
             page: "all", // This tells DataTables to export data from all pages, not just the current page
           },
@@ -166,7 +165,7 @@ $(document).ready(function () {
         extend: "excelHtml5",
         className: "btn btn-default",
         exportOptions: {
-          columns: [2,1,3,0,4,5], // This will export only visible columns
+          columns: [2, 1, 3, 0, 4, 5], // This will export only visible columns
           modifier: {
             page: "all", // This tells DataTables to export data from all pages, not just the current page
           },
@@ -177,39 +176,42 @@ $(document).ready(function () {
     ],
     columns: [
       { data: "institution" }, // Dept (visible in table)
-       { data: "url",      render: function (data, type, row) {
-                               // Wrap any content of the 'url' column with an anchor tag
-                               return '<a href="' + data + '" target="_blank">' + data + "</a>";
-                             },},
+      {
+        data: "url",
+        render: function (data, type, row) {
+          // Wrap any content of the 'url' column with an anchor tag
+          return '<a href="' + data + '" target="_blank">' + data + "</a>";
+        },
+      },
       { data: "urlEntries" },
       { data: "language", visible: false }, // Language (hidden in table, but in CSV)
       { data: "section", visible: false }, // Section (hidden in table, but in CSV)
       { data: "theme", visible: false }, // Theme (hidden in table, but in CSV)
     ],
   });
-function fetchTotalCommentsCount() {
-    fetch('/pageFeedback/totalCommentsCount')
-        .then(response => response.text())
-        .then(totalCommentsCount => {
-            // Update the total comments count in the <span class="number"> element
-            $('.stat .totalCommentCount').text(totalCommentsCount);
-        })
-        .catch(err => {
-            console.warn('Something went wrong.', err);
-        });
-}
+  function fetchTotalCommentsCount() {
+    fetch("/pageFeedback/totalCommentsCount")
+      .then((response) => response.text())
+      .then((totalCommentsCount) => {
+        // Update the total comments count in the <span class="number"> element
+        $(".stat .totalCommentCount").text(totalCommentsCount);
+      })
+      .catch((err) => {
+        console.warn("Something went wrong.", err);
+      });
+  }
 
-function fetchTotalPagesCount() {
-    fetch('/pageFeedback/totalPagesCount')
-        .then(response => response.text())
-        .then(totalPagesCount => {
-            // Update the total comments count in the <span class="number"> element
-            $('.stat .totalPagesCount').text(totalPagesCount);
-        })
-        .catch(err => {
-            console.warn('Something went wrong.', err);
-        });
-}
+  function fetchTotalPagesCount() {
+    fetch("/pageFeedback/totalPagesCount")
+      .then((response) => response.text())
+      .then((totalPagesCount) => {
+        // Update the total comments count in the <span class="number"> element
+        $(".stat .totalPagesCount").text(totalPagesCount);
+      })
+      .catch((err) => {
+        console.warn("Something went wrong.", err);
+      });
+  }
 
   $(".reset-filters").on("click", function () {
     resetFilters();
@@ -284,81 +286,79 @@ function fetchTotalPagesCount() {
   // Define the function that will fetch data and create the chart
   function fetchDataAndCreateChart() {
     // Replace '/path/to/your/endpoint' with the actual path to your backend endpoint
-    fetch('/chartData')
-      .then(response => response.json())
-      .then(data => {
+    fetch("/chartData")
+      .then((response) => response.json())
+      .then((data) => {
         // Parse the data to get the categories and the series data
-        const categories = data.map(item => item.date);
-        const commentsData = data.map(item => item.comments);
+        const categories = data.map((item) => item.date);
+        const commentsData = data.map((item) => item.comments);
 
         // Now create the chart with the data
-        Highcharts.chart('chart', {
-            chart: {
-                type: 'column'
+        Highcharts.chart("chart", {
+          chart: {
+            type: "column",
+          },
+          title: {
+            text: "Daily Comments",
+            align: "left",
+            style: {
+              fontSize: "20px", // Adjust title font size here
             },
+          },
+          xAxis: {
+            categories: categories, // Set the categories from the data
+            crosshair: true,
+            accessibility: {
+              description: "Dates",
+            },
+            labels: {
+              style: {
+                fontSize: "14px", // Adjust X axis labels font size here
+              },
+            },
+          },
+          yAxis: {
+            min: 0,
             title: {
-                text: 'Daily Comments',
-                align: 'left',
-                  style: {
-                            fontSize: '20px' // Adjust title font size here
-                        }
+              text: "Number of Comments",
+              style: {
+                fontSize: "20px", // Adjust Y axis title font size here
+                fontWeight: "bold",
+              },
             },
-            xAxis: {
-                categories: categories, // Set the categories from the data
-                crosshair: true,
-                accessibility: {
-                    description: 'Dates'
-                },
-                labels: {
-                            style: {
-                                fontSize: '14px' // Adjust X axis labels font size here
-                            }
-                        }
+            labels: {
+              style: {
+                fontSize: "17px", // Adjust Y axis labels font size here
+              },
             },
-            yAxis: {
-                min: 0,
-                title: {
-                    text: 'Number of Comments',
-                     style: {
-                                    fontSize: '20px', // Adjust Y axis title font size here
-                                    fontWeight: 'bold'
-                                }
-                },
-                 labels: {
-                            style: {
-                                fontSize: '17px' // Adjust Y axis labels font size here
-                            }
-                        }
+          },
+          tooltip: {
+            valueSuffix: " comments",
+            style: {
+              fontSize: "16px", // Adjust font size for text in the tooltip on hover
             },
-            tooltip: {
-                valueSuffix: ' comments',
-                 style: {
-                            fontSize: '16px' // Adjust font size for text in the tooltip on hover
-                        }
+          },
+          plotOptions: {
+            column: {
+              pointPadding: 0, // Minimizes the space between points within the same category
+              groupPadding: 0.1, // Adjust space between categories
+              borderWidth: 0,
             },
-            plotOptions: {
-                column: {
-                        pointPadding: 0, // Minimizes the space between points within the same category
-                                groupPadding: 0.1, // Adjust space between categories
-                                borderWidth: 0
-                }
+          },
+          series: [
+            {
+              name: "Comments",
+              data: commentsData, // Set the data from the data
             },
-            series: [
-                {
-                    name: 'Comments',
-                    data: commentsData // Set the data from the data
-                }
-            ]
+          ],
         });
       })
-      .catch(error => {
-        console.error('Error fetching data: ', error);
+      .catch((error) => {
+        console.error("Error fetching data: ", error);
       });
   }
 
   // Call the function to fetch data and create the chart
-
-
 
   var detailsElement = $("#filterDetails");
   var summaryElement = $("#filterSummary");
