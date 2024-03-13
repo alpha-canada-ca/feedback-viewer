@@ -322,14 +322,23 @@ $(document).ready(function () {
             title: {
               text: "Number of Comments",
               style: {
-                fontSize: "20px", // Adjust Y axis title font size here
+                fontSize: "16px", // Adjust Y axis title font size here
                 fontWeight: "bold",
               },
             },
             labels: {
               style: {
-                fontSize: "17px", // Adjust Y axis labels font size here
+                fontSize: "16px", // Adjust Y axis labels font size here
               },
+            },
+          },
+          legend: {
+            // Add legend options
+            style: {
+              fontSize: "16px", // Adjust legend font size here
+            },
+            itemStyle: {
+              fontSize: "14px", // Adjust legend item font size here
             },
           },
           tooltip: {
