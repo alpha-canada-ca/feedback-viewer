@@ -56,9 +56,6 @@ $(document).ready(function () {
     // Clear text input fields
     $("#url").val("");
     $("#comments").val("");
-    pageSelect.setData([]);
-    pageSelect.setSelected([]);
-    $("#pages").val("");
 
     // Reset the Date Range Picker to the initial dates
     // Format the earliest and latest dates in YYYY/MM/DD format
@@ -128,7 +125,6 @@ $(document).ready(function () {
       url: "/dashboardData",
       type: "GET",
       data: function (d) {
-        d.titles = $("#pages").val();
         d.language = $("#language").val();
         d.department = $("#department").val();
         d.comments = $("#comments").val();
@@ -158,7 +154,7 @@ $(document).ready(function () {
         extend: "csvHtml5",
         className: "btn btn-default",
         exportOptions: {
-          columns: [2,1,3,4,0,5,6], // This will export only visible columns
+          columns: [2,1,3,0,4,5], // This will export only visible columns
           modifier: {
             page: "all", // This tells DataTables to export data from all pages, not just the current page
           },
@@ -170,7 +166,7 @@ $(document).ready(function () {
         extend: "excelHtml5",
         className: "btn btn-default",
         exportOptions: {
-          columns: [2,1,3,4,0,5,6], // This will export only visible columns
+          columns: [2,1,3,0,4,5], // This will export only visible columns
           modifier: {
             page: "all", // This tells DataTables to export data from all pages, not just the current page
           },
@@ -181,9 +177,11 @@ $(document).ready(function () {
     ],
     columns: [
       { data: "institution" }, // Dept (visible in table)
-      { data: "title" }, // Page title (visible in table)
+       { data: "url",      render: function (data, type, row) {
+                               // Wrap any content of the 'url' column with an anchor tag
+                               return '<a href="' + data + '" target="_blank">' + data + "</a>";
+                             },},
       { data: "urlEntries" },
-      { data: "url", visible: false }, // URL (visible in table)
       { data: "language", visible: false }, // Language (hidden in table, but in CSV)
       { data: "section", visible: false }, // Section (hidden in table, but in CSV)
       { data: "theme", visible: false }, // Theme (hidden in table, but in CSV)
@@ -212,66 +210,6 @@ function fetchTotalPagesCount() {
             console.warn('Something went wrong.', err);
         });
 }
-
-  // SlimSelect initialization
-  var pageSelect = new SlimSelect({
-    select: "#pages",
-    settings: {
-      hideSelected: true,
-      keepOrder: true,
-      placeholderText: isFrench ? "Filtrer par titre de page complet ou partiel" : "Filter by full or partial page title",
-      searchText: isFrench ? "Aucun résultat trouvé" : "No results found",
-      searchPlaceholder: isFrench ? "Recherche" : "Search",
-      searchingText: isFrench ? "Recherche en cours..." : "Searching...",
-      closeOnSelect: false,
-    },
-    events: {
-      search: (search, currentData) => {
-        return new Promise((resolve, reject) => {
-          // Debounce logic inside the Promise
-          clearTimeout(pageSelect.debounceTimer); // Clear existing timer
-          pageSelect.debounceTimer = setTimeout(() => {
-            if (search.length < 2) {
-              return reject(isFrench ? "La recherche doit comporter au moins 2 caractères" : "Search must be at least 2 characters");
-            }
-
-            fetch("/pageTitles?search=" + encodeURIComponent(search), {
-              method: "GET",
-              headers: {
-                Accept: "application/json",
-              },
-            })
-              .then((response) => {
-                if (!response.ok) {
-                  throw new Error(isFrench ? "La réponse du réseau n'était pas correcte" : "Network response was not ok");
-                }
-                return response.json();
-              })
-              .then((data) => {
-                const options = data
-                  .filter((title) => {
-                    return !currentData.some((optionData) => optionData.value === title);
-                  })
-                  .map((title) => {
-                    return { text: title, value: title };
-                  });
-
-                resolve(options);
-              })
-              .catch((error) => {
-                console.error("Error fetching page titles:", error);
-                reject(error);
-              });
-          }, 800); // 300ms debounce time
-        });
-      },
-    },
-  });
-
-  // Event bindings
-  $("#pages").on("change", function () {
-    table.ajax.reload(); // Reload the DataTable
-  });
 
   $(".reset-filters").on("click", function () {
     resetFilters();
