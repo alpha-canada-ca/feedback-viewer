@@ -20,6 +20,33 @@ public interface ProblemRepository extends DataTablesRepository<Problem, String>
 
     List<Problem> findByAutoTagProcessed(String processed);
 
+    @Aggregation(pipeline = {
+            // Optional match stage
+            "{ '$match': { 'processed': 'true' } }",
+            "{ '$group': { " +
+                    "'_id': { 'url': '$url', 'day': { '$substr': ['$problemDate', 0, 10] } }, " +
+                    "'count': { '$sum': 1 }, " +
+                    "'institution': { '$first': '$institution' }, " +
+                    "'title': { '$first': '$title' }, " +
+                    "'problemDate': { '$first': '$problemDate' }, " +
+                    "'language': { '$first': '$language' }, " +
+                    "'section': { '$first': '$section' }, " +
+                    "'theme': { '$first': '$theme' } " +
+                    "}}, " +
+                    "{ '$project': { " +
+                    "'url': '$_id.url', " +
+                    "'day': '$_id.day', " +
+                    "'_id': 0, " +
+                    "'count': 1, " +
+                    "'institution': 1, " +
+                    "'title': 1, " +
+                    "'problemDate': 1, " +
+                    "'language': 1, " +
+                    "'section': 1, " +
+                    "'theme': 1 " +
+                    "}}"
+    })
+    AggregationResults<Map> findDistinctUrlsWithDetails();
 
     List<Problem> findByProcessedAndInstitution(String processed, String institution);
 
