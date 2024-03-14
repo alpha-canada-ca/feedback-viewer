@@ -299,7 +299,7 @@ $(document).ready(function () {
             type: "column",
           },
           title: {
-            text: isFrench ? "Commentaires du jour" : "Daily Comments",
+            text: isFrench ? "Commentaires par jour" : "Comments by day",
             align: "left",
             style: {
               fontSize: "20px", // Adjust title font size here
@@ -320,7 +320,7 @@ $(document).ready(function () {
           yAxis: {
             min: 0,
             title: {
-              text: isFrench ? "Nombre de commentaires" :  "Number of Comments",
+              text: isFrench ? "Nombre de commentaires" : "Number of Comments",
               style: {
                 fontSize: "16px", // Adjust Y axis title font size here
                 fontWeight: "bold",
@@ -342,7 +342,7 @@ $(document).ready(function () {
             },
           },
           tooltip: {
-            valueSuffix: isFrench ? " commentaires" :  " comments",
+            valueSuffix: isFrench ? " commentaires" : " comments",
             style: {
               fontSize: "16px", // Adjust font size for text in the tooltip on hover
             },
