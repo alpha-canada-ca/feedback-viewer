@@ -236,10 +236,9 @@ $(document).ready(function () {
       },
       ranges: {
         [isFrench ? "Toutes les dates" : "All Dates"]: [moment(earliestDate), moment(latestDate)],
-        [isFrench ? "Aujourd'hui" : "Today"]: [moment(), moment()],
         [isFrench ? "Hier" : "Yesterday"]: [moment().subtract(1, "days"), moment().subtract(1, "days")],
-        [isFrench ? "7 derniers jours" : "Last 7 Days"]: [moment().subtract(6, "days"), moment()],
-        [isFrench ? "30 derniers jours" : "Last 30 Days"]: [moment().subtract(29, "days"), moment()],
+        [isFrench ? "7 derniers jours" : "Last 7 Days"]: [moment().subtract(7, "days"), moment()],
+        [isFrench ? "30 derniers jours" : "Last 30 Days"]: [moment().subtract(30, "days"), moment()],
         [isFrench ? "Ce mois-ci" : "This Month"]: [moment().startOf("month"), moment().endOf("month")],
         [isFrench ? "Le mois dernier" : "Last Month"]: [moment().subtract(1, "month").startOf("month"), moment().subtract(1, "month").endOf("month")],
         [isFrench ? "Dernier trimestre" : "Last Quarter"]: getLastFiscalQuarter(),

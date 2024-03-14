@@ -24,7 +24,7 @@ public interface ProblemRepository extends DataTablesRepository<Problem, String>
             // Optional match stage
             "{ '$match': { 'processed': 'true' } }",
             "{ '$group': { " +
-                    "'_id': { 'url': '$url', 'day': { '$substr': ['$problemDate', 0, 10] } }, " + // Assuming 'problemDate' is in 'YYYY-MM-DD' format
+                    "'_id': { 'url': '$url', 'day': { '$substr': ['$problemDate', 0, 10] } }, " +
                     "'count': { '$sum': 1 }, " +
                     "'institution': { '$first': '$institution' }, " +
                     "'title': { '$first': '$title' }, " +

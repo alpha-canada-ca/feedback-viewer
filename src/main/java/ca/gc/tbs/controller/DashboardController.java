@@ -127,9 +127,11 @@ public class DashboardController {
         Map<String, String> dateMap = problemDateService.getProblemDates();
         if (dateMap != null) {
             mav.addObject("earliestDate", dateMap.get("earliestDate"));
-            mav.addObject("latestDate", dateMap.get("latestDate"));
+            LocalDate latestDate = LocalDate.parse(dateMap.get("latestDate"), DateTimeFormatter.ISO_LOCAL_DATE);
+            LocalDate previousDate = latestDate.minusDays(1);
+            String modifiedLatestDate = previousDate.format(DateTimeFormatter.ISO_LOCAL_DATE);
+            mav.addObject("latestDate", modifiedLatestDate);
         } else {
-            // Handle the case where no dates are returned
             mav.addObject("earliestDate", "N/A");
             mav.addObject("latestDate", "N/A");
         }
@@ -182,7 +184,14 @@ public class DashboardController {
         problems = aggregationResults.getMappedResults().stream()
                 .map(this::createProblemFromResult)
                 .collect(Collectors.toList());
-
+        //remove current date
+        LocalDate currentDate = LocalDate.now();
+        problems = problems.stream()
+                .filter(p -> {
+                    LocalDate problemDate = LocalDate.parse(p.getProblemDate(), DateTimeFormatter.ISO_LOCAL_DATE);
+                    return problemDate.isBefore(currentDate);
+                })
+                .collect(Collectors.toList());
         // Apply filters
         problems = applyFilters(problems, department, startDate, endDate, language, url, section, theme);
 
