@@ -10,7 +10,7 @@ import org.springframework.data.mongodb.datatables.DataTablesRepository;
 import ca.gc.tbs.domain.TopTaskSurvey;
 import org.springframework.data.mongodb.repository.Aggregation;
 
-public interface TopTaskRepository extends DataTablesRepository<TopTaskSurvey, String> {
+public interface TopTaskRepository extends DataTablesRepository<TopTaskSurvey, String>, CustomTopTaskRepository {
 	List<TopTaskSurvey> findByTopTaskAirTableSync(String syncd);
 
 	List<TopTaskSurvey> findByProcessed(String processed);
@@ -28,20 +28,14 @@ public interface TopTaskRepository extends DataTablesRepository<TopTaskSurvey, S
 	List<String> findTaskTitlesBySearch(String search);
 
 	@Aggregation(pipeline = {
-			"{ '$match': { 'processed': 'true' } }", // Optional, adjust based on your requirements
-			"{ '$group': { '_id': 'task' } }",
-			"{ '$sort': { '_id': 1 } }" // Optional, sorts the page names alphabetically
+			"{ '$match': { 'processed': 'true' } }",
+			"{ '$project': { 'task': 1 } }", // Include only the 'task' field
+			"{ '$group': { '_id': '$task' } }",
 	})
 	List<String> findDistinctTaskNames();
 
-	@Aggregation(pipeline = {
-			// Match stage to filter documents (optional, adjust based on your requirements)
-			"{ '$match': { 'processed': 'true' } }",
-			"{ '$group': { '_id': '$taskName', 'dept': { '$first': '$dept' } } }",
-			"{ '$project': { 'taskName': '$_id', 'dept': 1, '_id': 0 } }",
-			"{ '$sort': { 'taskName': 1 } }"
-	})
-	AggregationResults<Map> findDistinctTaskNamesAndDepts();
+
+
 
 
 }
