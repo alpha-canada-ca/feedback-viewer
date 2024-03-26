@@ -303,3 +303,44 @@ details:not([open]) > details {
   text-decoration: underline;
   white-space: nowrap;
 }
+.stats-box {
+  display: flex;
+  flex-wrap: wrap; /* Allows items to wrap onto the next line if needed */
+  justify-content: center; /* Centers items horizontally in the container */
+  align-items: center;
+  padding: 20px;
+  border: 1px solid #000;
+  margin: 1em auto;
+  max-width: 85%;
+}
+
+.stats-box .stat {
+  text-align: center;
+  /* Adjust 'flex' to not grow or shrink and set a basis if needed, or remove it entirely */
+  margin: 0 5rem; /* Adds margin to the left and right of each .stat element */
+  /* You may remove 'flex: 1' if you want to control the width explicitly */
+}
+
+
+.stats-box .totalTaskCount {
+  display: block;
+  font-size: 2em;
+  font-weight: bold;
+  margin-bottom: 0.5em;
+}
+
+.stats-box .totalDistinctTasks {
+  display: block;
+  font-size: 2em;
+  font-weight: bold;
+  margin-bottom: 0.5em;
+}
+
+.stats-box .description {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+  display: block; /* Ensures that the description is on its own line */
+  margin: auto; /* This will center the description in the flex container */
+  max-width: 25rem; /* Or whatever value you wish */
+}
