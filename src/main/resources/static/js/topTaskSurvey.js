@@ -80,6 +80,10 @@ $(document).ready(function () {
     orderCellsTop: true,
     fixedHeader: true,
     responsive: true,
+       drawCallback: function () {
+          fetchTotalDistinctTask();
+          fetchTotalTaskCount();
+        },
     dom: 'Br<"table-responsive"t>tilp',
     ajax: {
       url: "/topTaskData",
@@ -137,7 +141,29 @@ $(document).ready(function () {
 
     columns: [{ data: "task" }, { data: "dept" }, { data: "theme" }, { data: "language" }],
   });
+ function fetchTotalDistinctTask() {
+    fetch("/topTask/totalDistinctTasks")
+      .then((response) => response.text())
+      .then((totalDistinctTasks) => {
+        // Update the total comments count in the <span class="number"> element
+        $(".stat .totalDistinctTasks").text(totalDistinctTasks);
+      })
+      .catch((err) => {
+        console.warn("Something went wrong.", err);
+      });
+  }
 
+  function fetchTotalTaskCount() {
+    fetch("/topTask/totalTaskCount")
+      .then((response) => response.text())
+      .then((totalTaskCount) => {
+        // Update the total comments count in the <span class="number"> element
+        $(".stat .totalTaskCount").text(totalTaskCount);
+      })
+      .catch((err) => {
+        console.warn("Something went wrong.", err);
+      });
+  }
   fetch("/topTaskSurvey/departments")
     .then(function (response) {
       // The API call was successful!
