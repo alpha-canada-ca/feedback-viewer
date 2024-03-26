@@ -34,9 +34,22 @@ public class TopTaskController {
     private static final Logger LOG = LoggerFactory.getLogger(TopTaskController.class);
     @Autowired
     private TopTaskRepository topTaskRepository;
+    private int totalDistinctTasks = 0;
 
+    private int totalTaskCount = 0;
     @Autowired
     private UserService userService;
+    @RequestMapping(value = "/topTask/totalDistinctTasks")
+    @ResponseBody
+    public String totalDistinctTasks() {
+        return String.valueOf(totalDistinctTasks);
+    }
+
+    @RequestMapping(value = "/topTask/totalTaskCount")
+    @ResponseBody
+    public String totalTaskCount() {
+        return String.valueOf(totalTaskCount);
+    }
 
     @RequestMapping(value = "/topTaskData")
     @ResponseBody
@@ -63,7 +76,7 @@ public class TopTaskController {
             criteria.orOperator(nonEmptyCriteria.toArray(new Criteria[0]));
         }
         if (themeFilterVal != null && !themeFilterVal.isEmpty()) {
-            criteria.and("theme").is(themeFilterVal);
+            criteria.and("theme").regex(themeFilterVal, "i");
         }
         if (taskFilterVals != null && taskFilterVals.length > 0) {
             // Create a list to hold the title criteria
@@ -79,8 +92,14 @@ public class TopTaskController {
         if (departmentFilterVal != null && !departmentFilterVal.isEmpty()) {
             criteria.and("dept").is(departmentFilterVal);
         }
+        List<Map> distinctTaskCounts = topTaskRepository.findDistinctTaskCountsWithFilters(criteria);
+        totalDistinctTasks = distinctTaskCounts.size();
+        DataTablesOutput<TopTaskSurvey> results = topTaskRepository.findAll(input, criteria);
 
-        return topTaskRepository.findAll(input, criteria);
+
+
+        totalTaskCount = (int) results.getRecordsFiltered();
+        return  results;
     }
 
 
