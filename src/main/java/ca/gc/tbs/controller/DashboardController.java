@@ -117,13 +117,11 @@ public class DashboardController {
     public String totalPagesCount() {
         return String.valueOf(totalPages);
     }
-
     @GetMapping(value = "/dashboard")
     public ModelAndView pageFeedback(HttpServletRequest request) throws Exception {
         ModelAndView mav = new ModelAndView();
         String lang = (String) request.getSession().getAttribute("lang");
         mav.addObject("lang", lang);
-
         Map<String, String> dateMap = problemDateService.getProblemDates();
         if (dateMap != null) {
             mav.addObject("earliestDate", dateMap.get("earliestDate"));
@@ -160,6 +158,7 @@ public class DashboardController {
             dateComments.put("comments", count);
             dailyCommentsList.add(dateComments);
         });
+
         // Sort the list by date in ascending order
         dailyCommentsList.sort(Comparator.comparing(map -> (String) map.get("date")));
         return dailyCommentsList;
@@ -168,6 +167,7 @@ public class DashboardController {
     @GetMapping(value = "/dashboardData")
     @ResponseBody
     public DataTablesOutput<Problem> getDashboardData(@Valid DataTablesInput input, HttpServletRequest request) {
+        long beforeUsedMem = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
         String pageLang = (String) request.getSession().getAttribute("lang");
         String department = request.getParameter("department");
         String startDate = request.getParameter("startDate");
@@ -177,14 +177,30 @@ public class DashboardController {
         String section = request.getParameter("section");
         String theme = request.getParameter("theme");
 
-        // Use cached aggregation results
-        AggregationResults<Map> aggregationResults = problemCacheService.refreshDistinctUrls();
+        List<Problem> test = problemCacheService.getDistinctUrls();
 
-        // Convert AggregationResults to a list of Problem instances
-        problems = aggregationResults.getMappedResults().stream()
-                .map(this::createProblemFromResult)
-                .collect(Collectors.toList());
-        //remove current date
+
+        problems = new ArrayList<>(test.stream()
+                .collect(Collectors.groupingBy(
+                        p -> new AbstractMap.SimpleEntry<>(p.getUrl(), p.getProblemDate()),
+                        Collectors.collectingAndThen(
+                                Collectors.toList(),
+                                list -> {
+                                    Problem problem = new Problem();
+                                    problem.setUrl(list.get(0).getUrl());
+                                    problem.setProblemDate(list.get(0).getProblemDate());
+                                    problem.setUrlEntries(list.size());
+                                    problem.setInstitution(list.get(0).getInstitution());
+                                    problem.setTitle(list.get(0).getTitle());
+                                    problem.setLanguage(list.get(0).getLanguage());
+                                    problem.setSection(list.get(0).getSection());
+                                    problem.setTheme(list.get(0).getTheme());
+                                    return problem;
+                                }
+                        )
+                ))
+                .values());
+
         LocalDate currentDate = LocalDate.now();
         problems = problems.stream()
                 .filter(p -> {
@@ -218,6 +234,9 @@ public class DashboardController {
 
         // Adjust institution names based on language
         setInstitution(output, pageLang);
+        long afterUsedMem = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
+        long actualMemUsed = afterUsedMem - beforeUsedMem;
+        LOG.info("Memory used by yourMethod(): {} bytes", actualMemUsed);
 
         return output;
     }

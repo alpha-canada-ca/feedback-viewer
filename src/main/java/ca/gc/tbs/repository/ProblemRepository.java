@@ -19,7 +19,20 @@ public interface ProblemRepository extends DataTablesRepository<Problem, String>
     List<Problem> findByPersonalInfoProcessed(String processed);
 
     List<Problem> findByAutoTagProcessed(String processed);
-
+    @Aggregation(pipeline = {
+            "{ '$match': { 'processed': 'true' } }", // Optional, adjust based on your requirements
+            "{ '$project': { " +
+                    "'_id': 0, " + // Excludes the _id field
+                    "'url': 1, " + // Includes the url field
+                    "'problemDate': 1, " + // Includes the problemDate field
+                    "'institution': 1, " + // Includes the institution field
+                    "'title': 1, " + // Includes the title field
+                    "'language': 1, " + // Includes the language field
+                    "'section': 1, " + // Includes the section field
+                    "'theme': 1 " + // Includes the theme field
+                    "}}"
+    })
+    List<Problem> findAllTest();
     @Aggregation(pipeline = {
             // Optional match stage
             "{ '$match': { 'processed': 'true' } }",
