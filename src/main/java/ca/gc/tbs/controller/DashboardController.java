@@ -8,9 +8,11 @@ import ca.gc.tbs.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.aggregation.AggregationResults;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.data.mongodb.datatables.DataTablesInput;
 import org.springframework.data.mongodb.datatables.DataTablesOutput;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,8 +28,7 @@ import java.util.stream.Collectors;
 
 @Controller
 public class DashboardController {
-
-    private static final Logger LOG = LoggerFactory.getLogger(ProblemController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DashboardController.class);
 
     @Autowired
     private ProblemRepository problemRepository;
@@ -117,6 +118,7 @@ public class DashboardController {
     public String totalPagesCount() {
         return String.valueOf(totalPages);
     }
+
     @GetMapping(value = "/dashboard")
     public ModelAndView pageFeedback(HttpServletRequest request) throws Exception {
         ModelAndView mav = new ModelAndView();
@@ -164,6 +166,16 @@ public class DashboardController {
         return dailyCommentsList;
     }
 
+    @Scheduled(cron = "0 1 0 * * *")
+    @EventListener(ApplicationReadyEvent.class)
+    public void init() {
+        System.out.println("Fetching all data from the DB via dashboard controller");
+        problemCacheService.getDistinctUrls();
+        problemDateService.getProblemDates();
+        System.out.println("done fetching data and dates.");
+    }
+
+
     @GetMapping(value = "/dashboardData")
     @ResponseBody
     public DataTablesOutput<Problem> getDashboardData(@Valid DataTablesInput input, HttpServletRequest request) {
@@ -177,8 +189,9 @@ public class DashboardController {
         String section = request.getParameter("section");
         String theme = request.getParameter("theme");
 
+        LOGGER.debug("Retrieving dashboard data");
         List<Problem> test = problemCacheService.getDistinctUrls();
-
+        LOGGER.debug("Retrieved {} problems for dashboard data", test.size());
 
         problems = new ArrayList<>(test.stream()
                 .collect(Collectors.groupingBy(
@@ -236,7 +249,7 @@ public class DashboardController {
         setInstitution(output, pageLang);
         long afterUsedMem = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
         long actualMemUsed = afterUsedMem - beforeUsedMem;
-        LOG.info("Memory used by yourMethod(): {} bytes", actualMemUsed);
+        LOGGER.info("Memory used by yourMethod(): {} bytes", actualMemUsed);
 
         return output;
     }
