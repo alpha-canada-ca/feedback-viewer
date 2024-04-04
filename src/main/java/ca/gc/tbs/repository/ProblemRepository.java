@@ -19,6 +19,7 @@ public interface ProblemRepository extends DataTablesRepository<Problem, String>
     List<Problem> findByPersonalInfoProcessed(String processed);
 
     List<Problem> findByAutoTagProcessed(String processed);
+
     @Aggregation(pipeline = {
             "{ '$match': { 'processed': 'true' } }", // Optional, adjust based on your requirements
             "{ '$project': { " +
@@ -32,7 +33,8 @@ public interface ProblemRepository extends DataTablesRepository<Problem, String>
                     "'theme': 1 " + // Includes the theme field
                     "}}"
     })
-    List<Problem> findAllTest();
+    List<Problem> findAllProcessedProblems();
+
     @Aggregation(pipeline = {
             // Optional match stage
             "{ '$match': { 'processed': 'true' } }",

@@ -170,7 +170,7 @@ public class DashboardController {
     @EventListener(ApplicationReadyEvent.class)
     public void init() {
         System.out.println("Fetching all data from the DB via dashboard controller");
-        problemCacheService.getDistinctUrls();
+        problemCacheService.getProcessedProblems();
         problemDateService.getProblemDates();
         System.out.println("done fetching data and dates.");
     }
@@ -190,10 +190,10 @@ public class DashboardController {
         String theme = request.getParameter("theme");
 
         LOGGER.debug("Retrieving dashboard data");
-        List<Problem> test = problemCacheService.getDistinctUrls();
-        LOGGER.debug("Retrieved {} problems for dashboard data", test.size());
+        List<Problem> processedProblems = problemCacheService.getProcessedProblems();
+        LOGGER.debug("Retrieved {} problems for dashboard data", processedProblems.size());
 
-        problems = new ArrayList<>(test.stream()
+        problems = new ArrayList<>(processedProblems.stream()
                 .collect(Collectors.groupingBy(
                         p -> new AbstractMap.SimpleEntry<>(p.getUrl(), p.getProblemDate()),
                         Collectors.collectingAndThen(

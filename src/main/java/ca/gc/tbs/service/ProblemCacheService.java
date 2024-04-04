@@ -27,10 +27,7 @@ public class ProblemCacheService {
     }
 
     @Cacheable("distinctUrls")
-    public List<Problem> getDistinctUrls() {
-        System.out.println("Fetching distinct URLs from the database");
-        List<Problem> result = problemRepository.findAllTest();
-        System.out.println("Fetched " + result.size() + " distinct URLs");
-        return result;
+    public List<Problem> getProcessedProblems() {
+        return problemRepository.findAllProcessedProblems();
     }
 }
