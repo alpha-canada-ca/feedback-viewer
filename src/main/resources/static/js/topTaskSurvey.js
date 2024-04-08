@@ -65,30 +65,22 @@ $(document).ready(function () {
 
     return [quarterStart, quarterEnd];
   }
-  var table = $("#myTable").DataTable({
-    language: isFrench ? { url: "//cdn.datatables.net/plug-ins/1.10.21/i18n/French.json" } : undefined,
-    stripeClasses: [],
-    bSortClasses: false,
-    order: [[0, "desc"]],
+  var loadingSpinner = $(".loading-spinner");
+
+  var table = $("#topTaskTable").DataTable({
+    language: isFrench ? { url: "//cdn.datatables.net/plug-ins/1.10.21/i18n/French.json" } : undefined, 
     processing: true,
     serverSide: true,
-    retrieve: true,
-    lengthMenu: [
-      [10, 25, 50, 100],
-      [10, 25, 50, 100],
-    ],
-    orderCellsTop: true,
-    fixedHeader: true,
-    responsive: true,
+    retrieve: true, 
        drawCallback: function () {
           fetchTotalDistinctTask();
           fetchTotalTaskCount();
-        },
-    dom: 'Br<"table-responsive"t>tilp',
+        }, 
     ajax: {
       url: "/topTaskData",
       type: "GET",
       data: function (d) {
+        loadingSpinner.show();
         d.department = $("#department").val();
         d.theme = $("#theme").val();
         d.tasks = $("#tasks").val();
@@ -109,7 +101,11 @@ $(document).ready(function () {
         console.log("xhr: " + xhr);
         console.log("error: " + error);
         console.log("thrown : " + thrown);
+        loadingSpinner.hide();
       },
+      complete: function() {
+        loadingSpinner.hide();
+      }
     },
 
     buttons: [
@@ -117,29 +113,55 @@ $(document).ready(function () {
         extend: "csvHtml5",
         className: "btn btn-default",
         exportOptions: {
-          columns: [0, 1, 2, 3], // This will export only visible columns
           modifier: {
             page: "all", // This tells DataTables to export data from all pages, not just the current page
           },
         },
         action: newexportaction,
-        filename: (isFrench ? "Outil_de_retroaction-" : "Page_feedback-") + new Date().getFullYear() + "-" + ("0" + (new Date().getMonth() + 1)).slice(-2) + "-" + ("0" + new Date().getDate()).slice(-2),
+        filename: (isFrench ? "Retroaction_du_sondage_SRT-" : "TSS_survey_feedback-") + new Date().getFullYear() + "-" + ("0" + (new Date().getMonth() + 1)).slice(-2) + "-" + ("0" + new Date().getDate()).slice(-2),
       },
       {
         extend: "excelHtml5",
         className: "btn btn-default",
         exportOptions: {
-          columns: [0, 1, 2, 3], // This will export only visible columns
           modifier: {
             page: "all", // This tells DataTables to export data from all pages, not just the current page
           },
         },
         action: newexportaction,
-        filename: (isFrench ? "Outil_de_retroaction-" : "Page_feedback-") + new Date().getFullYear() + "-" + ("0" + (new Date().getMonth() + 1)).slice(-2) + "-" + ("0" + new Date().getDate()).slice(-2),
+        filename: (isFrench ? "Retroaction_du_sondage_SRT-" : "TSS_survey_feedback-") + new Date().getFullYear() + "-" + ("0" + (new Date().getMonth() + 1)).slice(-2) + "-" + ("0" + new Date().getDate()).slice(-2),
       },
     ],
 
-    columns: [{ data: "task" }, { data: "dept" }, { data: "theme" }, { data: "language" }],
+    columns: [
+      { data: 'dateTime' },
+      { data: 'timeStamp' },
+      { data: 'surveyReferrer' },
+      { data: 'language' },
+      { data: 'device' },
+      { data: 'screener' },
+      { data: 'dept' },
+      { data: 'theme' },
+      { data: 'themeOther' },
+      { data: 'grouping' },
+      { data: 'task' },
+      { data: 'taskOther' },
+      { data: 'taskSatisfaction' },
+      { data: 'taskEase' },
+      { data: 'taskCompletion' },
+      { data: 'taskImprove' },
+      { data: 'taskImproveComment' },
+      { data: 'taskWhyNot' },
+      { data: 'taskWhyNotComment' },
+      { data: 'taskSampling' },
+      { data: 'samplingInvitation' },
+      { data: 'samplingGC' },
+      { data: 'samplingCanada' },
+      { data: 'samplingTheme' },
+      { data: 'samplingInstitution' },
+      { data: 'samplingGrouping' },
+      { data: 'samplingTask' }
+  ],
   });
  function fetchTotalDistinctTask() {
     fetch("/topTask/totalDistinctTasks")
@@ -165,29 +187,17 @@ $(document).ready(function () {
       });
   }
   fetch("/topTaskSurvey/departments")
-    .then(function (response) {
-      // The API call was successful!
-      return response.text();
-    })
-    .then(function (data) {
-      // This is the text response as a string
-      const departments = data.split(","); // Split the string into an array of department names
-
-      // Clear any existing options in the department select
-      $("#department").empty();
-
-      // Add the "All" option
-      $("#department").append('<option value="">All</option>');
-
-      // Append an option for each department
-      departments.forEach(function (department) {
-        $("#department").append(`<option value="${department.trim()}">${department.trim()}</option>`);
-      });
-    })
-    .catch(function (err) {
-      // There was an error
-      console.warn("Something went wrong.", err);
+  .then(response => response.json()) // Parse the JSON from the response
+  .then(departments => {
+    departments.forEach(department => {
+      // Use the 'value' for the option value and 'display' for what's displayed
+      $("#department").append(`<option value="${department.value}">${department.display}</option>`);
     });
+  })
+  .catch(err => {
+    console.warn("Something went wrong.", err);
+  });
+
 
   $("#tasks").on("change", function () {
     table.ajax.reload(); // Reload the DataTable
@@ -277,7 +287,7 @@ $(document).ready(function () {
     settings: {
       hideSelected: true,
       keepOrder: true,
-      placeholderText: isFrench ? "Filtrer par titre de page complet ou partiel" : "Filter by full or partial page title",
+      placeholderText: isFrench ? "Filtrer par mot-clé de la tâche" : "Filter by task keyword",
       searchText: isFrench ? "Aucun résultat trouvé" : "No results found",
       searchPlaceholder: isFrench ? "Recherche" : "Search",
       searchingText: isFrench ? "Recherche en cours..." : "Searching...",
