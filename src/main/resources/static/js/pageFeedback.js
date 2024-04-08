@@ -145,7 +145,7 @@ $(document).ready(function () {
         extend: "csvHtml5",
         className: "btn btn-default",
         exportOptions: {
-          columns: [0, 4, 3, 2, 5, 6, 1, 7, 8, 9, 10], // This will export only visible columns
+          columns: [0, 5, 1, 3, 4, 6, 2, 7, 8, 9, 10], // This will export only visible columns
           modifier: {
             page: "all", // This tells DataTables to export data from all pages, not just the current page
           },
@@ -157,7 +157,7 @@ $(document).ready(function () {
         extend: "excelHtml5",
         className: "btn btn-default",
         exportOptions: {
-          columns: [0, 4, 3, 2, 5, 6, 1, 7, 8, 9, 10], // This will export only visible columns
+          columns: [0, 5, 1, 3, 4, 6, 2, 7, 8, 9, 10],
           modifier: {
             page: "all", // This tells DataTables to export data from all pages, not just the current page
           },

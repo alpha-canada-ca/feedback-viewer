@@ -47,7 +47,7 @@ public interface ProblemRepository extends DataTablesRepository<Problem, String>
                     "'language': { '$first': '$language' }, " +
                     "'section': { '$first': '$section' }, " +
                     "'theme': { '$first': '$theme' } " +
-                    "}}, " +
+                    "}}, " ,
                     "{ '$project': { " +
                     "'url': '$_id.url', " +
                     "'day': '$_id.day', " +
