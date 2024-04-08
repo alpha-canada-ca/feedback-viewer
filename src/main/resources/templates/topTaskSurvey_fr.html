@@ -1,670 +1,159 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
-    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{default_fr}" lang="fr">
-<th:block layout:fragment="content">
-    <style>
-        ​ .dt-button {
-            align-items: flex-start;
-            font-size: 15px;
-            text-align: center;
-            visibility: visible;
-        }
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{wide_fr}" lang="fr">
 
-        .dataTables_processing {
-            background: none !important;
-        }
+<head>
+    <link href="https://fonts.googleapis.com/css?family=Noto+Sans" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css"
+        type="text/css" />
+    <link
+        href="https://cdn.datatables.net/v/dt/jq-3.7.0/jszip-3.10.1/dt-1.13.10/b-2.4.2/b-html5-2.4.2/cr-1.7.0/fh-3.4.0/r-2.5.0/datatables.min.css"
+        rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+    <link rel="stylesheet" type="text/css" href="/css/topTaskSurvey_styles.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://unpkg.com/slim-select@latest/dist/slimselect.min.js"></script>
+    <link href="https://unpkg.com/slim-select@latest/dist/slimselect.css" rel="stylesheet" type="text/css" />
+</head>
 
-        .fa {
-            position: fixed;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%);
-            visibility: visible;
-        }
+<body>
+    <th:block layout:fragment="content">
+        <main class="container">
+            <div class="col-lg-12">
+                <div class="row">
+                    <h1 id="wb-cont">Sondage sur la réussite des tâches</h1>
+                    <form class="tss">
+                        <h2 class="h4">Filtrer par:</h2>
+                        <label for="tasks">
+                            Tâche(s)
+                            <select id="tasks" multiple></select>
+                        </label>
+                        <div class="form-group">
+                            <label for="department">Institution</label>
+                            <select class="form-control" id="department" name="department">
+                                <option value>Tous</option>
+                                <!-- DEPARTMENTS -->
+                            </select>
+                        </div>
 
-        .autocomplete-result-list {
-            margin: 0;
-            border: 1px solid rgba(0, 0, 0, .12);
-            padding: 0;
-            box-sizing: border-box;
-            max-height: 296px;
-            overflow-y: auto;
-            background: #fff;
-            list-style: none;
-            box-shadow: 0 2px 2px rgba(0, 0, 0, .16)
-        }
+                        <div class="form-group">
+                            <label for="theme">
+                                Thème
+                                <span id="theme-tool-tip" class="glyphicon glyphicon-question-sign"
+                                    aria-hidden="true"></span>
+                            </label>
+                            <select class="form-control" id="theme" name="theme">
+                                <option value>Tous</option>
+                                <option value="AboutGov">A propos de gov</option>
+                                <option value="Benefits">Avantages</option>
+                                <option value="Business">Entreprise</option>
+                                <option value="World">CanadaMonde</option>
+                                <option value="Culture">Culture</option>
+                                <option value="COVID-19">COVID-19</option>
+                                <option value="Security">Défense</option>
+                                <option value="Environment">Environnement</option>
+                                <option value="Health">Santé</option>
+                            </select>
+                        </div>
+                        <label id="drp" for="dateRangePicker">
+                            Période
+                            <input type="text" id="dateRangePicker" name="dateRangePicker" readonly="readonly"
+                                style="background-color: white; cursor: pointer" />
+                        </label>
+                        <div class="commentsCheckbox">
+                            <input type="checkbox" id="commentsCheckbox" name="commentsCheckbox">
+                            <label for="commentsCheckbox">N'inclure que les entrées avec commentaires</label>
+                        </div>
 
-        [data-position=below] .autocomplete-result-list {
-            margin-top: -1px;
-            border-top-color: transparent;
-            border-radius: 0 0 8px 8px;
-            padding-bottom: 8px
-        }
-
-        [data-position=above] .autocomplete-result-list {
-            margin-bottom: -1px;
-            border-bottom-color: transparent;
-            border-radius: 8px 8px 0 0;
-            padding-top: 8px
-        }
-
-        .autocomplete-result {
-            cursor: default;
-            padding: 12px 12px 12px 48px;
-            background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjY2NjIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PGNpcmNsZSBjeD0iMTEiIGN5PSIxMSIgcj0iOCIvPjxwYXRoIGQ9Ik0yMSAyMWwtNC00Ii8+PC9zdmc+");
-            background-repeat: no-repeat;
-            background-position: 12px
-        }
-
-        .autocomplete-result:hover,
-        .autocomplete-result[aria-selected=true] {
-            background-color: rgba(0, 0, 0, .06)
-        }
-
-        @keyframes rotate {
-            0% {
-                transform: translateY(-50%) rotate(0deg)
-            }
-
-            to {
-                transform: translateY(-50%) rotate(359deg)
-            }
-        }
-    </style>
-    <!--  -->
-    <h1>Sondage sur la réussite de tâches</h1>
-    <p class="mrgn-tp-md">Pour accéder aux résultats de l'enquête sur la réussite des tâches, faites des sélections à
-        l'aide des filtres, puis téléchargez vos données sous forme de fichier Excel ou CSV.</p>
-    <h2 class="mrgn-lft-md h3">Filtre</h2>
-    <div class="row">
-        <form class="wb-tables-filter col-md-10" data-bind-to="topTaskTable">
-            <div class="form-horizontal col-md-5">
-                <label for="Department">Institution</label>
-                <select class="form-control" id="Department" name="Department" data-column="5">
-                    <option value="">Tout</option>
-                    <!-- DEPARTMENTS -->
-                </select>
-                <h2 class="mrgn-lft h3">OU</h2>
-                <br>
-                <label for="theme">Thème</label>
-                <select class="form-control" id="theme" name="theme" data-column="6">
-                    <option value="">Tout</option>
-                    <option value="AboutGov">A propos de gov</option>
-                    <option value="Benefits">Avantages</option>
-                    <option value="Business">Entreprise</option>
-                    <option value="CanadaTheWorld">CanadaMonde</option>
-                    <option value="Culture">Culture</option>
-                    <option value="COVID-19">COVID-19</option>
-                    <option value="Defence">Défense</option>
-                    <option value="Environment">Environnement</option>
-                    <option value="Health">Santé</option>
-                    <option value="Immigration">Immigration</option>
-                    <option value="Indigenous">Indigène</option>
-                    <option value="Jobs">Emplois</option>
-                    <option value="Money">Argent</option>
-                    <option value="Policing">Police</option>
-                    <option value="PublicService">Service public</option>
-                    <option value="Science">Science</option>
-                    <option value="Taxes">Impôts</option>
-                    <option value="Transport">Transport</option>
-                    <option value="Travel">Voyage</option>
-                    <option value="Veterans">Anciens combattants</option>
-                    <option value="Other">Autre</option>
-                    <!-- THEMES -->
-                </select>
-                <h2 class="mrgn-lft h3">OU</h2>
-                <br>
-                <label for="autocomplete-input">Task</label>
-                <div id="autocomplete" class="autocomplete">
-                    <input id="taskValue" class="autocomplete-input form-control" placeholder="Recherche d'une tâche"
-                        aria-label="Recherche d'une tâche">
-                    <ul class="autocomplete-result-list"></ul>
-                </div>
-                <h2 class="mrgn-lft h3">ET</h2>
-                <br>
-                <label for="dataSet">Jeu de données</label>
-                <select class="form-control" id="dataSet" name="dataSet" data-column="10">
-                    <option value="">Toutes les entrées</option>
-                    <option value="true">Entrées avec commentaires</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label for="date">Date Période <span class="wb-inv">sélection</span></label>
-                <div class="form-inline">
-                    <input type="date" class="form-control" id="min" name="min">
-                    <label for="min" class="ml-2 mr-2"><span class="wb-inv">Date de début</span></label>
-                    <span><strong>à &nbsp;</strong></span>
-                    <input type="date" class="form-control" id="max" name="max">
-                    <label for="max" class="ml-2"><span class="wb-inv">Date de fin</span></label>
+                        <div class="download-section">
+                            <button type="button" class="btn btn-primary" id="downloadCSV">Télécharger CSV</button>
+                            <button type="button" class="btn btn-primary" id="downloadExcel">Télécharger Excel</button>
+                            <button type="button" class="btn-unstyled reset-filters">Réinitialiser les filtres</button>
+                        </div>
+                    </form>
                 </div>
             </div>
-
-            <div class="form-inline">
-                <label for="rangeSelection" class="d-block mt-3">ou choisir <span class="wb-inv">une plage
-                        prédéfinie</span></label>
-                <select class="form-control" id="rangeSelection" name="rangeSelection">
-                    <option value="">Durée</option>
-                    <option value="today">Aujourd'hui</option>
-                    <option value="yesterday">Hier</option>
-                    <option value="seven">7 derniers jours</option>
-                    <option value="fifteen">15 derniers jours</option>
-                    <option value="thirty">30 derniers jours</option>
-                </select>
-            </div>
-
             <div class="clearfix"></div>
-            <div class="btn-group-lg mrgn-bttm-lg mrgn-tp-lg col-md-12">
-                <button type="reset" class="btn btn-default" id="reset-to-default">Rétablir les valeurs par
-                    défaut</button>
+        </main>
+        <div class="col-lg-12">
+            <div class="stats-box">
+                <div class="stat">
+                    <span class="description">Total des tâches uniques (sur la base des filtres sélectionnés)</span>
+                    <br>
+                    <span class="totalDistinctTasks"></span>
+                </div>
+                <div class="stat">
+                    <span class="description">Total des entrées (sur la base des filtres sélectionnés)</span>
+                    <br>
+                    <span class="totalTaskCount"></span>
+                </div>
             </div>
-        </form>
-
-        <div class="col-md-2 mrgn-tp-lg">
-            <table id="topTaskTable" class="hidden">
-                <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>Horodatage</th>
-                        <th>Référent de l'enquête</th>
-                        <th>Langue</th>
-                        <th>Dispositif</th>
-                        <th>Cribleur</th>
-                        <th>Département</th>
-                        <th>Thème</th>
-                        <th>Thème Autre</th>
-                        <th>Regroupement</th>
-                        <th>Tâche</th>
-                        <th>Tâche Autre</th>
-                        <th>Satisfaction des tâches</th>
-                        <th>Facilité d'exécution des tâches</th>
-                        <th>Achèvement des tâches</th>
-                        <th>Amélioration de la tâche</th>
-                        <th>Tâche Améliorer Commentaire</th>
-                        <th>Tâche Pourquoi pas</th>
-                        <th>Tâche Pourquoi pas Commentaire</th>
-                        <th>Échantillonnage</th>
-                        <th>Invitation à l'échantillonnage</th>
-                        <th>Échantillonnage GC</th>
-                        <th>Échantillonnage du Canada</th>
-                        <th>Thème d'échantillonnage</th>
-                        <th>Institution d'échantillonnage</th>
-                        <th>Groupe d'échantillonnage</th>
-                        <th>Tâche d'échantillonnage</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!--<tr th:remove="tag" th:utext="${data}"></tr> -->
-                </tbody>
-
-            </table>
         </div>
-    </div>
-</th:block>
-<th:block layout:fragment="script">
-    <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/1.6.1/js/dataTables.buttons.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/1.6.1/js/buttons.flash.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
-    <script src="https://cdn.datatables.net/buttons/1.6.1/js/buttons.html5.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/1.6.1/js/buttons.print.min.js"></script>
-    <script src="https://cdn.datatables.net/colreorder/1.5.2/js/dataTables.colReorder.min.js"></script>
-    <script src="https://unpkg.com/@trevoreyre/autocomplete-js"></script>
-
-    <script type="text/javascript" src="js/spring-friendly.min.js"></script>
-    <script th:inline="javascript">
-        $(document).ready(function () {
-            function newexportaction(e, dt, button, config) {
-                var self = this;
-                var oldStart = dt
-                    .settings()[0]
-                    ._iDisplayStart;
-                dt.one('preXhr', function (e, s, data) {
-                    // Just this once, load all data from the server...
-                    data.start = 0;
-                    data.length = 2147483647;
-                    dt.one('preDraw', function (e, settings) {
-                        // Call the original action function
-                        if (button[0].className.indexOf('buttons-copy') >= 0) {
-                            $
-                                .fn
-                                .dataTable
-                                .ext
-                                .buttons
-                                .copyHtml5
-                                .action
-                                .call(self, e, dt, button, config);
-                        } else if (button[0].className.indexOf('buttons-excel') >= 0) {
-                            $
-                                .fn
-                                .dataTable
-                                .ext
-                                .buttons
-                                .excelHtml5
-                                .available(dt, config) ?
-                                $
-                                    .fn
-                                    .dataTable
-                                    .ext
-                                    .buttons
-                                    .excelHtml5
-                                    .action
-                                    .call(self, e, dt, button, config) :
-                                $
-                                    .fn
-                                    .dataTable
-                                    .ext
-                                    .buttons
-                                    .excelFlash
-                                    .action
-                                    .call(self, e, dt, button, config);
-                        } else if (button[0].className.indexOf('buttons-csv') >= 0) {
-                            $
-                                .fn
-                                .dataTable
-                                .ext
-                                .buttons
-                                .csvHtml5
-                                .available(dt, config) ?
-                                $
-                                    .fn
-                                    .dataTable
-                                    .ext
-                                    .buttons
-                                    .csvHtml5
-                                    .action
-                                    .call(self, e, dt, button, config) :
-                                $
-                                    .fn
-                                    .dataTable
-                                    .ext
-                                    .buttons
-                                    .csvFlash
-                                    .action
-                                    .call(self, e, dt, button, config);
-                        } else if (button[0].className.indexOf('buttons-pdf') >= 0) {
-                            $
-                                .fn
-                                .dataTable
-                                .ext
-                                .buttons
-                                .pdfHtml5
-                                .available(dt, config) ?
-                                $
-                                    .fn
-                                    .dataTable
-                                    .ext
-                                    .buttons
-                                    .pdfHtml5
-                                    .action
-                                    .call(self, e, dt, button, config) :
-                                $
-                                    .fn
-                                    .dataTable
-                                    .ext
-                                    .buttons
-                                    .pdfFlash
-                                    .action
-                                    .call(self, e, dt, button, config);
-                        } else if (button[0].className.indexOf('buttons-print') >= 0) {
-                            $
-                                .fn
-                                .dataTable
-                                .ext
-                                .buttons
-                                .print
-                                .action(e, dt, button, config);
-                        }
-                        dt.one('preXhr', function (e, s, data) {
-                            // DataTables thinks the first item displayed is index 0, but we're not drawing that.
-                            // Set the property to what it was before exporting.
-                            settings._iDisplayStart = oldStart;
-                            data.start = oldStart;
-                        });
-                        // Reload the grid with the original page. Otherwise, API functions like table.cell(this) don't work properly.
-                        setTimeout(dt.ajax.reload, 0);
-                        // Prevent rendering of the full data to the DOM
-                        return false;
-                    });
-                });
-                // Requery the server with the new one-time export settings
-                dt
-                    .ajax
-                    .reload();
-            };
-
-            $('#topTaskTable')
-                .find('thead th')
-                .append('<span class="sorting-cnt"><span class="sorting-icons"></span></span>')
-
-            var table = $('table#topTaskTable').DataTable({
-                processing: true,
-                'ajax': '/topTaskData',
-                "language": {
-                    processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span> '
-                },
-                "lengthMenu": [
-                    50, -1
-                ],
-                retrieve: true,
-                'serverSide': true,
-                columns: [{
-                    data: 'dateTime'
-                }, {
-                    data: 'timeStamp'
-                }, {
-                    data: 'surveyReferrer'
-                }, {
-                    data: 'language'
-                }, {
-                    data: 'device'
-                }, {
-                    data: 'screener'
-                }, {
-                    data: 'dept'
-                }, {
-                    data: 'theme'
-                }, {
-                    data: 'themeOther'
-                }, {
-                    data: 'grouping'
-                }, {
-                    data: 'task'
-                }, {
-                    data: 'taskOther'
-                }, {
-                    data: 'taskSatisfaction'
-                }, {
-                    data: 'taskEase'
-                }, {
-                    data: 'taskCompletion'
-                }, {
-                    data: 'taskImprove'
-                }, {
-                    data: 'taskImproveComment'
-                }, {
-                    data: 'taskWhyNot'
-                }, {
-                    data: 'taskWhyNotComment'
-                }, {
-                    data: 'taskSampling'
-                }, {
-                    data: 'samplingInvitation'
-                }, {
-                    data: 'samplingGC'
-                }, {
-                    data: 'samplingCanada'
-                }, {
-                    data: 'samplingTheme'
-                }, {
-                    data: 'samplingInstitution'
-                }, {
-                    data: 'samplingGrouping'
-                }, {
-                    data: 'samplingTask'
-                }],
-                orderCellsTop: true,
-                fixedHeader: true,
-                dom: 'Br',
-                buttons: [{
-                    "extend": 'csv',
-                    "text": 'Télécharger CSV',
-                    className: 'btn btn-default mrgn-bttm-md',
-                    "action": newexportaction
-                }, {
-                    "extend": 'excel',
-                    "text": "Télécharger Excel",
-                    className: 'btn btn-default',
-                    "action": newexportaction
-                }]
-            });
-
-            fetch('/topTaskSurvey/departments')
-                .then(function (response) {
-                    // The API call was successful!
-                    return response.text();
-                })
-                .then(function (html) {
-                    // This is the HTML from our response as a text string
-                    data = html;
-                    data = data.split(",");
-                    for (i = 0; i < data.length; i++) {
-                        optionValue = data[i];
-                        optionText = data[i];
-                        $('#Department').append(`<option value="${optionValue}"> ${optionText} </option>`);
-                    }
-
-                })
-                .catch(function (err) {
-                    // There was an error
-                    console.warn('Something went wrong.', err);
-                });
-
-
-
-            (async () => {
-                const raw = await fetch('/topTaskSurvey/taskList/fr');
-                return JSON.parse(await raw.text());
-            })().then((taskList) => {
-                autocomplete(taskList);
-                console.log(taskList);
-            }).catch((e) => {
-                console.error("Something went horribly wrong", e);
-            });
-
-            function resetFilters() {
-                // clear all search boxes and select dropdowns
-                $('#searchBoxDate, #searchBoxTimeStamp, #searchBoxComment, #searchBoxProblem, #searchBoxUrl, #searchBoxUrlEntries, #searchBoxTitle, #searchBoxLang').val('');
-                $('#Department').val('');
-                $('#theme').val('');
-                $('#taskValue').val('');
-
-                // reset all search filters to empty
-                table.columns().search('').draw();
-
-                // reset the tasklist filter input field
-                $('#taskValue').trigger('keyup');
-            }
-
-            $('#reset-to-default').on('click', function () {
-                resetFilters();
-            });
-            const DateColumn = 0;
-            const DepartmentColumn = 6;
-            const ThemeColumn = 7;
-            const TaskColumn = 10;
-            const TaskOtherColumn = 11;
-
-            var minMaxDateChosen = false;
-
-            $('#rangeSelection', this).on('keyup change', function () {
-
-                var rangeValue = this.value.trim();
-                var rangeChosen = rangeValue !== "";
-
-                if (rangeChosen) {
-                    $('#min, #max').val('');
-                    minMaxDateChosen = false;
-                    table.column(DateColumn).search(rangeValue).draw();
-                } else {
-                    table.column(DateColumn).search("").draw();
-                }
-
-                if ($('#Department, #theme, #taskValue').filter(function () {
-                    return this.value.trim() !== "";
-                }).length === 3) {
-                    table.columns([DepartmentColumn, ThemeColumn, TaskColumn])
-                        .search([$('#Department').val(), $('#theme').val(), $('#taskValue').val()])
-                        .draw();
-                } else {
-                    if ($('#Department').val() && rangeChosen) {
-                        table.column(DepartmentColumn).search($('#Department').val()).draw();
-                    }
-                    if ($('#theme').val() && rangeChosen) {
-                        table.column(ThemeColIndex).search($('#theme').val()).draw();
-                    }
-                    if ($('#taskValue').val() && rangeChosen) {
-                        table.column(TaskColumn).search($('#taskValue').val()).draw();
-                    }
-                }
-            })
-
-            $('#min', this).on('keyup change', function () {
-                minMaxDateChosen = false;
-                if (this.value != "" && $('#max').val() != "") {
-                    minMaxDateChosen = true;
-                    $('#rangeSelection').val('');
-                    table
-                        .column(DateColumn)
-                        .search(this.value + ":" + $('#max').val())
-                }
-                if ($('#theme').val() != "" && minMaxDateChosen) {
-                    table
-                        .column(ThemeColumn)
-                        .search($('#theme').val())
-                }
-                if ($('#Department').val() != "" && minMaxDateChosen) {
-                    table
-                        .column(DepartmentColumn)
-                        .search($('#Department').val())
-                }
-                if ($('#taskValue').val() != "" && minMaxDateChosen) {
-                    table
-                        .column(TaskColumn)
-                        .search($('#taskValue').val())
-                }
-                table.draw();
-            });
-
-            $('#max', this).on('keyup change', function () {
-                minMaxDateChosen = false;
-                if (this.value != "" && $('#min').val() != "") {
-                    minMaxDateChosen = true;
-                    $('#rangeSelection').val('');
-                    table
-                        .column(DateColumn)
-                        .search($('#min').val() + ":" + this.value)
-                }
-                if ($('#theme').val() != "" && minMaxDateChosen) {
-                    table
-                        .column(ThemeColumn)
-                        .search($('#theme').val())
-                }
-                if ($('#Department').val() != "" && minMaxDateChosen) {
-                    table
-                        .column(DepartmentColumn)
-                        .search($('#Department').val())
-                }
-                if ($('#taskValue').val() != "" && minMaxDateChosen) {
-                    table
-                        .column(TaskColumn)
-                        .search($('#taskValue').val())
-                }
-                table.draw();
-            });
-
-            $('#theme', this).on('keyup change', function () {
-                if (this.value == "") {
-                    table
-                        .column(ThemeColumn)
-                        .search("")
-                        .draw()
-                }
-                if (this.value != "") {
-                    table
-                        .column(ThemeColumn)
-                        .search(this.value)
-                        .draw()
-                }
-                if (minMaxDateChosen) {
-                    table
-                        .column(DateColumn)
-                        .search($('#min').val() + ":" + $('#max').val())
-                        .draw();
-                }
-                if ($('#Department').val()) {
-                    table
-                        .column(DepartmentColumn)
-                        .search($('#Department').val())
-                        .draw()
-                }
-                if ($('#taskValue').val() != "") {
-                    table
-                        .column(TaskColumn)
-                        .search($('#taskValue').val())
-                        .draw()
-                }
-            });
-            $('#Department', this).on('keyup change', function () {
-                if (this.value == "") {
-                    table
-                        .column(DepartmentColumn)
-                        .search("")
-                        .draw()
-                }
-                if (this.value != "") {
-                    table
-                        .column(DepartmentColumn)
-                        .search(this.value)
-                        .draw()
-                }
-                if (minMaxDateChosen) {
-                    table
-                        .column(DateColumn)
-                        .search($('#min').val() + ":" + $('#max').val())
-                        .draw();
-                }
-                if ($('#theme').val() != "") {
-                    table
-                        .column(ThemeColumn)
-                        .search($('#theme').val())
-                        .draw()
-                }
-                if ($('#taskValue').val() != "") {
-                    table
-                        .column(TaskColumn)
-                        .search($('#taskValue').val())
-                        .draw()
-                }
-            });
-            $('#dataSet', this).on('keyup change', function () {
-                if (this.value == "") {
-                    table
-                        .column(TaskOtherColumn)
-                        .search("")
-                        .draw()
-                } else {
-                    table
-                        .column(TaskOtherColumn)
-                        .search("nonEmpty")
-                        .draw()
-                }
-            });
-
-            function autocomplete(taskList) {
-                new Autocomplete('#autocomplete', {
-                    search: input => {
-                        if (input.length < 1) {
-                            return []
-                        }
-                        return taskList.filter(task => {
-                            return task.toLowerCase()
-                                .startsWith(input.toLowerCase())
-                        })
-                    },
-                    //TODO: make sure that the filter is working with the dataset, themes, and departments without any side effects.
-                    onSubmit: result => {
-                        table
-                            .column(TaskColumn)
-                            .search(result)
-                            .draw();
-                    }
-                })
-            }
-        });
-    </script>
-</th:block>
+        <!-- Add this code in your HTML file -->
+        <div class="loading-spinner" style="display: none;">
+            <i class="fa fa-spinner fa-spin fa-3x"></i>
+        </div>
+        <div class="col-lg-12">
+            <div class="row custom-row">
+                <div class="tss-data hidden">
+                    <table id="topTaskTable" class="hidden">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Horodatage</th>
+                                <th>Référent de l'enquête</th>
+                                <th>Langue</th>
+                                <th>Dispositif</th>
+                                <th>Cribleur</th>
+                                <th>Département</th>
+                                <th>Thème</th>
+                                <th>Thème Autre</th>
+                                <th>Regroupement</th>
+                                <th>Tâche</th>
+                                <th>Tâche Autre</th>
+                                <th>Satisfaction des tâches</th>
+                                <th>Facilité d'exécution des tâches</th>
+                                <th>Achèvement des tâches</th>
+                                <th>Amélioration de la tâche</th>
+                                <th>Tâche Améliorer Commentaire</th>
+                                <th>Tâche Pourquoi pas</th>
+                                <th>Tâche Pourquoi pas Commentaire</th>
+                                <th>Échantillonnage</th>
+                                <th>Invitation à l'échantillonnage</th>
+                                <th>Échantillonnage GC</th>
+                                <th>Échantillonnage du Canada</th>
+                                <th>Thème d'échantillonnage</th>
+                                <th>Institution d'échantillonnage</th>
+                                <th>Groupe d'échantillonnage</th>
+                                <th>Tâche d'échantillonnage</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </th:block>
+    <th:block layout:fragment="script">
+        <script
+            src="https://cdn.datatables.net/v/dt/jq-3.7.0/jszip-3.10.1/dt-1.13.10/b-2.4.2/b-html5-2.4.2/cr-1.7.0/fh-3.4.0/r-2.5.0/datatables.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+        <script type="text/javascript" src="js/spring-friendly.min.js"></script>
+        <script th:inline="javascript">
+            /*
+                  <![CDATA[*/
+            var earliestDate = /*[[${earliestDate}]]*/ "";
+            var latestDate = /*[[${latestDate}]]*/ "";
+            var langSession = /*[[${session.lang}]]*/ "";
+            /*]]>*/
+        </script>
+        <script src="/js/topTaskSurvey.js"></script>
+        <script src="https://unpkg.com/@popperjs/core@2"></script>
+        <script src="https://unpkg.com/tippy.js@6"></script>
+    </th:block>
+</body>
 
 </html>
