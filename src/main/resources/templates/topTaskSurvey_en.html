@@ -1,119 +1,158 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{wide_en}" lang="en">
-  <head>
-    <link href="https://fonts.googleapis.com/css?family=Noto+Sans" rel="stylesheet" type="text/css" />
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" type="text/css" />
-    <link href="https://cdn.datatables.net/v/dt/jq-3.7.0/jszip-3.10.1/dt-1.13.10/b-2.4.2/b-html5-2.4.2/cr-1.7.0/fh-3.4.0/r-2.5.0/datatables.min.css" rel="stylesheet" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
-    <link rel="stylesheet" type="text/css" href="/css/topTaskSurvey_styles.css" />
-    <script src="https://unpkg.com/slim-select@latest/dist/slimselect.min.js"></script>
-    <link href="https://unpkg.com/slim-select@latest/dist/slimselect.css" rel="stylesheet" type="text/css" />
-  </head>
-  <body>
-    <th:block layout:fragment="content">
-      <main class="container">
-        <div class="col-lg-12">
-          <div class="row">
-            <h1 id="wb-cont">GC Task Success Survey</h1>
-            <form class="feedback-tool">
-              <h2 class="h4">Filter by:</h2>
-              <label for="tasks">
-                Task(s)
-                <select id="tasks" multiple></select>
-              </label>
-              <div class="form-group">
-                <label for="department">Department</label>
-                <select class="form-control" id="department" name="department">
-                  <option value>All</option>
-                  <!-- DEPARTMENTS -->
-                </select>
-              </div>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{wide_en}" lang="en">
 
-              <div class="form-group">
-                <label for="theme">
-                  Theme
-                  <span id="theme-tool-tip" class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
-                </label>
-                <select class="form-control" id="theme" name="theme">
-                  <option value>All</option>
-                  <option value="AboutGov">AboutGov</option>
-                  <option value="Benefits">Benefits</option>
-                  <option value="Business">Business</option>
-                  <option value="World">CanadaTheWorld</option>
-                  <option value="Culture">Culture</option>
-                  <option value="COVID-19">COVID-19</option>
-                  <option value="Security">Defence</option>
-                  <option value="Environment">Environment</option>
-                  <option value="Health">Health</option>
-                </select>
-              </div>
-              <label id="drp" for="dateRangePicker">
-                Date Range
-                <input type="text" id="dateRangePicker" name="dateRangePicker" readonly="readonly" style="background-color: white; cursor: pointer" />
-              </label>
-              <div class="commentsCheckbox">
-                <input type="checkbox" id="commentsCheckbox" name="commentsCheckbox">
-                <label for="commentsCheckbox">Include only entries with comments</label>
-              </div>
+<head>
+  <link href="https://fonts.googleapis.com/css?family=Noto+Sans" rel="stylesheet" type="text/css" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css"
+    type="text/css" />
+  <link
+    href="https://cdn.datatables.net/v/dt/jq-3.7.0/jszip-3.10.1/dt-1.13.10/b-2.4.2/b-html5-2.4.2/cr-1.7.0/fh-3.4.0/r-2.5.0/datatables.min.css"
+    rel="stylesheet" type="text/css" />
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+  <link rel="stylesheet" type="text/css" href="/css/topTaskSurvey_styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <script src="https://unpkg.com/slim-select@latest/dist/slimselect.min.js"></script>
+  <link href="https://unpkg.com/slim-select@latest/dist/slimselect.css" rel="stylesheet" type="text/css" />
+</head>
 
-              <div class="download-section">
-                <button type="button" class="btn btn-primary" id="downloadCSV">Download CSV</button>
-                <button type="button" class="btn btn-primary" id="downloadExcel">Download Excel</button>
-                <button type="button" class="btn-unstyled reset-filters">Reset Filters</button>
-              </div>
-            </form>
-          </div>
-        </div>
-        <div class="clearfix"></div>
-      </main>
+<body>
+  <th:block layout:fragment="content">
+    <main class="container">
       <div class="col-lg-12">
-        <div class="stats-box">
-          <div class="stat">
-            <span class="description">Total unique tasks based on filters</span>
-            <br>
-            <span class="totalDistinctTasks"></span>
-          </div>
-          <div class="stat">
-            <span class="description">Total Entries based on filters</span>
-            <br>
-            <span class="totalTaskCount"></span>
-          </div>
+        <div class="row">
+          <h1 id="wb-cont">GC Task Success Survey</h1>
+          <form class="tss">
+            <h2 class="h4">Filter by:</h2>
+            <label for="tasks">
+              Task(s)
+              <select id="tasks" multiple></select>
+            </label>
+            <div class="form-group">
+              <label for="department">Department</label>
+              <select class="form-control" id="department" name="department">
+                <option value>All</option>
+                <!-- DEPARTMENTS -->
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="theme">
+                Theme
+                <span id="theme-tool-tip" class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
+              </label>
+              <select class="form-control" id="theme" name="theme">
+                <option value>All</option>
+                <option value="AboutGov">AboutGov</option>
+                <option value="Benefits">Benefits</option>
+                <option value="Business">Business</option>
+                <option value="World">CanadaTheWorld</option>
+                <option value="Culture">Culture</option>
+                <option value="COVID-19">COVID-19</option>
+                <option value="Security">Defence</option>
+                <option value="Environment">Environment</option>
+                <option value="Health">Health</option>
+              </select>
+            </div>
+            <label id="drp" for="dateRangePicker">
+              Date Range
+              <input type="text" id="dateRangePicker" name="dateRangePicker" readonly="readonly"
+                style="background-color: white; cursor: pointer" />
+            </label>
+            <div class="commentsCheckbox">
+              <input type="checkbox" id="commentsCheckbox" name="commentsCheckbox">
+              <label for="commentsCheckbox">Include only entries with comments</label>
+            </div>
+
+            <div class="download-section">
+              <button type="button" class="btn btn-primary" id="downloadCSV">Download CSV</button>
+              <button type="button" class="btn btn-primary" id="downloadExcel">Download Excel</button>
+              <button type="button" class="btn-unstyled reset-filters">Reset Filters</button>
+            </div>
+          </form>
         </div>
       </div>
-      <div class="col-lg-12">
-        <div class="row custom-row">
-          <div class="feedback-tool-data">
-            <table id="myTable" class="display compact">
-              <thead>
-                <tr>
-                  <th>Task Name</th>
-                  <th>Dept</th>
-                  <th># of entries</th>
-                  <th># of comments</th>
-                </tr>
-              </thead>
-              <tbody></tbody>
-            </table>
-          </div>
+      <div class="clearfix"></div>
+    </main>
+    <div class="col-lg-12">
+      <div class="stats-box">
+        <div class="stat">
+          <span class="description">Total unique tasks based on filters</span>
+          <br>
+          <span class="totalDistinctTasks"></span>
+        </div>
+        <div class="stat">
+          <span class="description">Total Entries based on filters</span>
+          <br>
+          <span class="totalTaskCount"></span>
         </div>
       </div>
-    </th:block>
-    <th:block layout:fragment="script">
-      <script src="https://cdn.datatables.net/v/dt/jq-3.7.0/jszip-3.10.1/dt-1.13.10/b-2.4.2/b-html5-2.4.2/cr-1.7.0/fh-3.4.0/r-2.5.0/datatables.min.js"></script>
-      <script src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
-      <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
-      <script type="text/javascript" src="js/spring-friendly.min.js"></script>
-      <script th:inline="javascript">
-        /*
-              <![CDATA[*/
-        var earliestDate = /*[[${earliestDate}]]*/ "";
-        var latestDate = /*[[${latestDate}]]*/ "";
-        var langSession = /*[[${session.lang}]]*/ "";
-        /*]]>*/
-      </script>
-      <script src="/js/topTaskSurvey.js"></script>
-      <script src="https://unpkg.com/@popperjs/core@2"></script>
-      <script src="https://unpkg.com/tippy.js@6"></script>
-    </th:block>
-  </body>
+    </div>
+    <!-- Add this code in your HTML file -->
+    <div class="loading-spinner" style="display: none;">
+      <i class="fa fa-spinner fa-spin fa-3x"></i>
+    </div>
+    <div class="col-lg-12">
+      <div class="row custom-row">
+        <div class="tss-data hidden">
+          <table id="topTaskTable" class="hidden">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Time stamp</th>
+                <th>Survey Referrer</th>
+                <th>Language</th>
+                <th>Device</th>
+                <th>Screener</th>
+                <th>Department</th>
+                <th>Theme</th>
+                <th>Theme Other</th>
+                <th>Grouping</th>
+                <th>Task</th>
+                <th>Task Other</th>
+                <th>Task Satisfaction</th>
+                <th>Task Ease</th>
+                <th>Task Completion</th>
+                <th>Task Improve</th>
+                <th>Task Improve Comment</th>
+                <th>Task Why Not</th>
+                <th>Task Why Not Comment</th>
+                <th>Sampling</th>
+                <th>Sampling Invitation</th>
+                <th>Sampling GC</th>
+                <th>Sampling Canada</th>
+                <th>Sampling Theme</th>
+                <th>Sampling Institution</th>
+                <th>Sampling Group</th>
+                <th>Sampling Task</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </th:block>
+  <th:block layout:fragment="script">
+    <script
+      src="https://cdn.datatables.net/v/dt/jq-3.7.0/jszip-3.10.1/dt-1.13.10/b-2.4.2/b-html5-2.4.2/cr-1.7.0/fh-3.4.0/r-2.5.0/datatables.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <script type="text/javascript" src="js/spring-friendly.min.js"></script>
+    <script th:inline="javascript">
+      /*
+            <![CDATA[*/
+      var earliestDate = /*[[${earliestDate}]]*/ "";
+      var latestDate = /*[[${latestDate}]]*/ "";
+      var langSession = /*[[${session.lang}]]*/ "";
+      /*]]>*/
+    </script>
+    <script src="/js/topTaskSurvey.js"></script>
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
+    <script src="https://unpkg.com/tippy.js@6"></script>
+  </th:block>
+</body>
+
 </html>
