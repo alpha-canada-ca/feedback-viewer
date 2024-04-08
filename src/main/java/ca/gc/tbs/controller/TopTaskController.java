@@ -1,6 +1,5 @@
 package ca.gc.tbs.controller;
 
-import ca.gc.tbs.domain.Problem;
 import ca.gc.tbs.domain.TopTaskSurvey;
 import ca.gc.tbs.repository.TopTaskRepository;
 import ca.gc.tbs.service.ProblemDateService;
@@ -10,7 +9,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.datatables.DataTablesInput;
-import org.springframework.data.mongodb.datatables.DataTablesInput.Column;
 import org.springframework.data.mongodb.datatables.DataTablesOutput;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,8 +22,7 @@ import javax.validation.Valid;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-
-import static org.springframework.data.mongodb.core.query.Criteria.where;
+import java.util.stream.Collectors;
 
 
 @Controller
@@ -39,6 +36,10 @@ public class TopTaskController {
     private int totalTaskCount = 0;
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private ProblemDateService problemDateService;
+
     @RequestMapping(value = "/topTask/totalDistinctTasks")
     @ResponseBody
     public String totalDistinctTasks() {
@@ -71,7 +72,7 @@ public class TopTaskController {
             criteria.and("dateTime").gte(start.format(formatter)).lte(end.format(formatter));
         }
 
-        if(includeCommentsOnly) {
+        if (includeCommentsOnly) {
             List<Criteria> nonEmptyCriteria = createNonEmptyCriteria();
             criteria.orOperator(nonEmptyCriteria.toArray(new Criteria[0]));
         }
@@ -97,9 +98,8 @@ public class TopTaskController {
         DataTablesOutput<TopTaskSurvey> results = topTaskRepository.findAll(input, criteria);
 
 
-
         totalTaskCount = (int) results.getRecordsFiltered();
-        return  results;
+        return results;
     }
 
 
@@ -112,24 +112,40 @@ public class TopTaskController {
         return criteriaList;
     }
 
-    @RequestMapping(value = "/topTaskSurvey/departments")
+    @RequestMapping(value = "/topTaskSurvey/departments", produces = "application/json")
     @ResponseBody
-    public String departmentData(HttpServletRequest request) {
-        return "AAFC / AAC,ATSSC / SCDATA,CATSA / ACSTA,CFIA / ACIA,CIRNAC / RCAANC,NSERC / CRSNG,CBSA / ASFC,CCG / GCC,CGC / CCG,"
+    public List<Map<String, String>> departmentData(HttpServletRequest request) {
+        String lang = (String) request.getSession().getAttribute("lang");
+        String departmentsStr = "AAFC / AAC,ATSSC / SCDATA,CATSA / ACSTA,CFIA / ACIA,CIRNAC / RCAANC,NSERC / CRSNG,CBSA / ASFC,CCG / GCC,CGC / CCG,"
                 + "CIHR / IRSC,CIPO / OPIC,CRA / ARC,CRTC / CRTC,CSA / ASC,CSEC / CSTC,CSPS / EFPC,DFO / MPO,DND / MDN,ECCC / ECCC,"
                 + "ESDC / EDSC,FCAC / ACFC,FIN / FIN,GAC / AMC,HC / SC,INFC / INFC,IRCC / IRCC,ISC / SAC,ISED / ISDE,JUS / JUS,"
                 + "LAC / BAC,NFB / ONF,NRC / CNRC,NRCan / RNCan,OSB / BSF,PBC / CLCC,PC / PC,PCH / PCH,PCO / BCP,PHAC / ASPC,"
                 + "PS / SP,PSC / CFP,SSC / PSC,PSPC / SPAC,RCMP / GRC,StatCan / StatCan,TBS / SCT,TC / TC,VAC / ACC,WAGE / FEGC,WD / DEO";
+        String[] departmentData = departmentsStr.split(",");
+
+        return Arrays.stream(departmentData)
+                .map(dept -> {
+                    String[] parts = dept.split(" / ");
+                    String value = dept; // EN / FR format
+                    String display = lang != null && lang.equalsIgnoreCase("fr") ? parts[1] + " / " + parts[0] : dept; // FR / EN format for French, EN / FR for English
+
+                    Map<String, String> departmentMap = new HashMap<>();
+                    departmentMap.put("value", value);
+                    departmentMap.put("display", display);
+                    return departmentMap;
+                })
+                .collect(Collectors.toList());
     }
+
 
     @GetMapping(value = "/topTaskSurvey")
     public ModelAndView topTaskSurvey(HttpServletRequest request) throws Exception {
         ModelAndView mav = new ModelAndView();
         String lang = (String) request.getSession().getAttribute("lang");
+        Map<String, String> dateMap = problemDateService.getProblemDates();
         mav.setViewName("topTaskSurvey_" + lang);
-
-        mav.addObject("earliestDate", "2020-09-01");
-        mav.addObject("latestDate", "2024-03-18");
+        mav.addObject("earliestDate", "2021-01-14");
+        mav.addObject("latestDate", dateMap.get("latestDate"));
 
         return mav;
     }
@@ -146,6 +162,7 @@ public class TopTaskController {
             return topTaskRepository.findDistinctTaskNames();
         }
     }
+
     public UserService getUserService() {
         return userService;
     }
