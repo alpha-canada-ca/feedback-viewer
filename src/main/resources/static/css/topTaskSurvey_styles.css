@@ -8,7 +8,35 @@
 body {
   font-family: "Noto sans", sans-serif;
 }
+/* .loading-spinner-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+} */
 
+.loading-spinner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.loading-spinner i {
+  margin-bottom: 10px;
+  color: #007bff; /* Change this to the desired color for the spinner */
+}
 .daterangepicker .ranges li.active {
   background-color: #26374a;
 }
@@ -24,17 +52,17 @@ h1#wb-cont {
   border-image-slice: 1;
   /* margin-top:12px; */
 }
-.feedback-tool .btn-unstyled {
+.tss .btn-unstyled {
   background-color: white;
   margin-top: 7px;
   border: none;
   margin-left: 2em;
   font-size: 90%;
 }
-.feedback-tool .btn-unstyled:hover {
+.tss .btn-unstyled:hover {
   color: #3a00d1;
 }
-.feedback-tool {
+.tss {
   padding: 1em 0em 2em;
   /* border: 5px solid #000000; */
   margin-top: 2ch;
@@ -44,7 +72,7 @@ h1#wb-cont {
   position: relative;
   /* Add position relative to the feedback tool */
 }
-.feedback-tool .form-group {
+.tss .form-group {
   margin-bottom: 10px;
 }
 
@@ -53,16 +81,16 @@ h1#wb-cont {
   margin-bottom: 10px !important;
   height: 38px;
 }
-.feedback-tool .ss-main {
+.tss .ss-main {
   width: 70%;
 }
 
-.feedback-tool .ss-main .ss-values .ss-placeholder {
+.tss .ss-main .ss-values .ss-placeholder {
   font-weight: normal;
   color: #797979;
 }
 
-.feedback-tool .ss-main .ss-arrow {
+.tss .ss-main .ss-arrow {
   height: 9px;
   width: 9px;
   margin-right: -0.01em;
@@ -87,7 +115,7 @@ table.dataTable.rowborder tbody th {
   border-top: 3px solid #d8d8d8 !important;
 }
 
-.feedback-tool-data {
+.tss-data {
   width: 85%; /* Or your desired width */
   padding: 1em;
   border: 1px solid #333;
@@ -98,28 +126,28 @@ table.dataTable.rowborder tbody th {
   margin-bottom: 4ch;
 }
 
-.feedback-tool label {
+.tss label {
   font-weight: bold;
 }
 
-.feedback-tool label + label {
+.tss label + label {
   margin-top: 1ch;
 }
 
-.feedback-tool > h2 {
+.tss > h2 {
   grid-column: 1 / 1;
   margin-top: 0.4em;
   /* font-weight: normal; */
 }
 
-.feedback-tool > :not(.download-section):not(h2) {
+.tss > :not(.download-section):not(h2) {
   grid-column: 2 / span 2;
   display: grid;
   grid-template-columns: subgrid;
   align-items: center;
 }
 
-.feedback-tool > details > label {
+.tss > details > label {
   display: grid;
   grid-template-columns: subgrid;
   grid-column: span 2;
@@ -127,8 +155,8 @@ table.dataTable.rowborder tbody th {
 #myTable tbody td {
   font-size: 14px; /* Set the font size for data rows */
 }
-.feedback-tool input,
-.feedback-tool select {
+.tss input,
+.tss select {
   width: 70% !important;
   padding: 6px;
   border: 1px solid #ccc;
@@ -157,17 +185,17 @@ table.dataTable.rowborder tbody th {
   border-radius: 4px;
 }
 
-.feedback-tool > details > summary ~ * {
+.tss > details > summary ~ * {
   display: grid;
   grid-template-columns: 1fr 3fr;
 }
 
-.feedback-tool > details {
+.tss > details {
   margin-top: 1em;
 }
 
-.feedback-tool input,
-.feedback-tool select {
+.tss input,
+.tss select {
   width: max-content;
 }
 
@@ -176,20 +204,20 @@ table.dataTable.rowborder tbody th {
   /* Adjust the padding as needed */
 }
 
-.feedback-tool > details > p {
+.tss > details > p {
   display: flex;
   flex-flow: row nowrap;
   align-items: center;
 }
 
-.feedback-tool > details > p > label {
+.tss > details > p > label {
   display: flex;
   flex-flow: row nowrap;
   width: 100%;
   align-items: center;
 }
 
-.feedback-tool > details select {
+.tss > details select {
   margin-left: 1em;
 }
 
@@ -256,10 +284,10 @@ main {
   font-size: 16px; /* Adjust the font size */
   margin-top: 2pt;
 }
-.feedback-tool a:visited {
+.tss a:visited {
   color: #284162;
 }
-.feedback-tool .glyphicon {
+.tss .glyphicon {
   opacity: 0.5;
   padding-left: 6px;
   margin-bottom: 3px;
@@ -286,7 +314,7 @@ details:not([open]) > details {
 .dt-buttons {
   display: none;
 }
-.feedback-tool-header {
+.tss-header {
   display: flex;
   justify-content: flex-end;
   /* Align items to the right */
@@ -335,6 +363,12 @@ details:not([open]) > details {
   font-weight: bold;
   margin-bottom: 0.5em;
 }
+.pagedetails {
+  max-width: 1140px; /* Adjust based on your main container's width */
+  margin-right: auto;
+  margin-left: auto;
+}
+
 
 .stats-box .description {
   font-size: 18px;
