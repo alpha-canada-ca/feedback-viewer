@@ -7,9 +7,12 @@ import ca.gc.tbs.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.datatables.DataTablesInput;
 import org.springframework.data.mongodb.datatables.DataTablesOutput;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -109,6 +112,54 @@ public class ProblemController {
             // Return all page titles if no search term is provided
             return problemRepository.findDistinctPageNames();
         }
+    }
+
+    @Autowired
+    private MongoTemplate mongoTemplate;
+
+    @GetMapping("/api/problems")
+    public ResponseEntity<List<Problem>> getProblemsJson(
+            @RequestParam(required = false) String startDate,
+            @RequestParam(required = false) String endDate,
+            @RequestParam(required = false) String department,
+            @RequestParam(required = false) String url) {
+
+        Criteria criteria = new Criteria("processed").is("true");
+
+        // Date filtering
+        if (startDate != null && !startDate.isEmpty() && endDate != null && !endDate.isEmpty()) {
+            criteria.and("problemDate").gte(startDate).lte(endDate);
+        }
+
+        // Department filtering
+        if (department != null && !department.isEmpty()) {
+            criteria = applyDepartmentFilter(criteria, department);
+        }
+
+        // URL filtering
+        if (url != null && !url.isEmpty()) {
+            criteria.and("url").regex(url, "i");
+        }
+
+        Query query = new Query(criteria);
+        List<Problem> problems = mongoTemplate.find(query, Problem.class);
+        return ResponseEntity.ok(problems);
+    }
+
+    private Criteria applyDepartmentFilter(Criteria criteria, String department) {
+        if (department != null && !department.isEmpty()) {
+            Set<String> matchingVariations = new HashSet<>();
+            // Filter variations based on department:
+            for (Map.Entry<String, List<String>> entry : institutionMappings.entrySet()) {
+                if (entry.getValue().stream().anyMatch(variation -> variation.equalsIgnoreCase(department))) {
+                    matchingVariations.addAll(entry.getValue());
+                }
+            }
+            if (!matchingVariations.isEmpty()) {
+                criteria.and("institution").in(matchingVariations);
+            }
+        }
+        return criteria;
     }
 
     @GetMapping(value = "/pageFeedback")
