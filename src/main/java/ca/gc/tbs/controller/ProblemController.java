@@ -12,6 +12,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.datatables.DataTablesInput;
 import org.springframework.data.mongodb.datatables.DataTablesOutput;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,6 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.*;
 
 
@@ -118,27 +120,56 @@ public class ProblemController {
     private MongoTemplate mongoTemplate;
 
     @GetMapping("/api/problems")
-    public ResponseEntity<List<Problem>> getProblemsJson(
+    public ResponseEntity<?> getProblemsJson(
             @RequestParam(required = false) String startDate,
             @RequestParam(required = false) String endDate,
             @RequestParam(required = false) String department,
             @RequestParam(required = false) String url) {
 
         Criteria criteria = new Criteria("processed").is("true");
+        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-        // Date filtering
-        if (startDate != null && !startDate.isEmpty() && endDate != null && !endDate.isEmpty()) {
-            criteria.and("problemDate").gte(startDate).lte(endDate);
+        // Validate and apply date range filter
+        if (startDate != null && endDate != null) {
+            try {
+                LocalDate start = LocalDate.parse(startDate, dateFormat);
+                LocalDate end = LocalDate.parse(endDate, dateFormat);
+                if (end.isBefore(start)) {
+                    Map<String, String> errorResponse = new HashMap<>();
+                    errorResponse.put("error", "endDate must be greater than or equal to startDate.");
+                    return ResponseEntity.badRequest().body(errorResponse);
+                }
+                criteria.and("problemDate").gte(startDate).lte(endDate);
+            } catch (DateTimeParseException e) {
+                Map<String, String> errorResponse = new HashMap<>();
+                errorResponse.put("error", "Invalid date format. Please use yyyy-MM-dd.");
+                return ResponseEntity.badRequest().body(errorResponse);
+            }
         }
 
         // Department filtering
-        if (department != null && !department.isEmpty()) {
-            criteria = applyDepartmentFilter(criteria, department);
+        // Department filtering
+        try {
+            if (department != null && !department.isEmpty()) {
+                criteria = applyDepartmentFilter(criteria, department);
+            }
+        } catch (IllegalArgumentException e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
         }
 
         // URL filtering
+        // URL filtering
         if (url != null && !url.isEmpty()) {
             criteria.and("url").regex(url, "i");
+            Query urlQuery = new Query(criteria);
+            List<Problem> urlResults = mongoTemplate.find(urlQuery, Problem.class);
+            if (urlResults.isEmpty()) {
+                Map<String, String> errorResponse = new HashMap<>();
+                errorResponse.put("message", "URL not found");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+            }
         }
 
         Query query = new Query(criteria);
@@ -147,18 +178,18 @@ public class ProblemController {
     }
 
     private Criteria applyDepartmentFilter(Criteria criteria, String department) {
-        if (department != null && !department.isEmpty()) {
-            Set<String> matchingVariations = new HashSet<>();
-            // Filter variations based on department:
-            for (Map.Entry<String, List<String>> entry : institutionMappings.entrySet()) {
-                if (entry.getValue().stream().anyMatch(variation -> variation.equalsIgnoreCase(department))) {
-                    matchingVariations.addAll(entry.getValue());
-                }
-            }
-            if (!matchingVariations.isEmpty()) {
-                criteria.and("institution").in(matchingVariations);
+        Set<String> matchingVariations = new HashSet<>();
+        for (Map.Entry<String, List<String>> entry : institutionMappings.entrySet()) {
+            if (entry.getValue().stream().anyMatch(variation -> variation.equalsIgnoreCase(department))) {
+                matchingVariations.addAll(entry.getValue());
             }
         }
+
+        if (matchingVariations.isEmpty()) {
+            throw new IllegalArgumentException("Couldn't find department name: " + department);
+        }
+
+        criteria.and("institution").in(matchingVariations);
         return criteria;
     }
 
