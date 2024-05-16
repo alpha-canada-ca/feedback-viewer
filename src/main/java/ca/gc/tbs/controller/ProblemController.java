@@ -173,6 +173,7 @@ public class ProblemController {
         }
 
         Query query = new Query(criteria);
+        query.fields().include("problemDetails");
         List<Problem> problems = mongoTemplate.find(query, Problem.class);
         return ResponseEntity.ok(problems);
     }
