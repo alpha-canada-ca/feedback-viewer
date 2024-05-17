@@ -63,7 +63,6 @@ public class TopTaskController {
         String endDateVal = request.getParameter("endDate");
         boolean includeCommentsOnly = request.getParameter("includeCommentsOnly").equals("true");
 
-
         Criteria criteria = Criteria.where("processed").is("true");
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         if (startDateVal != null && endDateVal != null) {
@@ -72,31 +71,39 @@ public class TopTaskController {
             criteria.and("dateTime").gte(start.format(formatter)).lte(end.format(formatter));
         }
 
-        if (includeCommentsOnly) {
-            List<Criteria> nonEmptyCriteria = createNonEmptyCriteria();
-            criteria.orOperator(nonEmptyCriteria.toArray(new Criteria[0]));
-        }
         if (themeFilterVal != null && !themeFilterVal.isEmpty()) {
             criteria.and("theme").regex(themeFilterVal, "i");
-        }
-        if (taskFilterVals != null && taskFilterVals.length > 0) {
-            // Create a list to hold the title criteria
-            List<Criteria> taskCriterias = new ArrayList<>();
-            // Iterate over the titles and add each one as a criterion
-            for (String task : taskFilterVals) {
-                taskCriterias.add(Criteria.where("task").is(task));
-            }
-            // Combine all title criteria using AND operation
-            criteria.orOperator(taskCriterias.toArray(new Criteria[0]));
-            System.out.println("Tasks received: " + Arrays.toString(taskFilterVals));
         }
         if (departmentFilterVal != null && !departmentFilterVal.isEmpty()) {
             criteria.and("dept").is(departmentFilterVal);
         }
+
+        List<Criteria> combinedOrCriteria = new ArrayList<>();
+        if (taskFilterVals != null && taskFilterVals.length > 0) {
+            for (String task : taskFilterVals) {
+                Criteria taskCriteria = Criteria.where("task").is(task);
+                combinedOrCriteria.add(taskCriteria);
+            }
+        }
+
+        if (includeCommentsOnly) {
+            List<Criteria> nonEmptyCriteria = createNonEmptyCriteria();
+            if (!combinedOrCriteria.isEmpty()) {
+                List<Criteria> commentCriteriaWithTasks = new ArrayList<>();
+                for (Criteria taskCriteria : combinedOrCriteria) {
+                    commentCriteriaWithTasks.add(new Criteria().andOperator(taskCriteria, new Criteria().orOperator(nonEmptyCriteria.toArray(new Criteria[0]))));
+                }
+                criteria.orOperator(commentCriteriaWithTasks.toArray(new Criteria[0]));
+            } else {
+                criteria.orOperator(nonEmptyCriteria.toArray(new Criteria[0]));
+            }
+        } else if (!combinedOrCriteria.isEmpty()) {
+            criteria.orOperator(combinedOrCriteria.toArray(new Criteria[0]));
+        }
+
         List<Map> distinctTaskCounts = topTaskRepository.findDistinctTaskCountsWithFilters(criteria);
         totalDistinctTasks = distinctTaskCounts.size();
         DataTablesOutput<TopTaskSurvey> results = topTaskRepository.findAll(input, criteria);
-
 
         totalTaskCount = (int) results.getRecordsFiltered();
         return results;
