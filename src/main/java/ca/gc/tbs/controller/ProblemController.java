@@ -4,6 +4,7 @@ import ca.gc.tbs.domain.Problem;
 import ca.gc.tbs.repository.ProblemRepository;
 import ca.gc.tbs.service.ProblemDateService;
 import ca.gc.tbs.service.UserService;
+import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -123,7 +124,7 @@ public class ProblemController {
     public ResponseEntity<?> getProblemsJson(
             @RequestParam(required = false) String startDate,
             @RequestParam(required = false) String endDate,
-            @RequestParam(required = false) String department,
+            @RequestParam(required = false) String institution,
             @RequestParam(required = false) String url) {
 
         Criteria criteria = new Criteria("processed").is("true");
@@ -148,10 +149,9 @@ public class ProblemController {
         }
 
         // Department filtering
-        // Department filtering
         try {
-            if (department != null && !department.isEmpty()) {
-                criteria = applyDepartmentFilter(criteria, department);
+            if (institution != null && !institution.isEmpty()) {
+                criteria = applyDepartmentFilter(criteria, institution);
             }
         } catch (IllegalArgumentException e) {
             Map<String, String> errorResponse = new HashMap<>();
@@ -160,22 +160,30 @@ public class ProblemController {
         }
 
         // URL filtering
-        // URL filtering
         if (url != null && !url.isEmpty()) {
             criteria.and("url").regex(url, "i");
-            Query urlQuery = new Query(criteria);
-            List<Problem> urlResults = mongoTemplate.find(urlQuery, Problem.class);
-            if (urlResults.isEmpty()) {
-                Map<String, String> errorResponse = new HashMap<>();
-                errorResponse.put("message", "URL not found");
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
-            }
         }
 
         Query query = new Query(criteria);
-        query.fields().include("problemDetails");
-        List<Problem> problems = mongoTemplate.find(query, Problem.class);
-        return ResponseEntity.ok(problems);
+        query.fields().exclude("_id")
+                .exclude("section")
+                .exclude("oppositeLang")
+                .exclude("contact")
+                .exclude("urlEntries")
+                .exclude("resolutionDate")
+                .exclude("resolution")
+                .exclude("topic")
+                .exclude("title")
+                .exclude("problem")
+                .exclude("dataOrigin")
+                .exclude("airTableSync")
+                .exclude("tags")
+                .exclude("personalInfoProcessed")
+                .exclude("autoTagProcessed")
+                .exclude("_class");
+
+        List<Document> documents = mongoTemplate.find(query, Document.class, "problem");
+        return ResponseEntity.ok(documents);
     }
 
     private Criteria applyDepartmentFilter(Criteria criteria, String department) {
