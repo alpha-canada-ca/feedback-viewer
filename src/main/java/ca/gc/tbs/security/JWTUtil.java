@@ -7,8 +7,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 public class JWTUtil {
@@ -23,6 +25,10 @@ public class JWTUtil {
         return extractClaim(token, Claims::getExpiration);
     }
 
+    public List<String> extractRoles(String token) {
+        return extractClaim(token, claims -> claims.get("roles", List.class));
+    }
+
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
@@ -32,10 +38,8 @@ public class JWTUtil {
         try {
             return Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody();
         } catch (MalformedJwtException ex) {
-            // Handle malformed JWT token
             throw new RuntimeException("Invalid token: Malformed JWT token", ex);
         } catch (ExpiredJwtException | UnsupportedJwtException | SignatureException | IllegalArgumentException ex) {
-            // Handle other exceptions related to JWT token validation
             throw new RuntimeException("Invalid token: " + ex.getMessage(), ex);
         }
     }
@@ -46,6 +50,10 @@ public class JWTUtil {
 
     public String generateToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
+        List<String> roles = userDetails.getAuthorities().stream()
+                .map(authority -> authority.getAuthority())
+                .collect(Collectors.toList());
+        claims.put("roles", roles);
         return createToken(claims, userDetails.getUsername());
     }
 
