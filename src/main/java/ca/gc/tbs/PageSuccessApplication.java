@@ -2,6 +2,7 @@ package ca.gc.tbs;
 
 import ca.gc.tbs.domain.Role;
 import ca.gc.tbs.repository.RoleRepository;
+
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -37,14 +38,6 @@ public class PageSuccessApplication {
                 newUserRole.setRole("USER");
                 roleRepository.save(newUserRole);
             }
-            
-            Role apiRole = roleRepository.findByRole("API_USER");
-            if (apiRole == null) {
-                Role newApiRole = new Role();
-                newApiRole.setRole("API_USER");
-                roleRepository.save(newApiRole);
-            }
-
         };
 
     }

@@ -1,10 +1,8 @@
 package ca.gc.tbs.controller;
 
-import ca.gc.tbs.domain.User;
 import ca.gc.tbs.security.JWTUtil;
 import ca.gc.tbs.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -26,19 +24,6 @@ public class AuthController {
 
     @Autowired
     private UserService userService;
-
-    @PostMapping("/createApiUser")
-    public ResponseEntity<String> createApiUser(@RequestBody User user) {
-        try {
-            System.out.println("Request received: " + user);  // Debugging statement
-            userService.saveApiUser(user);
-            System.out.println("User saved: " + user);  // Debugging statement
-            return ResponseEntity.ok("API user created successfully");
-        } catch (Exception e) {
-            e.printStackTrace();  // Print stack trace to server logs
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error creating API user: " + e.getMessage());
-        }
-    }
 
     @PostMapping("/authenticate")
     public ResponseEntity<String> createAuthenticationToken(@RequestBody AuthRequest authRequest) {
