@@ -224,7 +224,6 @@ public class ProblemController {
             }
         }
 
-        // Department filtering
         try {
             if (institution != null && !institution.isEmpty()) {
                 criteria = applyDepartmentFilter(criteria, institution);
