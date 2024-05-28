@@ -51,13 +51,13 @@ public class JWTFilter extends OncePerRequestFilter {
                         .stream()
                         .map(Object::toString)
                         .collect(Collectors.toList());
-                if (authorities.contains("ROLE_ADMIN")) {
+                if (authorities.contains("ADMIN") || authorities.contains("API")) {
                     UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                     usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
                 } else {
                     response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                    response.getWriter().write("Access denied. Only admins can access this endpoint.");
+                    response.getWriter().write("Access denied. Only API users & Admins can access this endpoint.");
                     return;
                 }
             }
