@@ -11,7 +11,7 @@ buildNumber.properties
 .mvn/wrapper/maven-wrapper.jar
 # Spring Boot files
 **/application.properties
-**/application*.properties
+**/application-local.properties
 .DS_Store
 .settings/org.springframework.ide.eclipse.prefs
 .settings/org.eclipse.m2e.core.prefs
