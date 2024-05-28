@@ -190,6 +190,7 @@ public class ProblemController {
         query.fields().exclude("_id")
                 .exclude("section")
                 .exclude("oppositeLang")
+                .exclude("processed")
                 .exclude("contact")
                 .exclude("urlEntries")
                 .exclude("resolutionDate")
