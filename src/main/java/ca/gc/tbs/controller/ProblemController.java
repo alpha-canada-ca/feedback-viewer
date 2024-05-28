@@ -1,7 +1,9 @@
 package ca.gc.tbs.controller;
 
 import ca.gc.tbs.domain.Problem;
+import ca.gc.tbs.domain.User;
 import ca.gc.tbs.repository.ProblemRepository;
+import ca.gc.tbs.security.JWTUtil;
 import ca.gc.tbs.service.ProblemDateService;
 import ca.gc.tbs.service.UserService;
 import org.bson.Document;
@@ -17,6 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
@@ -119,14 +122,33 @@ public class ProblemController {
 
     @Autowired
     private MongoTemplate mongoTemplate;
+    @Autowired
+    private JWTUtil jwtUtil;
 
     @GetMapping("/api/problems")
     public ResponseEntity<?> getProblemsJson(
             @RequestParam(required = false) String startDate,
             @RequestParam(required = false) String endDate,
             @RequestParam(required = false) String institution,
-            @RequestParam(required = false) String url) {
+            @RequestParam(required = false) String url,
+            @RequestHeader(name = "Authorization") String authorizationHeader
+    ) {
+        String token = null;
+        String userName = null;
 
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            token = authorizationHeader.substring(7);
+            userName = jwtUtil.extractUsername(token);
+        }
+
+        if (userName != null) {
+            User user = userService.findUserByEmail(userName);
+            if (!userService.isAdmin(user)) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Access denied. Only admins can access this endpoint.");
+            }
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Authorization header is missing or invalid.");
+        }
         Criteria criteria = new Criteria("processed").is("true");
         DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
