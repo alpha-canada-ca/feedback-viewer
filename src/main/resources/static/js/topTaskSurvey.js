@@ -217,6 +217,8 @@ $(document).ready(function () {
     $("#dateRangePicker").data("daterangepicker").setEndDate(moment(latestDate));
     $("#dateRangePicker").val(earliestDate + " - " + latestDate); // Update the display
 
+    $("#commentsCheckbox").prop("checked", false);
+
     // Reload the DataTable to reflect the reset filters
     table.ajax.reload();
   }
