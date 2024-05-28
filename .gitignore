@@ -10,7 +10,6 @@ buildNumber.properties
 # https://github.com/takari/maven-wrapper#usage-without-binary-jar
 .mvn/wrapper/maven-wrapper.jar
 # Spring Boot files
-**/application.properties
 **/application*.properties
 .DS_Store
 .settings/org.springframework.ide.eclipse.prefs
