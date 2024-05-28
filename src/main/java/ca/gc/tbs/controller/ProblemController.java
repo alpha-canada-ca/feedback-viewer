@@ -1,17 +1,25 @@
 package ca.gc.tbs.controller;
 
 import ca.gc.tbs.domain.Problem;
+import ca.gc.tbs.domain.User;
 import ca.gc.tbs.repository.ProblemRepository;
+import ca.gc.tbs.security.JWTUtil;
 import ca.gc.tbs.service.ProblemDateService;
 import ca.gc.tbs.service.UserService;
+import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.datatables.DataTablesInput;
 import org.springframework.data.mongodb.datatables.DataTablesOutput;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
@@ -20,6 +28,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.*;
 
 
@@ -109,6 +118,165 @@ public class ProblemController {
             // Return all page titles if no search term is provided
             return problemRepository.findDistinctPageNames();
         }
+    }
+
+    @Autowired
+    private MongoTemplate mongoTemplate;
+    @Autowired
+    private JWTUtil jwtUtil;
+
+    @GetMapping("/api/problems")
+    public ResponseEntity<?> getProblemsJson(
+            @RequestParam Map<String, String> requestParams,
+            @RequestParam(required = false) String startDate,
+            @RequestParam(required = false) String endDate,
+            @RequestParam(required = false) String processedStartDate,
+            @RequestParam(required = false) String processedEndDate,
+            @RequestParam(required = false) String institution,
+            @RequestParam(required = false) String url,
+            @RequestHeader(name = "Authorization") String authorizationHeader
+    ) {
+        String token = null;
+        String userName = null;
+
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            token = authorizationHeader.substring(7);
+            userName = jwtUtil.extractUsername(token);
+        }
+
+        if (userName != null) {
+            User user = userService.findUserByEmail(userName);
+            if (!userService.isAdmin(user) && !userService.isAPI(user)) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Access denied. Only API users & Admins can access this endpoint.");
+            }
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Authorization header is missing or invalid.");
+        }
+
+        Set<String> validParams = new HashSet<>(Arrays.asList(
+                "startDate", "endDate", "processedStartDate", "processedEndDate", "institution", "url", "authorizationHeader"
+        ));
+
+        for (String param : requestParams.keySet()) {
+            if (!validParams.contains(param)) {
+                Map<String, String> errorResponse = new HashMap<>();
+                errorResponse.put("error", "Invalid parameter: " + param);
+                return ResponseEntity.badRequest().body(errorResponse);
+            }
+        }
+
+        Criteria criteria = new Criteria("processed").is("true");
+        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+
+        // Ensure only one type of date filter is used
+        if ((startDate != null || endDate != null) && (processedStartDate != null || processedEndDate != null)) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", "You can only filter by normal date range or processed date range, not both.");
+            return ResponseEntity.badRequest().body(errorResponse);
+        }
+
+        // Validate and apply normal date range filter
+        if (startDate != null || endDate != null) {
+            if (startDate == null || endDate == null) {
+                Map<String, String> errorResponse = new HashMap<>();
+                errorResponse.put("error", "Both startDate and endDate are required.");
+                return ResponseEntity.badRequest().body(errorResponse);
+            } else {
+                try {
+                    LocalDate start = LocalDate.parse(startDate, dateFormat);
+                    LocalDate end = LocalDate.parse(endDate, dateFormat);
+                    if (end.isBefore(start)) {
+                        Map<String, String> errorResponse = new HashMap<>();
+                        errorResponse.put("error", "endDate must be greater than or equal to startDate.");
+                        return ResponseEntity.badRequest().body(errorResponse);
+                    }
+                    criteria.and("problemDate").gte(startDate).lte(endDate);
+                } catch (DateTimeParseException e) {
+                    Map<String, String> errorResponse = new HashMap<>();
+                    errorResponse.put("error", "Invalid date format. Please use yyyy-MM-dd.");
+                    return ResponseEntity.badRequest().body(errorResponse);
+                }
+            }
+        }
+
+        // Validate and apply processed date range filter
+        if (processedStartDate != null || processedEndDate != null) {
+            if (processedStartDate == null || processedEndDate == null) {
+                Map<String, String> errorResponse = new HashMap<>();
+                errorResponse.put("error", "Both processedStartDate and processedEndDate are required.");
+                return ResponseEntity.badRequest().body(errorResponse);
+            } else {
+                try {
+                    LocalDate processedStart = LocalDate.parse(processedStartDate, dateFormat);
+                    LocalDate processedEnd = LocalDate.parse(processedEndDate, dateFormat);
+                    if (processedEnd.isBefore(processedStart)) {
+                        Map<String, String> errorResponse = new HashMap<>();
+                        errorResponse.put("error", "processedEndDate must be greater than or equal to processedStartDate.");
+                        return ResponseEntity.badRequest().body(errorResponse);
+                    }
+                    criteria.and("processedDate").gte(processedStartDate).lte(processedEndDate);
+                } catch (DateTimeParseException e) {
+                    Map<String, String> errorResponse = new HashMap<>();
+                    errorResponse.put("error", "Invalid date format. Please use yyyy-MM-dd.");
+                    return ResponseEntity.badRequest().body(errorResponse);
+                }
+            }
+        }
+
+        // Department filtering
+        try {
+            if (institution != null && !institution.isEmpty()) {
+                criteria = applyDepartmentFilter(criteria, institution);
+            }
+        } catch (IllegalArgumentException e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+        }
+
+        // URL filtering
+        if (url != null && !url.isEmpty()) {
+            criteria.and("url").regex(url, "i");
+        }
+
+        Query query = new Query(criteria);
+        query.fields().exclude("_id")
+                .exclude("section")
+                .exclude("oppositeLang")
+                .exclude("processed")
+                .exclude("contact")
+                .exclude("urlEntries")
+                .exclude("resolutionDate")
+                .exclude("resolution")
+                .exclude("topic")
+                .exclude("title")
+                .exclude("problem")
+                .exclude("dataOrigin")
+                .exclude("airTableSync")
+                .exclude("tags")
+                .exclude("personalInfoProcessed")
+                .exclude("autoTagProcessed")
+                .exclude("_class");
+
+        List<Document> documents = mongoTemplate.find(query, Document.class, "problem");
+        return ResponseEntity.ok(documents);
+    }
+
+    private Criteria applyDepartmentFilter(Criteria criteria, String department) {
+        Set<String> matchingVariations = new HashSet<>();
+        for (Map.Entry<String, List<String>> entry : institutionMappings.entrySet()) {
+            if (entry.getValue().stream().anyMatch(variation -> variation.equalsIgnoreCase(department))) {
+                matchingVariations.addAll(entry.getValue());
+            }
+        }
+
+        if (matchingVariations.isEmpty()) {
+            throw new IllegalArgumentException("Couldn't find department name: " + department);
+        }
+
+        criteria.and("institution").in(matchingVariations);
+        return criteria;
     }
 
     @GetMapping(value = "/pageFeedback")

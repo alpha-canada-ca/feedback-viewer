@@ -5,52 +5,46 @@ import org.springframework.data.annotation.Id;
 import java.util.ArrayList;
 import java.util.List;
 
-//@Entity
 public class Problem {
-    public String institution = "";
-    public String theme = "";
-    public String section = "";
-    public String oppositeLang = "";
-    public String contact = "";
+
     @Id
-    private String id = "";
-    private String url = "";
-    private int urlEntries = 0;
-    private String problem = "";
-    private String problemDetails = "";
-    private String language = "";
-    private String resolutionDate = "";
-    private String resolution = "";
-    private String topic = "";
-    private String problemDate = "";
-    private String timeStamp = "";
-    private String title = "";
-    private String dataOrigin = "";
-    private List<String> tags = new ArrayList<>();
-    // pipeline fields
+    private String id;
+    private String url;
+    private int urlEntries;
+    private String problemDetails;
+    private String language;
+    private String problemDate;
+    private String timeStamp;
+    private String title;
+    private String dataOrigin;
+    private List<String> tags;
+    // Pipeline fields
     private String processed;
     private String airTableSync;
     private String personalInfoProcessed;
     private String autoTagProcessed;
+    private String processedDate; // New field for processed date
 
-    private String deviceType = "";
-
-    private String browser = "";
+    private String institution;
+    private String theme;
+    private String section;
+    private String oppositeLang;
+    private String contact;
+    private String deviceType;
+    private String browser;
 
     public Problem() {
+        this.tags = new ArrayList<>();
     }
 
     public Problem(String id, String url, int urlEntries, String deviceType, String browser, String problemDate,
-            String timeStamp, String problem,
-            String problemDetails, String language, String title, String institution,
-            String theme, String section, String oppositeLang, String contact) {
-        super();
+                   String timeStamp, String problemDetails, String language, String title, String institution,
+                   String theme, String section, String oppositeLang, String contact) {
         this.id = id;
         this.url = url;
         this.urlEntries = urlEntries;
         this.deviceType = deviceType;
         this.browser = browser;
-        this.problem = problem;
         this.problemDetails = problemDetails;
         this.problemDate = problemDate;
         this.timeStamp = timeStamp;
@@ -61,22 +55,22 @@ public class Problem {
         this.section = section;
         this.oppositeLang = oppositeLang;
         this.contact = contact;
+        this.tags = new ArrayList<>();
     }
+
     public Problem(Problem existingProblem) {
-        // Copy the properties from the existingProblem to the new object
-        this.url = existingProblem.url;
-        this.problemDate = existingProblem.problemDate;
-        this.urlEntries = existingProblem.urlEntries;
-        this.theme = existingProblem.theme;
-        this.section = existingProblem.section;
-        this.language = existingProblem.language;
-        this.institution = existingProblem.institution;
-        this.title = existingProblem.title;
-
-        // Copy any other properties you want to be copied
+        this(existingProblem.id, existingProblem.url, existingProblem.urlEntries, existingProblem.deviceType,
+                existingProblem.browser, existingProblem.problemDate, existingProblem.timeStamp,
+                existingProblem.problemDetails, existingProblem.language, existingProblem.title,
+                existingProblem.institution, existingProblem.theme, existingProblem.section,
+                existingProblem.oppositeLang, existingProblem.contact);
+        this.tags = new ArrayList<>(existingProblem.tags);
     }
 
+    // Getter and Setter methods
 
+    // Add getters and setters for all fields
+    // Example:
     public String getId() {
         return id;
     }
@@ -117,14 +111,6 @@ public class Problem {
         this.deviceType = deviceType;
     }
 
-    public String getProblem() {
-        return problem;
-    }
-
-    public void setProblem(String problem) {
-        this.problem = problem;
-    }
-
     public String getProblemDetails() {
         return problemDetails;
     }
@@ -139,30 +125,6 @@ public class Problem {
 
     public void setLanguage(String language) {
         this.language = language;
-    }
-
-    public String getResolutionDate() {
-        return resolutionDate;
-    }
-
-    public void setResolutionDate(String resolutionDate) {
-        this.resolutionDate = resolutionDate;
-    }
-
-    public String getResolution() {
-        return resolution;
-    }
-
-    public void setResolution(String resolution) {
-        this.resolution = resolution;
-    }
-
-    public String getTopic() {
-        return topic;
-    }
-
-    public void setTopic(String topic) {
-        this.topic = topic;
     }
 
     public String getProblemDate() {
@@ -275,5 +237,13 @@ public class Problem {
 
     public void setContact(String contact) {
         this.contact = contact;
+    }
+
+    public String getProcessedDate() {
+        return processedDate;
+    }
+
+    public void setProcessedDate(String processedDate) {
+        this.processedDate = processedDate;
     }
 }
