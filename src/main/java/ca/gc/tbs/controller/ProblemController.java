@@ -127,8 +127,11 @@ public class ProblemController {
 
     @GetMapping("/api/problems")
     public ResponseEntity<?> getProblemsJson(
+            @RequestParam Map<String, String> requestParams,
             @RequestParam(required = false) String startDate,
             @RequestParam(required = false) String endDate,
+            @RequestParam(required = false) String processedStartDate,
+            @RequestParam(required = false) String processedEndDate,
             @RequestParam(required = false) String institution,
             @RequestParam(required = false) String url,
             @RequestHeader(name = "Authorization") String authorizationHeader
@@ -149,24 +152,75 @@ public class ProblemController {
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Authorization header is missing or invalid.");
         }
+
+        Set<String> validParams = new HashSet<>(Arrays.asList(
+                "startDate", "endDate", "processedStartDate", "processedEndDate", "institution", "url", "authorizationHeader"
+        ));
+
+        for (String param : requestParams.keySet()) {
+            if (!validParams.contains(param)) {
+                Map<String, String> errorResponse = new HashMap<>();
+                errorResponse.put("error", "Invalid parameter: " + param);
+                return ResponseEntity.badRequest().body(errorResponse);
+            }
+        }
+
         Criteria criteria = new Criteria("processed").is("true");
         DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-        // Validate and apply date range filter
-        if (startDate != null && endDate != null) {
-            try {
-                LocalDate start = LocalDate.parse(startDate, dateFormat);
-                LocalDate end = LocalDate.parse(endDate, dateFormat);
-                if (end.isBefore(start)) {
+
+        // Ensure only one type of date filter is used
+        if ((startDate != null || endDate != null) && (processedStartDate != null || processedEndDate != null)) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", "You can only filter by normal date range or processed date range, not both.");
+            return ResponseEntity.badRequest().body(errorResponse);
+        }
+
+        // Validate and apply normal date range filter
+        if (startDate != null || endDate != null) {
+            if (startDate == null || endDate == null) {
+                Map<String, String> errorResponse = new HashMap<>();
+                errorResponse.put("error", "Both startDate and endDate are required.");
+                return ResponseEntity.badRequest().body(errorResponse);
+            } else {
+                try {
+                    LocalDate start = LocalDate.parse(startDate, dateFormat);
+                    LocalDate end = LocalDate.parse(endDate, dateFormat);
+                    if (end.isBefore(start)) {
+                        Map<String, String> errorResponse = new HashMap<>();
+                        errorResponse.put("error", "endDate must be greater than or equal to startDate.");
+                        return ResponseEntity.badRequest().body(errorResponse);
+                    }
+                    criteria.and("problemDate").gte(startDate).lte(endDate);
+                } catch (DateTimeParseException e) {
                     Map<String, String> errorResponse = new HashMap<>();
-                    errorResponse.put("error", "endDate must be greater than or equal to startDate.");
+                    errorResponse.put("error", "Invalid date format. Please use yyyy-MM-dd.");
                     return ResponseEntity.badRequest().body(errorResponse);
                 }
-                criteria.and("problemDate").gte(startDate).lte(endDate);
-            } catch (DateTimeParseException e) {
+            }
+        }
+
+        // Validate and apply processed date range filter
+        if (processedStartDate != null || processedEndDate != null) {
+            if (processedStartDate == null || processedEndDate == null) {
                 Map<String, String> errorResponse = new HashMap<>();
-                errorResponse.put("error", "Invalid date format. Please use yyyy-MM-dd.");
+                errorResponse.put("error", "Both processedStartDate and processedEndDate are required.");
                 return ResponseEntity.badRequest().body(errorResponse);
+            } else {
+                try {
+                    LocalDate processedStart = LocalDate.parse(processedStartDate, dateFormat);
+                    LocalDate processedEnd = LocalDate.parse(processedEndDate, dateFormat);
+                    if (processedEnd.isBefore(processedStart)) {
+                        Map<String, String> errorResponse = new HashMap<>();
+                        errorResponse.put("error", "processedEndDate must be greater than or equal to processedStartDate.");
+                        return ResponseEntity.badRequest().body(errorResponse);
+                    }
+                    criteria.and("processedDate").gte(processedStartDate).lte(processedEndDate);
+                } catch (DateTimeParseException e) {
+                    Map<String, String> errorResponse = new HashMap<>();
+                    errorResponse.put("error", "Invalid date format. Please use yyyy-MM-dd.");
+                    return ResponseEntity.badRequest().body(errorResponse);
+                }
             }
         }
 
