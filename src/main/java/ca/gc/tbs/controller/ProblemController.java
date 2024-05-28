@@ -143,8 +143,8 @@ public class ProblemController {
 
         if (userName != null) {
             User user = userService.findUserByEmail(userName);
-            if (!userService.isAdmin(user)) {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Access denied. Only admins can access this endpoint.");
+            if (!userService.isAdmin(user) && !userService.isAPI(user)) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Access denied. Only API users & Admins can access this endpoint.");
             }
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Authorization header is missing or invalid.");
