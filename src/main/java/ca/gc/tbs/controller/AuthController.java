@@ -12,9 +12,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -51,17 +49,18 @@ public class AuthController {
         }
     }
 
-    @PostMapping("/createApiUser")
-    public ResponseEntity<String> createApiUser(@RequestBody CreateUserRequest request) {
+
+    @GetMapping("/createApiUser")
+    public ResponseEntity<String> createApiUser(@RequestParam String username, @RequestParam String password) {
         // Check if user already exists
-        User existingUser = userService.findUserByEmail(request.getUsername());
+        User existingUser = userService.findUserByEmail(username);
         if (existingUser != null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User already exists.");
         }
 
         User user = new User();
-        user.setEmail(request.getUsername());
-        user.setPassword(request.getPassword());
+        user.setEmail(username);
+        user.setPassword(password);
         user.setEnabled(true);
 
         Role apiRole = userService.findRoleByName("API");
@@ -73,6 +72,7 @@ public class AuthController {
         userService.saveApiUser(user);
         return ResponseEntity.ok("API user created successfully.");
     }
+
 
     static class CreateUserRequest {
         private String username;
