@@ -364,8 +364,8 @@ public class ProblemController {
         }
         // Comments filtering
         if (comments != null && !comments.isEmpty()) {
-            // Assuming 'problemDetails' field contains the comments
-            criteria.and("problemDetails").regex(comments, "i"); // 'i' for case-insensitive matching
+            String safeComments = escapeSpecialRegexCharacters(comments);
+            criteria.and("problemDetails").regex(safeComments, "i"); // 'i' for case-insensitive matching
         }
         // Execute the query with the built criteria
         DataTablesOutput<Problem> results = problemRepository.findAll(input, criteria);
@@ -375,6 +375,16 @@ public class ProblemController {
         return results;
     }
 
+    /**
+     * Escapes special regex characters in the input string.
+     *
+     * @param input The string to escape.
+     * @return A string with special regex characters escaped.
+     */
+    private String escapeSpecialRegexCharacters(String input) {
+        // Escape all regex metacharacters
+        return input.replaceAll("([\\\\.^$|()\\[\\]{}*+?])", "\\\\$1");
+    }
 
     private void setInstitution(DataTablesOutput<Problem> problems, String lang) {
         for (Problem problem : problems.getData()) {
