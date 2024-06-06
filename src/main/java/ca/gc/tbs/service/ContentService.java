@@ -22,7 +22,7 @@ public class ContentService {
         }
         content = StringUtils.normalizeSpace(content);
         String newContent = BadWords.censor(content);
-        if (!newContent.contentEquals(content) && newContent.contains("#")) {
+        if (!newContent.contentEquals(content)) {
             content = newContent;
             System.out.println("curse words cleaned: " + content);
         }
