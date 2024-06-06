@@ -67,6 +67,6 @@ public class BadWords {
     }
 
     private static String createMask(String word) {
-        return word.replaceAll(".", "#");
+        return word.replaceAll(".", "*");
     }
 }
