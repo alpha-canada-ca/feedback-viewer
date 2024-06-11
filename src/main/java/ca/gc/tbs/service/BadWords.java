@@ -1,6 +1,5 @@
 package ca.gc.tbs.service;
 
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
@@ -14,6 +13,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 public class BadWords {
     private static final Logger logger = LoggerFactory.getLogger(BadWords.class);
@@ -37,9 +37,8 @@ public class BadWords {
     private static void loadFileConfigs(String filePath) {
         try {
             Resource resource = new ClassPathResource(filePath, BadWords.class.getClassLoader());
-            String[] newWords = IOUtils.toString(resource.getInputStream(), StandardCharsets.UTF_8).split(",");
-            for (String word : newWords) {
-                words.add(word.trim().toLowerCase());  // converting to lowercase for consistency
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource.getInputStream(), StandardCharsets.UTF_8))) {
+                words.addAll(reader.lines().map(String::trim).map(String::toLowerCase).collect(Collectors.toSet()));
             }
         } catch (Exception e) {
             logger.error("Error loading file config {}", filePath, e);
@@ -61,7 +60,7 @@ public class BadWords {
         StringBuilder result = new StringBuilder();
         for (String word : text.split("\\s+")) {
             String wordToCheck = word.toLowerCase().replaceAll("[^a-zà-ÿ]", ""); // Including accented characters for French
-            result.append(words.contains(wordToCheck) ? createMask(word) : word).append(' ');
+            result.append(words.stream().anyMatch(wordToCheck::contains) ? createMask(word) : word).append(' ');
         }
         return result.toString().trim();
     }
