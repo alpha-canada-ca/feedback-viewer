@@ -20,6 +20,7 @@ $(document).ready(function () {
       debounceTimer = setTimeout(() => func.apply(context, args), delay);
     };
   }
+
   function newexportaction(e, dt, button, config) {
     var self = this;
     var oldStart = dt.settings()[0]._iDisplayStart;
@@ -38,11 +39,11 @@ $(document).ready(function () {
           // Set the property to what it was before exporting.
           settings._iDisplayStart = oldStart;
           data.start = oldStart;
-        }); // Reload the grid with the original page. Otherwise, API functions like table.cell(this) don't work properly.
+        });
         setTimeout(dt.ajax.reload, 0); // Prevent rendering of the full data to the DOM
         return false;
       });
-    }); // Requery the server with the new one-time export settings
+    });
     dt.ajax.reload();
   }
 
@@ -60,38 +61,80 @@ $(document).ready(function () {
     $("#pages").val("");
 
     // Reset the Date Range Picker to the initial dates
-    $("#dateRangePicker").data("daterangepicker").setStartDate(moment(earliestDate).format("YYYY/MM/DD"));
-    $("#dateRangePicker").data("daterangepicker").setEndDate(moment(latestDate).format("YYYY/MM/DD"));
-
-    // Reload the DataTable to reflect the reset filters
+    updateDateRangePicker();
     table.ajax.reload();
   }
 
   function getLastFiscalQuarter() {
     let today = moment();
-    let fiscalYearStart = moment().month() < 3 ? moment().subtract(1, "year").month(3).startOf("month") : moment().month(3).startOf("month"); // Adjust based on fiscal year starting in April
+    let fiscalYearStart = moment().month() < 3 ? moment().subtract(1, "year").month(3).startOf("month") : moment().month(3).startOf("month");
     let quarterStart, quarterEnd;
 
-    // Determine the current fiscal quarter
     if (today.isBetween(fiscalYearStart, fiscalYearStart.clone().add(2, "months").endOf("month"))) {
-      // Last quarter is Q4 of the previous fiscal year
       quarterStart = fiscalYearStart.clone().subtract(1, "year").add(9, "months");
       quarterEnd = fiscalYearStart.clone().subtract(1, "day");
     } else if (today.isBefore(fiscalYearStart.clone().add(6, "months"))) {
-      // Last quarter is Q1
       quarterStart = fiscalYearStart;
       quarterEnd = fiscalYearStart.clone().add(2, "months").endOf("month");
     } else if (today.isBefore(fiscalYearStart.clone().add(9, "months"))) {
-      // Last quarter is Q2
       quarterStart = fiscalYearStart.clone().add(3, "months");
       quarterEnd = fiscalYearStart.clone().add(5, "months").endOf("month");
     } else {
-      // Last quarter is Q3
       quarterStart = fiscalYearStart.clone().add(6, "months");
       quarterEnd = fiscalYearStart.clone().add(8, "months").endOf("month");
     }
 
     return [quarterStart, quarterEnd];
+  }
+
+  function initializeDateRangePicker() {
+    $("#dateRangePicker").daterangepicker(
+      {
+        opens: "left",
+        startDate: moment(earliestDate),
+        endDate: moment(latestDate),
+        minDate: moment(earliestDate),
+        maxDate: moment(latestDate),
+        alwaysShowCalendars: true,
+        locale: {
+          format: "YYYY/MM/DD",
+          cancelLabel: isFrench ? "Effacer" : "Clear",
+          applyLabel: isFrench ? "Appliquer" : "Apply",
+          customRangeLabel: isFrench ? "Période spécifique" : "Custom Range",
+          firstDay: isFrench ? 1 : 0,
+          daysOfWeek: isFrench ? ["Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"] : undefined,
+          monthNames: isFrench ? ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"] : undefined,
+        },
+        ranges: {
+          [isFrench ? "Toutes les dates" : "All Dates"]: [moment(earliestDate), moment(latestDate)],
+          [isFrench ? "Aujourd'hui" : "Today"]: [moment(), moment()],
+          [isFrench ? "Hier" : "Yesterday"]: [moment().subtract(1, "days"), moment().subtract(1, "days")],
+          [isFrench ? "7 derniers jours" : "Last 7 Days"]: [moment().subtract(6, "days"), moment()],
+          [isFrench ? "30 derniers jours" : "Last 30 Days"]: [moment().subtract(29, "days"), moment()],
+          [isFrench ? "Ce mois-ci" : "This Month"]: [moment().startOf("month"), moment().endOf("month")],
+          [isFrench ? "Le mois dernier" : "Last Month"]: [moment().subtract(1, "month").startOf("month"), moment().subtract(1, "month").endOf("month")],
+          [isFrench ? "Dernier trimestre" : "Last Quarter"]: getLastFiscalQuarter(),
+        },
+      },
+      function (start, end, label) {
+        $("#dateRangePicker").val(start.format("YYYY/MM/DD") + " - " + end.format("YYYY/MM/DD"));
+        table.ajax.reload();
+      }
+    );
+
+    $("#dateRangePicker").on("cancel.daterangepicker", function (ev, picker) {
+      picker.setStartDate(moment(earliestDate));
+      picker.setEndDate(moment(latestDate));
+      $("#dateRangePicker").val(moment(earliestDate).format("YYYY/MM/DD") + " - " + moment(latestDate).format("YYYY/MM/DD"));
+      table.ajax.reload();
+    });
+  }
+
+  function updateDateRangePicker() {
+    var dateRangePicker = $("#dateRangePicker").data("daterangepicker");
+    dateRangePicker.setStartDate(moment(earliestDate));
+    dateRangePicker.setEndDate(moment(latestDate));
+    $("#dateRangePicker").val(moment(earliestDate).format("YYYY/MM/DD") + " - " + moment(latestDate).format("YYYY/MM/DD"));
   }
 
   // DataTable initialization
@@ -128,9 +171,8 @@ $(document).ready(function () {
           d.startDate = dateRange.startDate.format("YYYY-MM-DD");
           d.endDate = dateRange.endDate.format("YYYY-MM-DD");
         } else {
-          // If the date range picker is empty, do not send startDate and endDate in the request
-          delete d.startDate; // Ensure startDate is not included in the AJAX request
-          delete d.endDate; // Ensure endDate is not included in the AJAX request
+          delete d.startDate;
+          delete d.endDate;
         }
       },
       error: function (xhr, error, thrown) {
@@ -145,9 +187,9 @@ $(document).ready(function () {
         extend: "csvHtml5",
         className: "btn btn-default",
         exportOptions: {
-          columns: [0, 5, 1, 3, 4, 6, 2, 7, 8, 9, 10], // This will export only visible columns
+          columns: [0, 5, 1, 3, 4, 6, 2, 7, 8, 9, 10],
           modifier: {
-            page: "all", // This tells DataTables to export data from all pages, not just the current page
+            page: "all",
           },
         },
         action: newexportaction,
@@ -159,32 +201,31 @@ $(document).ready(function () {
         exportOptions: {
           columns: [0, 5, 1, 3, 4, 6, 2, 7, 8, 9, 10],
           modifier: {
-            page: "all", // This tells DataTables to export data from all pages, not just the current page
+            page: "all",
           },
         },
         action: newexportaction,
-        filename: (isFrench ? "Outil_de_retroaction-" : "Page_feedback-") + new Date().getFullYear() + "-" + ("0" + (new Date().getMonth() + 1)).slice(-2) + "-" + ("0" + new Date().getDate()).slice(-2),
+        filename: (isFrench ? "Outil_de_retroaction-" : "Page_feedback-") + new Date().getFullYear() + "-" + ("0" + (new Date().getMonth() + 1)).slice(-2) + "-" + new Date().getDate(),
       },
     ],
     columns: [
-      { data: "problemDate", width: "6%" }, // Date (visible in table)
-      { data: "problemDetails", width: "50%" }, // Comments (visible in table)
-      { data: "institution", width: "6%" }, // Dept (visible in table)
-      { data: "title", width: "14%" }, // Page title (visible in table)
+      { data: "problemDate", width: "6%" },
+      { data: "problemDetails", width: "50%" },
+      { data: "institution", width: "6%" },
+      { data: "title", width: "14%" },
       {
         data: "url",
         width: "24%",
         render: function (data, type, row) {
-          // Wrap any content of the 'url' column with an anchor tag
           return '<a href="' + data + '" target="_blank">' + data + "</a>";
         },
-      }, // URL (visible in table)
-      { data: "timeStamp", visible: false }, // Time (hidden in table, but in CSV)
-      { data: "language", visible: false }, // Language (hidden in table, but in CSV)
-      { data: "section", visible: false }, // Section (hidden in table, but in CSV)
-      { data: "theme", visible: false }, // Theme (hidden in table, but in CSV)
-      { data: "deviceType", visible: false }, // Device (hidden in table, but in CSV)
-      { data: "browser", visible: false }, // Browser (hidden in table, but in CSV)
+      },
+      { data: "timeStamp", visible: false },
+      { data: "language", visible: false },
+      { data: "section", visible: false },
+      { data: "theme", visible: false },
+      { data: "deviceType", visible: false },
+      { data: "browser", visible: false },
     ],
   });
 
@@ -203,8 +244,7 @@ $(document).ready(function () {
     events: {
       search: (search, currentData) => {
         return new Promise((resolve, reject) => {
-          // Debounce logic inside the Promise
-          clearTimeout(pageSelect.debounceTimer); // Clear existing timer
+          clearTimeout(pageSelect.debounceTimer);
           pageSelect.debounceTimer = setTimeout(() => {
             if (search.length < 2) {
               return reject(isFrench ? "La recherche doit comporter au moins 2 caractères" : "Search must be at least 2 characters");
@@ -224,12 +264,8 @@ $(document).ready(function () {
               })
               .then((data) => {
                 const options = data
-                  .filter((title) => {
-                    return !currentData.some((optionData) => optionData.value === title);
-                  })
-                  .map((title) => {
-                    return { text: title, value: title };
-                  });
+                  .filter((title) => !currentData.some((optionData) => optionData.value === title))
+                  .map((title) => ({ text: title, value: title }));
 
                 resolve(options);
               })
@@ -237,7 +273,7 @@ $(document).ready(function () {
                 console.error("Error fetching page titles:", error);
                 reject(error);
               });
-          }, 800); // 300ms debounce time
+          }, 800);
         });
       },
     },
@@ -245,55 +281,12 @@ $(document).ready(function () {
 
   // Event bindings
   $("#pages").on("change", function () {
-    table.ajax.reload(); // Reload the DataTable
+    table.ajax.reload();
   });
 
   $(".reset-filters").on("click", resetFilters);
 
-  $("#dateRangePicker").daterangepicker(
-    {
-      opens: "left",
-      startDate: moment(earliestDate),
-      endDate: moment(latestDate),
-      minDate: moment(earliestDate), // Set the earliest selectable date
-      maxDate: moment(latestDate),
-      alwaysShowCalendars: true,
-      locale: {
-        format: "YYYY/MM/DD",
-        cancelLabel: isFrench ? "Effacer" : "Clear",
-        applyLabel: isFrench ? "Appliquer" : "Apply",
-        customRangeLabel: isFrench ? "Période spécifique" : "Custom Range",
-        firstDay: isFrench ? 1 : 0, // Start with Monday
-        daysOfWeek: isFrench ? ["Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"] : undefined, // Define days for French
-        monthNames: isFrench ? ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"] : undefined, // Define months for French
-      },
-      ranges: {
-        [isFrench ? "Toutes les dates" : "All Dates"]: [moment(earliestDate), moment(latestDate)],
-        [isFrench ? "Aujourd'hui" : "Today"]: [moment(), moment()],
-        [isFrench ? "Hier" : "Yesterday"]: [moment().subtract(1, "days"), moment().subtract(1, "days")],
-        [isFrench ? "7 derniers jours" : "Last 7 Days"]: [moment().subtract(6, "days"), moment()],
-        [isFrench ? "30 derniers jours" : "Last 30 Days"]: [moment().subtract(29, "days"), moment()],
-        [isFrench ? "Ce mois-ci" : "This Month"]: [moment().startOf("month"), moment().endOf("month")],
-        [isFrench ? "Le mois dernier" : "Last Month"]: [moment().subtract(1, "month").startOf("month"), moment().subtract(1, "month").endOf("month")],
-        [isFrench ? "Dernier trimestre" : "Last Quarter"]: getLastFiscalQuarter(),
-      },
-    },
-    function (start, end, label) {
-      $("#dateRangePicker").val(start.format("YYYY/MM/DD") + " - " + end.format("YYYY/MM/DD"));
-      // Reload the DataTable with the new date range from the input value.
-      table.ajax.reload();
-    }
-  );
-
-  $("#dateRangePicker").on("cancel.daterangepicker", function (ev, picker) {
-    // Set the date range picker to the earliest and latest dates
-    picker.setStartDate(moment(earliestDate));
-    picker.setEndDate(moment(latestDate));
-    // Update the input field to show the earliest and latest dates
-    $("#dateRangePicker").val(moment(earliestDate).format("YYYY/MM/DD") + " - " + moment(latestDate).format("YYYY/MM/DD"));
-    // Reload DataTables to reflect the reset date range
-    table.ajax.reload();
-  });
+  initializeDateRangePicker();
 
   $("#downloadCSV").on("click", function () {
     table.button(".buttons-csv").trigger();
@@ -302,11 +295,6 @@ $(document).ready(function () {
   $("#downloadExcel").on("click", function () {
     table.button(".buttons-excel").trigger();
   });
-
-  //  $(document).on("click", "a[href*='design.canada.ca'], a[href*='conception.canada.ca']", function (e) {
-  //    e.preventDefault(); // Prevent the default link behavior
-  //    window.open($(this).attr("href"), "_blank"); // Open the link in a new tab/window
-  //  });
 
   tippy("#section-tool-tip", {
     content: isFrench ? "Une valeur ajoutée manuellement à certaines pages" : "A value manually added to select pages",
@@ -334,7 +322,7 @@ $(document).ready(function () {
   $("#comments, #url").on(
     "keyup",
     debounce(function (e) {
-      table.ajax.reload(); // Reload the table without resetting pagination
+      table.ajax.reload();
     }, 800)
   );
 });
