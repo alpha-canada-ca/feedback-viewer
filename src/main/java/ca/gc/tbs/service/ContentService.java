@@ -133,26 +133,31 @@ public class ContentService {
         props.setProperty("annotators", "tokenize,ssplit,pos,lemma,ner");
         StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
         CoreDocument doc = new CoreDocument(content);
-
         pipeline.annotate(doc);
 
         List<CoreEntityMention> entityMentions = new ArrayList<>(doc.entityMentions());
-
-        // Reverse the list to replace from the end of the string. This prevents messing up the start indices of
-        // earlier entity mentions when replacing later ones.
         Collections.reverse(entityMentions);
 
         StringBuilder sb = new StringBuilder(content);
 
+        Set<String> commonPronouns = new HashSet<>(Arrays.asList("he", "she", "him", "her", "his", "hers"));
+
         for (CoreEntityMention em : entityMentions) {
             if (em.entityType().equals("PERSON")) {
-                int start = em.charOffsets().first();
-                int end = em.charOffsets().second();
-                char[] replacement = new char[end - start];
-                Arrays.fill(replacement, '#');
-                sb.replace(start, end, new String(replacement));
+                String mentionText = em.text().toLowerCase();
+                String pos = em.tokens().get(0).tag();
+
+                // Skip if it's a common pronoun or if its POS tag is a pronoun (PRP or PRP$)
+                if (!commonPronouns.contains(mentionText) && !pos.startsWith("PRP")) {
+                    int start = em.charOffsets().first();
+                    int end = em.charOffsets().second();
+                    char[] replacement = new char[end - start];
+                    Arrays.fill(replacement, '#');
+                    sb.replace(start, end, new String(replacement));
+                }
             }
         }
+
         return sb.toString();
     }
 
