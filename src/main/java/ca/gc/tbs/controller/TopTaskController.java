@@ -131,6 +131,7 @@ public class TopTaskController {
         String[] taskFilterVals = request.getParameterValues("tasks[]");
         String startDateVal = request.getParameter("startDate");
         String endDateVal = request.getParameter("endDate");
+        String groupFilterVal = request.getParameter("group");
         boolean includeCommentsOnly = request.getParameter("includeCommentsOnly").equals("true");
 
         Criteria criteria = Criteria.where("processed").is("true");
@@ -143,6 +144,9 @@ public class TopTaskController {
 
         if (themeFilterVal != null && !themeFilterVal.isEmpty()) {
             criteria.and("theme").regex(themeFilterVal, "i");
+        }
+        if (groupFilterVal != null && !groupFilterVal.isEmpty()) {
+            criteria.and("grouping").is(groupFilterVal);
         }
         if (departmentFilterVal != null && !departmentFilterVal.isEmpty()) {
             criteria.and("dept").is(departmentFilterVal);
