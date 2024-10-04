@@ -30,6 +30,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.*;
+import java.util.regex.Pattern;
 
 
 @Controller
@@ -336,8 +337,9 @@ public class ProblemController {
         }
         // Language filtering (existing logic)
         if (language != null && !language.isEmpty()) {
-            criteria.and("language").is(language);
+            criteria.and("language").regex(Pattern.compile(Pattern.quote(language), Pattern.CASE_INSENSITIVE));
         }
+
         if (titles != null && titles.length > 0) {
             // Create a list to hold the title criteria
             List<Criteria> titleCriterias = new ArrayList<>();
