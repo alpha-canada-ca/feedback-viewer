@@ -132,6 +132,7 @@ public class TopTaskController {
         String startDateVal = request.getParameter("startDate");
         String endDateVal = request.getParameter("endDate");
         String groupFilterVal = request.getParameter("group");
+        String language = request.getParameter("language");
         boolean includeCommentsOnly = request.getParameter("includeCommentsOnly").equals("true");
 
         Criteria criteria = Criteria.where("processed").is("true");
@@ -141,7 +142,9 @@ public class TopTaskController {
             LocalDate end = LocalDate.parse(endDateVal, formatter);
             criteria.and("dateTime").gte(start.format(formatter)).lte(end.format(formatter));
         }
-
+        if (language != null && !language.isEmpty()) {
+            criteria.and("language").is(language);
+        }
         if (themeFilterVal != null && !themeFilterVal.isEmpty()) {
             criteria.and("theme").regex(themeFilterVal, "i");
         }

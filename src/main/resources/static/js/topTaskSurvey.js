@@ -85,6 +85,7 @@ $(document).ready(function () {
         d.theme = $("#theme").val();
         d.tasks = $("#tasks").val();
         d.group = $("#group").val();
+        d.language = $("#language").val();
         var dateRangePickerValue = $("#dateRangePicker").val();
         if (dateRangePickerValue) {
           var dateRange = $("#dateRangePicker").data("daterangepicker");
@@ -208,6 +209,7 @@ $(document).ready(function () {
     // Reset select elements to their default option (usually the first one)
     $("#department").val("");
     $("#theme").val("");
+    $("#language").val("");
     // Clear text input fields
     taskSelect.setData([]);
     taskSelect.setSelected([]);
@@ -281,7 +283,7 @@ $(document).ready(function () {
   tippy("#theme-tool-tip", {
     content: isFrench ? "Thèmes de navigation de Canada.ca " : "Canada.ca navigation themes ",
   });
-  $("#department, #theme, #commentsCheckbox, #group").on("change", function () {
+  $("#department, #theme, #commentsCheckbox, #group, #language").on("change", function () {
     table.ajax.reload();
   });
 
