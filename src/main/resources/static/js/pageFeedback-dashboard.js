@@ -281,92 +281,109 @@ $(document).ready(function () {
   tippy("#theme-tool-tip", {
     content: isFrench ? "Thèmes de navigation de Canada.ca " : "Canada.ca navigation themes ",
   });
-
-  // Define the function that will fetch data and create the chart
-  function fetchDataAndCreateChart() {
-    // Replace '/path/to/your/endpoint' with the actual path to your backend endpoint
-    fetch("/chartData")
+  function calculateRollingAverage(data, windowSize) {
+    let rollingAverages = [];
+    for (let i = 0; i <= data.length - windowSize; i++) {
+        let windowData = data.slice(i, i + windowSize);
+        let windowSum = windowData.reduce((sum, value) => sum + value, 0);
+        let average = windowSum / windowSize;
+        rollingAverages.push(parseInt(average));
+    }
+    return rollingAverages;
+}function fetchDataAndCreateChart() {
+  // Fetch the data from your endpoint
+  fetch("/chartData")
       .then((response) => response.json())
       .then((data) => {
-        // Parse the data to get the categories and the series data
-        const categories = data.map((item) => item.date);
-        const commentsData = data.map((item) => item.comments);
+          // Extract categories (dates) and comments data
+          const categories = data.map((item) => item.date);
+          const commentsData = data.map((item) => item.comments);
 
-        // Now create the chart with the data
-        Highcharts.chart("chart", {
-          chart: {
-            type: "column",
-          },
-          title: {
-            text: isFrench ? "Commentaires par jour" : "Comments by day",
-            align: "left",
-            style: {
-              fontSize: "20px", // Adjust title font size here
-            },
-          },
-          xAxis: {
-            categories: categories, // Set the categories from the data
-            crosshair: true,
-            accessibility: {
-              description: "Dates",
-            },
-            labels: {
-              style: {
-                fontSize: "14px", // Adjust X axis labels font size here
+          // Calculate rolling average (e.g., over 7 days)
+          const windowSize = 7;  // Adjust this value as needed
+          const rollingAverages = calculateRollingAverage(commentsData, windowSize);
+
+          const paddedRollingAverages = new Array(windowSize - 1).fill(null).concat(rollingAverages);
+
+          // Now create the chart with the data
+          Highcharts.chart("chart", {
+              chart: {
+                  type: "column",
               },
-            },
-          },
-          yAxis: {
-            min: 0,
-            title: {
-              text: isFrench ? "Nombre de commentaires" : "Number of Comments",
-              style: {
-                fontSize: "16px", // Adjust Y axis title font size here
-                fontWeight: "bold",
+              title: {
+                  text: isFrench ? "Commentaires par jour" : "Comments by day",
+                  align: "left",
+                  style: {
+                      fontSize: "20px", // Adjust title font size here
+                  },
               },
-            },
-            labels: {
-              style: {
-                fontSize: "16px", // Adjust Y axis labels font size here
+              xAxis: {
+                  categories: categories, // Set the categories from the data
+                  crosshair: true,
+                  accessibility: {
+                      description: "Dates",
+                  },
+                  labels: {
+                      style: {
+                          fontSize: "14px", // Adjust X axis labels font size here
+                      },
+                  },
               },
-            },
-          },
-          legend: {
-            // Add legend options
-            style: {
-              fontSize: "16px", // Adjust legend font size here
-            },
-            itemStyle: {
-              fontSize: "14px", // Adjust legend item font size here
-            },
-          },
-          tooltip: {
-            valueSuffix: isFrench ? " commentaires" : " comments",
-            style: {
-              fontSize: "16px", // Adjust font size for text in the tooltip on hover
-            },
-          },
-          plotOptions: {
-            column: {
-              pointPadding: 0, // Minimizes the space between points within the same category
-              groupPadding: 0.1, // Adjust space between categories
-              borderWidth: 0,
-            },
-          },
-          series: [
-            {
-              name: isFrench ? "Commentaires" : "Comments",
-              data: commentsData, // Set the data from the data
-            },
-          ],
-        });
+              yAxis: {
+                  min: 0,
+                  title: {
+                      text: isFrench ? "Nombre de commentaires" : "Number of Comments",
+                      style: {
+                          fontSize: "16px", // Adjust Y axis title font size here
+                          fontWeight: "bold",
+                      },
+                  },
+                  labels: {
+                      style: {
+                          fontSize: "16px", // Adjust Y axis labels font size here
+                      },
+                  },
+              },
+              legend: {
+                  style: {
+                      fontSize: "16px", // Adjust legend font size here
+                  },
+                  itemStyle: {
+                      fontSize: "14px", // Adjust legend item font size here
+                  },
+              },
+              tooltip: {
+                  valueSuffix: isFrench ? " commentaires" : " comments",
+                  style: {
+                      fontSize: "16px", // Adjust font size for text in the tooltip on hover
+                  },
+              },
+              plotOptions: {
+                  column: {
+                      pointPadding: 0, // Minimizes the space between points within the same category
+                      groupPadding: 0.1, // Adjust space between categories
+                      borderWidth: 0,
+                  },
+              },
+              series: [
+                  {
+                      name: isFrench ? "Commentaires" : "Comments",
+                      data: commentsData, // Set the data from the data
+                  },
+                  {
+                      name: isFrench ? "Moyenne mobile (7 jours)" : "Rolling Average (7 days)",
+                      data: paddedRollingAverages, // Use the rolling average data
+                      type: "line", // Display as a line chart
+                      color: "#5D3FD3", // Optional: Set a different color for the rolling average
+                  },
+              ],
+          });
       })
       .catch((error) => {
-        console.error("Error fetching data: ", error);
+          console.error("Error fetching data: ", error);
       });
-  }
+}
 
-  // Call the function to fetch data and create the chart
 
   var detailsElement = $("#filterDetails");
   var summaryElement = $("#filterSummary");
