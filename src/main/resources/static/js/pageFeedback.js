@@ -31,8 +31,6 @@ $(document).ready(function () {
       dt.one("preDraw", function (e, settings) {
         if (button[0].className.indexOf("buttons-excel") >= 0) {
           $.fn.dataTable.ext.buttons.excelHtml5.available(dt, config) ? $.fn.dataTable.ext.buttons.excelHtml5.action.call(self, e, dt, button, config) : $.fn.dataTable.ext.buttons.excelFlash.action.call(self, e, dt, button, config);
-        } else if (button[0].className.indexOf("buttons-csv") >= 0) {
-          $.fn.dataTable.ext.buttons.csvHtml5.available(dt, config) ? $.fn.dataTable.ext.buttons.csvHtml5.action.call(self, e, dt, button, config) : $.fn.dataTable.ext.buttons.csvFlash.action.call(self, e, dt, button, config);
         }
         dt.one("preXhr", function (e, s, data) {
           // DataTables thinks the first item displayed is index 0, but we're not drawing that.
@@ -184,29 +182,29 @@ $(document).ready(function () {
     },
     buttons: [
       {
-        extend: "csvHtml5",
-        className: "btn btn-default",
-        exportOptions: {
-          columns: [0, 5, 1, 3, 4, 6, 2, 7, 8, 9, 10],
-          modifier: {
-            page: "all",
-          },
-        },
-        action: newexportaction,
-        filename: (isFrench ? "Outil_de_retroaction-" : "Page_feedback-") + new Date().getFullYear() + "-" + ("0" + (new Date().getMonth() + 1)).slice(-2) + "-" + ("0" + new Date().getDate()).slice(-2),
+        extend: 'csvHtml5',
+        className: 'btn btn-default',
+        text: isFrench ? 'Télécharger CSV' : 'Download CSV',
+        action: function (e, dt, button, config) {
+          e.preventDefault();
+          var url = new URL(window.location.origin + '/exportCSV');
+          var params = getFilterParams();
+          Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
+          window.location.href = url.toString();
+        }
       },
       {
-        extend: "excelHtml5",
-        className: "btn btn-default",
-        exportOptions: {
-          columns: [0, 5, 1, 3, 4, 6, 2, 7, 8, 9, 10],
-          modifier: {
-            page: "all",
-          },
-        },
-        action: newexportaction,
-        filename: (isFrench ? "Outil_de_retroaction-" : "Page_feedback-") + new Date().getFullYear() + "-" + ("0" + (new Date().getMonth() + 1)).slice(-2) + "-" + new Date().getDate(),
-      },
+        extend: 'excelHtml5',
+        className: 'btn btn-default',
+        text: isFrench ? 'Télécharger Excel' : 'Download Excel',
+        action: function (e, dt, button, config) {
+          e.preventDefault();
+          var url = new URL(window.location.origin + '/exportExcel');
+          var params = getFilterParams();
+          Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
+          window.location.href = url.toString();
+        }
+      }
     ],
     columns: [
       { data: "problemDate", width: "6%" },
@@ -289,11 +287,17 @@ $(document).ready(function () {
   initializeDateRangePicker();
 
   $("#downloadCSV").on("click", function () {
-    table.button(".buttons-csv").trigger();
+    var url = new URL(window.location.origin + '/exportCSV');
+    var params = getFilterParams();
+    Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
+    window.location.href = url.toString();
   });
 
   $("#downloadExcel").on("click", function () {
-    table.button(".buttons-excel").trigger();
+    var url = new URL(window.location.origin + '/exportExcel');
+    var params = getFilterParams();
+    Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
+    window.location.href = url.toString();
   });
 
   tippy("#section-tool-tip", {
@@ -325,4 +329,26 @@ $(document).ready(function () {
       table.ajax.reload();
     }, 800)
   );
+
+  // Add this new function to get filter parameters
+  function getFilterParams() {
+    var params = {
+      titles: $("#pages").val(),
+      language: $("#language").val(),
+      department: $("#department").val(),
+      comments: $("#comments").val(),
+      section: $("#section").val(),
+      theme: $("#theme").val(),
+      url: $("#url").val()
+    };
+
+    var dateRangePickerValue = $("#dateRangePicker").val();
+    if (dateRangePickerValue) {
+      var dateRange = $("#dateRangePicker").data('daterangepicker');
+      params.startDate = dateRange.startDate.format('YYYY-MM-DD');
+      params.endDate = dateRange.endDate.format('YYYY-MM-DD');
+    }
+
+    return params;
+  }
 });

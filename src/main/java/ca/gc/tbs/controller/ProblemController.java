@@ -6,6 +6,11 @@ import ca.gc.tbs.repository.ProblemRepository;
 import ca.gc.tbs.security.JWTUtil;
 import ca.gc.tbs.service.ProblemDateService;
 import ca.gc.tbs.service.UserService;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,7 +30,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
+import java.io.Writer;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -282,6 +290,237 @@ public class ProblemController {
 
         criteria.and("institution").in(matchingVariations);
         return criteria;
+    }
+
+
+    @GetMapping("/exportExcel")
+    public void exportExcel(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        response.setHeader("Content-Disposition", "attachment; filename=\"feedback_export.xlsx\"");
+
+        String[] titles = request.getParameterValues("titles[]");
+        String language = request.getParameter("language");
+        String department = request.getParameter("department");
+        String comments = request.getParameter("comments");
+        String theme = request.getParameter("theme");
+        String section = request.getParameter("section");
+        String url = request.getParameter("url");
+        String startDate = request.getParameter("startDate");
+        String endDate = request.getParameter("endDate");
+
+        Criteria criteria = Criteria.where("processed").is("true");
+
+        // Apply filters (similar to the existing method)
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        if (startDate != null && endDate != null) {
+            LocalDate start = LocalDate.parse(startDate, formatter);
+            LocalDate end = LocalDate.parse(endDate, formatter);
+            criteria.and("problemDate").gte(start.format(formatter)).lte(end.format(formatter));
+        }
+        if (theme != null && !theme.isEmpty()) {
+            criteria.and("theme").is(theme);
+        }
+        if (section != null && !section.isEmpty()) {
+            criteria.and("section").is(section);
+        }
+        if (language != null && !language.isEmpty()) {
+            criteria.and("language").regex(Pattern.compile(Pattern.quote(language), Pattern.CASE_INSENSITIVE));
+        }
+        if (titles != null && titles.length > 0) {
+            List<Criteria> titleCriterias = new ArrayList<>();
+            for (String title : titles) {
+                titleCriterias.add(Criteria.where("title").is(title));
+            }
+            criteria.orOperator(titleCriterias.toArray(new Criteria[0]));
+        }
+        if (url != null && !url.isEmpty()) {
+            criteria.and("url").regex(url, "i");
+        }
+        if (department != null && !department.isEmpty()) {
+            Set<String> matchingVariations = new HashSet<>();
+            for (Map.Entry<String, List<String>> entry : institutionMappings.entrySet()) {
+                if (entry.getValue().stream().anyMatch(variation -> variation.equalsIgnoreCase(department))) {
+                    matchingVariations.addAll(entry.getValue());
+                }
+            }
+            if (!matchingVariations.isEmpty()) {
+                criteria.and("institution").in(matchingVariations);
+            }
+        }
+        if (comments != null && !comments.isEmpty()) {
+            String safeComments = escapeSpecialRegexCharacters(comments);
+            criteria.and("problemDetails").regex(safeComments, "i");
+        }
+        Query query = new Query(criteria);
+        query.fields()
+                .include("problemDate")
+                .include("timeStamp")
+                .include("problemDetails")
+                .include("language")
+                .include("title")
+                .include("url")
+                .include("institution")
+                .include("section")
+                .include("theme")
+                .include("deviceType")
+                .include("browser");
+
+        try (Workbook workbook = new XSSFWorkbook()) {
+            Sheet sheet = workbook.createSheet("Feedback Data");
+
+            // Create header row
+            Row headerRow = sheet.createRow(0);
+            String[] columns = {"Problem Date", "Time Stamp", "Problem Details", "Language", "Title", "URL", "Institution", "Section", "Theme", "Device Type", "Browser"};
+            for (int i = 0; i < columns.length; i++) {
+                Cell cell = headerRow.createCell(i);
+                cell.setCellValue(columns[i]);
+            }
+
+            // Stream and write data
+            final int[] rowNum = {1};
+            mongoTemplate.stream(query, Problem.class).forEachRemaining(problem -> {
+                Row row = sheet.createRow(rowNum[0]++);
+                row.createCell(0).setCellValue(problem.getProblemDate());
+                row.createCell(1).setCellValue(problem.getTimeStamp());
+                row.createCell(2).setCellValue(problem.getProblemDetails());
+                row.createCell(3).setCellValue(problem.getLanguage());
+                row.createCell(4).setCellValue(problem.getTitle());
+                row.createCell(5).setCellValue(problem.getUrl());
+                row.createCell(6).setCellValue(problem.getInstitution());
+                row.createCell(7).setCellValue(problem.getSection());
+                row.createCell(8).setCellValue(problem.getTheme());
+                row.createCell(9).setCellValue(problem.getDeviceType());
+                row.createCell(10).setCellValue(problem.getBrowser());
+            });
+
+            // Auto-size columns
+            for (int i = 0; i < columns.length; i++) {
+                sheet.autoSizeColumn(i);
+            }
+
+            // Write to response
+            workbook.write(response.getOutputStream());
+        } catch (Exception e) {
+            LOG.error("Error exporting Excel", e);
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.getWriter().write("Error exporting data: " + e.getMessage());
+        }
+    }
+
+
+    @GetMapping("/exportCSV")
+    public void exportCSV(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        response.setContentType("text/csv");
+        response.setHeader("Content-Disposition", "attachment; filename=\"feedback_export.csv\"");
+
+        String[] titles = request.getParameterValues("titles[]");
+        String language = request.getParameter("language");
+        String department = request.getParameter("department");
+        String comments = request.getParameter("comments");
+        String theme = request.getParameter("theme");
+        String section = request.getParameter("section");
+        String url = request.getParameter("url");
+        String startDate = request.getParameter("startDate");
+        String endDate = request.getParameter("endDate");
+
+        Criteria criteria = Criteria.where("processed").is("true");
+
+        // Apply filters (similar to the list method)
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        if (startDate != null && endDate != null) {
+            LocalDate start = LocalDate.parse(startDate, formatter);
+            LocalDate end = LocalDate.parse(endDate, formatter);
+            criteria.and("problemDate").gte(start.format(formatter)).lte(end.format(formatter));
+        }
+
+        if (theme != null && !theme.isEmpty()) {
+            criteria.and("theme").is(theme);
+        }
+        if (section != null && !section.isEmpty()) {
+            criteria.and("section").is(section);
+        }
+        if (language != null && !language.isEmpty()) {
+            criteria.and("language").regex(Pattern.compile(Pattern.quote(language), Pattern.CASE_INSENSITIVE));
+        }
+        if (titles != null && titles.length > 0) {
+            List<Criteria> titleCriterias = new ArrayList<>();
+            for (String title : titles) {
+                titleCriterias.add(Criteria.where("title").is(title));
+            }
+            criteria.orOperator(titleCriterias.toArray(new Criteria[0]));
+        }
+        if (url != null && !url.isEmpty()) {
+            criteria.and("url").regex(url, "i");
+        }
+        if (department != null && !department.isEmpty()) {
+            Set<String> matchingVariations = new HashSet<>();
+            for (Map.Entry<String, List<String>> entry : institutionMappings.entrySet()) {
+                if (entry.getValue().stream().anyMatch(variation -> variation.equalsIgnoreCase(department))) {
+                    matchingVariations.addAll(entry.getValue());
+                }
+            }
+            if (!matchingVariations.isEmpty()) {
+                criteria.and("institution").in(matchingVariations);
+            }
+        }
+        if (comments != null && !comments.isEmpty()) {
+            String safeComments = escapeSpecialRegexCharacters(comments);
+            criteria.and("problemDetails").regex(safeComments, "i");
+        }
+
+        Query query = new Query(criteria);
+        query.fields()
+                .include("problemDate")
+                .include("timeStamp")
+                .include("problemDetails")
+                .include("language")
+                .include("title")
+                .include("url")
+                .include("institution")
+                .include("section")
+                .include("theme")
+                .include("deviceType")
+                .include("browser");
+
+        // Stream results directly to the response
+        Writer writer = response.getWriter();
+        try {
+            // Write CSV header
+            writer.write("Problem Date,Time Stamp,Problem Details,Language,Title,URL,Institution,Section,Theme,Device Type,Browser\n");
+
+            // Stream and write data
+            mongoTemplate.stream(query, Problem.class).forEachRemaining(new java.util.function.Consumer<Problem>() {
+                @Override
+                public void accept(Problem problem) {
+                    try {
+                        writer.write(String.format("%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n",
+                                problem.getProblemDate(),
+                                problem.getTimeStamp(),
+                                escapeCSV(problem.getProblemDetails()),
+                                problem.getLanguage(),
+                                escapeCSV(problem.getTitle()),
+                                problem.getUrl(),
+                                problem.getInstitution(),
+                                problem.getSection(),
+                                problem.getTheme(),
+                                problem.getDeviceType(),
+                                problem.getBrowser()
+                        ));
+                    } catch (IOException e) {
+                        LOG.error("Error writing CSV data", e);
+                    }
+                }
+            });
+        } finally {
+            writer.close();
+        }
+    }
+
+    private String escapeCSV(String value) {
+        if (value == null) {
+            return "";
+        }
+        return "\"" + value.replace("\"", "\"\"") + "\"";
     }
 
     @GetMapping(value = "/pageFeedback")
