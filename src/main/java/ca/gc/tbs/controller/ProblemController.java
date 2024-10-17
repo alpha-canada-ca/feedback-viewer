@@ -9,8 +9,7 @@ import ca.gc.tbs.service.UserService;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -365,7 +364,9 @@ public class ProblemController {
                 .include("deviceType")
                 .include("browser");
 
-        try (Workbook workbook = new XSSFWorkbook()) {
+        // Use SXSSFWorkbook for better performance with large data
+        try (SXSSFWorkbook workbook = new SXSSFWorkbook()) {
+            workbook.setCompressTempFiles(true); // Optional: Compress temp files to reduce disk space usage
             Sheet sheet = workbook.createSheet("Feedback Data");
 
             // Create header row
@@ -393,10 +394,10 @@ public class ProblemController {
                 row.createCell(10).setCellValue(problem.getBrowser());
             });
 
-            // Auto-size columns
-            for (int i = 0; i < columns.length; i++) {
-                sheet.autoSizeColumn(i);
-            }
+            // Optionally, remove or limit auto-sizing to improve performance
+            // for (int i = 0; i < columns.length; i++) {
+            //     sheet.autoSizeColumn(i);
+            // }
 
             // Write to response
             workbook.write(response.getOutputStream());
