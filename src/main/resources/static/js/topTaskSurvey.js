@@ -112,27 +112,29 @@ $(document).ready(function () {
 
     buttons: [
       {
-        extend: "csvHtml5",
-        className: "btn btn-default",
-        exportOptions: {
-          modifier: {
-            page: "all", // This tells DataTables to export data from all pages, not just the current page
-          },
-        },
-        action: newexportaction,
-        filename: (isFrench ? "Retroaction_du_sondage_SRT-" : "TSS_survey_feedback-") + new Date().getFullYear() + "-" + ("0" + (new Date().getMonth() + 1)).slice(-2) + "-" + ("0" + new Date().getDate()).slice(-2),
+        extend: 'csvHtml5',
+        className: 'btn btn-default',
+        text: isFrench ? 'Télécharger CSV' : 'Download CSV',
+        action: function (e, dt, button, config) {
+          e.preventDefault();
+          var url = new URL(window.location.origin + '/exportTopTaskCSV');
+          var params = getFilterParams();
+          Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
+          window.location.href = url.toString();
+        }
       },
       {
-        extend: "excelHtml5",
-        className: "btn btn-default",
-        exportOptions: {
-          modifier: {
-            page: "all", // This tells DataTables to export data from all pages, not just the current page
-          },
-        },
-        action: newexportaction,
-        filename: (isFrench ? "Retroaction_du_sondage_SRT-" : "TSS_survey_feedback-") + new Date().getFullYear() + "-" + ("0" + (new Date().getMonth() + 1)).slice(-2) + "-" + ("0" + new Date().getDate()).slice(-2),
-      },
+        extend: 'excelHtml5',
+        className: 'btn btn-default',
+        text: isFrench ? 'Télécharger Excel' : 'Download Excel',
+        action: function (e, dt, button, config) {
+          e.preventDefault();
+          var url = new URL(window.location.origin + '/exportTopTaskExcel');
+          var params = getFilterParams();
+          Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
+          window.location.href = url.toString();
+        }
+      }
     ],
 
     columns: [
@@ -273,20 +275,43 @@ $(document).ready(function () {
   });
 
   $("#downloadCSV").on("click", function () {
-    table.button(".buttons-csv").trigger();
+    var url = new URL(window.location.origin + '/exportTopTaskCSV');
+    var params = getFilterParams();
+    Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
+    window.location.href = url.toString();
   });
-
+  
   $("#downloadExcel").on("click", function () {
-    table.button(".buttons-excel").trigger();
+    var url = new URL(window.location.origin + '/exportTopTaskExcel');
+    var params = getFilterParams();
+    Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
+    window.location.href = url.toString();
   });
-
   tippy("#theme-tool-tip", {
     content: isFrench ? "Thèmes de navigation de Canada.ca " : "Canada.ca navigation themes ",
   });
   $("#department, #theme, #commentsCheckbox, #group, #language").on("change", function () {
     table.ajax.reload();
   });
-
+  function getFilterParams() {
+    var params = {
+      department: $("#department").val(),
+      theme: $("#theme").val(),
+      tasks: $("#tasks").val(),
+      group: $("#group").val(),
+      language: $("#language").val(),
+      includeCommentsOnly: $("#commentsCheckbox").is(":checked")
+    };
+  
+    var dateRangePickerValue = $("#dateRangePicker").val();
+    if (dateRangePickerValue) {
+      var dateRange = $("#dateRangePicker").data('daterangepicker');
+      params.startDate = dateRange.startDate.format('YYYY-MM-DD');
+      params.endDate = dateRange.endDate.format('YYYY-MM-DD');
+    }
+  
+    return params;
+  }
   var taskSelect = new SlimSelect({
     select: "#tasks",
     settings: {

@@ -6,6 +6,10 @@ import ca.gc.tbs.repository.TopTaskRepository;
 import ca.gc.tbs.security.JWTUtil;
 import ca.gc.tbs.service.ProblemDateService;
 import ca.gc.tbs.service.UserService;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.xssf.streaming.SXSSFSheet;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,8 +25,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
+import java.io.Writer;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -186,6 +194,262 @@ public class TopTaskController {
         return results;
     }
 
+    @GetMapping("/exportTopTaskExcel")
+    public void exportTopTaskExcel(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        response.setHeader("Content-Disposition", "attachment; filename=\"top_task_survey_export.xlsx\"");
+
+        String department = request.getParameter("department");
+        String theme = request.getParameter("theme");
+        String[] tasks = request.getParameterValues("tasks[]");
+        String group = request.getParameter("group");
+        String language = request.getParameter("language");
+        String startDate = request.getParameter("startDate");
+        String endDate = request.getParameter("endDate");
+        boolean includeCommentsOnly = Boolean.parseBoolean(request.getParameter("includeCommentsOnly"));
+
+        Criteria criteria = Criteria.where("processed").is("true");
+
+        // Apply filters
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        if (startDate != null && endDate != null) {
+            LocalDate start = LocalDate.parse(startDate, formatter);
+            LocalDate end = LocalDate.parse(endDate, formatter);
+            criteria.and("dateTime").gte(start.format(formatter)).lte(end.format(formatter));
+        }
+        if (language != null && !language.isEmpty()) {
+            criteria.and("language").is(language);
+        }
+        if (theme != null && !theme.isEmpty()) {
+            criteria.and("theme").regex(theme, "i");
+        }
+        if (group != null && !group.isEmpty()) {
+            criteria.and("grouping").is(group);
+        }
+        if (department != null && !department.isEmpty()) {
+            criteria.and("dept").is(department);
+        }
+        if (tasks != null && tasks.length > 0) {
+            criteria.and("task").in((Object[]) tasks);
+        }
+        if (includeCommentsOnly) {
+            List<Criteria> commentsCriteria = createNonEmptyCriteria();
+            criteria.orOperator(commentsCriteria.toArray(new Criteria[0]));
+        }
+
+        Query query = new Query(criteria);
+        query.fields()
+                .include("dateTime")
+                .include("timeStamp")
+                .include("surveyReferrer")
+                .include("language")
+                .include("device")
+                .include("screener")
+                .include("dept")
+                .include("theme")
+                .include("themeOther")
+                .include("grouping")
+                .include("task")
+                .include("taskOther")
+                .include("taskSatisfaction")
+                .include("taskEase")
+                .include("taskCompletion")
+                .include("taskImprove")
+                .include("taskImproveComment")
+                .include("taskWhyNot")
+                .include("taskWhyNotComment")
+                .include("taskSampling")
+                .include("samplingInvitation")
+                .include("samplingGC")
+                .include("samplingCanada")
+                .include("samplingTheme")
+                .include("samplingInstitution")
+                .include("samplingGrouping")
+                .include("samplingTask");
+
+        try (SXSSFWorkbook workbook = new SXSSFWorkbook(100);
+             ServletOutputStream outputStream = response.getOutputStream()) {
+
+            Sheet sheet = workbook.createSheet("Top Task Survey Data");
+
+            // Create header row
+            String[] columns = {"Date Time", "Time Stamp", "Survey Referrer", "Language", "Device", "Screener", "Department", "Theme", "Theme Other", "Grouping", "Task", "Task Other", "Task Satisfaction", "Task Ease", "Task Completion", "Task Improve", "Task Improve Comment", "Task Why Not", "Task Why Not Comment", "Task Sampling", "Sampling Invitation", "Sampling GC", "Sampling Canada", "Sampling Theme", "Sampling Institution", "Sampling Grouping", "Sampling Task"};
+            Row headerRow = sheet.createRow(0);
+            for (int i = 0; i < columns.length; i++) {
+                headerRow.createCell(i).setCellValue(columns[i]);
+            }
+
+            final int[] rowNum = {1};
+            mongoTemplate.stream(query, TopTaskSurvey.class).forEachRemaining(survey -> {
+                Row row = sheet.createRow(rowNum[0]++);
+                row.createCell(0).setCellValue(survey.getDateTime());
+                row.createCell(1).setCellValue(survey.getTimeStamp());
+                row.createCell(2).setCellValue(survey.getSurveyReferrer());
+                row.createCell(3).setCellValue(survey.getLanguage());
+                row.createCell(4).setCellValue(survey.getDevice());
+                row.createCell(5).setCellValue(survey.getScreener());
+                row.createCell(6).setCellValue(survey.getDept());
+                row.createCell(7).setCellValue(survey.getTheme());
+                row.createCell(8).setCellValue(survey.getThemeOther());
+                row.createCell(9).setCellValue(survey.getGrouping());
+                row.createCell(10).setCellValue(survey.getTask());
+                row.createCell(11).setCellValue(survey.getTaskOther());
+                row.createCell(12).setCellValue(survey.getTaskSatisfaction());
+                row.createCell(13).setCellValue(survey.getTaskEase());
+                row.createCell(14).setCellValue(survey.getTaskCompletion());
+                row.createCell(15).setCellValue(survey.getTaskImprove());
+                row.createCell(16).setCellValue(survey.getTaskImproveComment());
+                row.createCell(17).setCellValue(survey.getTaskWhyNot());
+                row.createCell(18).setCellValue(survey.getTaskWhyNotComment());
+                row.createCell(19).setCellValue(survey.getTaskSampling());
+                row.createCell(20).setCellValue(survey.getSamplingInvitation());
+                row.createCell(21).setCellValue(survey.getSamplingGC());
+                row.createCell(22).setCellValue(survey.getSamplingCanada());
+                row.createCell(23).setCellValue(survey.getSamplingTheme());
+                row.createCell(24).setCellValue(survey.getSamplingInstitution());
+                row.createCell(25).setCellValue(survey.getSamplingGrouping());
+                row.createCell(26).setCellValue(survey.getSamplingTask());
+
+                if (rowNum[0] % 100 == 0) {
+                    try {
+                        ((SXSSFSheet) sheet).flushRows(100);
+                    } catch (IOException e) {
+                        LOG.error("Error flushing rows", e);
+                    }
+                }
+            });
+
+            workbook.write(outputStream);
+        } catch (Exception e) {
+            LOG.error("Error exporting Excel", e);
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.getWriter().write("Error exporting data: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/exportTopTaskCSV")
+    public void exportTopTaskCSV(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        response.setContentType("text/csv");
+        response.setHeader("Content-Disposition", "attachment; filename=\"top_task_survey_export.csv\"");
+
+        String department = request.getParameter("department");
+        String theme = request.getParameter("theme");
+        String[] tasks = request.getParameterValues("tasks[]");
+        String group = request.getParameter("group");
+        String language = request.getParameter("language");
+        String startDate = request.getParameter("startDate");
+        String endDate = request.getParameter("endDate");
+        boolean includeCommentsOnly = Boolean.parseBoolean(request.getParameter("includeCommentsOnly"));
+
+        Criteria criteria = Criteria.where("processed").is("true");
+
+        // Apply filters
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        if (startDate != null && endDate != null) {
+            LocalDate start = LocalDate.parse(startDate, formatter);
+            LocalDate end = LocalDate.parse(endDate, formatter);
+            criteria.and("dateTime").gte(start.format(formatter)).lte(end.format(formatter));
+        }
+        if (language != null && !language.isEmpty()) {
+            criteria.and("language").is(language);
+        }
+        if (theme != null && !theme.isEmpty()) {
+            criteria.and("theme").regex(theme, "i");
+        }
+        if (group != null && !group.isEmpty()) {
+            criteria.and("grouping").is(group);
+        }
+        if (department != null && !department.isEmpty()) {
+            criteria.and("dept").is(department);
+        }
+        if (tasks != null && tasks.length > 0) {
+            criteria.and("task").in((Object[]) tasks);
+        }
+        if (includeCommentsOnly) {
+            List<Criteria> commentsCriteria = createNonEmptyCriteria();
+            criteria.orOperator(commentsCriteria.toArray(new Criteria[0]));
+        }
+
+        Query query = new Query(criteria);
+        query.fields()
+                .include("dateTime")
+                .include("timeStamp")
+                .include("surveyReferrer")
+                .include("language")
+                .include("device")
+                .include("screener")
+                .include("dept")
+                .include("theme")
+                .include("themeOther")
+                .include("grouping")
+                .include("task")
+                .include("taskOther")
+                .include("taskSatisfaction")
+                .include("taskEase")
+                .include("taskCompletion")
+                .include("taskImprove")
+                .include("taskImproveComment")
+                .include("taskWhyNot")
+                .include("taskWhyNotComment")
+                .include("taskSampling")
+                .include("samplingInvitation")
+                .include("samplingGC")
+                .include("samplingCanada")
+                .include("samplingTheme")
+                .include("samplingInstitution")
+                .include("samplingGrouping")
+                .include("samplingTask");
+
+        Writer writer = response.getWriter();
+        try {
+            writer.write("Date Time,Time Stamp,Survey Referrer,Language,Device,Screener,Department,Theme,Theme Other,Grouping,Task,Task Other,Task Satisfaction,Task Ease,Task Completion,Task Improve,Task Improve Comment,Task Why Not,Task Why Not Comment,Task Sampling,Sampling Invitation,Sampling GC,Sampling Canada,Sampling Theme,Sampling Institution,Sampling Grouping,Sampling Task\n");
+
+            mongoTemplate.stream(query, TopTaskSurvey.class).forEachRemaining(survey -> {
+                try {
+                    writer.write(String.format("%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n",
+                            escapeCSV(survey.getDateTime()),
+                            escapeCSV(survey.getTimeStamp()),
+                            escapeCSV(survey.getSurveyReferrer()),
+                            escapeCSV(survey.getLanguage()),
+                            escapeCSV(survey.getDevice()),
+                            escapeCSV(survey.getScreener()),
+                            escapeCSV(survey.getDept()),
+                            escapeCSV(survey.getTheme()),
+                            escapeCSV(survey.getThemeOther()),
+                            escapeCSV(survey.getGrouping()),
+                            escapeCSV(survey.getTask()),
+                            escapeCSV(survey.getTaskOther()),
+                            escapeCSV(survey.getTaskSatisfaction()),
+                            escapeCSV(survey.getTaskEase()),
+                            escapeCSV(survey.getTaskCompletion()),
+                            escapeCSV(survey.getTaskImprove()),
+                            escapeCSV(survey.getTaskImproveComment()),
+                            escapeCSV(survey.getTaskWhyNot()),
+                            escapeCSV(survey.getTaskWhyNotComment()),
+                            escapeCSV(survey.getTaskSampling()),
+                            escapeCSV(survey.getSamplingInvitation()),
+                            escapeCSV(survey.getSamplingGC()),
+                            escapeCSV(survey.getSamplingCanada()),
+                            escapeCSV(survey.getSamplingTheme()),
+                            escapeCSV(survey.getSamplingInstitution()),
+                            escapeCSV(survey.getSamplingGrouping()),
+                            escapeCSV(survey.getSamplingTask())
+                    ));
+                } catch (IOException e) {
+                    LOG.error("Error writing CSV data", e);
+                }
+            });
+        } finally {
+            writer.close();
+        }
+    }
+
+    private String escapeCSV(String value) {
+        if (value == null) {
+            return "";
+        }
+        return "\"" + value.replace("\"", "\"\"") + "\"";
+    }
 
     private List<Criteria> createNonEmptyCriteria() {
         List<Criteria> criteriaList = new ArrayList<>();
