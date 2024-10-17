@@ -6,9 +6,9 @@ import ca.gc.tbs.repository.ProblemRepository;
 import ca.gc.tbs.security.JWTUtil;
 import ca.gc.tbs.service.ProblemDateService;
 import ca.gc.tbs.service.UserService;
-import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.xssf.streaming.SXSSFSheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.bson.Document;
 import org.slf4j.Logger;
@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -365,19 +366,19 @@ public class ProblemController {
                 .include("browser");
 
         // Use SXSSFWorkbook for better performance with large data
-        try (SXSSFWorkbook workbook = new SXSSFWorkbook()) {
-            workbook.setCompressTempFiles(true); // Optional: Compress temp files to reduce disk space usage
+        try (SXSSFWorkbook workbook = new SXSSFWorkbook(100);  // The argument (100) flushes rows after 100 are written
+             ServletOutputStream outputStream = response.getOutputStream()) {
+
             Sheet sheet = workbook.createSheet("Feedback Data");
 
             // Create header row
-            Row headerRow = sheet.createRow(0);
             String[] columns = {"Problem Date", "Time Stamp", "Problem Details", "Language", "Title", "URL", "Institution", "Section", "Theme", "Device Type", "Browser"};
+            Row headerRow = sheet.createRow(0);
             for (int i = 0; i < columns.length; i++) {
-                Cell cell = headerRow.createCell(i);
-                cell.setCellValue(columns[i]);
+                headerRow.createCell(i).setCellValue(columns[i]);
             }
 
-            // Stream and write data
+            // Stream and write data in batches
             final int[] rowNum = {1};
             mongoTemplate.stream(query, Problem.class).forEachRemaining(problem -> {
                 Row row = sheet.createRow(rowNum[0]++);
@@ -392,22 +393,24 @@ public class ProblemController {
                 row.createCell(8).setCellValue(problem.getTheme());
                 row.createCell(9).setCellValue(problem.getDeviceType());
                 row.createCell(10).setCellValue(problem.getBrowser());
+
+                if (rowNum[0] % 100 == 0) {
+                    try {
+                        ((SXSSFSheet) sheet).flushRows(100);  // Flush rows every 100 rows
+                    } catch (IOException e) {
+                        LOG.error("Error flushing rows", e);
+                    }
+                }
             });
 
-            // Optionally, remove or limit auto-sizing to improve performance
-            // for (int i = 0; i < columns.length; i++) {
-            //     sheet.autoSizeColumn(i);
-            // }
-
-            // Write to response
-            workbook.write(response.getOutputStream());
+            // Write the workbook to the output stream
+            workbook.write(outputStream);
         } catch (Exception e) {
             LOG.error("Error exporting Excel", e);
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             response.getWriter().write("Error exporting data: " + e.getMessage());
         }
     }
-
 
     @GetMapping("/exportCSV")
     public void exportCSV(HttpServletRequest request, HttpServletResponse response) throws IOException {
