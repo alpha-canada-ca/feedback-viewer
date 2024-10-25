@@ -118,8 +118,7 @@ $(document).ready(function () {
         action: function (e, dt, button, config) {
           e.preventDefault();
           var url = new URL(window.location.origin + '/exportTopTaskCSV');
-          var params = getFilterParams();
-          Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
+          url.search = getFilterParams().toString();
           window.location.href = url.toString();
         }
       },
@@ -130,8 +129,7 @@ $(document).ready(function () {
         action: function (e, dt, button, config) {
           e.preventDefault();
           var url = new URL(window.location.origin + '/exportTopTaskExcel');
-          var params = getFilterParams();
-          Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
+          url.search = getFilterParams().toString();
           window.location.href = url.toString();
         }
       }
@@ -276,15 +274,13 @@ $(document).ready(function () {
 
   $("#downloadCSV").on("click", function () {
     var url = new URL(window.location.origin + '/exportTopTaskCSV');
-    var params = getFilterParams();
-    Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
+    url.search = getFilterParams().toString();
     window.location.href = url.toString();
   });
   
   $("#downloadExcel").on("click", function () {
     var url = new URL(window.location.origin + '/exportTopTaskExcel');
-    var params = getFilterParams();
-    Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
+    url.search = getFilterParams().toString();
     window.location.href = url.toString();
   });
   tippy("#theme-tool-tip", {
@@ -294,20 +290,28 @@ $(document).ready(function () {
     table.ajax.reload();
   });
   function getFilterParams() {
-    var params = {
-      department: $("#department").val(),
-      theme: $("#theme").val(),
-      tasks: $("#tasks").val(),
-      group: $("#group").val(),
-      language: $("#language").val(),
-      includeCommentsOnly: $("#commentsCheckbox").is(":checked")
-    };
+    var tasks = $("#tasks").val();
+    var params = new URLSearchParams();
+    
+    // Add single value parameters
+    params.append('department', $("#department").val() || '');
+    params.append('theme', $("#theme").val() || '');
+    params.append('group', $("#group").val() || '');
+    params.append('language', $("#language").val() || '');
+    params.append('includeCommentsOnly', $("#commentsCheckbox").is(":checked"));
+  
+    // Add multiple tasks
+    if (tasks && tasks.length > 0) {
+      tasks.forEach(function(task) {
+        params.append('tasks[]', task);
+      });
+    }
   
     var dateRangePickerValue = $("#dateRangePicker").val();
     if (dateRangePickerValue) {
       var dateRange = $("#dateRangePicker").data('daterangepicker');
-      params.startDate = dateRange.startDate.format('YYYY-MM-DD');
-      params.endDate = dateRange.endDate.format('YYYY-MM-DD');
+      params.append('startDate', dateRange.startDate.format('YYYY-MM-DD'));
+      params.append('endDate', dateRange.endDate.format('YYYY-MM-DD'));
     }
   
     return params;

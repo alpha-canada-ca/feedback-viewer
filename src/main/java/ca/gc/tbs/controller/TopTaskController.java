@@ -196,8 +196,12 @@ public class TopTaskController {
 
     @GetMapping("/exportTopTaskExcel")
     public void exportTopTaskExcel(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        String currentDate = LocalDate.now().format(dateFormatter);
+
         response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-        response.setHeader("Content-Disposition", "attachment; filename=\"top_task_survey_export.xlsx\"");
+        response.setHeader("Content-Disposition", "attachment; filename=\"top_task_survey_export_" + currentDate + ".xlsx\"");
 
         String department = request.getParameter("department");
         String theme = request.getParameter("theme");
@@ -209,8 +213,6 @@ public class TopTaskController {
         boolean includeCommentsOnly = Boolean.parseBoolean(request.getParameter("includeCommentsOnly"));
 
         Criteria criteria = Criteria.where("processed").is("true");
-
-        // Apply filters
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         if (startDate != null && endDate != null) {
             LocalDate start = LocalDate.parse(startDate, formatter);
@@ -229,13 +231,30 @@ public class TopTaskController {
         if (department != null && !department.isEmpty()) {
             criteria.and("dept").is(department);
         }
+
+        List<Criteria> combinedOrCriteria = new ArrayList<>();
         if (tasks != null && tasks.length > 0) {
-            criteria.and("task").in((Object[]) tasks);
+            for (String task : tasks) {
+                Criteria taskCriteria = Criteria.where("task").is(task);
+                combinedOrCriteria.add(taskCriteria);
+            }
         }
+
         if (includeCommentsOnly) {
-            List<Criteria> commentsCriteria = createNonEmptyCriteria();
-            criteria.orOperator(commentsCriteria.toArray(new Criteria[0]));
+            List<Criteria> nonEmptyCriteria = createNonEmptyCriteria();
+            if (!combinedOrCriteria.isEmpty()) {
+                List<Criteria> commentCriteriaWithTasks = new ArrayList<>();
+                for (Criteria taskCriteria : combinedOrCriteria) {
+                    commentCriteriaWithTasks.add(new Criteria().andOperator(taskCriteria, new Criteria().orOperator(nonEmptyCriteria.toArray(new Criteria[0]))));
+                }
+                criteria.andOperator(new Criteria().orOperator(commentCriteriaWithTasks.toArray(new Criteria[0])));
+            } else {
+                criteria.andOperator(new Criteria().orOperator(nonEmptyCriteria.toArray(new Criteria[0])));
+            }
+        } else if (!combinedOrCriteria.isEmpty()) {
+            criteria.andOperator(new Criteria().orOperator(combinedOrCriteria.toArray(new Criteria[0])));
         }
+
 
         Query query = new Query(criteria);
         query.fields()
@@ -329,8 +348,12 @@ public class TopTaskController {
 
     @GetMapping("/exportTopTaskCSV")
     public void exportTopTaskCSV(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        String currentDate = LocalDate.now().format(dateFormatter);
+
         response.setContentType("text/csv");
-        response.setHeader("Content-Disposition", "attachment; filename=\"top_task_survey_export.csv\"");
+        response.setHeader("Content-Disposition", "attachment; filename=\"top_task_survey_export_" + currentDate + ".csv\"");
 
         String department = request.getParameter("department");
         String theme = request.getParameter("theme");
@@ -342,8 +365,6 @@ public class TopTaskController {
         boolean includeCommentsOnly = Boolean.parseBoolean(request.getParameter("includeCommentsOnly"));
 
         Criteria criteria = Criteria.where("processed").is("true");
-
-        // Apply filters
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         if (startDate != null && endDate != null) {
             LocalDate start = LocalDate.parse(startDate, formatter);
@@ -362,14 +383,29 @@ public class TopTaskController {
         if (department != null && !department.isEmpty()) {
             criteria.and("dept").is(department);
         }
+
+        List<Criteria> combinedOrCriteria = new ArrayList<>();
         if (tasks != null && tasks.length > 0) {
-            criteria.and("task").in((Object[]) tasks);
-        }
-        if (includeCommentsOnly) {
-            List<Criteria> commentsCriteria = createNonEmptyCriteria();
-            criteria.orOperator(commentsCriteria.toArray(new Criteria[0]));
+            for (String task : tasks) {
+                Criteria taskCriteria = Criteria.where("task").is(task);
+                combinedOrCriteria.add(taskCriteria);
+            }
         }
 
+        if (includeCommentsOnly) {
+            List<Criteria> nonEmptyCriteria = createNonEmptyCriteria();
+            if (!combinedOrCriteria.isEmpty()) {
+                List<Criteria> commentCriteriaWithTasks = new ArrayList<>();
+                for (Criteria taskCriteria : combinedOrCriteria) {
+                    commentCriteriaWithTasks.add(new Criteria().andOperator(taskCriteria, new Criteria().orOperator(nonEmptyCriteria.toArray(new Criteria[0]))));
+                }
+                criteria.andOperator(new Criteria().orOperator(commentCriteriaWithTasks.toArray(new Criteria[0])));
+            } else {
+                criteria.andOperator(new Criteria().orOperator(nonEmptyCriteria.toArray(new Criteria[0])));
+            }
+        } else if (!combinedOrCriteria.isEmpty()) {
+            criteria.andOperator(new Criteria().orOperator(combinedOrCriteria.toArray(new Criteria[0])));
+        }
         Query query = new Query(criteria);
         query.fields()
                 .include("dateTime")
