@@ -83,7 +83,7 @@ public class TopTaskController {
         institutionMappings.put("FIN", Arrays.asList("FIN", "FIN", "FINANCE CANADA", "MINISTÈRE DES FINANCES CANADA", "DEPARTMENT OF FINANCE CANADA", "GOVERNMENT OF CANADA, DEPARTMENT OF FINANCE", "MINISTÈRE DES FINANCES", "FIN / FIN"));
         institutionMappings.put("GAC", Arrays.asList("GAC", "AMC", "GLOBAL AFFAIRS CANADA", "AFFAIRES MONDIALES CANADA", "GAC / AMC"));
         institutionMappings.put("HC", Arrays.asList("HC", "SC", "HEALTH CANADA", "SANTÉ CANADA", "HC / SC"));
-        institutionMappings.put("INFC", Arrays.asList("INFC", "INFC", "INFRASTRUCTURE CANADA", "INFRASTRUCTURE CANADA", "INFC / INFC"));
+        institutionMappings.put("HICC", Arrays.asList("HICC", "LICC", "HOUSING, INFRASTRUCTURE AND COMMUNITIES CANADA", "LOGEMENT, INFRASTRUCTURES ET COLLECTIVITÉS CANADA", "HICC / LICC"));
         institutionMappings.put("IOGC", Arrays.asList("IOGC", "BPGI", "INDIAN OIL AND GAS CANADA", "BUREAU DU PÉTROLE ET DU GAZ DES INDIENS", "IOGC / BPGI"));
         institutionMappings.put("IRCC", Arrays.asList("IRCC", "IRCC", "IMMIGRATION, REFUGEES AND CITIZENSHIP CANADA", "IMMIGRATION, RÉFUGIÉS ET CITOYENNETÉ CANADA", "IRCC / IRCC"));
         institutionMappings.put("ISC", Arrays.asList("ISC", "SAC", "INDIGENOUS SERVICES CANADA", "SERVICES AUX AUTOCHTONES CANADA", "ISC / SAC"));
@@ -500,24 +500,19 @@ public class TopTaskController {
     @ResponseBody
     public List<Map<String, String>> departmentData(HttpServletRequest request) {
         String lang = (String) request.getSession().getAttribute("lang");
-        String departmentsStr = "AAFC / AAC,ATSSC / SCDATA,CATSA / ACSTA,CFIA / ACIA,CIRNAC / RCAANC,NSERC / CRSNG,CBSA / ASFC,CCG / GCC,CGC / CCG,"
-                + "CIHR / IRSC,CIPO / OPIC,CRA / ARC,CRTC / CRTC,CSA / ASC,CSEC / CSTC,CSPS / EFPC,DFO / MPO,DND / MDN,ECCC / ECCC,"
-                + "ESDC / EDSC,FCAC / ACFC,FIN / FIN,GAC / AMC,HC / SC,INFC / INFC,IRCC / IRCC,ISC / SAC,ISED / ISDE,JUS / JUS,"
-                + "LAC / BAC,NFB / ONF,NRC / CNRC,NRCan / RNCan,OSB / BSF,PBC / CLCC,PC / PC,PCH / PCH,PCO / BCP,PHAC / ASPC,"
-                + "PS / SP,PSC / CFP,SSC / PSC,PSPC / SPAC,RCMP / GRC,StatCan / StatCan,TBS / SCT,TC / TC,VAC / ACC,WAGE / FEGC,WD / DEO";
-        String[] departmentData = departmentsStr.split(",");
 
-        return Arrays.stream(departmentData)
-                .map(dept -> {
-                    String[] parts = dept.split(" / ");
-                    String value = dept; // EN / FR format
-                    String display = lang != null && lang.equalsIgnoreCase("fr") ? parts[1] + " / " + parts[0] : dept; // FR / EN format for French, EN / FR for English
+        return institutionMappings.entrySet().stream()
+                .map(entry -> {
+                    String value = entry.getValue().get(entry.getValue().size() - 1); // Get the last element (with slashes)
+                    // Keep same format for French
+                    String display = value;  // Keep same format for English
 
                     Map<String, String> departmentMap = new HashMap<>();
                     departmentMap.put("value", value);
                     departmentMap.put("display", display);
                     return departmentMap;
                 })
+                .sorted((a, b) -> a.get("display").compareToIgnoreCase(b.get("display"))) // Sort alphabetically
                 .collect(Collectors.toList());
     }
 
