@@ -210,12 +210,13 @@ $(document).ready(function () {
     
     fetch(url)
       .then(response => {
-        loadingSpinner.hide();
         if (response.status === 204) {
+          loadingSpinner.hide();
           alert(isFrench ? "Aucune donnée à exporter avec les filtres sélectionnés." : "No data to export with the selected filters.");
           return;
         }
         if (!response.ok) {
+          loadingSpinner.hide();
           return response.text().then(text => {
             throw new Error(text);
           });
@@ -232,6 +233,10 @@ $(document).ready(function () {
           document.body.appendChild(a);
           a.click();
           window.URL.revokeObjectURL(url);
+          // Hide spinner only after initiating the download
+          setTimeout(() => {
+            loadingSpinner.hide();
+          }, 1000);
         }
       })
       .catch(error => {
@@ -241,9 +246,9 @@ $(document).ready(function () {
           "Erreur lors du téléchargement du fichier CSV. Veuillez réessayer." : 
           "Error downloading CSV file. Please try again.");
       });
-  });
+});
 
-  $("#downloadExcel").on("click", function () {
+$("#downloadExcel").on("click", function () {
     loadingSpinner.show();
     var url = new URL(window.location.origin + '/exportTopTaskExcel');
     url.search = getFilterParams().toString();
@@ -268,6 +273,7 @@ $(document).ready(function () {
           const a = document.createElement('a');
           a.style.display = 'none';
           a.href = url;
+          // Get filename from Content-Disposition header or use default
           a.download = "top_task_survey_export.xlsx";
           document.body.appendChild(a);
           a.click();
@@ -281,7 +287,7 @@ $(document).ready(function () {
           "Erreur lors du téléchargement du fichier Excel. Veuillez réessayer." : 
           "Error downloading Excel file. Please try again.");
       });
-  });
+});
 
   tippy("#theme-tool-tip", {
     content: isFrench ? "Thèmes de navigation de Canada.ca " : "Canada.ca navigation themes ",
