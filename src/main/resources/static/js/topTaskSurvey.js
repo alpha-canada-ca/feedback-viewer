@@ -221,22 +221,33 @@ $(document).ready(function () {
             throw new Error(text);
           });
         }
-        return response.blob();
+        // Get filename from Content-Disposition header
+        const disposition = response.headers.get('Content-Disposition');
+        let filename = 'top_task_survey_export.csv';
+        if (disposition && disposition.indexOf('attachment') !== -1) {
+            const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+            const matches = filenameRegex.exec(disposition);
+            if (matches != null && matches[1]) { 
+                filename = matches[1].replace(/['"]/g, '');
+            }
+        }
+        return { blob: response.blob(), filename: filename };
       })
-      .then(blob => {
-        if (blob) {
-          const url = window.URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.style.display = 'none';
-          a.href = url;
-          a.download = "top_task_survey_export.csv";
-          document.body.appendChild(a);
-          a.click();
-          window.URL.revokeObjectURL(url);
-          // Hide spinner only after initiating the download
-          setTimeout(() => {
-            loadingSpinner.hide();
-          }, 1000);
+      .then(result => {
+        if (result && result.blob) {
+          result.blob.then(blob => {
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.style.display = 'none';
+            a.href = url;
+            a.download = result.filename;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            setTimeout(() => {
+              loadingSpinner.hide();
+            }, 1000);
+          });
         }
       })
       .catch(error => {
@@ -255,29 +266,44 @@ $("#downloadExcel").on("click", function () {
     
     fetch(url)
       .then(response => {
-        loadingSpinner.hide();
         if (response.status === 204) {
+          loadingSpinner.hide();
           alert(isFrench ? "Aucune donnée à exporter avec les filtres sélectionnés." : "No data to export with the selected filters.");
           return;
         }
         if (!response.ok) {
+          loadingSpinner.hide();
           return response.text().then(text => {
             throw new Error(text);
           });
         }
-        return response.blob();
+        // Get filename from Content-Disposition header
+        const disposition = response.headers.get('Content-Disposition');
+        let filename = 'top_task_survey_export.xlsx';
+        if (disposition && disposition.indexOf('attachment') !== -1) {
+            const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+            const matches = filenameRegex.exec(disposition);
+            if (matches != null && matches[1]) { 
+                filename = matches[1].replace(/['"]/g, '');
+            }
+        }
+        return { blob: response.blob(), filename: filename };
       })
-      .then(blob => {
-        if (blob) {
-          const url = window.URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.style.display = 'none';
-          a.href = url;
-          // Get filename from Content-Disposition header or use default
-          a.download = "top_task_survey_export.xlsx";
-          document.body.appendChild(a);
-          a.click();
-          window.URL.revokeObjectURL(url);
+      .then(result => {
+        if (result && result.blob) {
+          result.blob.then(blob => {
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.style.display = 'none';
+            a.href = url;
+            a.download = result.filename;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            setTimeout(() => {
+              loadingSpinner.hide();
+            }, 1000);
+          });
         }
       })
       .catch(error => {
@@ -288,7 +314,6 @@ $("#downloadExcel").on("click", function () {
           "Error downloading Excel file. Please try again.");
       });
 });
-
   tippy("#theme-tool-tip", {
     content: isFrench ? "Thèmes de navigation de Canada.ca " : "Canada.ca navigation themes ",
   });
