@@ -109,7 +109,7 @@ public class TopTaskController {
         institutionMappings.put("SSC", Arrays.asList("SSC", "PSC", "SHARED SERVICES CANADA", "SERVICES PARTAGÉS CANADA", "SSC / PSC"));
         institutionMappings.put("SSHRC", Arrays.asList("SSHRC", "CRSH", "SOCIAL SCIENCES AND HUMANITIES RESEARCH COUNCIL", "CONSEIL DE RECHERCHES EN SCIENCES HUMAINES", "SSHRC / CRSH"));
         institutionMappings.put("SST", Arrays.asList("SST", "TSS", "SOCIAL SECURITY TRIBUNAL OF CANADA", "TRIBUNAL DE LA SÉCURITÉ SOCIALE DU CANADA", "SST / TSS"));
-        institutionMappings.put("STATCAN", Arrays.asList("STATCAN", "STATCAN", "STATISTICS CANADA", "STATISTIQUE CANADA", "STATCAN / STATCAN"));
+        institutionMappings.put("STATCAN", Arrays.asList("STATCAN", "STATCAN", "STATISTICS CANADA", "STATISTIQUE CANADA", "StatCan / StatCan", "STATCAN / STATCAN"));
         institutionMappings.put("TBS", Arrays.asList("TBS", "SCT", "TREASURY BOARD OF CANADA SECRETARIAT", "SECRÉTARIAT DU CONSEIL DU TRÉSOR DU CANADA", "TBS / SCT"));
         institutionMappings.put("TC", Arrays.asList("TC", "TC", "TRANSPORT CANADA", "TRANSPORTS CANADA", "TC / TC"));
         institutionMappings.put("VAC", Arrays.asList("VAC", "ACC", "VETERANS AFFAIRS CANADA", "ANCIENS COMBATTANTS CANADA", "VAC / ACC"));
@@ -160,7 +160,8 @@ public class TopTaskController {
             criteria.and("grouping").is(groupFilterVal);
         }
         if (departmentFilterVal != null && !departmentFilterVal.isEmpty()) {
-            criteria.and("dept").is(departmentFilterVal);
+            Criteria departmentCriteria = applyDepartmentFilter(new Criteria(), departmentFilterVal);
+            criteria = new Criteria().andOperator(criteria, departmentCriteria);
         }
 
         List<Criteria> combinedOrCriteria = new ArrayList<>();
