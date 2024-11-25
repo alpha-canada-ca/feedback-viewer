@@ -109,7 +109,7 @@ public class TopTaskController {
         institutionMappings.put("SSC", Arrays.asList("SSC", "PSC", "SHARED SERVICES CANADA", "SERVICES PARTAGÉS CANADA", "SSC / PSC"));
         institutionMappings.put("SSHRC", Arrays.asList("SSHRC", "CRSH", "SOCIAL SCIENCES AND HUMANITIES RESEARCH COUNCIL", "CONSEIL DE RECHERCHES EN SCIENCES HUMAINES", "SSHRC / CRSH"));
         institutionMappings.put("SST", Arrays.asList("SST", "TSS", "SOCIAL SECURITY TRIBUNAL OF CANADA", "TRIBUNAL DE LA SÉCURITÉ SOCIALE DU CANADA", "SST / TSS"));
-        institutionMappings.put("STATCAN", Arrays.asList("STATCAN", "STATCAN", "STATISTICS CANADA", "STATISTIQUE CANADA", "StatCan / StatCan", "STATCAN / STATCAN"));
+        institutionMappings.put("STATCAN", Arrays.asList("STATCAN", "STATISTICS CANADA", "STATISTIQUE CANADA", "StatCan / StatCan", "STATCAN / STATCAN"));
         institutionMappings.put("TBS", Arrays.asList("TBS", "SCT", "TREASURY BOARD OF CANADA SECRETARIAT", "SECRÉTARIAT DU CONSEIL DU TRÉSOR DU CANADA", "TBS / SCT"));
         institutionMappings.put("TC", Arrays.asList("TC", "TC", "TRANSPORT CANADA", "TRANSPORTS CANADA", "TC / TC"));
         institutionMappings.put("VAC", Arrays.asList("VAC", "ACC", "VETERANS AFFAIRS CANADA", "ANCIENS COMBATTANTS CANADA", "VAC / ACC"));
@@ -410,7 +410,11 @@ public class TopTaskController {
             criteria.and("grouping").is(group);
         }
         if (department != null && !department.isEmpty()) {
-            criteria.and("dept").is(department);
+            if (department.equalsIgnoreCase("STATCAN / STATCAN")) {
+                criteria.and("dept").is("StatCan / StatCan");
+            } else {
+                criteria.and("dept").is(department);
+            }
         }
 
         List<Criteria> combinedOrCriteria = new ArrayList<>();
@@ -633,6 +637,13 @@ public class TopTaskController {
     }
 
     private Criteria applyDepartmentFilter(Criteria criteria, String department) {
+        // Special case for StatCan since we know its exact format in DB
+        if (department.equalsIgnoreCase("STATCAN / STATCAN")) {
+            criteria.and("dept").is("StatCan / StatCan");
+            return criteria;
+        }
+
+        // For other departments, use case-insensitive matching
         Set<String> matchingVariations = new HashSet<>();
         for (Map.Entry<String, List<String>> entry : institutionMappings.entrySet()) {
             if (entry.getValue().stream().anyMatch(variation -> variation.equalsIgnoreCase(department))) {
