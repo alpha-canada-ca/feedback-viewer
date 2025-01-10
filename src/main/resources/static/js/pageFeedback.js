@@ -84,6 +84,7 @@ $(document).ready(function () {
 
     return [quarterStart, quarterEnd];
   }
+
   function initializeDateRangePicker() {
     $("#dateRangePicker").daterangepicker(
       {
@@ -99,20 +100,26 @@ $(document).ready(function () {
           applyLabel: isFrench ? "Appliquer" : "Apply",
           customRangeLabel: isFrench ? "Période spécifique" : "Custom Range",
           firstDay: isFrench ? 1 : 0,
+          daysOfWeek: isFrench ? ["Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"] : undefined,
+          monthNames: isFrench ? ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"] : undefined,
         },
-        ranges: getDynamicRanges(),
+        ranges: {
+          [isFrench ? "Toutes les dates" : "All Dates"]: [moment(earliestDate), moment(latestDate)],
+          [isFrench ? "Aujourd'hui" : "Today"]: [moment(), moment()],
+          [isFrench ? "Hier" : "Yesterday"]: [moment().subtract(1, "days"), moment().subtract(1, "days")],
+          [isFrench ? "7 derniers jours" : "Last 7 Days"]: [moment().subtract(6, "days"), moment()],
+          [isFrench ? "30 derniers jours" : "Last 30 Days"]: [moment().subtract(29, "days"), moment()],
+          [isFrench ? "Ce mois-ci" : "This Month"]: [moment().startOf("month"), moment().endOf("month")],
+          [isFrench ? "Le mois dernier" : "Last Month"]: [moment().subtract(1, "month").startOf("month"), moment().subtract(1, "month").endOf("month")],
+          [isFrench ? "Dernier trimestre" : "Last Quarter"]: getLastFiscalQuarter(),
+        },
       },
       function (start, end, label) {
         $("#dateRangePicker").val(start.format("YYYY/MM/DD") + " - " + end.format("YYYY/MM/DD"));
         table.ajax.reload();
       }
     );
-  
-    $("#dateRangePicker").on("show.daterangepicker", function () {
-      let picker = $(this).data("daterangepicker");
-      picker.ranges = getDynamicRanges(); // Update ranges dynamically
-    });
-  
+
     $("#dateRangePicker").on("cancel.daterangepicker", function (ev, picker) {
       picker.setStartDate(moment(earliestDate));
       picker.setEndDate(moment(latestDate));
@@ -120,20 +127,6 @@ $(document).ready(function () {
       table.ajax.reload();
     });
   }
-  
-  function getDynamicRanges() {
-    return {
-      [isFrench ? "Toutes les dates" : "All Dates"]: [moment(earliestDate), moment(latestDate)],
-      [isFrench ? "Aujourd'hui" : "Today"]: [moment(), moment()],
-      [isFrench ? "Hier" : "Yesterday"]: [moment().subtract(1, "days"), moment().subtract(1, "days")],
-      [isFrench ? "7 derniers jours" : "Last 7 Days"]: [moment().subtract(6, "days"), moment()],
-      [isFrench ? "30 derniers jours" : "Last 30 Days"]: [moment().subtract(29, "days"), moment()],
-      [isFrench ? "Ce mois-ci" : "This Month"]: [moment().startOf("month"), moment().endOf("month")],
-      [isFrench ? "Le mois dernier" : "Last Month"]: [moment().subtract(1, "month").startOf("month"), moment().subtract(1, "month").endOf("month")],
-      [isFrench ? "Dernier trimestre" : "Last Quarter"]: getLastFiscalQuarter(),
-    };
-  }
-  
 
   function updateDateRangePicker() {
     var dateRangePicker = $("#dateRangePicker").data("daterangepicker");
