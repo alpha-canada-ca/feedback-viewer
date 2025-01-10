@@ -111,6 +111,8 @@ h1#wb-cont {
 #filterDetails {
   margin: 1em 0;
   width: 100%;
+  grid-column: 2 / span 2 !important;
+  display: block !important;
 }
 
 #filterDetails > p {
