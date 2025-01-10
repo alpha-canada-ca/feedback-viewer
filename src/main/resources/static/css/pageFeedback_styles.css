@@ -108,30 +108,28 @@ h1#wb-cont {
 }
 
 /* Details element styles */
-.feedback-tool > details {
-  margin-top: 1em;
+#filterDetails {
+  margin: 1em 0;
+  width: 100%;
 }
 
-.feedback-tool > details > summary ~ * {
-  display: grid;
-  grid-template-columns: 1fr 3fr;
-}
-
-.feedback-tool > details > p {
+#filterDetails > p {
   display: flex;
   flex-flow: row nowrap;
   align-items: center;
+  padding: 1em;
 }
 
-.feedback-tool > details > p > label {
+#filterDetails > p > label {
   display: flex;
   flex-flow: row nowrap;
   width: 100%;
   align-items: center;
 }
 
-.feedback-tool > details select {
+#filterDetails select {
   margin-left: 1em;
+  width: 70%;
 }
 
 details {
