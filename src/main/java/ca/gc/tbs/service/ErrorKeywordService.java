@@ -10,13 +10,19 @@ import javax.annotation.PostConstruct;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Pattern;
 
 @Service
 public class ErrorKeywordService {
+    private static final Logger LOG = LoggerFactory.getLogger(ErrorKeywordService.class);
+
+    // Pre-compiled patterns for each language
+    private Pattern englishPattern;
+    private Pattern frenchPattern;
+    private Pattern bilingualPattern;
+
+    // Keep original keywords for logging and debugging
     private Set<String> englishKeywords = new HashSet<>();
     private Set<String> frenchKeywords = new HashSet<>();
     private Set<String> bilingualKeywords = new HashSet<>();
@@ -38,30 +44,52 @@ public class ErrorKeywordService {
         try {
             LOG.info("Starting to load error keywords...");
 
+            // Load keywords
             englishKeywords = loadKeywords("static/error_keywords/errors_en.txt");
-            LOG.info("Loaded English keywords. Size: {}, Sample: {}",
-                    englishKeywords.size(),
-                    new ArrayList<>(englishKeywords).subList(0, Math.min(5, englishKeywords.size())));
-
             frenchKeywords = loadKeywords("static/error_keywords/errors_fr.txt");
-            LOG.info("Loaded French keywords. Size: {}, Sample: {}",
-                    frenchKeywords.size(),
-                    new ArrayList<>(frenchKeywords).subList(0, Math.min(5, frenchKeywords.size())));
-
             bilingualKeywords = loadKeywords("static/error_keywords/errors_bilingual.txt");
-            LOG.info("Loaded Bilingual keywords. Size: {}, Sample: {}",
-                    bilingualKeywords.size(),
-                    new ArrayList<>(bilingualKeywords).subList(0, Math.min(5, bilingualKeywords.size())));
 
-            LOG.info("Successfully loaded all keyword sets. Total keywords - English: {}, French: {}, Bilingual: {}",
+            // Pre-compile patterns
+            englishPattern = compilePattern(englishKeywords);
+            frenchPattern = compilePattern(frenchKeywords);
+            bilingualPattern = compilePattern(bilingualKeywords);
+
+            LOG.info(
+                    "Successfully loaded and compiled patterns. Total keywords - English: {}, French: {}, Bilingual: {}",
                     englishKeywords.size(), frenchKeywords.size(), bilingualKeywords.size());
+
+            // Log samples for verification
+            logSampleKeywords("English", englishKeywords);
+            logSampleKeywords("French", frenchKeywords);
+            logSampleKeywords("Bilingual", bilingualKeywords);
+
         } catch (Exception e) {
             LOG.error("Failed to initialize error keywords", e);
             throw e;
         }
     }
 
-    private static final Logger LOG = LoggerFactory.getLogger(ErrorKeywordService.class);
+    private void logSampleKeywords(String type, Set<String> keywords) {
+        LOG.info("Loaded {} keywords. Size: {}, Sample: {}",
+                type,
+                keywords.size(),
+                new ArrayList<>(keywords).subList(0, Math.min(5, keywords.size())));
+    }
+
+    private Pattern compilePattern(Set<String> keywords) {
+        if (keywords.isEmpty()) {
+            return Pattern.compile("$^"); // Pattern that matches nothing
+        }
+
+        // Join all keywords with OR operator and compile once
+        String pattern = keywords.stream()
+                .map(Pattern::quote)
+                .reduce((a, b) -> a + "|" + b)
+                .map(p -> "(?i)(" + p + ")")
+                .orElse("$^");
+
+        return Pattern.compile(pattern);
+    }
 
     private Set<String> loadKeywords(String path) {
         Set<String> keywords = new HashSet<>();
@@ -91,34 +119,20 @@ public class ErrorKeywordService {
         LOG.debug("Checking text for error keywords: {}", text);
         LOG.debug("Language: {}", language);
 
-        // Check bilingual keywords first
-        LOG.debug("Checking {} bilingual keywords", bilingualKeywords.size());
-        for (String keyword : bilingualKeywords) {
-            if (containsWord(text, keyword)) {
-                LOG.debug("Found bilingual keyword match: {}", keyword);
-                return true;
-            }
+        // Check bilingual keywords first using pre-compiled pattern
+        if (bilingualPattern.matcher(text).find()) {
+            LOG.debug("Found bilingual keyword match");
+            return true;
         }
 
-        // Check language-specific keywords
-        Set<String> languageKeywords = "fr".equalsIgnoreCase(language) ? frenchKeywords : englishKeywords;
-        LOG.debug("Checking {} {} keywords", languageKeywords.size(), language);
-
-        for (String keyword : languageKeywords) {
-            if (containsWord(text, keyword)) {
-                LOG.debug("Found {} keyword match: {}", language, keyword);
-                return true;
-            }
+        // Check language-specific keywords using pre-compiled pattern
+        Pattern languagePattern = "fr".equalsIgnoreCase(language) ? frenchPattern : englishPattern;
+        if (languagePattern.matcher(text).find()) {
+            LOG.debug("Found {} keyword match", language);
+            return true;
         }
 
         LOG.debug("No error keywords found in text");
         return false;
-    }
-
-    private boolean containsWord(String text, String keyword) {
-        // Use a more flexible pattern that doesn't require strict word boundaries
-        // This allows matching phrases within larger text
-        String pattern = "(?i)" + Pattern.quote(keyword);
-        return Pattern.compile(pattern).matcher(text).find();
     }
 }
