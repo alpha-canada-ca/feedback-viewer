@@ -119,7 +119,17 @@ h1#wb-cont {
   display: flex;
   flex-flow: row nowrap;
   align-items: center;
-  padding: 1em;
+  padding: 0.5em 1em;
+  gap: 1em;
+  margin: 0;
+}
+
+#filterDetails > p:first-of-type {
+  padding-top: 1em;
+}
+
+#filterDetails > p:last-of-type {
+  padding-bottom: 1em;
 }
 
 /* Error comments checkbox styling */
@@ -141,13 +151,16 @@ h1#wb-cont {
 #filterDetails > p > label {
   display: flex;
   flex-flow: row nowrap;
-  width: 100%;
+  flex: 1;
   align-items: center;
+  gap: 0.5em;
+  margin: 0;
 }
 
 #filterDetails select {
-  margin-left: 1em;
-  width: 70%;
+  flex: 1;
+  min-width: 200px;
+  max-width: 300px;
 }
 
 details {
@@ -159,12 +172,7 @@ details[open] {
   border-radius: 4px;
 }
 
-details:not([open]) {
-  visibility: hidden;
-}
-
-details:not([open]) > *,
-details:not([open]) > details {
+details:not([open]) > *:not(summary) {
   display: none;
 }
 
@@ -254,7 +262,10 @@ table.dataTable.rowborder tbody th {
 
 /* Utility classes */
 .spacer {
-  margin: 0 2em;
+  padding: 0 1.5em;
+  font-weight: bold;
+  color: #666;
+  white-space: nowrap;
 }
 
 .reset-filters {
