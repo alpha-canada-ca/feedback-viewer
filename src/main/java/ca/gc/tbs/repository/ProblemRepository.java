@@ -22,12 +22,15 @@ public interface ProblemRepository extends DataTablesRepository<Problem, String>
         default DataTablesOutput<Problem> findAllWithErrorKeywords(@Valid DataTablesInput input, Set<String> keywords,
                         Criteria baseCriteria) {
                 if (!keywords.isEmpty()) {
-                        List<Criteria> keywordCriteria = new ArrayList<>();
-                        for (String keyword : keywords) {
-                                keywordCriteria.add(
-                                                Criteria.where("problemDetails").regex(Pattern.quote(keyword), "i"));
-                        }
-                        baseCriteria.orOperator(keywordCriteria.toArray(new Criteria[0]));
+                        // Combine all keywords into a single regex pattern
+                        String combinedPattern = keywords.stream()
+                                        .map(Pattern::quote)
+                                        .reduce((a, b) -> a + "|" + b)
+                                        .map(p -> "(" + p + ")")
+                                        .orElse("");
+
+                        // Add a single regex criteria for all keywords
+                        baseCriteria.and("problemDetails").regex(combinedPattern, "i");
                 }
                 return findAll(input, baseCriteria);
         }
