@@ -1,0 +1,67 @@
+bloqué
+boucle
+bouton d'envoi
+cassé
+chargement trop long
+décliné
+défilement
+échec de la connexion sécurisée
+en construction
+en maintenance
+en panne
+erreur
+être sauvegardé
+fonctionne pas
+gelé
+grisé
+impasse
+indisponible
+le bouton est désactivé
+m'a bloqué
+marche pas
+me laisser soumettre
+message d'erreur
+n'accepte pas
+n'acceptera pas
+n'achèvera pas
+navigateur
+ne chargera pas
+ne me laisse pas faire
+ne pas me laisser
+ne pas sauver
+ne peut être soumis
+ne peut pas avancer
+ne peut pas avancer
+ne peut pas envoyer
+ne peut pas soumettre
+ne peut pas télécharger
+ne se charge pas
+ne se connecte pas
+ne se soumet pas
+ne travaillera pas
+page non trouvée
+pas compatible
+pas de sauvegarde
+pas de succès
+pas de travail
+pas disponible
+pas en mesure d'avancer
+pas fonctionné
+pas le droit
+peux pas voir
+pourquoi je ne peux pas
+problème de site web
+quelque chose n'allait pas
+redirigé
+rediriger
+réinitialiser
+rien ne s'est passé
+sans réponse
+serveur
+Service non disponible
+télécharger
+temps d'attente
+temps de chargement
+temps mort
+votre système
+vous n'acceptez pas

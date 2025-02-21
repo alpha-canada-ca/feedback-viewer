@@ -49,6 +49,7 @@ $(document).ready(function () {
     // Reset select elements to their default option (usually the first one)
     $("#department").val("");
     $("#language").val("");
+    $("#errorComments").prop("checked", false);
     $("#theme").val("");
     $("#section").val("");
     // Clear text input fields
@@ -163,6 +164,10 @@ $(document).ready(function () {
         d.section = $("#section").val();
         d.theme = $("#theme").val();
         d.url = $("#url").val();
+        if ($("#errorComments").prop("checked")) {
+          d.error_keyword = "true";  // Only send if checked
+      }
+      
         var dateRangePickerValue = $("#dateRangePicker").val();
         if (dateRangePickerValue) {
           var dateRange = $("#dateRangePicker").data("daterangepicker");
@@ -323,6 +328,17 @@ $(document).ready(function () {
     table.ajax.reload();
   });
 
+  // Handle error comments checkbox
+  $("#errorComments").on("change", function () {
+    const $label = $(this).closest('label');
+    if ($(this).is(':checked')) {
+      $label.addClass('active');
+    } else {
+      $label.removeClass('active');
+    }
+    table.ajax.reload();
+  });
+
   $("#comments, #url").on(
     "keyup",
     debounce(function (e) {
@@ -335,6 +351,7 @@ $(document).ready(function () {
     var params = {
       titles: $("#pages").val(),
       language: $("#language").val(),
+      error_keyword: $("#errorComments").prop("checked"),
       department: $("#department").val(),
       comments: $("#comments").val(),
       section: $("#section").val(),
