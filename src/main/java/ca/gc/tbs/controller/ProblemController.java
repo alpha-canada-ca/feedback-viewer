@@ -379,6 +379,7 @@ public class ProblemController {
         String url = request.getParameter("url");
         String startDate = request.getParameter("startDate");
         String endDate = request.getParameter("endDate");
+        Boolean error_keyword = "true".equals(request.getParameter("error_keyword"));
 
         Criteria criteria = Criteria.where("processed").is("true");
 
@@ -423,6 +424,23 @@ public class ProblemController {
             String safeComments = escapeSpecialRegexCharacters(comments);
             criteria.and("problemDetails").regex(safeComments, "i");
         }
+
+        // Apply error keyword filter
+        if (error_keyword) {
+            // Build regex pattern from all keywords
+            Set<String> keywordsToCheck = new HashSet<>();
+            keywordsToCheck.addAll(errorKeywordService.getEnglishKeywords());
+            keywordsToCheck.addAll(errorKeywordService.getFrenchKeywords());
+            keywordsToCheck.addAll(errorKeywordService.getBilingualKeywords());
+
+            if (!keywordsToCheck.isEmpty()) {
+                LOG.debug("Checking {} error keywords for Excel export", keywordsToCheck.size());
+                criteria.and("problemDetails").regex(
+                        String.join("|", keywordsToCheck),
+                        "i");
+            }
+        }
+
         Query query = new Query(criteria);
         query.fields()
                 .include("problemDate")
@@ -439,20 +457,20 @@ public class ProblemController {
 
         // Use SXSSFWorkbook for better performance with large data
         try (SXSSFWorkbook workbook = new SXSSFWorkbook(100); // The argument (100) flushes rows after 100 are written
-             ServletOutputStream outputStream = response.getOutputStream()) {
+                ServletOutputStream outputStream = response.getOutputStream()) {
 
             Sheet sheet = workbook.createSheet("Feedback Data");
 
             // Create header row
-            String[] columns = {"Problem Date", "Time Stamp", "Problem Details", "Language", "Title", "URL",
-                    "Institution", "Section", "Theme", "Device Type", "Browser"};
+            String[] columns = { "Problem Date", "Time Stamp", "Problem Details", "Language", "Title", "URL",
+                    "Institution", "Section", "Theme", "Device Type", "Browser" };
             Row headerRow = sheet.createRow(0);
             for (int i = 0; i < columns.length; i++) {
                 headerRow.createCell(i).setCellValue(columns[i]);
             }
 
             // Stream and write data in batches
-            final int[] rowNum = {1};
+            final int[] rowNum = { 1 };
             mongoTemplate.stream(query, Problem.class).forEachRemaining(problem -> {
                 Row row = sheet.createRow(rowNum[0]++);
                 row.createCell(0).setCellValue(problem.getProblemDate());
@@ -499,6 +517,7 @@ public class ProblemController {
         String url = request.getParameter("url");
         String startDate = request.getParameter("startDate");
         String endDate = request.getParameter("endDate");
+        Boolean error_keyword = "true".equals(request.getParameter("error_keyword"));
 
         Criteria criteria = Criteria.where("processed").is("true");
 
@@ -543,6 +562,22 @@ public class ProblemController {
         if (comments != null && !comments.isEmpty()) {
             String safeComments = escapeSpecialRegexCharacters(comments);
             criteria.and("problemDetails").regex(safeComments, "i");
+        }
+
+        // Apply error keyword filter
+        if (error_keyword) {
+            // Build regex pattern from all keywords
+            Set<String> keywordsToCheck = new HashSet<>();
+            keywordsToCheck.addAll(errorKeywordService.getEnglishKeywords());
+            keywordsToCheck.addAll(errorKeywordService.getFrenchKeywords());
+            keywordsToCheck.addAll(errorKeywordService.getBilingualKeywords());
+
+            if (!keywordsToCheck.isEmpty()) {
+                LOG.debug("Checking {} error keywords for CSV export", keywordsToCheck.size());
+                criteria.and("problemDetails").regex(
+                        String.join("|", keywordsToCheck),
+                        "i");
+            }
         }
 
         Query query = new Query(criteria);
