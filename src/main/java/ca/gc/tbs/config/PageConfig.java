@@ -17,36 +17,40 @@ import org.springframework.web.servlet.resource.PathResourceResolver;
 @Configuration
 public class PageConfig implements WebMvcConfigurer {
 
-	@Value("${pagesuccess.pythonScriptPath}")
-	private String pythonScriptPath;
+  @Value("${pagesuccess.pythonScriptPath}")
+  private String pythonScriptPath;
 
-	@Bean
-	public BCryptPasswordEncoder passwordEncoder() {
-		BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-		return bCryptPasswordEncoder;
-	}
+  @Bean
+  public BCryptPasswordEncoder passwordEncoder() {
+    BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+    return bCryptPasswordEncoder;
+  }
 
-	@Override
-	public void addViewControllers(ViewControllerRegistry registry) {
-		registry.addViewController("/home").setViewName("home");
-		registry.addViewController("/").setViewName("home");
-		registry.addViewController("/dashboard").setViewName("dashboard");
-		registry.addViewController("/login").setViewName("login");
-	}
+  @Override
+  public void addViewControllers(ViewControllerRegistry registry) {
+    registry.addViewController("/home").setViewName("home");
+    registry.addViewController("/").setViewName("home");
+    registry.addViewController("/dashboard").setViewName("dashboard");
+    registry.addViewController("/login").setViewName("login");
+  }
 
-	@Override
-	public void addResourceHandlers(ResourceHandlerRegistry registry) {
-		registry.addResourceHandler("/static/**") // « /static/css/myStatic.css
-				.addResourceLocations("classpath:/static/") // Default Static Loaction
-				.setCachePeriod(3600).resourceChain(true) // 4.1
-				.addResolver(new PathResourceResolver()); // 4.1
+  @Override
+  public void addResourceHandlers(ResourceHandlerRegistry registry) {
+    registry
+        .addResourceHandler("/static/**") // « /static/css/myStatic.css
+        .addResourceLocations("classpath:/static/") // Default Static Loaction
+        .setCachePeriod(3600)
+        .resourceChain(true) // 4.1
+        .addResolver(new PathResourceResolver()); // 4.1
 
-		// src/main/resources/templates/static/...
-		registry.addResourceHandler("/templates/**") // « /templates/style.css
-				.addResourceLocations("classpath:/templates/static/");
+    // src/main/resources/templates/static/...
+    registry
+        .addResourceHandler("/templates/**") // « /templates/style.css
+        .addResourceLocations("classpath:/templates/static/");
 
-		// File located on disk
-		registry.addResourceHandler("/python/**").addResourceLocations("file://" + this.pythonScriptPath);
-	}
-
+    // File located on disk
+    registry
+        .addResourceHandler("/python/**")
+        .addResourceLocations("file://" + this.pythonScriptPath);
+  }
 }

@@ -9,7 +9,6 @@ import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
@@ -22,36 +21,35 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Component
 public class CustomizeAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
-	private RequestCache requestCache = new HttpSessionRequestCache();
+  private RequestCache requestCache = new HttpSessionRequestCache();
 
-	@Override
-	@GetMapping(value = "/login")
-	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
-			Authentication authentication) throws IOException, ServletException {
+  @Override
+  @GetMapping(value = "/login")
+  public void onAuthenticationSuccess(
+      HttpServletRequest request, HttpServletResponse response, Authentication authentication)
+      throws IOException, ServletException {
 
-		SavedRequest savedRequest = requestCache.getRequest(request, response);
+    SavedRequest savedRequest = requestCache.getRequest(request, response);
 
-		if (savedRequest == null || savedRequest.getRedirectUrl().contains("signin")) {
-			for (GrantedAuthority auth : authentication.getAuthorities()) {
-				if ("ADMIN".equals(auth.getAuthority())) {
-					response.sendRedirect("/u/index");
-				} else {
-					response.sendRedirect("/pageFeedback");
+    if (savedRequest == null || savedRequest.getRedirectUrl().contains("signin")) {
+      for (GrantedAuthority auth : authentication.getAuthorities()) {
+        if ("ADMIN".equals(auth.getAuthority())) {
+          response.sendRedirect("/u/index");
+        } else {
+          response.sendRedirect("/pageFeedback");
+        }
+      }
+      return;
+    }
+    clearAuthenticationAttributes(request);
 
-				}
-			}
-			return;
-		}
-		clearAuthenticationAttributes(request);
+    // Use the DefaultSavedRequest URL
+    String targetUrl = savedRequest.getRedirectUrl();
+    logger.debug("Redirecting to DefaultSavedRequest Url: " + targetUrl);
+    getRedirectStrategy().sendRedirect(request, response, targetUrl);
+  }
 
-		// Use the DefaultSavedRequest URL
-		String targetUrl = savedRequest.getRedirectUrl();
-		logger.debug("Redirecting to DefaultSavedRequest Url: " + targetUrl);
-		getRedirectStrategy().sendRedirect(request, response, targetUrl);
-	}
-
-	public void setRequestCache(RequestCache requestCache) {
-		this.requestCache = requestCache;
-	}
-
+  public void setRequestCache(RequestCache requestCache) {
+    this.requestCache = requestCache;
+  }
 }
