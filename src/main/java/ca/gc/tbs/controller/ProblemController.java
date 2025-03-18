@@ -737,7 +737,7 @@ public class ProblemController {
       // Create header row
       String[] columns = {
         "Problem Date",
-        "Time Stamp",
+        "Time Stamp (UTC)",
         "Problem Details",
         "Language",
         "Title",
@@ -888,7 +888,7 @@ public class ProblemController {
     try {
       // Write CSV header
       writer.write(
-          "Problem Date,Time Stamp,Problem"
+          "Problem Date,Time Stamp (UTC),Problem"
               + " Details,Language,Title,URL,Institution,Section,Theme,Device Type,Browser\n");
 
       // Stream and write data

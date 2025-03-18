@@ -574,7 +574,7 @@ public class TopTaskController {
       // Create header row
       String[] columns = {
         "Date Time",
-        "Time Stamp",
+        "Time Stamp (UTC)",
         "Survey Referrer",
         "Language",
         "Device",
@@ -703,7 +703,8 @@ public class TopTaskController {
       try (Writer writer = response.getWriter()) {
         // Write CSV header
         writer.write(
-            "Date Time,Time Stamp,Survey Referrer,Language,Device,Screener,Department,Theme,Theme"
+            "Date Time,Time Stamp (UTC),Survey"
+                + " Referrer,Language,Device,Screener,Department,Theme,Theme"
                 + " Other,Grouping,Task,Task Other,Task Satisfaction,Task Ease,Task Completion,Task"
                 + " Improve,Task Improve Comment,Task Why Not,Task Why Not Comment,Task"
                 + " Sampling,Sampling Invitation,Sampling GC,Sampling Canada,Sampling"
