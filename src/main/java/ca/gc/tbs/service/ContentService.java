@@ -35,9 +35,14 @@ public class ContentService {
     nlpPipeline = new StanfordCoreNLP(props);
   }
 
+  // Set of allowed words that should never be redacted, loaded from BadWords
+  private Set<String> allowedWords;
+
   public ContentService() {
     System.out.println("attempting to load bad words config...");
     BadWords.loadConfigs();
+    // Get the allowed words from BadWords class
+    this.allowedWords = BadWords.getAllowedWords();
   }
 
   public String cleanContent(String content) {
@@ -134,8 +139,22 @@ public class ContentService {
           String mentionText = em.text().toLowerCase();
           String pos = em.tokens().get(0).tag();
 
-          // Skip if it's a common pronoun or if its POS tag is a pronoun (PRP or PRP$)
-          if (!commonPronouns.contains(mentionText) && !pos.startsWith("PRP")) {
+          // Skip if it's a common pronoun, if its POS tag is a pronoun (PRP or PRP$),
+          // or if it's in our allowed words list
+          boolean isAllowed = allowedWords.contains(mentionText);
+          
+          // Also check if any word in the mention is in the allowed list
+          // This handles multi-word names where one part might be allowed
+          if (!isAllowed && mentionText.contains(" ")) {
+            for (String word : mentionText.split("\\s+")) {
+              if (allowedWords.contains(word)) {
+                isAllowed = true;
+                break;
+              }
+            }
+          }
+          
+          if (!commonPronouns.contains(mentionText) && !pos.startsWith("PRP") && !isAllowed) {
             int start = em.charOffsets().first();
             int end = em.charOffsets().second();
             char[] replacement = new char[end - start];
