@@ -491,7 +491,8 @@ public class TopTaskController {
       criteria.and("language").is(language);
     }
     if (themeFilterVal != null && !themeFilterVal.isEmpty()) {
-      criteria.and("theme").regex(themeFilterVal, "i");
+      // Using exact match instead of regex to handle special characters in theme values
+      criteria.and("theme").is(themeFilterVal);
     }
     if (groupFilterVal != null && !groupFilterVal.isEmpty()) {
       criteria.and("grouping").is(groupFilterVal);
@@ -786,7 +787,8 @@ public class TopTaskController {
       criteria.and("language").is(language);
     }
     if (theme != null && !theme.isEmpty()) {
-      criteria.and("theme").regex(theme, "i");
+      // Using exact match instead of regex to handle special characters in theme values
+      criteria.and("theme").is(theme);
     }
     if (group != null && !group.isEmpty()) {
       criteria.and("grouping").is(group);
