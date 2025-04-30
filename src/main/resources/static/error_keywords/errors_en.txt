@@ -97,3 +97,10 @@ wouldn't complete
 wouldn't load
 you don't accept
 your system
+can't sign in
+cannot log in
+down again
+not available
+not upload
+service unavailable
+website is down
