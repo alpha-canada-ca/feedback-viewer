@@ -42,8 +42,13 @@ public class DashboardController {
   @Autowired private UserService userService;
 
   private static final Map<String, List<String>> institutionMappings = new HashMap<>();
+  private static final Map<String, List<String>> sectionMappings = new HashMap<>();
 
   static {
+    // Initialize section mappings
+    sectionMappings.put("disability", Arrays.asList("disability", "disability benefits"));
+    
+    // Initialize institution mappings
     institutionMappings.put(
         "AAFC",
         Arrays.asList(
@@ -674,12 +679,12 @@ public class DashboardController {
   }
 
   private List<Problem> applySectionFilter(List<Problem> problems, String section) {
-    if (section != null && !section.isEmpty()) {
-      return problems.stream()
-          .filter(problem -> problem.getSection().equals(section))
-          .collect(Collectors.toList());
-    }
-    return problems;
+      if (section != null && !section.isEmpty()) {
+          return problems.stream()
+              .filter(problem -> sectionMappings.getOrDefault(section.toLowerCase(), Collections.singletonList(section)).contains(problem.getSection()))
+              .collect(Collectors.toList());
+      }
+      return problems;
   }
 
   // theme

@@ -54,8 +54,13 @@ public class ProblemController {
   @Autowired private UserService userService;
 
   private static final Map<String, List<String>> institutionMappings = new HashMap<>();
+  private static final Map<String, List<String>> sectionMappings = new HashMap<>();
 
   static {
+    // Initialize section mappings
+    sectionMappings.put("disability", Arrays.asList("disability", "disability benefits"));
+    
+    // Initialize institution mappings
     institutionMappings.put(
         "AAFC",
         Arrays.asList(
@@ -664,7 +669,7 @@ public class ProblemController {
       criteria.and("theme").is(theme);
     }
     if (section != null && !section.isEmpty()) {
-      criteria.and("section").is(section);
+      criteria.and("section").in(sectionMappings.getOrDefault(section.toLowerCase(), Collections.singletonList(section)));
     }
     if (language != null && !language.isEmpty()) {
       criteria
@@ -820,7 +825,7 @@ public class ProblemController {
       criteria.and("theme").is(theme);
     }
     if (section != null && !section.isEmpty()) {
-      criteria.and("section").is(section);
+      criteria.and("section").in(sectionMappings.getOrDefault(section.toLowerCase(), Collections.singletonList(section)));
     }
     if (language != null && !language.isEmpty()) {
       criteria
@@ -987,7 +992,7 @@ public class ProblemController {
       criteria.and("theme").is(theme);
     }
     if (section != null && !section.isEmpty()) {
-      criteria.and("section").is(section);
+        criteria.and("section").in(sectionMappings.getOrDefault(section.toLowerCase(), Collections.singletonList(section)));
     }
     // Language filtering (existing logic)
     if (language != null && !language.isEmpty()) {
