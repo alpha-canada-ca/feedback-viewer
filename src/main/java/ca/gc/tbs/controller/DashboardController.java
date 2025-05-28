@@ -488,10 +488,10 @@ public class DashboardController {
   @Scheduled(cron = "0 1 0 * * *")
   @EventListener(ApplicationReadyEvent.class)
   public void init() {
-    System.out.println("Fetching all data from the DB via dashboard controller");
+    LOGGER.info("DashboardController: Starting initial data fetch and cache population.");
     problemCacheService.getProcessedProblems();
     problemDateService.getProblemDates();
-    System.out.println("done fetching data and dates.");
+    LOGGER.info("DashboardController: Initial data fetch and cache population complete.");
   }
 
   @GetMapping(value = "/dashboardData")

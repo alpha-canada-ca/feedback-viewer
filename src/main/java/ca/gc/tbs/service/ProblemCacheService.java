@@ -26,6 +26,13 @@ public class ProblemCacheService {
 
   @Cacheable("distinctUrls")
   public List<Problem> getProcessedProblems() {
+    LOGGER.info("Fetching all processed problems from repository (cache miss or initial load).");
     return problemRepository.findAllProcessedProblems();
+  }
+
+  @Cacheable("distinctUrls")
+  public List<String> getDistinctProcessedUrlsForCache() {
+    LOGGER.info("Fetching distinct processed URLs from repository (cache miss or initial load).");
+    return problemRepository.findDistinctProcessedUrls();
   }
 }

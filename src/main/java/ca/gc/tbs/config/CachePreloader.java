@@ -23,9 +23,13 @@ public class CachePreloader {
 
     @EventListener(ApplicationReadyEvent.class)
     public void preloadCaches() {
-        LOGGER.info("Preloading caches...");
-        problemCacheService.getProcessedProblems(); // This will trigger the distinctUrls cache population
-        problemDateService.getProblemDates(); // This will trigger the problemDates cache population
-        LOGGER.info("Caches preloaded successfully.");
+        LOGGER.info("Starting cache preloading process...");
+        LOGGER.info("Preloading distinct URLs cache...");
+        problemCacheService.getDistinctProcessedUrlsForCache();
+        LOGGER.info("Distinct URLs cache preloaded.");
+        LOGGER.info("Preloading problem dates cache...");
+        problemDateService.getProblemDates();
+        LOGGER.info("Problem dates cache preloaded.");
+        LOGGER.info("All caches preloaded successfully.");
     }
 }

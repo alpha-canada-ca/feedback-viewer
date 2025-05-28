@@ -124,4 +124,11 @@ public interface ProblemRepository extends DataTablesRepository<Problem, String>
         "{ '$sort': { '_id': 1 } }"
       })
   List<String> findPageTitlesBySearch(String search);
+  @Aggregation(
+      pipeline = {
+        "{ '$match': { 'processed': 'true' } }",
+        "{ '$group': { '_id': '$url' } }",
+        "{ '$project': { '_id': 0, 'url': '$_id' } }"
+      })
+  List<String> findDistinctProcessedUrls();
 }
