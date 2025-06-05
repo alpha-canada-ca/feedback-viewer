@@ -47,6 +47,7 @@ public class DashboardController {
   static {
     // Initialize section mappings
     sectionMappings.put("disability", Arrays.asList("disability", "disability benefits"));
+    sectionMappings.put("news", Arrays.asList("news"));
     
     // Initialize institution mappings
     institutionMappings.put(
