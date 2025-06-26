@@ -679,9 +679,7 @@ public class ProblemController {
             criteria.and("section").in(sectionMappings.getOrDefault(section.toLowerCase(), Collections.singletonList(section)));
         }
         if (language != null && !language.isEmpty()) {
-            criteria
-                    .and("language")
-                    .regex(Pattern.compile(Pattern.quote(language), Pattern.CASE_INSENSITIVE));
+            criteria.and("language").is(language);
         }
         if (titles != null && titles.length > 0) {
             List<Criteria> titleCriterias = new ArrayList<>();
@@ -1003,9 +1001,7 @@ public class ProblemController {
         }
         // Language filtering (existing logic)
         if (language != null && !language.isEmpty()) {
-            criteria
-                    .and("language")
-                    .regex(Pattern.compile(Pattern.quote(language), Pattern.CASE_INSENSITIVE));
+            criteria.and("language").is(language);
         }
 
         if (titles != null && titles.length > 0) {

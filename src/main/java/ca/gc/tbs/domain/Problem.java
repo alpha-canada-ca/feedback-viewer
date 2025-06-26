@@ -3,6 +3,7 @@ package ca.gc.tbs.domain;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 
 public class Problem {
 
@@ -10,6 +11,7 @@ public class Problem {
   private String url;
   private int urlEntries;
   private String problemDetails;
+  @Indexed
   private String language;
   private String problemDate;
   private String timeStamp;
