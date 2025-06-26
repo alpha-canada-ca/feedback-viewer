@@ -8,30 +8,30 @@ import org.springframework.data.mongodb.core.index.Indexed;
 public class Problem {
 
   @Id private String id;
-  private String url;
+  @Indexed private String url;
   private int urlEntries;
   private String problemDetails;
   @Indexed
   private String language;
-  private String problemDate;
-  private String timeStamp;
-  private String title;
+  @Indexed private String problemDate;
+  @Indexed private String timeStamp;
+  @Indexed private String title;
   private String dataOrigin;
   private List<String> tags;
   // Pipeline fields
-  private String processed;
-  private String airTableSync;
-  private String personalInfoProcessed;
-  private String autoTagProcessed;
-  private String processedDate; // New field for processed date
+  @Indexed private String processed;
+  @Indexed private String airTableSync;
+  @Indexed private String personalInfoProcessed;
+  @Indexed private String autoTagProcessed;
+  @Indexed private String processedDate; // New field for processed date
 
-  private String institution;
-  private String theme;
-  private String section;
+  @Indexed private String institution;
+  @Indexed private String theme;
+  @Indexed private String section;
   private String oppositeLang;
   private String contact;
-  private String deviceType;
-  private String browser;
+  @Indexed private String deviceType;
+  @Indexed private String browser;
 
   public Problem() {
     this.tags = new ArrayList<>();
