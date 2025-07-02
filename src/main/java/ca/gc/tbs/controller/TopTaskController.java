@@ -478,7 +478,8 @@ public class TopTaskController {
     String endDateVal = request.getParameter("endDate");
     String groupFilterVal = request.getParameter("group");
     String language = request.getParameter("language");
-    boolean includeCommentsOnly = request.getParameter("includeCommentsOnly").equals("true");
+    String includeCommentsOnlyParam = request.getParameter("includeCommentsOnly");
+    boolean includeCommentsOnly = includeCommentsOnlyParam != null && includeCommentsOnlyParam.equals("true");
 
     Criteria criteria = Criteria.where("processed").is("true");
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
