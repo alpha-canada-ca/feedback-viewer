@@ -491,6 +491,14 @@ public class DashboardController {
         return dailyCommentsList;
     }
 
+    @Scheduled(cron = "0 1 0 * * *")
+    @EventListener(ApplicationReadyEvent.class)
+    public void init() {
+        LOGGER.info("DashboardController: Starting initial data fetch and cache population.");
+        problemCacheService.getProcessedProblems();
+        problemDateService.getProblemDates();
+        LOGGER.info("DashboardController: Initial data fetch and cache population complete.");
+    }
 
     @GetMapping(value = "/dashboardData")
     @ResponseBody
