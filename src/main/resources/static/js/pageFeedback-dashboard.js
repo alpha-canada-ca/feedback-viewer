@@ -5,6 +5,12 @@ $(document).ready(function () {
     return searchParams.get(param);
   }
 
+  // Utility function to format numbers with comma separators
+  function formatNumberWithCommas(number) {
+    if (number == null || number === '') return number;
+    return parseInt(number).toLocaleString();
+  }
+
   // Check if the 'lang' query parameter is set to 'fr'
   var isFrench = langSession === "fr";
   var now = new Date();
@@ -183,7 +189,16 @@ $(document).ready(function () {
           return '<a href="' + data + '" target="_blank">' + data + "</a>";
         },
       },
-      { data: "urlEntries" },
+      { 
+        data: "urlEntries",
+        render: function (data, type, row) {
+          // Format numbers with comma separators for display
+          if (type === 'display' || type === 'type') {
+            return formatNumberWithCommas(data);
+          }
+          return data;
+        }
+      },
       { data: "language", visible: false }, // Language (hidden in table, but in CSV)
       { data: "section", visible: false }, // Section (hidden in table, but in CSV)
       { data: "theme", visible: false }, // Theme (hidden in table, but in CSV)
@@ -193,8 +208,8 @@ $(document).ready(function () {
     fetch("/pageFeedback/totalCommentsCount")
       .then((response) => response.text())
       .then((totalCommentsCount) => {
-        // Update the total comments count in the <span class="number"> element
-        $(".stat .totalCommentCount").text(totalCommentsCount);
+        // Update the total comments count in the <span class="number"> element with comma formatting
+        $(".stat .totalCommentCount").text(formatNumberWithCommas(totalCommentsCount));
       })
       .catch((err) => {
         console.warn("Something went wrong.", err);
@@ -205,8 +220,8 @@ $(document).ready(function () {
     fetch("/pageFeedback/totalPagesCount")
       .then((response) => response.text())
       .then((totalPagesCount) => {
-        // Update the total comments count in the <span class="number"> element
-        $(".stat .totalPagesCount").text(totalPagesCount);
+        // Update the total pages count in the <span class="number"> element with comma formatting
+        $(".stat .totalPagesCount").text(formatNumberWithCommas(totalPagesCount));
       })
       .catch((err) => {
         console.warn("Something went wrong.", err);
@@ -342,6 +357,9 @@ $(document).ready(function () {
                       style: {
                           fontSize: "16px", // Adjust Y axis labels font size here
                       },
+                      formatter: function() {
+                          return formatNumberWithCommas(this.value);
+                      }
                   },
               },
               legend: {
@@ -357,6 +375,11 @@ $(document).ready(function () {
                   style: {
                       fontSize: "16px", // Adjust font size for text in the tooltip on hover
                   },
+                  formatter: function() {
+                      return '<b>' + this.x + '</b><br/>' +
+                             this.series.name + ': <b>' + formatNumberWithCommas(this.y) + '</b>' +
+                             (isFrench ? " commentaires" : " comments");
+                  }
               },
               plotOptions: {
                   column: {
