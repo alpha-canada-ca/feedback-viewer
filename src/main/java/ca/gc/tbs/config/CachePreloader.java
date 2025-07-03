@@ -27,6 +27,9 @@ public class CachePreloader {
         LOGGER.info("Preloading distinct URLs cache...");
         problemCacheService.getDistinctProcessedUrlsForCache();
         LOGGER.info("Distinct URLs cache preloaded.");
+        LOGGER.info("Preloading processed problems cache...");
+        problemCacheService.getProcessedProblems();
+        LOGGER.info("Processed problems cache preloaded.");
         LOGGER.info("Preloading problem dates cache...");
         problemDateService.getProblemDates();
         LOGGER.info("Problem dates cache preloaded.");

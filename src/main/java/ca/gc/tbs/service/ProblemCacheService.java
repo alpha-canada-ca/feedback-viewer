@@ -24,7 +24,7 @@ public class ProblemCacheService {
     System.out.println("EVICTING CACHE");
   }
 
-  @Cacheable("distinctUrls")
+  @Cacheable("processedProblems")
   public List<Problem> getProcessedProblems() {
     LOGGER.info("Fetching all processed problems from repository (cache miss or initial load).");
     return problemRepository.findAllProcessedProblems();
