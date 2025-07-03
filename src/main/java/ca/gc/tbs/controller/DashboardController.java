@@ -722,9 +722,13 @@ public class DashboardController {
             String currentInstitution = problem.getInstitution();
             for (Map.Entry<String, List<String>> entry : institutionMappings.entrySet()) {
                 if (entry.getValue().contains(currentInstitution)) {
-                    // Assuming the translated institution name is at index 1 for French and index 0
-                    // for other languages
-                    problem.setInstitution(entry.getValue().get(lang.equalsIgnoreCase("fr") ? 1 : 0));
+                    // Safely get the institution name based on language
+                    List<String> variations = entry.getValue();
+                    if (lang.equalsIgnoreCase("fr") && variations.size() > 1) {
+                        problem.setInstitution(variations.get(1));
+                    } else if (variations.size() > 0) {
+                        problem.setInstitution(variations.get(0));
+                    }
                     break; // Exit the loop once the institution is found and updated
                 }
             }
