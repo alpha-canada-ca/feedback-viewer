@@ -509,6 +509,7 @@ public class DashboardController {
         LOGGER.debug("Retrieving dashboard data");
         List<Problem> processedProblems = problemCacheService.getProcessedProblems();
         LOGGER.debug("Retrieved {} problems for dashboard data", processedProblems.size());
+
         problems =
                 new ArrayList<>(
                         processedProblems.stream()
