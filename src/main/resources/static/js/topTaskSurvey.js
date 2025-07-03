@@ -53,7 +53,12 @@ $(document).ready(function () {
         loadingSpinner.show();
         d.department = $("#department").val();
         d.theme = $("#theme").val();
-        d.tasks = $("#tasks").val();
+        var tasks = $("#tasks").val();
+        if (tasks && tasks.length > 0) {
+          tasks.forEach(function(task, index) {
+            d['tasks[' + index + ']'] = task;
+          });
+        }
         d.group = $("#group").val();
         d.language = $("#language").val();
         var dateRangePickerValue = $("#dateRangePicker").val();
