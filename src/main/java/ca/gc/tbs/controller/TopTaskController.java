@@ -34,6 +34,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
@@ -466,10 +467,22 @@ public class TopTaskController {
     return String.valueOf(totalTaskCount);
   }
 
-  @RequestMapping(value = "/topTaskData")
+  @RequestMapping(value = "/topTaskData", method = {RequestMethod.GET, RequestMethod.POST})
   @ResponseBody
   public DataTablesOutput<TopTaskSurvey> list(
       @Valid DataTablesInput input, HttpServletRequest request) {
+    
+    // Log request details for debugging
+    LOG.info("=== TopTaskData Request Debug ===");
+    LOG.info("Request URL: {}", request.getRequestURL());
+    LOG.info("Query String: {}", request.getQueryString());
+    LOG.info("Query String Length: {}", request.getQueryString() != null ? request.getQueryString().length() : 0);
+    
+    // Log all parameters
+    request.getParameterMap().forEach((key, values) -> {
+      LOG.info("Parameter '{}': {}", key, Arrays.toString(values));
+    });
+    
     String pageLang = (String) request.getSession().getAttribute("lang");
     String departmentFilterVal = request.getParameter("department");
     String themeFilterVal = request.getParameter("theme");
@@ -480,6 +493,15 @@ public class TopTaskController {
     String language = request.getParameter("language");
     String includeCommentsOnlyParam = request.getParameter("includeCommentsOnly");
     boolean includeCommentsOnly = includeCommentsOnlyParam != null && includeCommentsOnlyParam.equals("true");
+    
+    // Log specific filter values
+    LOG.info("Department: {}", departmentFilterVal);
+    LOG.info("Theme: {}", themeFilterVal);
+    LOG.info("Tasks count: {}", taskFilterVals != null ? taskFilterVals.length : 0);
+    if (taskFilterVals != null) {
+      LOG.info("Tasks: {}", Arrays.toString(taskFilterVals));
+    }
+    LOG.info("Date range: {} to {}", startDateVal, endDateVal);
 
     Criteria criteria = Criteria.where("processed").is("true");
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");

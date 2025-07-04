@@ -128,25 +128,59 @@ $(document).ready(function () {
     },
     ajax: {
       url: ENDPOINTS.TOP_TASK_DATA,
-      type: "GET",
+      type: function(d) {
+        // Calculate URL length to determine if we should use POST
+        var paramString = $.param(d);
+        return paramString.length > 2000 ? "POST" : "GET";
+      },
       data: function (d) {
         loadingSpinner.show();
-        d.department = $("#department").val();
-        d.theme = $("#theme").val();
-        d.tasks = $("#tasks").val();
-        d.group = $("#group").val();
-        d.language = $("#language").val();
+        
+        // Debug logging for request construction
+        console.log("=== DataTable Request Debug ===");
+        console.log("Original DataTable params:", d);
+        
+        // Filter out null or empty params before setting them
+        if ($("#department").val()) d.department = $("#department").val();
+        if ($("#theme").val()) d.theme = $("#theme").val();
+        if ($("#tasks").val()) d.tasks = $("#tasks").val();
+        if ($("#group").val()) d.group = $("#group").val();
+        if ($("#language").val()) d.language = $("#language").val();
+        
         var dateRangePickerValue = $("#dateRangePicker").val();
         if (dateRangePickerValue) {
-          var dateRange = $("#dateRangePicker").data("daterangepicker");        d.startDate = dateRange.startDate.format(CONFIG.BACKEND_DATE_FORMAT);
-        d.endDate = dateRange.endDate.format(CONFIG.BACKEND_DATE_FORMAT);
+          var dateRange = $("#dateRangePicker").data("daterangepicker");
+          d.startDate = dateRange.startDate.format(CONFIG.BACKEND_DATE_FORMAT);
+          d.endDate = dateRange.endDate.format(CONFIG.BACKEND_DATE_FORMAT);
         } else {
           delete d.startDate;
           delete d.endDate;
         }
         d.includeCommentsOnly = $("#commentsCheckbox").is(":checked");
+        
+        // Log final request data
+        console.log("Final request params:", d);
+        console.log("Tasks array:", d.tasks);
+        console.log("Tasks array length:", d.tasks ? d.tasks.length : 0);
+        
+        // Calculate approximate URL length
+        var paramString = $.param(d);
+        var requestMethod = paramString.length > 2000 ? "POST" : "GET";
+        console.log("Parameter string length:", paramString.length);
+        console.log("Request method will be:", requestMethod);
+        console.log("Full URL would be:", ENDPOINTS.TOP_TASK_DATA + "?" + paramString);
+        
+        if (paramString.length > 2000) {
+          console.warn("WARNING: URL length exceeds 2000 characters, switching to POST");
+        }
       },
       error: function (xhr, error, thrown) {
+        console.error("=== DataTable AJAX Error ===");
+        console.error("Status:", xhr.status);
+        console.error("Status Text:", xhr.statusText);
+        console.error("Response Text:", xhr.responseText);
+        console.error("Error:", error);
+        console.error("Thrown:", thrown);
         handleError({xhr, error, thrown}, 'ERROR_RETRIEVING_DATA', 'DataTable AJAX');
       },
       complete: function() {
@@ -353,10 +387,11 @@ $(document).ready(function () {
     var tasks = $("#tasks").val();
     var params = new URLSearchParams();
     
-    params.append('department', $("#department").val() || '');
-    params.append('theme', $("#theme").val() || '');
-    params.append('group', $("#group").val() || '');
-    params.append('language', $("#language").val() || '');
+    // Filter out null or empty params before setting them
+    if ($("#department").val()) params.append('department', $("#department").val());
+    if ($("#theme").val()) params.append('theme', $("#theme").val());
+    if ($("#group").val()) params.append('group', $("#group").val());
+    if ($("#language").val()) params.append('language', $("#language").val());
     params.append('includeCommentsOnly', $("#commentsCheckbox").is(":checked"));
   
     if (tasks && tasks.length > 0) {
