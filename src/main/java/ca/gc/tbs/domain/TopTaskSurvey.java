@@ -1,9 +1,18 @@
 package ca.gc.tbs.domain;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "toptasksurvey")
+@CompoundIndex(def = "{'processed': 1, 'dateTime': 1}")
+@CompoundIndex(def = "{'processed': 1, 'dateTime': 1, 'language': 1}")
+@CompoundIndex(def = "{'processed': 1, 'dateTime': 1, 'dept': 1}")
+@CompoundIndex(def = "{'processed': 1, 'dateTime': 1, 'theme': 1}")
+@CompoundIndex(def = "{'processed': 1, 'dateTime': 1, 'grouping': 1}")
+@CompoundIndex(def = "{'processed': 1, 'dateTime': 1, 'task': 1}")
+@CompoundIndex(def = "{'processed': 1, 'processedDate': 1}")
 public class TopTaskSurvey {
   @Id private String id = "";
 
