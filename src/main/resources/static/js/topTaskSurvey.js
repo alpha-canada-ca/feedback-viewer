@@ -173,6 +173,8 @@ $(document).ready(function () {
         if (paramString.length > 2000) {
           console.warn("WARNING: URL length exceeds 2000 characters, switching to POST");
         }
+        
+        return d;
       },
       error: function (xhr, error, thrown) {
         console.error("=== DataTable AJAX Error ===");
