@@ -49,15 +49,16 @@ $(document).ready(function () {
     ajax: {
       url: "/topTaskData",
       type: "GET",
+      cache: false,
       data: function (d) {
         loadingSpinner.show();
         d.department = $("#department").val();
         d.theme = $("#theme").val();
         var tasks = $("#tasks").val();
         if (tasks && tasks.length > 0) {
-          tasks.forEach(function(task, index) {
-            d['tasks[' + index + ']'] = task;
-          });
+          d.tasks = tasks;
+        } else {
+          delete d.tasks;
         }
         d.group = $("#group").val();
         d.language = $("#language").val();
@@ -84,33 +85,33 @@ $(document).ready(function () {
       }
     },
     columns: [
-      { data: 'dateTime' },
-      { data: 'timeStamp' },
-      { data: 'surveyReferrer' },
-      { data: 'language' },
-      { data: 'device' },
-      { data: 'screener' },
-      { data: 'dept' },
-      { data: 'theme' },
-      { data: 'themeOther' },
-      { data: 'grouping' },
-      { data: 'task' },
-      { data: 'taskOther' },
-      { data: 'taskSatisfaction' },
-      { data: 'taskEase' },
-      { data: 'taskCompletion' },
-      { data: 'taskImprove' },
-      { data: 'taskImproveComment' },
-      { data: 'taskWhyNot' },
-      { data: 'taskWhyNotComment' },
-      { data: 'taskSampling' },
-      { data: 'samplingInvitation' },
-      { data: 'samplingGC' },
-      { data: 'samplingCanada' },
-      { data: 'samplingTheme' },
-      { data: 'samplingInstitution' },
-      { data: 'samplingGrouping' },
-      { data: 'samplingTask' }
+      { data: 'dateTime', name: 'dateTime' },
+      { data: 'timeStamp', name: 'timeStamp' },
+      { data: 'surveyReferrer', name: 'surveyReferrer' },
+      { data: 'language', name: 'language' },
+      { data: 'device', name: 'device' },
+      { data: 'screener', name: 'screener' },
+      { data: 'dept', name: 'dept' },
+      { data: 'theme', name: 'theme' },
+      { data: 'themeOther', name: 'themeOther' },
+      { data: 'grouping', name: 'grouping' },
+      { data: 'task', name: 'task' },
+      { data: 'taskOther', name: 'taskOther' },
+      { data: 'taskSatisfaction', name: 'taskSatisfaction' },
+      { data: 'taskEase', name: 'taskEase' },
+      { data: 'taskCompletion', name: 'taskCompletion' },
+      { data: 'taskImprove', name: 'taskImprove' },
+      { data: 'taskImproveComment', name: 'taskImproveComment' },
+      { data: 'taskWhyNot', name: 'taskWhyNot' },
+      { data: 'taskWhyNotComment', name: 'taskWhyNotComment' },
+      { data: 'taskSampling', name: 'taskSampling' },
+      { data: 'samplingInvitation', name: 'samplingInvitation' },
+      { data: 'samplingGC', name: 'samplingGC' },
+      { data: 'samplingCanada', name: 'samplingCanada' },
+      { data: 'samplingTheme', name: 'samplingTheme' },
+      { data: 'samplingInstitution', name: 'samplingInstitution' },
+      { data: 'samplingGrouping', name: 'samplingGrouping' },
+      { data: 'samplingTask', name: 'samplingTask' }
     ],
   });
 
