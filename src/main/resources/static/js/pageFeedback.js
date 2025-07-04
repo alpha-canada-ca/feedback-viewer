@@ -137,8 +137,8 @@ $(document).ready(function () {
   }
 
   // DataTable initialization
-  var table = $("#myTable").DataTable({
-    language: isFrench ? { url: "//cdn.datatables.net/plug-ins/1.10.21/i18n/French.json" } : undefined,
+  var table = new DataTable("#myTable", {
+    language: isFrench ? { url: "//cdn.datatables.net/plug-ins/2.3.2/i18n/fr-FR.json" } : undefined,
     stripeClasses: [],
     bSortClasses: false,
     order: [[0, "desc"]],

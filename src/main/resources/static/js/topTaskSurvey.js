@@ -43,6 +43,11 @@ $(document).ready(function () {
   var loadingSpinner = $(".loading-spinner");
 
   // Utility functions
+  function formatNumberWithCommas(number) {
+    if (number == null || number === '') return number;
+    return parseInt(number).toLocaleString();
+  }
+
   function getMessage(key) {
     return MESSAGES[isFrench ? 'fr' : 'en'][key] || MESSAGES.en[key];
   }
@@ -112,8 +117,8 @@ $(document).ready(function () {
     return [quarterStart, quarterEnd];
   }
 
-  var table = $("#topTaskTable").DataTable({
-    language: isFrench ? { url: "//cdn.datatables.net/plug-ins/1.10.21/i18n/French.json" } : undefined,
+  var table = new DataTable("#topTaskTable", {
+    language: isFrench ? { url: "//cdn.datatables.net/plug-ins/2.3.2/i18n/fr-FR.json" } : undefined,
     processing: true,
     serverSide: true,
     retrieve: true,
@@ -188,7 +193,7 @@ $(document).ready(function () {
         return response.text();
       })
       .then((totalDistinctTasks) => {
-        $(".stat .totalDistinctTasks").text(totalDistinctTasks);
+        $(".stat .totalDistinctTasks").text(formatNumberWithCommas(totalDistinctTasks));
       })
       .catch((err) => {
         console.warn("Error fetching total distinct tasks:", err);
@@ -204,7 +209,7 @@ $(document).ready(function () {
         return response.text();
       })
       .then((totalTaskCount) => {
-        $(".stat .totalTaskCount").text(totalTaskCount);
+        $(".stat .totalTaskCount").text(formatNumberWithCommas(totalTaskCount));
       })
       .catch((err) => {
         console.warn("Error fetching total task count:", err);
