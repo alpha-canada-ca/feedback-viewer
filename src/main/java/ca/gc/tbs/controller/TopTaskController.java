@@ -12,6 +12,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.*;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
@@ -815,11 +816,7 @@ public class TopTaskController {
       criteria.and("grouping").is(group);
     }
     if (department != null && !department.isEmpty()) {
-      if (department.equalsIgnoreCase("STATCAN / STATCAN")) {
-        criteria.and("dept").is("StatCan / StatCan");
-      } else {
-        criteria.and("dept").is(department);
-      }
+      criteria.and("dept").regex("^" + Pattern.quote(department) + "$", "i");
     }
 
     List<Criteria> combinedOrCriteria = new ArrayList<>();
@@ -1067,25 +1064,8 @@ public class TopTaskController {
   }
 
   private Criteria applyDepartmentFilter(Criteria criteria, String department) {
-    // Special case for StatCan since we know its exact format in DB
-    if (department.equalsIgnoreCase("STATCAN / STATCAN")) {
-      criteria.and("dept").is("StatCan / StatCan");
-      return criteria;
-    }
-
-    // For other departments, use case-insensitive matching
-    Set<String> matchingVariations = new HashSet<>();
-    for (Map.Entry<String, List<String>> entry : institutionMappings.entrySet()) {
-      if (entry.getValue().stream().anyMatch(variation -> variation.equalsIgnoreCase(department))) {
-        matchingVariations.addAll(entry.getValue());
-      }
-    }
-
-    if (matchingVariations.isEmpty()) {
-      throw new IllegalArgumentException("Couldn't find department name: " + department);
-    }
-
-    criteria.and("dept").in(matchingVariations);
+    // First try direct case-insensitive match for exact database values
+    criteria.and("dept").regex("^" + Pattern.quote(department) + "$", "i");
     return criteria;
   }
 
