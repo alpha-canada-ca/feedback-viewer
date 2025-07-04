@@ -1,10 +1,62 @@
 $(document).ready(function () {
+  // Constants and Configuration
+  const CONFIG = {
+    DEBOUNCE_DELAY: 800,
+    SEARCH_MIN_CHARS: 2,
+    SPINNER_HIDE_DELAY: 1000,
+    DATE_FORMAT: 'YYYY/MM/DD',
+    BACKEND_DATE_FORMAT: 'YYYY-MM-DD'
+  };
+
+  const ENDPOINTS = {
+    TOP_TASK_DATA: '/topTaskData',
+    TOTAL_DISTINCT_TASKS: '/topTask/totalDistinctTasks',
+    TOTAL_TASK_COUNT: '/topTask/totalTaskCount',
+    DEPARTMENTS: '/topTaskSurvey/departments',
+    TASK_NAMES: '/taskNames',
+    EXPORT_CSV: '/exportTopTaskCSV',
+    EXPORT_EXCEL: '/exportTopTaskExcel'
+  };
+
+  const MESSAGES = {
+    fr: {
+      ERROR_RETRIEVING_DATA: "Erreur lors de la récupération des données. Veuillez rafraîchir la page et réessayer.",
+      NO_DATA_EXPORT: "Aucune donnée à exporter avec les filtres sélectionnés.",
+      ERROR_CSV_DOWNLOAD: "Erreur lors du téléchargement du fichier CSV. Veuillez réessayer.",
+      ERROR_EXCEL_DOWNLOAD: "Erreur lors du téléchargement du fichier Excel. Veuillez réessayer.",
+      SEARCH_MIN_CHARS: "La recherche doit comporter au moins 2 caractères",
+      NETWORK_ERROR: "La réponse du réseau n'était pas correcte"
+    },
+    en: {
+      ERROR_RETRIEVING_DATA: "Error retrieving data. Please refresh the page and try again.",
+      NO_DATA_EXPORT: "No data to export with the selected filters.",
+      ERROR_CSV_DOWNLOAD: "Error downloading CSV file. Please try again.",
+      ERROR_EXCEL_DOWNLOAD: "Error downloading Excel file. Please try again.",
+      SEARCH_MIN_CHARS: "Search must be at least 2 characters",
+      NETWORK_ERROR: "Network response was not ok"
+    }
+  };
+
   var isFrench = langSession === "fr";
   var now = new Date();
   var formattedDate = now.getMonth() + 1 + "/" + now.getDate() + "/" + now.getFullYear();
   var loadingSpinner = $(".loading-spinner");
 
   // Utility functions
+  function getMessage(key) {
+    return MESSAGES[isFrench ? 'fr' : 'en'][key] || MESSAGES.en[key];
+  }
+
+  function showAlert(messageKey) {
+    alert(getMessage(messageKey));
+  }
+
+  function handleError(error, messageKey, context = '') {
+    console.error(`Error in ${context}:`, error);
+    showAlert(messageKey);
+    loadingSpinner.hide();
+  }
+
   function debounce(func, delay) {
     let debounceTimer;
     return function () {
@@ -13,6 +65,29 @@ $(document).ready(function () {
       clearTimeout(debounceTimer);
       debounceTimer = setTimeout(() => func.apply(context, args), delay);
     };
+  }
+
+  function createDownloadLink(blob, filename) {
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.style.display = 'none';
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
+    document.body.removeChild(a);
+  }
+
+  function extractFilenameFromHeader(contentDisposition, defaultFilename) {
+    if (contentDisposition && contentDisposition.indexOf('attachment') !== -1) {
+      const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+      const matches = filenameRegex.exec(contentDisposition);
+      if (matches && matches[1]) {
+        return matches[1].replace(/['"]/g, '');
+      }
+    }
+    return defaultFilename;
   }
 
   function getLastFiscalQuarter() {
@@ -47,7 +122,7 @@ $(document).ready(function () {
       fetchTotalTaskCount();
     },
     ajax: {
-      url: "/topTaskData",
+      url: ENDPOINTS.TOP_TASK_DATA,
       type: "GET",
       data: function (d) {
         loadingSpinner.show();
@@ -58,9 +133,8 @@ $(document).ready(function () {
         d.language = $("#language").val();
         var dateRangePickerValue = $("#dateRangePicker").val();
         if (dateRangePickerValue) {
-          var dateRange = $("#dateRangePicker").data("daterangepicker");
-          d.startDate = dateRange.startDate.format("YYYY-MM-DD");
-          d.endDate = dateRange.endDate.format("YYYY-MM-DD");
+          var dateRange = $("#dateRangePicker").data("daterangepicker");        d.startDate = dateRange.startDate.format(CONFIG.BACKEND_DATE_FORMAT);
+        d.endDate = dateRange.endDate.format(CONFIG.BACKEND_DATE_FORMAT);
         } else {
           delete d.startDate;
           delete d.endDate;
@@ -68,11 +142,7 @@ $(document).ready(function () {
         d.includeCommentsOnly = $("#commentsCheckbox").is(":checked");
       },
       error: function (xhr, error, thrown) {
-        alert(isFrench ? "Erreur lors de la récupération des données. Veuillez rafraîchir la page et réessayer." : "Error retrieving data. Please refresh the page and try again.");
-        console.log("xhr: " + xhr);
-        console.log("error: " + error);
-        console.log("thrown : " + thrown);
-        loadingSpinner.hide();
+        handleError({xhr, error, thrown}, 'ERROR_RETRIEVING_DATA', 'DataTable AJAX');
       },
       complete: function() {
         loadingSpinner.hide();
@@ -110,36 +180,52 @@ $(document).ready(function () {
   });
 
   function fetchTotalDistinctTask() {
-    fetch("/topTask/totalDistinctTasks")
-      .then((response) => response.text())
+    fetch(ENDPOINTS.TOTAL_DISTINCT_TASKS)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.text();
+      })
       .then((totalDistinctTasks) => {
         $(".stat .totalDistinctTasks").text(totalDistinctTasks);
       })
       .catch((err) => {
-        console.warn("Something went wrong.", err);
+        console.warn("Error fetching total distinct tasks:", err);
       });
   }
 
   function fetchTotalTaskCount() {
-    fetch("/topTask/totalTaskCount")
-      .then((response) => response.text())
+    fetch(ENDPOINTS.TOTAL_TASK_COUNT)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.text();
+      })
       .then((totalTaskCount) => {
         $(".stat .totalTaskCount").text(totalTaskCount);
       })
       .catch((err) => {
-        console.warn("Something went wrong.", err);
+        console.warn("Error fetching total task count:", err);
       });
   }
 
-  fetch("/topTaskSurvey/departments")
-    .then(response => response.json())
+  fetch(ENDPOINTS.DEPARTMENTS)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.json();
+    })
     .then(departments => {
+      const departmentSelect = $("#department");
       departments.forEach(department => {
-        $("#department").append(`<option value="${department.value}">${department.display}</option>`);
+        departmentSelect.append(`<option value="${department.value}">${department.display}</option>`);
       });
     })
     .catch(err => {
-      console.warn("Something went wrong.", err);
+      console.warn("Error fetching departments:", err);
     });
 
   $("#tasks").on("change", function () {
@@ -149,6 +235,7 @@ $(document).ready(function () {
   function resetFilters() {
     $("#department").val("");
     $("#theme").val("");
+    $("#group").val("");
     $("#language").val("");
     taskSelect.setData([]);
     taskSelect.setSelected([]);
@@ -171,7 +258,7 @@ $(document).ready(function () {
       maxDate: moment(latestDate),
       alwaysShowCalendars: true,
       locale: {
-        format: "YYYY/MM/DD",
+        format: CONFIG.DATE_FORMAT,
         cancelLabel: isFrench ? "Effacer" : "Clear",
         applyLabel: isFrench ? "Appliquer" : "Apply",
         customRangeLabel: isFrench ? "Période spécifique" : "Custom Range",
@@ -191,7 +278,7 @@ $(document).ready(function () {
       },
     },
     function (start, end, label) {
-      $("#dateRangePicker").val(start.format("YYYY/MM/DD") + " - " + end.format("YYYY/MM/DD"));
+      $("#dateRangePicker").val(start.format(CONFIG.DATE_FORMAT) + " - " + end.format(CONFIG.DATE_FORMAT));
       table.ajax.reload();
     }
   );
@@ -199,121 +286,56 @@ $(document).ready(function () {
   $("#dateRangePicker").on("cancel.daterangepicker", function (ev, picker) {
     picker.setStartDate(moment(earliestDate));
     picker.setEndDate(moment(latestDate));
-    $("#dateRangePicker").val(moment(earliestDate).format("YYYY/MM/DD") + " - " + moment(latestDate).format("YYYY/MM/DD"));
+    $("#dateRangePicker").val(moment(earliestDate).format(CONFIG.DATE_FORMAT) + " - " + moment(latestDate).format(CONFIG.DATE_FORMAT));
     table.ajax.reload();
   });
 
-  $("#downloadCSV").on("click", function () {
+  function handleDownload(url, defaultFilename, errorMessageKey) {
     loadingSpinner.show();
-    var url = new URL(window.location.origin + '/exportTopTaskCSV');
-    url.search = getFilterParams().toString();
     
     fetch(url)
       .then(response => {
         if (response.status === 204) {
           loadingSpinner.hide();
-          alert(isFrench ? "Aucune donnée à exporter avec les filtres sélectionnés." : "No data to export with the selected filters.");
-          return;
+          showAlert('NO_DATA_EXPORT');
+          return null;
         }
         if (!response.ok) {
-          loadingSpinner.hide();
           return response.text().then(text => {
             throw new Error(text);
           });
         }
-        // Get filename from Content-Disposition header
+        
         const disposition = response.headers.get('Content-Disposition');
-        let filename = 'top_task_survey_export.csv';
-        if (disposition && disposition.indexOf('attachment') !== -1) {
-            const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
-            const matches = filenameRegex.exec(disposition);
-            if (matches != null && matches[1]) { 
-                filename = matches[1].replace(/['"]/g, '');
-            }
-        }
-        return { blob: response.blob(), filename: filename };
+        const filename = extractFilenameFromHeader(disposition, defaultFilename);
+        return { blob: response.blob(), filename };
       })
       .then(result => {
         if (result && result.blob) {
           result.blob.then(blob => {
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.style.display = 'none';
-            a.href = url;
-            a.download = result.filename;
-            document.body.appendChild(a);
-            a.click();
-            window.URL.revokeObjectURL(url);
+            createDownloadLink(blob, result.filename);
             setTimeout(() => {
               loadingSpinner.hide();
-            }, 1000);
+            }, CONFIG.SPINNER_HIDE_DELAY);
           });
         }
       })
       .catch(error => {
-        loadingSpinner.hide();
-        console.error('Error downloading CSV:', error);
-        alert(isFrench ? 
-          "Erreur lors du téléchargement du fichier CSV. Veuillez réessayer." : 
-          "Error downloading CSV file. Please try again.");
+        handleError(error, errorMessageKey, 'File download');
       });
-});
+  }
 
-$("#downloadExcel").on("click", function () {
-    loadingSpinner.show();
-    var url = new URL(window.location.origin + '/exportTopTaskExcel');
+  $("#downloadCSV").on("click", function () {
+    const url = new URL(window.location.origin + ENDPOINTS.EXPORT_CSV);
     url.search = getFilterParams().toString();
-    
-    fetch(url)
-      .then(response => {
-        if (response.status === 204) {
-          loadingSpinner.hide();
-          alert(isFrench ? "Aucune donnée à exporter avec les filtres sélectionnés." : "No data to export with the selected filters.");
-          return;
-        }
-        if (!response.ok) {
-          loadingSpinner.hide();
-          return response.text().then(text => {
-            throw new Error(text);
-          });
-        }
-        // Get filename from Content-Disposition header
-        const disposition = response.headers.get('Content-Disposition');
-        let filename = 'top_task_survey_export.xlsx';
-        if (disposition && disposition.indexOf('attachment') !== -1) {
-            const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
-            const matches = filenameRegex.exec(disposition);
-            if (matches != null && matches[1]) { 
-                filename = matches[1].replace(/['"]/g, '');
-            }
-        }
-        return { blob: response.blob(), filename: filename };
-      })
-      .then(result => {
-        if (result && result.blob) {
-          result.blob.then(blob => {
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.style.display = 'none';
-            a.href = url;
-            a.download = result.filename;
-            document.body.appendChild(a);
-            a.click();
-            window.URL.revokeObjectURL(url);
-            setTimeout(() => {
-              loadingSpinner.hide();
-            }, 1000);
-          });
-        }
-      })
-      .catch(error => {
-        loadingSpinner.hide();
-        console.error('Error downloading Excel:', error);
-        alert(isFrench ? 
-          "Erreur lors du téléchargement du fichier Excel. Veuillez réessayer." : 
-          "Error downloading Excel file. Please try again.");
-      });
-});
+    handleDownload(url, 'top_task_survey_export.csv', 'ERROR_CSV_DOWNLOAD');
+  });
+
+  $("#downloadExcel").on("click", function () {
+    const url = new URL(window.location.origin + ENDPOINTS.EXPORT_EXCEL);
+    url.search = getFilterParams().toString();
+    handleDownload(url, 'top_task_survey_export.xlsx', 'ERROR_EXCEL_DOWNLOAD');
+  });
   tippy("#theme-tool-tip", {
     content: isFrench ? "Thèmes de navigation de Canada.ca " : "Canada.ca navigation themes ",
   });
@@ -341,8 +363,8 @@ $("#downloadExcel").on("click", function () {
     var dateRangePickerValue = $("#dateRangePicker").val();
     if (dateRangePickerValue) {
       var dateRange = $("#dateRangePicker").data('daterangepicker');
-      params.append('startDate', dateRange.startDate.format('YYYY-MM-DD'));
-      params.append('endDate', dateRange.endDate.format('YYYY-MM-DD'));
+      params.append('startDate', dateRange.startDate.format(CONFIG.BACKEND_DATE_FORMAT));
+      params.append('endDate', dateRange.endDate.format(CONFIG.BACKEND_DATE_FORMAT));
     }
   
     return params;
@@ -364,11 +386,11 @@ $("#downloadExcel").on("click", function () {
         return new Promise((resolve, reject) => {
           clearTimeout(taskSelect.debounceTimer);
           taskSelect.debounceTimer = setTimeout(() => {
-            if (search.length < 2) {
-              return reject(isFrench ? "La recherche doit comporter au moins 2 caractères" : "Search must be at least 2 characters");
+            if (search.length < CONFIG.SEARCH_MIN_CHARS) {
+              return reject(getMessage('SEARCH_MIN_CHARS'));
             }
 
-            fetch("/taskNames?search=" + encodeURIComponent(search), {
+            fetch(`${ENDPOINTS.TASK_NAMES}?search=${encodeURIComponent(search)}`, {
               method: "GET",
               headers: {
                 Accept: "application/json",
@@ -376,7 +398,7 @@ $("#downloadExcel").on("click", function () {
             })
             .then((response) => {
               if (!response.ok) {
-                throw new Error(isFrench ? "La réponse du réseau n'était pas correcte" : "Network response was not ok");
+                throw new Error(getMessage('NETWORK_ERROR'));
               }
               return response.json();
             })
@@ -395,7 +417,7 @@ $("#downloadExcel").on("click", function () {
               console.error("Error fetching page titles:", error);
               reject(error);
             });
-          }, 800);
+          }, CONFIG.DEBOUNCE_DELAY);
         });
       },
     },
