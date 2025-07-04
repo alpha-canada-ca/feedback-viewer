@@ -126,68 +126,68 @@ $(document).ready(function () {
       fetchTotalDistinctTask();
       fetchTotalTaskCount();
     },
-    ajax: {
-      url: ENDPOINTS.TOP_TASK_DATA,
-      type: function(d) {
-        // Calculate URL length to determine if we should use POST
-        var paramString = $.param(d);
-        return paramString.length > 2000 ? "POST" : "GET";
-      },
-      data: function (d) {
-        loadingSpinner.show();
-        
-        // Debug logging for request construction
-        console.log("=== DataTable Request Debug ===");
-        console.log("Original DataTable params:", d);
-        
-        // Filter out null or empty params before setting them
-        if ($("#department").val()) d.department = $("#department").val();
-        if ($("#theme").val()) d.theme = $("#theme").val();
-        if ($("#tasks").val()) d.tasks = $("#tasks").val();
-        if ($("#group").val()) d.group = $("#group").val();
-        if ($("#language").val()) d.language = $("#language").val();
-        
-        var dateRangePickerValue = $("#dateRangePicker").val();
-        if (dateRangePickerValue) {
-          var dateRange = $("#dateRangePicker").data("daterangepicker");
-          d.startDate = dateRange.startDate.format(CONFIG.BACKEND_DATE_FORMAT);
-          d.endDate = dateRange.endDate.format(CONFIG.BACKEND_DATE_FORMAT);
-        } else {
-          delete d.startDate;
-          delete d.endDate;
-        }
-        d.includeCommentsOnly = $("#commentsCheckbox").is(":checked");
-        
-        // Log final request data
-        console.log("Final request params:", d);
-        console.log("Tasks array:", d.tasks);
-        console.log("Tasks array length:", d.tasks ? d.tasks.length : 0);
-        
-        // Calculate approximate URL length
-        var paramString = $.param(d);
-        var requestMethod = paramString.length > 2000 ? "POST" : "GET";
-        console.log("Parameter string length:", paramString.length);
-        console.log("Request method will be:", requestMethod);
-        console.log("Full URL would be:", ENDPOINTS.TOP_TASK_DATA + "?" + paramString);
-        
-        if (paramString.length > 2000) {
-          console.warn("WARNING: URL length exceeds 2000 characters, switching to POST");
-        }
-        
-        return d;
-      },
-      error: function (xhr, error, thrown) {
-        console.error("=== DataTable AJAX Error ===");
-        console.error("Status:", xhr.status);
-        console.error("Status Text:", xhr.statusText);
-        console.error("Response Text:", xhr.responseText);
-        console.error("Error:", error);
-        console.error("Thrown:", thrown);
-        handleError({xhr, error, thrown}, 'ERROR_RETRIEVING_DATA', 'DataTable AJAX');
-      },
-      complete: function() {
-        loadingSpinner.hide();
+    ajax: function(data, callback, settings) {
+      loadingSpinner.show();
+      
+      // Debug logging for request construction
+      console.log("=== DataTable Request Debug ===");
+      console.log("Original DataTable params:", data);
+      
+      // Filter out null or empty params before setting them
+      if ($("#department").val()) data.department = $("#department").val();
+      if ($("#theme").val()) data.theme = $("#theme").val();
+      if ($("#tasks").val()) data.tasks = $("#tasks").val();
+      if ($("#group").val()) data.group = $("#group").val();
+      if ($("#language").val()) data.language = $("#language").val();
+      
+      var dateRangePickerValue = $("#dateRangePicker").val();
+      if (dateRangePickerValue) {
+        var dateRange = $("#dateRangePicker").data("daterangepicker");
+        data.startDate = dateRange.startDate.format(CONFIG.BACKEND_DATE_FORMAT);
+        data.endDate = dateRange.endDate.format(CONFIG.BACKEND_DATE_FORMAT);
+      } else {
+        delete data.startDate;
+        delete data.endDate;
       }
+      data.includeCommentsOnly = $("#commentsCheckbox").is(":checked");
+      
+      // Log final request data
+      console.log("Final request params:", data);
+      console.log("Tasks array:", data.tasks);
+      console.log("Tasks array length:", data.tasks ? data.tasks.length : 0);
+      
+      // Calculate approximate URL length and determine method
+      var paramString = $.param(data);
+      var requestMethod = paramString.length > 2000 ? "POST" : "GET";
+      console.log("Parameter string length:", paramString.length);
+      console.log("Request method will be:", requestMethod);
+      console.log("Full URL would be:", ENDPOINTS.TOP_TASK_DATA + "?" + paramString);
+      
+      if (paramString.length > 2000) {
+        console.warn("WARNING: URL length exceeds 2000 characters, switching to POST");
+      }
+      
+      // Make the AJAX request with dynamic method
+      $.ajax({
+        url: ENDPOINTS.TOP_TASK_DATA,
+        type: requestMethod,
+        data: data,
+        success: function(response) {
+          callback(response);
+        },
+        error: function(xhr, error, thrown) {
+          console.error("=== DataTable AJAX Error ===");
+          console.error("Status:", xhr.status);
+          console.error("Status Text:", xhr.statusText);
+          console.error("Response Text:", xhr.responseText);
+          console.error("Error:", error);
+          console.error("Thrown:", thrown);
+          handleError({xhr, error, thrown}, 'ERROR_RETRIEVING_DATA', 'DataTable AJAX');
+        },
+        complete: function() {
+          loadingSpinner.hide();
+        }
+      });
     },
     columns: [
       { data: 'dateTime' },
