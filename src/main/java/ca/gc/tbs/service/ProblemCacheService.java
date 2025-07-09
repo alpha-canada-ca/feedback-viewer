@@ -18,10 +18,9 @@ public class ProblemCacheService {
   @Autowired private ProblemRepository problemRepository;
 
   @Scheduled(cron = "0 0 0 * * *")
-  @CacheEvict(value = "distinctUrls", allEntries = true)
+  @CacheEvict(value = {"distinctUrls", "processedProblems"}, allEntries = true)
   public void clearCacheDaily() {
-    // This method will automatically clear the cached distinct URLs daily
-    System.out.println("EVICTING CACHE");
+    LOGGER.info("Evicting all caches at midnight");
   }
 
   @Cacheable("processedProblems")
@@ -29,6 +28,7 @@ public class ProblemCacheService {
     LOGGER.info("Fetching all processed problems from repository (cache miss or initial load).");
     return problemRepository.findAllProcessedProblems();
   }
+
 
   @Cacheable("distinctUrls")
   public List<String> getDistinctProcessedUrlsForCache() {
