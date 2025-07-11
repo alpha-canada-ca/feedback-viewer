@@ -134,10 +134,9 @@ public class ProblemController {
                 "CGC",
                 Arrays.asList(
                         "CGC",
-                        "CCG",
                         "CANADIAN GRAIN COMMISSION",
                         "COMMISSION CANADIENNE DES GRAINS",
-                        "CGC / CCG"));
+                        "CGC"));
         institutionMappings.put(
                 "CIHR",
                 Arrays.asList(
