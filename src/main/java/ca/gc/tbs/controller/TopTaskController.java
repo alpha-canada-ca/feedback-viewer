@@ -487,6 +487,9 @@ public class TopTaskController {
     String pageLang = (String) request.getSession().getAttribute("lang");
     String departmentFilterVal = request.getParameter("department");
     String themeFilterVal = request.getParameter("theme");
+    if (themeFilterVal != null) {
+        themeFilterVal = themeFilterVal.trim().replaceAll("\\s+", " "); // Trim and normalize spaces
+    }
     String[] taskFilterVals = request.getParameterValues("tasks[]");
     String startDateVal = request.getParameter("startDate");
     String endDateVal = request.getParameter("endDate");
@@ -497,7 +500,7 @@ public class TopTaskController {
     
     // Log specific filter values
     LOG.info("Department: {}", departmentFilterVal);
-    LOG.info("Theme: {}", themeFilterVal);
+    LOG.info("Theme (cleaned): {}", themeFilterVal);
     LOG.info("Tasks count: {}", taskFilterVals != null ? taskFilterVals.length : 0);
     if (taskFilterVals != null) {
       LOG.info("Tasks: {}", Arrays.toString(taskFilterVals));
@@ -515,7 +518,7 @@ public class TopTaskController {
       criteria.and("language").is(language);
     }
     if (themeFilterVal != null && !themeFilterVal.isEmpty()) {
-      criteria.and("theme").regex(themeFilterVal, "i");
+      criteria.and("theme").regex(Pattern.quote(themeFilterVal), "i");
     }
     if (groupFilterVal != null && !groupFilterVal.isEmpty()) {
       criteria.and("grouping").is(groupFilterVal);
