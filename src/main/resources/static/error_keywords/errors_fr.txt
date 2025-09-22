@@ -4,6 +4,7 @@ bouton d'envoi
 cassé
 chargement trop long
 décliné
+disponible
 défilement
 échec de la connexion sécurisée
 en construction
