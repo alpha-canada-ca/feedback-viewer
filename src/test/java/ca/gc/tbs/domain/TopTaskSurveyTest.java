@@ -115,4 +115,17 @@ class TopTaskSurveyTest {
         assertEquals("Y", survey.getPersonalInfoProcessed());
         assertEquals("Y", survey.getAutoTagProcessed());
     }
+
+    @Test
+    void testSetOptionalFieldsToNull() {
+        TopTaskSurvey survey = new TopTaskSurvey();
+        survey.setThemeOther(null);
+        survey.setTaskOther(null);
+        survey.setTaskImproveComment(null);
+        survey.setTaskWhyNotComment(null);
+        assertNull(survey.getThemeOther());
+        assertNull(survey.getTaskOther());
+        assertNull(survey.getTaskImproveComment());
+        assertNull(survey.getTaskWhyNotComment());
+    }
 }

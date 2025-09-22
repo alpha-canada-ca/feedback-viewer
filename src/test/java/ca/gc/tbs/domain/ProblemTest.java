@@ -94,4 +94,11 @@ class ProblemTest {
         assertEquals(2, p1.getTags().size());
         assertEquals(3, p2.getTags().size());
     }
+
+    @Test
+    void testSetTagsNull() {
+        Problem problem = new Problem();
+        problem.setTags(null);
+        assertNull(problem.getTags());
+    }
 }

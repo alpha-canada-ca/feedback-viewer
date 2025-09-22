@@ -36,4 +36,12 @@ class UserTest {
         user.setEnabled(false);
         assertFalse(user.isEnabled());
     }
+
+    @Test
+    void testSetRolesNull() {
+        User user = new User();
+        user.setRoles(null);
+        assertNull(user.getRoles());
+    }
+
 }

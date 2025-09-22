@@ -12,4 +12,11 @@ class RoleTest {
         assertEquals("r2", role.getId());
         assertEquals("USER", role.getRole());
     }
+
+    @Test
+    void testSetNullRole() {
+        Role role = new Role();
+        role.setRole(null);
+        assertNull(role.getRole());
+    }
 }
