@@ -225,6 +225,22 @@ table.dataTable.rowborder tbody th {
   padding: 1em;
 }
 
+/* Error comments checkbox styling */
+#filterDetails label:has(#errorComments) {
+  display: flex;
+  align-items: center;
+  padding: 0.75em 1em;
+  margin: 0.5em 1em;
+  transition: all 0.2s ease-in-out;
+}
+
+#errorComments {
+  width: auto !important;
+  margin-right: 0.75em;
+  transform: scale(1.2);
+  cursor: pointer;
+}
+
 #filterDetails > p > label {
   display: flex;
   flex-flow: row nowrap;
