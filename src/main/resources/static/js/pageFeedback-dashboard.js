@@ -57,6 +57,7 @@ $(document).ready(function () {
     // Reset select elements to their default option (usually the first one)
     $("#department").val("");
     $("#language").val("");
+    $("#errorComments").prop("checked", false);
     $("#theme").val("");
     $("#section").val("");
     // Clear text input fields
@@ -136,6 +137,10 @@ $(document).ready(function () {
         d.section = $("#section").val();
         d.theme = $("#theme").val();
         d.url = $("#url").val();
+        if ($("#errorComments").prop("checked")) {
+                  d.error_keyword = "true";  // Only send if checked
+        }
+
         var dateRangePickerValue = $("#dateRangePicker").val();
         if (dateRangePickerValue) {
           var dateRange = $("#dateRangePicker").data("daterangepicker");

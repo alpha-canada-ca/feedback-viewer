@@ -513,6 +513,8 @@ public class DashboardController {
         String url = request.getParameter("url");
         String section = request.getParameter("section");
         String theme = request.getParameter("theme");
+        String comments = request.getParameter("comments");
+        String errorComments = request.getParameter("errorComments");
 
         LOGGER.debug("Retrieving dashboard data");
         List<Problem> processedProblems = problemCacheService.getProcessedProblems();
@@ -556,6 +558,12 @@ public class DashboardController {
 
         // Sort problems by URL entries in descending order
         problems.sort(Comparator.comparingInt(Problem::getUrlEntries).reversed());
+
+        //Comment filtering
+        problems = applyCommentsFilter(problems, comments);
+        if ("true".equalsIgnoreCase(errorComments)) {
+            problems = applyErrorKeywordFilter(problems);
+        }
 
         // Merge problems with the same URL
         List<Problem> mergedProblems = mergeProblems(problems);
@@ -716,6 +724,27 @@ public class DashboardController {
     private List<Problem> applyPagination(List<Problem> mergedProblems, int start, int length) {
         return mergedProblems.stream().skip(start).limit(length).collect(Collectors.toList());
     }
+
+    private List<Problem> applyCommentsFilter(List<Problem> problems, String comments) {
+        if (comments != null && !comments.isEmpty()) {
+            return problems.stream()
+                    .filter(p -> p.getTitle() != null && p.getTitle().toLowerCase().contains(comments.toLowerCase()))
+                    .collect(Collectors.toList());
+        }
+        return problems;
+    }
+
+    private List<Problem> applyErrorKeywordFilter(List<Problem> problems) {
+        // Load error keywords from file or define statically
+        List<String> errorKeywords = Arrays.asList("error", "problem", "issue"); // Replace with actual keywords
+        return problems.stream()
+                .filter(p -> {
+                    String title = p.getTitle() != null ? p.getTitle().toLowerCase() : "";
+                    return errorKeywords.stream().anyMatch(title::contains);
+                })
+                .collect(Collectors.toList());
+    }
+
 
     private void setInstitution(DataTablesOutput<Problem> problems, String lang) {
         for (Problem problem : problems.getData()) {
