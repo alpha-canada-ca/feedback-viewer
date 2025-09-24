@@ -223,6 +223,8 @@ table.dataTable.rowborder tbody th {
   flex-flow: row nowrap;
   align-items: center;
   padding: 1em;
+  gap: 1em;
+  margin: 0;
 }
 
 /* Error comments checkbox styling */
@@ -246,6 +248,8 @@ table.dataTable.rowborder tbody th {
   flex-flow: row nowrap;
   width: 100%;
   align-items: center;
+  gap: 0.5em;
+  margin: 0;
 }
 
 #filterDetails select {
