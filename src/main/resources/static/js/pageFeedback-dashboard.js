@@ -57,6 +57,7 @@ $(document).ready(function () {
     // Reset select elements to their default option (usually the first one)
     $("#department").val("");
     $("#language").val("");
+    $("#errorComments").prop("checked", false);
     $("#theme").val("");
     $("#section").val("");
     // Clear text input fields
@@ -136,6 +137,10 @@ $(document).ready(function () {
         d.section = $("#section").val();
         d.theme = $("#theme").val();
         d.url = $("#url").val();
+        if ($("#errorComments").prop("checked")) {
+                  d.error_keyword = "true";  // Only send if checked
+        }
+
         var dateRangePickerValue = $("#dateRangePicker").val();
         if (dateRangePickerValue) {
           var dateRange = $("#dateRangePicker").data("daterangepicker");
@@ -306,7 +311,7 @@ $(document).ready(function () {
     }
     return rollingAverages;
 }function fetchDataAndCreateChart() {
-  // Fetch the data from your endpoint
+ // Fetch the data from your endpoint
   fetch("/chartData")
       .then((response) => response.json())
       .then((data) => {
@@ -319,6 +324,8 @@ $(document).ready(function () {
           const rollingAverages = calculateRollingAverage(commentsData, windowSize);
 
           const paddedRollingAverages = new Array(windowSize - 1).fill(null).concat(rollingAverages);
+
+          const errorKeywordChecked = $("#errorComments").prop("checked");
 
           // Now create the chart with the data
           Highcharts.chart("chart", {
@@ -423,10 +430,22 @@ $(document).ready(function () {
     table.ajax.reload();
   });
 
+  // Handle error comments checkbox
+    $("#errorComments").on("change", function () {
+      const $label = $(this).closest('label');
+      if ($(this).is(':checked')) {
+        $label.addClass('active');
+      } else {
+        $label.removeClass('active');
+      }
+      table.ajax.reload();
+    });
+
   $("#comments, #url").on(
     "keyup",
     debounce(function (e) {
       table.ajax.reload(); // Reload the table without resetting pagination
     }, 800)
   );
+
 });

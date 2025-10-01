@@ -2,6 +2,7 @@ package ca.gc.tbs.controller;
 
 import ca.gc.tbs.domain.Problem;
 import ca.gc.tbs.repository.ProblemRepository;
+import ca.gc.tbs.service.ErrorKeywordService;
 import ca.gc.tbs.service.ProblemCacheService;
 import ca.gc.tbs.service.ProblemDateService;
 import ca.gc.tbs.service.UserService;
@@ -45,6 +46,8 @@ public class DashboardController {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private ErrorKeywordService errorKeywordService;
 
     private static final Map<String, List<String>> institutionMappings = new HashMap<>();
     private static final Map<String, List<String>> sectionMappings = new HashMap<>();
@@ -488,6 +491,7 @@ public class DashboardController {
 
         // Sort the list by date in ascending order
         dailyCommentsList.sort(Comparator.comparing(map -> (String) map.get("date")));
+
         return dailyCommentsList;
     }
 
@@ -513,6 +517,7 @@ public class DashboardController {
         String url = request.getParameter("url");
         String section = request.getParameter("section");
         String theme = request.getParameter("theme");
+        boolean error_keyword = "true".equals(request.getParameter("error_keyword"));
 
         LOGGER.debug("Retrieving dashboard data");
         List<Problem> processedProblems = problemCacheService.getProcessedProblems();
@@ -552,7 +557,7 @@ public class DashboardController {
                         .collect(Collectors.toList());
         // Apply filters
         problems =
-                applyFilters(problems, department, startDate, endDate, language, url, section, theme);
+                applyFilters(problems, department, startDate, endDate, language, url, section, theme, error_keyword);
 
         // Sort problems by URL entries in descending order
         problems.sort(Comparator.comparingInt(Problem::getUrlEntries).reversed());
@@ -582,6 +587,7 @@ public class DashboardController {
         long actualMemUsed = afterUsedMem - beforeUsedMem;
         LOGGER.info("Memory used by yourMethod(): {} bytes", actualMemUsed);
 
+
         return output;
     }
 
@@ -606,13 +612,17 @@ public class DashboardController {
             String language,
             String url,
             String section,
-            String theme) {
+            String theme,
+            boolean error_keyword) {
         problems = applyDepartmentFilter(problems, department, institutionMappings);
         problems = applyDateRangeFilter(problems, startDate, endDate);
         problems = applyLanguageFilter(problems, language);
         problems = applyUrlFilter(problems, url);
         problems = applySectionFilter(problems, section);
         problems = applyThemeFilter(problems, theme);
+        if (error_keyword) {
+            problems = applyErrorKeywordFilter(problems);
+        }
         return problems;
     }
 
@@ -729,6 +739,36 @@ public class DashboardController {
                 }
             }
         }
+    }
+
+    private List<Problem> applyErrorKeywordFilter(List<Problem> problems) {
+        Set<String> keywordsToCheck = new HashSet<>();
+        keywordsToCheck.addAll(errorKeywordService.getEnglishKeywords());
+        keywordsToCheck.addAll(errorKeywordService.getFrenchKeywords());
+        keywordsToCheck.addAll(errorKeywordService.getBilingualKeywords());
+
+        if (keywordsToCheck.isEmpty()) {
+            totalComments = 0;
+            totalPages = 0;
+            return Collections.emptyList();
+        }
+
+        List<String> errorKeywords = keywordsToCheck.stream()
+                .filter(s -> s != null && !s.trim().isEmpty())
+                .map(String::toLowerCase)
+                .collect(Collectors.toList());
+
+        List<Problem> filtered = problems.stream()
+                .filter(problem -> {
+                    String details = (problem.getProblemDetails() == null ? "" : problem.getProblemDetails())
+                            + " " +
+                            (problem.getTitle() == null ? "" : problem.getTitle());
+                    String detailsLower = details.toLowerCase();
+                    return errorKeywords.stream().anyMatch(detailsLower::contains);
+                })
+                .collect(Collectors.toList());
+
+        return filtered;
     }
 
     public UserService getUserService() {
