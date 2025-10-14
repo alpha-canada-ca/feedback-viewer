@@ -335,7 +335,6 @@ $(document).ready(function () {
    if ($("#url").val()) params.push("url=" + encodeURIComponent($("#url").val()));
 
    if (params.length > 0) url += "?" + params.join("&");
-   console.log("Chart fetch URL:", url);
 
  // Fetch the data from your endpoint
   fetch(url)
@@ -344,9 +343,6 @@ $(document).ready(function () {
           // Extract categories (dates) and comments data
           const categories = data.map((item) => item.date);
           const commentsData = data.map((item) => item.comments);
-          console.log("Chart categories (dates):", categories);
-          console.log("Chart data (comments):", commentsData);
-
 
           // Calculate rolling average (e.g., over 7 days)
           const windowSize = 7;  // Adjust this value as needed

@@ -483,7 +483,6 @@ public class DashboardController {
         Boolean error_keyword = "true".equals(request.getParameter("error_keyword"));
 
         if (error_keyword) {
-            LOGGER.info("ERROR KEYWORD mode triggered for chartData!");
 
             Criteria criteria = Criteria.where("processed").is("true");
 
@@ -504,7 +503,7 @@ public class DashboardController {
                 criteria.and("theme").is(theme);
             }
             if (section != null && !section.isEmpty()) {
-                // Use your mapping logic if needed
+
                 criteria.and("section").is(section);
             }
             if (language != null && !language.isEmpty()) {
@@ -632,7 +631,6 @@ public class DashboardController {
         Boolean error_keyword = "true".equals(request.getParameter("error_keyword"));
 
         if (error_keyword) {
-            LOGGER.info("Error keywords mode: Using MongoDB criteria approach");
 
             Criteria criteria = Criteria.where("processed").is("true");
 
@@ -677,7 +675,6 @@ public class DashboardController {
             keywordsToCheck.addAll(errorKeywordService.getBilingualKeywords());
 
             if (!keywordsToCheck.isEmpty()) {
-                LOGGER.info("Checking {} error keywords", keywordsToCheck.size());
                 criteria.and("problemDetails").regex(String.join("|", keywordsToCheck), "i");
             }
 
@@ -709,10 +706,6 @@ public class DashboardController {
                     Aggregation.newAggregation(match, groupByUrl), "problem", Problem.class
             ).getMappedResults().size();
             totalComments =(int) mongoTemplate.count(Query.query(criteria), "problem");
-
-
-            LOGGER.info("After aggregation, unique URLs/pages (totalPages): {}", totalPages);
-            LOGGER.info("Total comments (totalComments): {}", totalComments);
 
 
             // Create a DataTablesOutput instance
@@ -782,9 +775,6 @@ public class DashboardController {
             // Calculate total comments and pages
             totalComments = mergedProblems.stream().mapToInt(Problem::getUrlEntries).sum();
             totalPages = mergedProblems.size();
-
-            LOGGER.info("After merging, totalPages (mergedProblems.size()): {}", totalPages);
-            LOGGER.info("Sum of all comments in mergedProblems (totalComments): {}", totalComments);
 
 
         // Apply pagination
