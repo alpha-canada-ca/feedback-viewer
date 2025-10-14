@@ -311,21 +311,48 @@ $(document).ready(function () {
     }
     return rollingAverages;
 }function fetchDataAndCreateChart() {
+//error keyword filter
+  const errorKeywordChecked = $("#errorComments").prop("checked");
+  let url = "/chartData";
+  let params = [];
+
+   if (errorKeywordChecked) params.push("error_keyword=true");
+
+   // Date range
+   const dateRangePickerValue = $("#dateRangePicker").val();
+   if (dateRangePickerValue) {
+     const dateRange = $("#dateRangePicker").data("daterangepicker");
+     params.push("startDate=" + encodeURIComponent(dateRange.startDate.format("YYYY-MM-DD")));
+     params.push("endDate=" + encodeURIComponent(dateRange.endDate.format("YYYY-MM-DD")));
+   }
+
+   // Other filters (make sure these match your backend expectations)
+   if ($("#language").val()) params.push("language=" + encodeURIComponent($("#language").val()));
+   if ($("#department").val()) params.push("department=" + encodeURIComponent($("#department").val()));
+   if ($("#comments").val()) params.push("comments=" + encodeURIComponent($("#comments").val()));
+   if ($("#section").val()) params.push("section=" + encodeURIComponent($("#section").val()));
+   if ($("#theme").val()) params.push("theme=" + encodeURIComponent($("#theme").val()));
+   if ($("#url").val()) params.push("url=" + encodeURIComponent($("#url").val()));
+
+   if (params.length > 0) url += "?" + params.join("&");
+   console.log("Chart fetch URL:", url);
+
  // Fetch the data from your endpoint
-  fetch("/chartData")
+  fetch(url)
       .then((response) => response.json())
       .then((data) => {
           // Extract categories (dates) and comments data
           const categories = data.map((item) => item.date);
           const commentsData = data.map((item) => item.comments);
+          console.log("Chart categories (dates):", categories);
+          console.log("Chart data (comments):", commentsData);
+
 
           // Calculate rolling average (e.g., over 7 days)
           const windowSize = 7;  // Adjust this value as needed
           const rollingAverages = calculateRollingAverage(commentsData, windowSize);
 
           const paddedRollingAverages = new Array(windowSize - 1).fill(null).concat(rollingAverages);
-
-          const errorKeywordChecked = $("#errorComments").prop("checked");
 
           // Now create the chart with the data
           Highcharts.chart("chart", {
@@ -439,6 +466,7 @@ $(document).ready(function () {
         $label.removeClass('active');
       }
       table.ajax.reload();
+
     });
 
   $("#comments, #url").on(
