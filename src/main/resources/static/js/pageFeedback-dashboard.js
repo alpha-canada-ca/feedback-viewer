@@ -57,7 +57,6 @@ $(document).ready(function () {
     // Reset select elements to their default option (usually the first one)
     $("#department").val("");
     $("#language").val("");
-    $("#errorComments").prop("checked", false);
     $("#theme").val("");
     $("#section").val("");
     // Clear text input fields
@@ -137,10 +136,6 @@ $(document).ready(function () {
         d.section = $("#section").val();
         d.theme = $("#theme").val();
         d.url = $("#url").val();
-        if ($("#errorComments").prop("checked")) {
-                  d.error_keyword = "true";  // Only send if checked
-        }
-
         var dateRangePickerValue = $("#dateRangePicker").val();
         if (dateRangePickerValue) {
           var dateRange = $("#dateRangePicker").data("daterangepicker");
@@ -311,33 +306,8 @@ $(document).ready(function () {
     }
     return rollingAverages;
 }function fetchDataAndCreateChart() {
-//error keyword filter
-  const errorKeywordChecked = $("#errorComments").prop("checked");
-  let url = "/chartData";
-  let params = [];
-
-   if (errorKeywordChecked) params.push("error_keyword=true");
-
-   // Date range
-   const dateRangePickerValue = $("#dateRangePicker").val();
-   if (dateRangePickerValue) {
-     const dateRange = $("#dateRangePicker").data("daterangepicker");
-     params.push("startDate=" + encodeURIComponent(dateRange.startDate.format("YYYY-MM-DD")));
-     params.push("endDate=" + encodeURIComponent(dateRange.endDate.format("YYYY-MM-DD")));
-   }
-
-   // Other filters (make sure these match your backend expectations)
-   if ($("#language").val()) params.push("language=" + encodeURIComponent($("#language").val()));
-   if ($("#department").val()) params.push("department=" + encodeURIComponent($("#department").val()));
-   if ($("#comments").val()) params.push("comments=" + encodeURIComponent($("#comments").val()));
-   if ($("#section").val()) params.push("section=" + encodeURIComponent($("#section").val()));
-   if ($("#theme").val()) params.push("theme=" + encodeURIComponent($("#theme").val()));
-   if ($("#url").val()) params.push("url=" + encodeURIComponent($("#url").val()));
-
-   if (params.length > 0) url += "?" + params.join("&");
-
- // Fetch the data from your endpoint
-  fetch(url)
+  // Fetch the data from your endpoint
+  fetch("/chartData")
       .then((response) => response.json())
       .then((data) => {
           // Extract categories (dates) and comments data
@@ -453,23 +423,10 @@ $(document).ready(function () {
     table.ajax.reload();
   });
 
-  // Handle error comments checkbox
-    $("#errorComments").on("change", function () {
-      const $label = $(this).closest('label');
-      if ($(this).is(':checked')) {
-        $label.addClass('active');
-      } else {
-        $label.removeClass('active');
-      }
-      table.ajax.reload();
-
-    });
-
   $("#comments, #url").on(
     "keyup",
     debounce(function (e) {
       table.ajax.reload(); // Reload the table without resetting pagination
     }, 800)
   );
-
 });

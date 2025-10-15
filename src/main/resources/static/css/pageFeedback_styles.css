@@ -295,14 +295,3 @@ table.dataTable.rowborder tbody th {
   padding-left: 6px;
   margin-bottom: 3px;
 }
-
-/* Adjust the space for total entries info after the table bottom border */
-#myTable_info {
-  margin-top: 18px;
-  margin-bottom: 10px;
-}
-
-/* space between the dropdown choice and label in the table entries*/
-label[for="dt-length-0"] {
-  margin-left: 10px;
-}

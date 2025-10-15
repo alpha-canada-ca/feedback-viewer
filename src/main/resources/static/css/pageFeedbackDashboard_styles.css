@@ -97,6 +97,7 @@ h1#wb-cont {
 }
 
 
+
 #drp,
 .ss-main {
   margin-bottom: 10px !important;
@@ -184,7 +185,6 @@ table.dataTable.rowborder tbody th {
   border-radius: 4px;
 }
 
-
 .download-section {
   text-align: right;
   display: flex;
@@ -223,24 +223,6 @@ table.dataTable.rowborder tbody th {
   flex-flow: row nowrap;
   align-items: center;
   padding: 1em;
-  gap: 1em;
-  margin: 0;
-}
-
-/* Error comments checkbox styling */
-#filterDetails label:has(#errorComments) {
-  display: flex;
-  align-items: center;
-  padding: 0.75em 1em;
-  margin: 0.5em 1em;
-  transition: all 0.2s ease-in-out;
-}
-
-#errorComments {
-  width: auto !important;
-  margin-right: 0.75em;
-  transform: scale(1.2);
-  cursor: pointer;
 }
 
 #filterDetails > p > label {
@@ -248,8 +230,6 @@ table.dataTable.rowborder tbody th {
   flex-flow: row nowrap;
   width: 100%;
   align-items: center;
-  gap: 0.5em;
-  margin: 0;
 }
 
 #filterDetails select {
@@ -391,17 +371,6 @@ details:not([open]) > details {
   /* Same as padding to align with the form fields */
   top: 1em;
   /* Same as padding from the top */
-}
-
-/* Adjust the space for total entries info after the table bottom border */
-#myTable_info {
-  margin-top: 18px;
-  margin-bottom: 10px;
-}
-
-/* space between the dropdown choice and label in the table entries*/
-label[for="dt-length-0"] {
-  margin-left: 10px;
 }
 
 .reset-filters {
