@@ -8,7 +8,6 @@ import ca.gc.tbs.service.ProblemDateService;
 import ca.gc.tbs.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
@@ -31,7 +30,6 @@ import javax.validation.Valid;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Controller
@@ -758,7 +756,7 @@ public class DashboardController {
                                     p -> {
                                         LocalDate problemDate =
                                                 LocalDate.parse(p.getProblemDate(), DateTimeFormatter.ISO_LOCAL_DATE);
-                                        return !problemDate.isAfter(currentDate);
+                                        return !problemDate.isAfter(currentDate); //was isBefore - changed to !isAfter for more entries
                                     })
                             .collect(Collectors.toList());
             // Apply filters
@@ -953,38 +951,6 @@ public class DashboardController {
                 }
             }
         }
-    }
-
-    private List<Problem> applyErrorKeywordFilter(List<Problem> problems) {
-        if (problems == null) return new ArrayList<>();
-        return problems.stream()
-                .filter(problem -> {
-                    if (problem == null) return false;
-                    String details =
-                            (problem.getProblemDetails() == null ? "" : problem.getProblemDetails()) +
-                                    " " +
-                                    (problem.getTitle() == null ? "" : problem.getTitle());
-                    return errorKeywordService.containsErrorKeywords(details, problem.getLanguage());
-                })
-                .collect(Collectors.toList());
-    }
-
-    private List<String> getMatchingErrorKeywords(Problem problems) {
-        Set<String> keywords = new HashSet<>();
-        keywords.addAll(errorKeywordService.getEnglishKeywords());
-        keywords.addAll(errorKeywordService.getFrenchKeywords());
-        keywords.addAll(errorKeywordService.getBilingualKeywords());
-
-        Set<String> matched = new HashSet<>();
-        String details = (problems.getProblemDetails() == null ? "" : problems.getProblemDetails())
-                + " " + (problems.getTitle() == null ? "" : problems.getTitle());
-
-        for (String keyword : keywords) {
-            if (keyword != null && !keyword.trim().isEmpty() && details.toLowerCase().contains(keyword.toLowerCase())) {
-                matched.add(keyword);
-            }
-        }
-        return new ArrayList<>(matched);
     }
 
 
