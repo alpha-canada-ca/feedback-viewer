@@ -97,7 +97,6 @@ h1#wb-cont {
 }
 
 
-
 #drp,
 .ss-main {
   margin-bottom: 10px !important;
@@ -184,6 +183,7 @@ table.dataTable.rowborder tbody th {
   border: 1px solid #ccc;
   border-radius: 4px;
 }
+
 
 .download-section {
   text-align: right;
@@ -391,6 +391,17 @@ details:not([open]) > details {
   /* Same as padding to align with the form fields */
   top: 1em;
   /* Same as padding from the top */
+}
+
+/* Adjust the space for total entries info after the table bottom border */
+#myTable_info {
+  margin-top: 18px;
+  margin-bottom: 10px;
+}
+
+/* space between the dropdown choice and label in the table entries*/
+label[for="dt-length-0"] {
+  margin-left: 10px;
 }
 
 .reset-filters {
