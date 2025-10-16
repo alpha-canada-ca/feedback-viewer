@@ -29,6 +29,7 @@ doesn't connect
 doesn't work
 error
 error message
+err.
 froze
 getting a fault
 glitch

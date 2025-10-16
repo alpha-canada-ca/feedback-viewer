@@ -11,6 +11,7 @@ en construction
 en maintenance
 en panne
 erreur
+err.
 être sauvegardé
 fonctionne pas
 gelé
