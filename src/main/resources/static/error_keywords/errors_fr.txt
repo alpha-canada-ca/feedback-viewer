@@ -16,7 +16,15 @@ err.
 fonctionne pas
 gelé
 grisé
+hors service
 impasse
+impossible d'envoyer
+impossible d'obtenir
+impossible d'ouvrir
+impossible de mettre à jour
+impossible de sélectionner
+incorrect
+indisponible temporairement
 indisponible
 le bouton est désactivé
 m'a bloqué
@@ -29,6 +37,8 @@ n'achèvera pas
 navigateur
 ne chargera pas
 ne me laisse pas faire
+ne fonctionne jamais
+ne fonctionne pas
 ne pas me laisser
 ne pas sauver
 ne peut être soumis
@@ -40,8 +50,12 @@ ne peut pas télécharger
 ne se charge pas
 ne se connecte pas
 ne se soumet pas
+ne s'affiche pas
 ne travaillera pas
 page non trouvée
+page inexistante
+problème réseau
+problème technique
 pas compatible
 pas de sauvegarde
 pas de succès
@@ -61,6 +75,7 @@ rien ne s'est passé
 sans réponse
 serveur
 Service non disponible
+site indisponible
 télécharger
 temps d'attente
 temps de chargement

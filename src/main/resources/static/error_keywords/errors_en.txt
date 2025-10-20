@@ -1,3 +1,4 @@
+access page
 available
 be saved
 blocked
@@ -9,11 +10,17 @@ bumped out
 button is disabled
 can not move forward
 can not submit
+can not open
+can't open
+couldn't select
+can't sign in
+cannot log in
 can't submit
 can't upload
 cannot submit
 cannot upload
 capatcha
+could not
 could not move on
 couldn’t be submitted
 couldn't submit
@@ -21,12 +28,17 @@ couldn't upload
 crash
 dead end
 declined
+did not match
+didn't show
+does not function
+doesn't function
 did not function
 did not work
 didn't work
 does not work
 doesn't connect
 doesn't work
+down again
 error
 error message
 err.
@@ -42,6 +54,11 @@ long loading
 loop
 maintenance
 never able to
+network issue
+never working
+not functioning
+not available
+not upload
 no success
 not compatible
 not letting me
@@ -50,6 +67,9 @@ not saving
 not worked
 not working
 nothing happened
+out of service
+page does not exist
+page doesn't exist
 page not found
 proxy
 re-direct
@@ -60,7 +80,10 @@ scrolling
 secure connection failed
 server
 Service not available
+service unavailable
 site has been down
+site is down
+something went wrong
 something was wrong
 stuck
 submit button
@@ -68,6 +91,9 @@ system down
 system says
 system wasn't available
 system won't
+technical problem
+temporary down
+to no avail
 time out
 time to load
 timed out
@@ -76,6 +102,9 @@ timeout
 timing out
 typo
 unable to advance
+unable to get
+unable to submit
+unable to update
 unavailable
 under construction
 under maintenance
@@ -84,6 +113,7 @@ was down
 wasn't available
 website is down
 website problem
+website is down
 website was down
 why can't I
 why cant I
@@ -97,12 +127,9 @@ would not accept
 wouldn't accept
 wouldn't complete
 wouldn't load
+wrong
 you don't accept
 your system
-can't sign in
-cannot log in
-down again
-not available
-not upload
-service unavailable
-website is down
+
+
+
