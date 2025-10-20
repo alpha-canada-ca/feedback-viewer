@@ -118,6 +118,7 @@ $(document).ready(function () {
       [10, 25, 50, 100],
       [10, 25, 50, 100],
     ],
+    pageLength: 50,
     orderCellsTop: true,
     fixedHeader: true,
     responsive: true,
