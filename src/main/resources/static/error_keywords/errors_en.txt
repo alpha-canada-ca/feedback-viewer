@@ -17,6 +17,10 @@ can't sign in
 cannot log in
 can't submit
 can't upload
+can not get past
+can't get past
+cannot load
+could not access
 cannot submit
 cannot upload
 capatcha
@@ -43,6 +47,8 @@ error
 error message
 err.
 froze
+freezes
+frozen
 getting a fault
 glitch
 greyed out
