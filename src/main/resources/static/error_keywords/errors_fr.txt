@@ -1,4 +1,6 @@
+a échoué
 bloqué
+bloque
 boucle
 bouton d'envoi
 cassé
@@ -6,6 +8,10 @@ chargement trop long
 décliné
 disponible
 défilement
+défaillance du système
+délai d'attente expiré
+échoue
+expulsé
 échec de la connexion sécurisée
 en construction
 en maintenance
@@ -17,6 +23,11 @@ fonctionne pas
 gelé
 grisé
 hors service
+il n'y a aucun moyen
+impossible à charger
+Impossible d'accéder
+Impossible de charger
+impossible de passer
 impasse
 impossible d'envoyer
 impossible d'obtenir
@@ -27,6 +38,7 @@ incorrect
 indisponible temporairement
 indisponible
 le bouton est désactivé
+le système n'a pas répondu
 m'a bloqué
 marche pas
 me laisser soumettre
@@ -52,6 +64,14 @@ ne se connecte pas
 ne se soumet pas
 ne s'affiche pas
 ne travaillera pas
+ne fonctionnait pas
+ne me permet pas d'accéder
+ne passe pas
+ne s'est pas chargé
+ne s'ouvre pas
+ne se charge pas
+non fonctionnel
+Page indisponible
 page non trouvée
 page inexistante
 problème réseau
@@ -70,8 +90,10 @@ problème de site web
 quelque chose n'allait pas
 redirigé
 rediriger
+réessayez plus tard
 réinitialiser
 rien ne s'est passé
+roue qui tourne
 sans réponse
 serveur
 Service non disponible
@@ -80,5 +102,6 @@ télécharger
 temps d'attente
 temps de chargement
 temps mort
+tourne
 votre système
 vous n'acceptez pas
