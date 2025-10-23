@@ -19,8 +19,10 @@ can't submit
 can't upload
 can not get past
 can't get past
+can't load
 cannot load
 could not access
+can not access
 cannot submit
 cannot upload
 capatcha
@@ -36,16 +38,20 @@ did not match
 didn't show
 does not function
 doesn't function
+did not load
 did not function
 did not work
 didn't work
 does not work
 doesn't connect
 doesn't work
+doesnt work
 down again
 error
 error message
 err.
+fails
+failed
 froze
 freezes
 frozen
@@ -53,8 +59,10 @@ getting a fault
 glitch
 greyed out
 I can't see
+isn't connecting
 it won't allow me
 it wouldn't allow me
+kicked out
 let me submit
 long loading
 loop
@@ -72,11 +80,15 @@ not save
 not saving
 not worked
 not working
+non-functional
+not allowing me
+not functional
 nothing happened
 out of service
 page does not exist
 page doesn't exist
 page not found
+page not available
 proxy
 re-direct
 redirect
@@ -91,12 +103,16 @@ site has been down
 site is down
 something went wrong
 something was wrong
+spinning
+spinning wheel
 stuck
 submit button
 system down
 system says
+system failure
 system wasn't available
 system won't
+system did not respond
 technical problem
 temporary down
 to no avail
@@ -104,8 +120,12 @@ time out
 time to load
 timed out
 timed-out
+times out
 timeout
 timing out
+technical issue
+there is no way
+try again later
 typo
 unable to advance
 unable to get
@@ -117,6 +137,7 @@ under maintenance
 unresponsive
 was down
 wasn't available
+wasn't working
 website is down
 website problem
 website is down
@@ -125,14 +146,19 @@ why can't I
 why cant I
 will not accept
 will not work
+will not go through
 won't let me
 won't load
 won't submit
 won't work
+would not allow me
+would not open
+would not load
 would not accept
 wouldn't accept
 wouldn't complete
 wouldn't load
+wouldn't work
 wrong
 you don't accept
 your system
