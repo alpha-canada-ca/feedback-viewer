@@ -661,40 +661,38 @@ public class DashboardController {
             return dailyCommentsList;
         }
 
-//        if (problems == null) {
-//            return new ArrayList<>();
-//        }
-//        Map<String, Integer> dateToCommentCountMap = new HashMap<>();
-//
-//        // Sort problems by date in ascending order
-//        problems.sort(Comparator.comparing(Problem::getProblemDate));
-//        for (Problem problem : problems) {
-//            if (problem != null && problem.getProblemDate() != null) {
-//                String date = problem.getProblemDate();
-//                Integer urlEntries = problem.getUrlEntries();
-//                // Update the count for the given date
-//                dateToCommentCountMap.merge(date, urlEntries, Integer::sum);
-//            }
-//        }
-//        // Convert the map to a list of maps
-//        List<Map<String, Object>> dailyCommentsList = new ArrayList<>();
-//        dateToCommentCountMap.forEach(
-//                (date, count) -> {
-//                    Map<String, Object> dateComments = new HashMap<>();
-//                    dateComments.put("date", date);
-//                    dateComments.put("comments", count);
-//                    dailyCommentsList.add(dateComments);
-//                });
-//
-//        // Sort the list by date in ascending order
-//        dailyCommentsList.sort(Comparator.comparing(map -> (String) map.get("date")));
-//
-//        return dailyCommentsList;
-//    }
+        if (problems == null) {
+            return new ArrayList<>();
+        }
+        Map<String, Integer> dateToCommentCountMap = new HashMap<>();
 
-    // Fallback: return empty (or default) data
-        return new ArrayList<>();
-}
+        // Sort problems by date in ascending order
+        problems.sort(Comparator.comparing(Problem::getProblemDate));
+        for (Problem problem : problems) {
+            if (problem != null && problem.getProblemDate() != null) {
+                String date = problem.getProblemDate();
+                Integer urlEntries = problem.getUrlEntries();
+                // Update the count for the given date
+                dateToCommentCountMap.merge(date, urlEntries, Integer::sum);
+            }
+        }
+        // Convert the map to a list of maps
+        List<Map<String, Object>> dailyCommentsList = new ArrayList<>();
+        dateToCommentCountMap.forEach(
+                (date, count) -> {
+                    Map<String, Object> dateComments = new HashMap<>();
+                    dateComments.put("date", date);
+                    dateComments.put("comments", count);
+                    dailyCommentsList.add(dateComments);
+                });
+
+        // Sort the list by date in ascending order
+        dailyCommentsList.sort(Comparator.comparing(map -> (String) map.get("date")));
+
+        return dailyCommentsList;
+    }
+
+
 
     @Scheduled(cron = "0 1 0 * * *")
     @EventListener(ApplicationReadyEvent.class)
