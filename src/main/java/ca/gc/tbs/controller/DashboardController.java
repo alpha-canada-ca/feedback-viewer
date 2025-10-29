@@ -556,56 +556,6 @@ public class DashboardController {
             return dailyCommentsList;
         }
 
-//            // Prepare for batching
-//            int batchSize = 1000;
-//            int skip = 0;
-//            List<Problem> batch;
-//            Map<String, Long> dateToCount = new HashMap<>();
-
-            // Prepare keywords
-//            Set<String> keywordsToCheck = new HashSet<>();
-//            keywordsToCheck.addAll(errorKeywordService.getEnglishKeywords());
-//            keywordsToCheck.addAll(errorKeywordService.getFrenchKeywords());
-//            keywordsToCheck.addAll(errorKeywordService.getBilingualKeywords());
-//            Set<String> lowerKeywords = keywordsToCheck.stream()
-//                    .map(String::toLowerCase)
-//                    .collect(Collectors.toSet());
-//
-//            do {
-//                Query batchQuery = Query.query(criteria).skip(skip).limit(batchSize);
-//                batch = mongoTemplate.find(batchQuery, Problem.class, "problem");
-//
-//                // In-memory error keyword filter
-//                List<Problem> errorProblems = batch.stream()
-//                        .filter(p -> {
-//                            String details = p.getProblemDetails() == null ? "" : p.getProblemDetails().toLowerCase();
-//                            return lowerKeywords.stream().anyMatch(details::contains);
-//                        })
-//                        .collect(Collectors.toList());
-//
-//                // Aggregate counts by date
-//                errorProblems.stream()
-//                        .filter(p -> p.getProblemDate() != null && !p.getProblemDate().isEmpty())
-//                        .forEach(p -> dateToCount.merge(p.getProblemDate(), 1L, Long::sum));
-//
-//                skip += batchSize;
-//            } while (!batch.isEmpty());
-//
-//            // Format for chart
-//            List<Map<String, Object>> chartResults = new ArrayList<>();
-//            dateToCount.forEach((date, count) -> {
-//                Map<String, Object> map = new HashMap<>();
-//                map.put("date", date);
-//                map.put("comments", count.intValue());
-//                chartResults.add(map);
-//            });
-//
-//
-//            // Sort by date
-//            chartResults.sort(Comparator.comparing(m -> (String) m.get("date")));
-//
-//            return chartResults;
-
         if (comments != null && !comments.trim().isEmpty() && !"null".equalsIgnoreCase(comments.trim())) {
             // New block for comments filter only
             Criteria criteria = Criteria.where("processed").is("true");
@@ -812,7 +762,7 @@ public class DashboardController {
 
             return output;
 
-            //comments filtering
+        //comments filtering
         } else if (comments != null && !comments.trim().isEmpty() && !"null".equalsIgnoreCase(comments.trim())) {
             Criteria criteria = Criteria.where("processed").is("true");
 
@@ -895,7 +845,7 @@ public class DashboardController {
             output.setRecordsTotal(totalComments);
             output.setRecordsFiltered(totalComments);
 
-            // Adjust institution names based on language
+
             setInstitution(output, pageLang);
 
             return output;
@@ -923,7 +873,6 @@ public class DashboardController {
                                                                 problem.setLanguage(list.get(0).getLanguage());
                                                                 problem.setSection(list.get(0).getSection());
                                                                 problem.setTheme(list.get(0).getTheme());
-                                                                //problem.setProblemDetails(list.get(0).getProblemDetails());
                                                                 return problem;
                                                             })))
                                     .values());
@@ -935,7 +884,7 @@ public class DashboardController {
                                     p -> {
                                         LocalDate problemDate =
                                                 LocalDate.parse(p.getProblemDate(), DateTimeFormatter.ISO_LOCAL_DATE);
-                                        return !problemDate.isAfter(currentDate); //was isBefore - changed to !isAfter for more entries
+                                        return !problemDate.isAfter(currentDate); //was isBefore - changed to !isAfter for more entries including current date
                                     })
                             .collect(Collectors.toList());
             // Apply filters

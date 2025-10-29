@@ -136,9 +136,7 @@ $(document).ready(function () {
     ajax: {
       url: "/dashboardData",
       type: "GET",
-      //nus added for logging
         dataSrc: function(json) {
-          console.log("[DataTables] AJAX response:", json);
           return json.data;
         },
       data: function (d) {
@@ -168,8 +166,7 @@ $(document).ready(function () {
           delete d.startDate; // Ensure startDate is not included in the AJAX request
           delete d.endDate; // Ensure endDate is not included in the AJAX request
         }
-        //nus added for logging
-          console.log("[DataTables] AJAX request params:", d);
+
       },
       error: function (xhr, error, thrown) {
         alert(isFrench ? "Erreur lors de la récupération des données. Veuillez rafraîchir la page et réessayer." : "Error retrieving data. Please refresh the page and try again.");
@@ -237,7 +234,6 @@ $(document).ready(function () {
     fetch("/pageFeedback/totalCommentsCount")
       .then((response) => response.text())
       .then((totalCommentsCount) => {
-        console.log("[TotalCommentsCount] Server returned:", totalCommentsCount); //nus added for logging
         // Update the total comments count in the <span class="number"> element with comma formatting
         $(".stat .totalCommentCount").text(formatNumberWithCommas(totalCommentsCount));
       })
@@ -250,7 +246,6 @@ $(document).ready(function () {
     fetch("/pageFeedback/totalPagesCount")
       .then((response) => response.text())
       .then((totalPagesCount) => {
-        console.log("[TotalPagesCount] Server returned:", totalPagesCount); //nus added for logging
         // Update the total pages count in the <span class="number"> element with comma formatting
         $(".stat .totalPagesCount").text(formatNumberWithCommas(totalPagesCount));
       })
