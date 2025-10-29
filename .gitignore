@@ -28,3 +28,4 @@ PageSuccess.iml
 kubernetes/feedback-viewer-ingress.yml
 .vscode/settings.json
 google-java-format-*.jar
+.idea/copilot.data.migration.agent.xml
