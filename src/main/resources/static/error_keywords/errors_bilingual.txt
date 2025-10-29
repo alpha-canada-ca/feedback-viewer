@@ -4,3 +4,4 @@ chrome
 firefox
 ERR.
 ERR_
+cache

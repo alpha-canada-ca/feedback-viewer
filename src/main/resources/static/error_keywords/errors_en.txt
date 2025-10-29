@@ -1,6 +1,9 @@
+access denied
 access page
 available
 be saved
+been down
+blank page
 blocked
 booted me
 broken
@@ -8,6 +11,9 @@ browser
 bug
 bumped out
 button is disabled
+cache
+can't access
+cannot access
 can not move forward
 can not submit
 can not open
@@ -38,6 +44,7 @@ did not match
 didn't show
 does not function
 doesn't function
+did not connect
 did not load
 did not function
 did not work
@@ -52,20 +59,28 @@ error message
 err.
 fails
 failed
+finish loading
+freezing
 froze
 freezes
 frozen
 getting a fault
 glitch
 greyed out
+hang
+hanging
+hung
 I can't see
+insecure site
 isn't connecting
 it won't allow me
 it wouldn't allow me
 kicked out
 let me submit
+locked up
 long loading
 loop
+lost connection
 maintenance
 never able to
 network issue
@@ -73,6 +88,10 @@ never working
 not functioning
 not available
 not upload
+no working
+not able to check
+not coming up
+nothing happens
 no success
 not compatible
 not letting me
@@ -87,6 +106,12 @@ nothing happened
 out of service
 page does not exist
 page doesn't exist
+page is not available
+page isn't working
+page redirects me
+page says loading
+page will not load
+page will not open
 page not found
 page not available
 proxy
@@ -101,6 +126,14 @@ Service not available
 service unavailable
 site has been down
 site is down
+site down
+site too slow
+slow system
+spinning dial
+spins
+stalls
+system locked
+system not available
 something went wrong
 something was wrong
 spinning
@@ -121,12 +154,15 @@ time to load
 timed out
 timed-out
 times out
+technical difficulties
+timed me out
 timeout
 timing out
 technical issue
 there is no way
 try again later
 typo
+unable to access
 unable to advance
 unable to get
 unable to submit
@@ -136,6 +172,11 @@ under construction
 under maintenance
 unresponsive
 was down
+website won't accept
+would not display
+would not let me
+would not load
+wouldn't accept
 wasn't available
 wasn't working
 website is down
