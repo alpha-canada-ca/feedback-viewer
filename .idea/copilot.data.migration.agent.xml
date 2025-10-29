@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AgentMigrationStateService">
+    <option name="pendingSessionIds">
+      <option value="bac652d4-2964-4159-9457-4c6ff68f0014" />
+    </option>
+    <option name="pendingTurns">
+      <map>
+        <entry key="bac652d4-2964-4159-9457-4c6ff68f0014">
+          <value>
+            <set>
+              <option value="1c3177d3-924b-4ea3-81f7-56c069935600" />
+              <option value="6bde6db1-7389-4d1e-9587-fb81a4caaab1" />
+              <option value="5aaa018f-e646-48eb-9192-2f0bc00dd869" />
+              <option value="68bf136a-83a9-4d72-b496-4ff23b95ac22" />
+            </set>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>

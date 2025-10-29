@@ -77,7 +77,10 @@
                             <label for="url">URL</label>
                             <input type="text" id="url" name="url" placeholder="Filter by full or partial URL">
                         </div>
-
+                        <div class="form-group">
+                            <label for="comments">Comments</label>
+                            <input type="text" id="comments" name="comments" placeholder="Filter by keyword">
+                        </div>
 
                         <details id="filterDetails">
                             <summary id="filterSummary">See more filters</summary>
@@ -167,8 +170,7 @@
                         <div class="download-section">
                             <button type="button" class="btn btn-primary" id="downloadCSV">Download CSV</button>
                             <button type="button" class="btn btn-primary" id="downloadExcel">Download Excel</button>
-                            <button type="button" class="btn-unstyled reset-filters" onclick="resetFilters()">Reset
-                                Filters</button>
+                            <button type="button" class="btn-unstyled reset-filters">Reset Filters</button>
                         </div>
                     </form>
                 </div>

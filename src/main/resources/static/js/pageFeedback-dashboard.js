@@ -75,8 +75,13 @@ $(document).ready(function () {
     $("#dateRangePicker").val(formattedEarliestDate + " - " + formattedLatestDate);
 
     // Reload the DataTable to reflect the reset filters
-    table.ajax.reload();
-  }
+    table.ajax.reload(function() {
+    fetchTotalCommentsCount();
+    fetchTotalPagesCount();
+    fetchDataAndCreateChart();
+    });
+
+}
 
   function getLastFiscalQuarter() {
     let today = moment();
@@ -131,10 +136,21 @@ $(document).ready(function () {
     ajax: {
       url: "/dashboardData",
       type: "GET",
+      //nus added for logging
+        dataSrc: function(json) {
+          console.log("[DataTables] AJAX response:", json);
+          return json.data;
+        },
       data: function (d) {
         d.language = $("#language").val();
         d.department = $("#department").val();
-        d.comments = $("#comments").val();
+
+          var commentsVal = $("#comments").val();
+          if (commentsVal && commentsVal.trim() !== "") {
+            d.comments = commentsVal.trim();
+          } else {
+            delete d.comments; // Remove the filter from request
+          }
         d.section = $("#section").val();
         d.theme = $("#theme").val();
         d.url = $("#url").val();
@@ -152,6 +168,8 @@ $(document).ready(function () {
           delete d.startDate; // Ensure startDate is not included in the AJAX request
           delete d.endDate; // Ensure endDate is not included in the AJAX request
         }
+        //nus added for logging
+          console.log("[DataTables] AJAX request params:", d);
       },
       error: function (xhr, error, thrown) {
         alert(isFrench ? "Erreur lors de la récupération des données. Veuillez rafraîchir la page et réessayer." : "Error retrieving data. Please refresh the page and try again.");
@@ -210,10 +228,16 @@ $(document).ready(function () {
       { data: "theme", visible: false }, // Theme (hidden in table, but in CSV)
     ],
   });
+
+  $("#comments").on("input", function () {
+    table.ajax.reload();
+  });
+
   function fetchTotalCommentsCount() {
     fetch("/pageFeedback/totalCommentsCount")
       .then((response) => response.text())
       .then((totalCommentsCount) => {
+        console.log("[TotalCommentsCount] Server returned:", totalCommentsCount); //nus added for logging
         // Update the total comments count in the <span class="number"> element with comma formatting
         $(".stat .totalCommentCount").text(formatNumberWithCommas(totalCommentsCount));
       })
@@ -226,6 +250,7 @@ $(document).ready(function () {
     fetch("/pageFeedback/totalPagesCount")
       .then((response) => response.text())
       .then((totalPagesCount) => {
+        console.log("[TotalPagesCount] Server returned:", totalPagesCount); //nus added for logging
         // Update the total pages count in the <span class="number"> element with comma formatting
         $(".stat .totalPagesCount").text(formatNumberWithCommas(totalPagesCount));
       })
@@ -327,7 +352,7 @@ $(document).ready(function () {
      params.push("endDate=" + encodeURIComponent(dateRange.endDate.format("YYYY-MM-DD")));
    }
 
-   // Other filters (make sure these match your backend expectations)
+   // Other filters (need to turn this into a module that takes an ID as a parameter)
    if ($("#language").val()) params.push("language=" + encodeURIComponent($("#language").val()));
    if ($("#department").val()) params.push("department=" + encodeURIComponent($("#department").val()));
    if ($("#comments").val()) params.push("comments=" + encodeURIComponent($("#comments").val()));
@@ -469,8 +494,35 @@ $(document).ready(function () {
   $("#comments, #url").on(
     "keyup",
     debounce(function (e) {
-      table.ajax.reload(); // Reload the table without resetting pagination
+        // If comment box is empty, reload and remove filter
+        if ($(this).val().trim() === "") {
+          table.ajax.reload();
+        } else {
+            table.ajax.reload(); // Reload the table without resetting pagination
+        }
     }, 800)
   );
 
 });
+
+//added function to get filter parameters similar to pageFeedback
+function getFilterParams() {
+  var params = {
+    language: $("#language").val(),
+    department: $("#department").val(),
+    comments: $("#comments").val(),
+    section: $("#section").val(),
+    theme: $("#theme").val(),
+    url: $("#url").val(),
+    error_keyword: $("#errorComments").prop("checked")
+  };
+
+  var dateRangePickerValue = $("#dateRangePicker").val();
+  if (dateRangePickerValue) {
+    var dateRange = $("#dateRangePicker").data('daterangepicker');
+    params.startDate = dateRange.startDate.format('YYYY-MM-DD');
+    params.endDate = dateRange.endDate.format('YYYY-MM-DD');
+  }
+
+  return params;
+}
