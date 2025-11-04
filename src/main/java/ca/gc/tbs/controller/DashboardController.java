@@ -493,36 +493,7 @@ public class DashboardController {
 
         if (error_keyword) {
 
-            Criteria criteria = Criteria.where("processed").is("true");
-
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-            if (startDate != null && !startDate.isEmpty() && endDate != null && !endDate.isEmpty()) {
-                criteria.and("problemDate").gte(startDate).lte(endDate);
-            }
-            if (theme != null && !theme.isEmpty()) {
-                criteria.and("theme").is(theme);
-            }
-            if (section != null && !section.isEmpty()) {
-
-                criteria.and("section").is(section);
-            }
-            if (language != null && !language.isEmpty()) {
-                criteria.and("language").is(language);
-            }
-            if (url != null && !url.isEmpty()) {
-                criteria.and("url").regex(url, "i");
-            }
-            if (department != null && !department.isEmpty()) {
-                Set<String> matchingVariations = new HashSet<>();
-                for (Map.Entry<String, List<String>> entry : institutionMappings.entrySet()) {
-                    if (entry.getValue().stream().anyMatch(variation -> variation.equalsIgnoreCase(department))) {
-                        matchingVariations.addAll(entry.getValue());
-                    }
-                }
-                if (!matchingVariations.isEmpty()) {
-                    criteria.and("institution").in(matchingVariations);
-                }
-            }
+            Criteria criteria = buildFilterCriteria(startDate, endDate, theme, section, language, url, department);
 
             Set<String> keywordsToCheck = new HashSet<>();
             keywordsToCheck.addAll(errorKeywordService.getEnglishKeywords());
@@ -558,34 +529,7 @@ public class DashboardController {
 
         if (comments != null && !comments.trim().isEmpty() && !"null".equalsIgnoreCase(comments.trim())) {
             // New block for comments filter only
-            Criteria criteria = Criteria.where("processed").is("true");
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-            if (startDate != null && !startDate.isEmpty() && endDate != null && !endDate.isEmpty()) {
-                criteria.and("problemDate").gte(startDate).lte(endDate);
-            }
-            if (theme != null && !theme.isEmpty()) {
-                criteria.and("theme").is(theme);
-            }
-            if (section != null && !section.isEmpty()) {
-                criteria.and("section").is(section);
-            }
-            if (language != null && !language.isEmpty()) {
-                criteria.and("language").is(language);
-            }
-            if (url != null && !url.isEmpty()) {
-                criteria.and("url").regex(url, "i");
-            }
-            if (department != null && !department.isEmpty()) {
-                Set<String> matchingVariations = new HashSet<>();
-                for (Map.Entry<String, List<String>> entry : institutionMappings.entrySet()) {
-                    if (entry.getValue().stream().anyMatch(variation -> variation.equalsIgnoreCase(department))) {
-                        matchingVariations.addAll(entry.getValue());
-                    }
-                }
-                if (!matchingVariations.isEmpty()) {
-                    criteria.and("institution").in(matchingVariations);
-                }
-            }
+            Criteria criteria = buildFilterCriteria(startDate, endDate, theme, section, language, url, department);
             // Apply the comment regex
             String escapedComment = escapeSpecialRegexCharacters(comments.trim());
             criteria.and("problemDetails").regex(escapedComment, "i");
@@ -672,39 +616,9 @@ public class DashboardController {
         //error keyword filtering
         if (error_keyword) {
 
-            Criteria criteria = Criteria.where("processed").is("true");
+            Criteria criteria = buildFilterCriteria(startDate, endDate, theme, section, language, url, department);
 
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-            if (startDate != null && endDate != null) {
-                LocalDate start = LocalDate.parse(startDate, formatter);
-                LocalDate end = LocalDate.parse(endDate, formatter);
-                criteria.and("problemDate").gte(start.format(formatter)).lte(end.format(formatter));
-            }
-
-            // Apply other filters to criteria
-            if (theme != null && !theme.isEmpty()) {
-                criteria.and("theme").is(theme);
-            }
-            if (section != null && !section.isEmpty()) {
-                criteria.and("section").in(sectionMappings.getOrDefault(section.toLowerCase(), Collections.singletonList(section)));
-            }
-            if (language != null && !language.isEmpty()) {
-                criteria.and("language").is(language);
-            }
-            if (url != null && !url.isEmpty()) {
-                criteria.and("url").regex(url, "i");
-            }
-            if (department != null && !department.isEmpty()) {
-                Set<String> matchingVariations = new HashSet<>();
-                for (Map.Entry<String, List<String>> entry : institutionMappings.entrySet()) {
-                    if (entry.getValue().stream().anyMatch(variation -> variation.equalsIgnoreCase(department))) {
-                        matchingVariations.addAll(entry.getValue());
-                    }
-                }
-                if (!matchingVariations.isEmpty()) {
-                    criteria.and("institution").in(matchingVariations);
-                }
-            }
+            List<Criteria> regexCriteria = new ArrayList<>();//added for combined regex
 
             // Build regex pattern from all keywords
             Set<String> keywordsToCheck = new HashSet<>();
@@ -712,12 +626,32 @@ public class DashboardController {
             keywordsToCheck.addAll(errorKeywordService.getFrenchKeywords());
             keywordsToCheck.addAll(errorKeywordService.getBilingualKeywords());
 
+            //previous error keyword implementation
+//            if (!keywordsToCheck.isEmpty()) {
+//                criteria.and("problemDetails").regex(String.join("|", keywordsToCheck), "i");
+//            }
             if (!keywordsToCheck.isEmpty()) {
-                criteria.and("problemDetails").regex(String.join("|", keywordsToCheck), "i");
+                regexCriteria.add(Criteria.where("problemDetails").regex(String.join("|", keywordsToCheck), "i"));
+            }
+            // Comment filter regex
+            if (comments != null && !comments.trim().isEmpty() && !"null".equalsIgnoreCase(comments.trim())) {
+                String safeComments = escapeSpecialRegexCharacters(comments.trim());
+                regexCriteria.add(Criteria.where("problemDetails").regex(safeComments, "i"));
+            }
+
+            // Combine base criteria with all regex criteria with .andOperator()
+            Criteria finalCriteria;
+            if (!regexCriteria.isEmpty()) {
+                List<Criteria> ands = new ArrayList<>();
+                ands.add(criteria);
+                ands.addAll(regexCriteria);
+                finalCriteria = new Criteria().andOperator(ands.toArray(new Criteria[0]));
+            } else {
+                finalCriteria = criteria;
             }
 
             // Aggregation for error keywords
-            MatchOperation match = Aggregation.match(criteria);
+            MatchOperation match = Aggregation.match(finalCriteria);
             GroupOperation groupByUrl = Aggregation.group("url")
                     .first("url").as("url")
                     .first("problemDate").as("problemDate")
@@ -744,7 +678,7 @@ public class DashboardController {
             totalPages = mongoTemplate.aggregate(
                     Aggregation.newAggregation(match, groupByUrl), "problem", Problem.class
             ).getMappedResults().size();
-            totalComments =(int) mongoTemplate.count(Query.query(criteria), "problem");
+            totalComments =(int) mongoTemplate.count(Query.query(finalCriteria), "problem");
 
 
             // Create a DataTablesOutput instance
@@ -764,38 +698,8 @@ public class DashboardController {
 
         //comments filtering
         } else if (comments != null && !comments.trim().isEmpty() && !"null".equalsIgnoreCase(comments.trim())) {
-            Criteria criteria = Criteria.where("processed").is("true");
 
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-            if (startDate != null && endDate != null) {
-                LocalDate start = LocalDate.parse(startDate, formatter);
-                LocalDate end = LocalDate.parse(endDate, formatter);
-                criteria.and("problemDate").gte(start.format(formatter)).lte(end.format(formatter));
-            }
-            // Apply other filters
-            if (theme != null && !theme.isEmpty()) {
-                criteria.and("theme").is(theme);
-            }
-            if (section != null && !section.isEmpty()) {
-                criteria.and("section").in(sectionMappings.getOrDefault(section.toLowerCase(), Collections.singletonList(section)));
-            }
-            if (language != null && !language.isEmpty()) {
-                criteria.and("language").is(language);
-            }
-            if (url != null && !url.isEmpty()) {
-                criteria.and("url").regex(url, "i");
-            }
-            if (department != null && !department.isEmpty()) {
-                Set<String> matchingVariations = new HashSet<>();
-                for (Map.Entry<String, List<String>> entry : institutionMappings.entrySet()) {
-                    if (entry.getValue().stream().anyMatch(variation -> variation.equalsIgnoreCase(department))) {
-                        matchingVariations.addAll(entry.getValue());
-                    }
-                }
-                if (!matchingVariations.isEmpty()) {
-                    criteria.and("institution").in(matchingVariations);
-                }
-            }
+            Criteria criteria = buildFilterCriteria(startDate, endDate, theme, section, language, url, department);
 
             // Only use the comment as a regex filter
             String escapedComment = escapeSpecialRegexCharacters(comments.trim());
@@ -923,6 +827,43 @@ public class DashboardController {
             LOGGER.info("Memory used by yourMethod(): {} bytes", actualMemUsed);
 
         return output;
+    }
+    //Helper method for criteria building with filters
+    private Criteria buildFilterCriteria(String startDate, String endDate, String theme,
+                                         String section, String language, String url,
+                                         String department) {
+        Criteria criteria = Criteria.where("processed").is("true");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+        if (startDate != null && !startDate.isEmpty() && endDate != null && !endDate.isEmpty()) {
+            LocalDate start = LocalDate.parse(startDate, formatter);
+            LocalDate end = LocalDate.parse(endDate, formatter);
+            criteria.and("problemDate").gte(start.format(formatter)).lte(end.format(formatter));
+        }
+        if (theme != null && !theme.isEmpty()) {
+            criteria.and("theme").is(theme);
+        }
+        if (section != null && !section.isEmpty()) {
+            criteria.and("section").in(sectionMappings.getOrDefault(section.toLowerCase(), Collections.singletonList(section)));
+        }
+        if (language != null && !language.isEmpty()) {
+            criteria.and("language").is(language);
+        }
+        if (url != null && !url.isEmpty()) {
+            criteria.and("url").regex(url, "i");
+        }
+        if (department != null && !department.isEmpty()) {
+            Set<String> matchingVariations = new HashSet<>();
+            for (Map.Entry<String, List<String>> entry : institutionMappings.entrySet()) {
+                if (entry.getValue().stream().anyMatch(variation -> variation.equalsIgnoreCase(department))) {
+                    matchingVariations.addAll(entry.getValue());
+                }
+            }
+            if (!matchingVariations.isEmpty()) {
+                criteria.and("institution").in(matchingVariations);
+            }
+        }
+        return criteria;
     }
 
     private String escapeSpecialRegexCharacters(String input) {

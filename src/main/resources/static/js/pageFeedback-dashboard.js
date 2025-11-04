@@ -75,12 +75,7 @@ $(document).ready(function () {
     $("#dateRangePicker").val(formattedEarliestDate + " - " + formattedLatestDate);
 
     // Reload the DataTable to reflect the reset filters
-    table.ajax.reload(function() {
-    fetchTotalCommentsCount();
-    fetchTotalPagesCount();
-    fetchDataAndCreateChart();
-    });
-
+    table.ajax.reload();
 }
 
   function getLastFiscalQuarter() {
@@ -225,10 +220,10 @@ $(document).ready(function () {
       { data: "theme", visible: false }, // Theme (hidden in table, but in CSV)
     ],
   });
-
-  $("#comments").on("input", function () {
-    table.ajax.reload();
-  });
+//
+//  $("#comments").on("input", function () {
+//    table.ajax.reload();
+//  });
 
   function fetchTotalCommentsCount() {
     fetch("/pageFeedback/totalCommentsCount")
@@ -489,35 +484,9 @@ $(document).ready(function () {
   $("#comments, #url").on(
     "keyup",
     debounce(function (e) {
-        // If comment box is empty, reload and remove filter
-        if ($(this).val().trim() === "") {
-          table.ajax.reload();
-        } else {
-            table.ajax.reload(); // Reload the table without resetting pagination
-        }
+         table.ajax.reload(); // Reload the table without resetting pagination
     }, 800)
   );
 
 });
 
-//added function to get filter parameters similar to pageFeedback
-function getFilterParams() {
-  var params = {
-    language: $("#language").val(),
-    department: $("#department").val(),
-    comments: $("#comments").val(),
-    section: $("#section").val(),
-    theme: $("#theme").val(),
-    url: $("#url").val(),
-    error_keyword: $("#errorComments").prop("checked")
-  };
-
-  var dateRangePickerValue = $("#dateRangePicker").val();
-  if (dateRangePickerValue) {
-    var dateRange = $("#dateRangePicker").data('daterangepicker');
-    params.startDate = dateRange.startDate.format('YYYY-MM-DD');
-    params.endDate = dateRange.endDate.format('YYYY-MM-DD');
-  }
-
-  return params;
-}
