@@ -1011,23 +1011,6 @@ public class DashboardController {
         }
     }
 
-//    private List<Problem> applyCommentsFilter(List<Problem> problems, String comments) {
-//        if (comments != null && !comments.isEmpty()) {
-//            String commentLower = comments.toLowerCase();
-//            List<Problem> filteredProblems = problems.stream()
-//                    .filter(problem -> problem.getProblemDetails() != null
-//                            && problem.getProblemDetails().toLowerCase().contains(commentLower))
-//                    .collect(Collectors.toList());
-//            LOGGER.info("DashboardController: Number of problems after comments filter: {}", filteredProblems.size());
-//            filteredProblems.stream()
-//                    .limit(5)
-//                    .forEach(problem -> LOGGER.info("DashboardController: Sample filtered problemDetails: {}", problem.getProblemDetails()));
-//            return filteredProblems;
-//        }
-//        return problems;
-//    }
-
-
     public UserService getUserService() {
         return userService;
     }
