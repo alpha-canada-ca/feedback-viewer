@@ -220,10 +220,6 @@ $(document).ready(function () {
       { data: "theme", visible: false }, // Theme (hidden in table, but in CSV)
     ],
   });
-//
-//  $("#comments").on("input", function () {
-//    table.ajax.reload();
-//  });
 
   function fetchTotalCommentsCount() {
     fetch("/pageFeedback/totalCommentsCount")

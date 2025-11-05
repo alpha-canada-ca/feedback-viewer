@@ -491,69 +491,62 @@ public class DashboardController {
         String url = request.getParameter("url");
         String department = request.getParameter("department");
 
+        Criteria criteria = buildFilterCriteria(startDate, endDate, theme, section, language, url, department);
+
+        List<Criteria> regexCriteria = new ArrayList<>();
+
         if (error_keyword) {
-
-            Criteria criteria = buildFilterCriteria(startDate, endDate, theme, section, language, url, department);
-
             Set<String> keywordsToCheck = new HashSet<>();
             keywordsToCheck.addAll(errorKeywordService.getEnglishKeywords());
             keywordsToCheck.addAll(errorKeywordService.getFrenchKeywords());
             keywordsToCheck.addAll(errorKeywordService.getBilingualKeywords());
+
             if (!keywordsToCheck.isEmpty()) {
                 String combinedRegex = keywordsToCheck.stream()
                         .map(Pattern::quote)
                         .collect(Collectors.joining("|"));
-                criteria.and("problemDetails").regex(combinedRegex, "i");
+                regexCriteria.add(Criteria.where("problemDetails").regex(combinedRegex, "i"));
+                //criteria.and("problemDetails").regex(combinedRegex, "i");
             }
 
-            // MongoDB aggregation by problemDate
-            GroupOperation groupByDate = Aggregation.group("problemDate").count().as("comments");
-            SortOperation sortByDate = Aggregation.sort(Sort.Direction.ASC, "_id");
-            Aggregation agg = Aggregation.newAggregation(
-                    Aggregation.match(criteria),
-                    groupByDate,
-                    sortByDate
-            );
-            AggregationResults<Document> aggResults = mongoTemplate.aggregate(agg, "problem", Document.class);
-
-            // Build dailyCommentsList
-            List<Map<String, Object>> dailyCommentsList = new ArrayList<>();
-            for (Document doc : aggResults) {
-                Map<String, Object> map = new HashMap<>();
-                map.put("date", doc.getString("_id")); // group by "problemDate"
-                map.put("comments", doc.getInteger("comments", 0));
-                dailyCommentsList.add(map);
-            }
-            return dailyCommentsList;
         }
-
+        // Comment filter, if set
         if (comments != null && !comments.trim().isEmpty() && !"null".equalsIgnoreCase(comments.trim())) {
-            // New block for comments filter only
-            Criteria criteria = buildFilterCriteria(startDate, endDate, theme, section, language, url, department);
-            // Apply the comment regex
             String escapedComment = escapeSpecialRegexCharacters(comments.trim());
-            criteria.and("problemDetails").regex(escapedComment, "i");
-
-            // Group by date using MongoDB aggregation
-            GroupOperation groupByDate = Aggregation.group("problemDate").count().as("comments");
-            SortOperation sortByDate = Aggregation.sort(Sort.Direction.ASC, "_id");
-
-            Aggregation agg = Aggregation.newAggregation(
-                    Aggregation.match(criteria),
-                    groupByDate,
-                    sortByDate
-            );
-            AggregationResults<Document> aggResults = mongoTemplate.aggregate(agg, "problem", Document.class);
-
-            List<Map<String, Object>> dailyCommentsList = new ArrayList<>();
-            for (Document doc : aggResults) {
-                Map<String, Object> map = new HashMap<>();
-                map.put("date", doc.getString("_id")); // group by "problemDate"
-                map.put("comments", doc.getInteger("comments", 0));
-                dailyCommentsList.add(map);
-            }
-            return dailyCommentsList;
+            regexCriteria.add(Criteria.where("problemDetails").regex(escapedComment, "i"));
         }
+
+        Criteria finalCriteria;
+        if (!regexCriteria.isEmpty()) {
+            List<Criteria> ands = new ArrayList<>();
+            ands.add(criteria);
+            ands.addAll(regexCriteria);
+            finalCriteria = new Criteria().andOperator(ands.toArray(new Criteria[0]));
+        } else {
+            finalCriteria = criteria;
+        }
+        boolean useDatabase = error_keyword || (comments != null && !comments.trim().isEmpty() && !"null".equalsIgnoreCase(comments.trim()));
+        if (useDatabase) {
+        // MongoDB aggregation by problemDate
+        GroupOperation groupByDate = Aggregation.group("problemDate").count().as("comments");
+        SortOperation sortByDate = Aggregation.sort(Sort.Direction.ASC, "_id");
+        Aggregation agg = Aggregation.newAggregation(
+                Aggregation.match(finalCriteria),
+                groupByDate,
+                sortByDate
+        );
+        AggregationResults<Document> aggResults = mongoTemplate.aggregate(agg, "problem", Document.class);
+
+        // Build dailyCommentsList
+        List<Map<String, Object>> dailyCommentsList = new ArrayList<>();
+        for (Document doc : aggResults) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("date", doc.getString("_id")); // group by "problemDate"
+            map.put("comments", doc.getInteger("comments", 0));
+            dailyCommentsList.add(map);
+        }
+        return dailyCommentsList;
+    }
 
         if (problems == null) {
             return new ArrayList<>();
@@ -626,10 +619,7 @@ public class DashboardController {
             keywordsToCheck.addAll(errorKeywordService.getFrenchKeywords());
             keywordsToCheck.addAll(errorKeywordService.getBilingualKeywords());
 
-            //previous error keyword implementation
-//            if (!keywordsToCheck.isEmpty()) {
-//                criteria.and("problemDetails").regex(String.join("|", keywordsToCheck), "i");
-//            }
+
             if (!keywordsToCheck.isEmpty()) {
                 regexCriteria.add(Criteria.where("problemDetails").regex(String.join("|", keywordsToCheck), "i"));
             }
