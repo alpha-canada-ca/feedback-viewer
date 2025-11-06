@@ -76,7 +76,7 @@ $(document).ready(function () {
 
     // Reload the DataTable to reflect the reset filters
     table.ajax.reload();
-  }
+}
 
   function getLastFiscalQuarter() {
     let today = moment();
@@ -131,10 +131,19 @@ $(document).ready(function () {
     ajax: {
       url: "/dashboardData",
       type: "GET",
+        dataSrc: function(json) {
+          return json.data;
+        },
       data: function (d) {
         d.language = $("#language").val();
         d.department = $("#department").val();
-        d.comments = $("#comments").val();
+
+          var commentsVal = $("#comments").val();
+          if (commentsVal && commentsVal.trim() !== "") {
+            d.comments = commentsVal.trim();
+          } else {
+            delete d.comments; // Remove the filter from request
+          }
         d.section = $("#section").val();
         d.theme = $("#theme").val();
         d.url = $("#url").val();
@@ -152,6 +161,7 @@ $(document).ready(function () {
           delete d.startDate; // Ensure startDate is not included in the AJAX request
           delete d.endDate; // Ensure endDate is not included in the AJAX request
         }
+
       },
       error: function (xhr, error, thrown) {
         alert(isFrench ? "Erreur lors de la récupération des données. Veuillez rafraîchir la page et réessayer." : "Error retrieving data. Please refresh the page and try again.");
@@ -210,6 +220,7 @@ $(document).ready(function () {
       { data: "theme", visible: false }, // Theme (hidden in table, but in CSV)
     ],
   });
+
   function fetchTotalCommentsCount() {
     fetch("/pageFeedback/totalCommentsCount")
       .then((response) => response.text())
@@ -327,7 +338,7 @@ $(document).ready(function () {
      params.push("endDate=" + encodeURIComponent(dateRange.endDate.format("YYYY-MM-DD")));
    }
 
-   // Other filters (make sure these match your backend expectations)
+   // Other filters (need to turn this into a module that takes an ID as a parameter)
    if ($("#language").val()) params.push("language=" + encodeURIComponent($("#language").val()));
    if ($("#department").val()) params.push("department=" + encodeURIComponent($("#department").val()));
    if ($("#comments").val()) params.push("comments=" + encodeURIComponent($("#comments").val()));
@@ -469,8 +480,9 @@ $(document).ready(function () {
   $("#comments, #url").on(
     "keyup",
     debounce(function (e) {
-      table.ajax.reload(); // Reload the table without resetting pagination
+         table.ajax.reload(); // Reload the table without resetting pagination
     }, 800)
   );
 
 });
+
