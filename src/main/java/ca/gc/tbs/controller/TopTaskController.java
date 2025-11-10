@@ -472,18 +472,18 @@ public class TopTaskController {
   @ResponseBody
   public DataTablesOutput<TopTaskSurvey> list(
       @Valid DataTablesInput input, HttpServletRequest request) {
-    
+
     // Log request details for debugging
     LOG.info("=== TopTaskData Request Debug ===");
     LOG.info("Request URL: {}", request.getRequestURL());
     LOG.info("Query String: {}", request.getQueryString());
     LOG.info("Query String Length: {}", request.getQueryString() != null ? request.getQueryString().length() : 0);
-    
+
     // Log all parameters
     request.getParameterMap().forEach((key, values) -> {
       LOG.info("Parameter '{}': {}", key, Arrays.toString(values));
     });
-    
+
     String pageLang = (String) request.getSession().getAttribute("lang");
     String departmentFilterVal = request.getParameter("department");
     String themeFilterVal = request.getParameter("theme");
@@ -497,7 +497,9 @@ public class TopTaskController {
     String language = request.getParameter("language");
     String includeCommentsOnlyParam = request.getParameter("includeCommentsOnly");
     boolean includeCommentsOnly = includeCommentsOnlyParam != null && includeCommentsOnlyParam.equals("true");
-    
+    String taskCompletionFilterVal = request.getParameter("taskCompletion");
+
+
     // Log specific filter values
     LOG.info("Department: {}", departmentFilterVal);
     LOG.info("Theme (cleaned): {}", themeFilterVal);
@@ -506,6 +508,7 @@ public class TopTaskController {
       LOG.info("Tasks: {}", Arrays.toString(taskFilterVals));
     }
     LOG.info("Date range: {} to {}", startDateVal, endDateVal);
+    LOG.info("Task Completion: {}", taskCompletionFilterVal);
 
     Criteria criteria = Criteria.where("processed").is("true");
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -554,10 +557,42 @@ public class TopTaskController {
     } else if (!combinedOrCriteria.isEmpty()) {
       criteria.orOperator(combinedOrCriteria.toArray(new Criteria[0]));
     }
+    //taskCompletion filter
+      if (taskCompletionFilterVal != null && !taskCompletionFilterVal.isEmpty()) {
+          List<String> allowed = new ArrayList<>();
+          if (taskCompletionFilterVal.equals("Yes")) {
+              allowed.add("Yes / Oui");
+          } else if (taskCompletionFilterVal.equals("No")) {
+              allowed.add("No / Non");
+          } else if (taskCompletionFilterVal.equals("I started this survey before I finished my visit")) {
+              allowed.add("I started this survey before I finished my visit / J’ai commencé ce sondage avant d’avoir terminé ma visite");
+          }
+          if (!allowed.isEmpty()) {
+              criteria.and("taskCompletion").in(allowed);
+          }
+      }
+
+
 
     List<Map> distinctTaskCounts = topTaskRepository.findDistinctTaskCountsWithFilters(criteria);
     totalDistinctTasks = distinctTaskCounts.size();
     DataTablesOutput<TopTaskSurvey> results = topTaskRepository.findAll(input, criteria);
+
+    //see sample of results
+      List<TopTaskSurvey> returnedData = results.getData();
+      LOG.info("Total results in page: {}", returnedData.size());
+
+      int logLimit = Math.min(5, returnedData.size());
+      for (int i = 0; i < logLimit; i++) {
+          TopTaskSurvey survey = returnedData.get(i);
+          LOG.info("Result {}: task='{}', taskCompletion='{}', dateTime='{}', improveComment='{}', whyNotComment='{}'",
+                  i + 1,
+                  survey.getTask(),
+                  survey.getTaskCompletion(),
+                  survey.getDateTime(),
+                  survey.getTaskImproveComment(),
+                  survey.getTaskWhyNotComment());
+      }
 
     totalTaskCount = (int) results.getRecordsFiltered();
     return results;

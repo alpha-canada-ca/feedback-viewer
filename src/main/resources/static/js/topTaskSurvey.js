@@ -149,6 +149,7 @@ $(document).ready(function () {
         delete data.startDate;
         delete data.endDate;
       }
+      data.taskCompletion = $("#taskCompletion").val();
       data.includeCommentsOnly = $("#commentsCheckbox").is(":checked");
       
       // Log final request data
@@ -269,8 +270,89 @@ $(document).ready(function () {
       console.warn("Error fetching departments:", err);
     });
 
-  $("#tasks").on("change", function () {
+$("#tasks, #taskCompletion, #commentsCheckbox").on("change", function () {
+    myTable.ajax.reload();
     table.ajax.reload();
+  });
+
+  var myTable = new DataTable("#myTable", {
+    language: isFrench ? { url: "//cdn.datatables.net/plug-ins/2.3.2/i18n/fr-FR.json" } : undefined,
+    stripeClasses: [],
+    bSortClasses: false,
+    order: [[0, "desc"]],
+    processing: true,
+    serverSide: true,
+    retrieve: true,
+    lengthMenu: [
+      [10, 25, 50, 100],
+      [10, 25, 50, 100],
+    ],
+    pageLength: 50,
+    orderCellsTop: true,
+    fixedHeader: true,
+    responsive: true,
+    dom: 'Br<"table-responsive"t>tilp',
+    ajax: {
+      url: "/topTaskData",
+      type: "GET",
+      dataSrc: function(json) {
+        return json.data;
+      },
+      data: function (d) {
+        d.department = $("#department").val();
+        d.theme = $("#theme").val();
+        d['tasks[]'] = $("#tasks").val();
+        d.group = $("#group").val();
+        d.language = $("#language").val();
+
+        var dateRangePickerValue = $("#dateRangePicker").val();
+        if (dateRangePickerValue) {
+          var dateRange = $("#dateRangePicker").data("daterangepicker");
+          d.startDate = dateRange.startDate.format(CONFIG.BACKEND_DATE_FORMAT);
+          d.endDate = dateRange.endDate.format(CONFIG.BACKEND_DATE_FORMAT);
+        }
+        d.taskCompletion = $("#taskCompletion").val();
+        d.includeCommentsOnly = $("#commentsCheckbox").is(":checked");
+      },
+      error: function (xhr, error, thrown) {
+        alert(isFrench ? "Erreur lors de la récupération des données. Veuillez rafraîchir la page et réessayer." : "Error retrieving data. Please refresh the page and try again.");
+        console.log("xhr: " + xhr);
+        console.log("error: " + error);
+        console.log("thrown : " + thrown);
+      }
+    },
+    buttons: [
+      {
+        extend: 'csvHtml5',
+        className: 'btn btn-default',
+        text: isFrench ? 'Télécharger CSV' : 'Download CSV',
+        action: function (e, dt, button, config) {
+          e.preventDefault();
+          var url = new URL(window.location.origin + '/exportTopTaskCSV');
+          var params = getFilterParams();
+          Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
+          window.location.href = url.toString();
+        }
+      },
+      {
+        extend: 'excelHtml5',
+        className: 'btn btn-default',
+        text: isFrench ? 'Télécharger Excel' : 'Download Excel',
+        action: function (e, dt, button, config) {
+          e.preventDefault();
+          var url = new URL(window.location.origin + '/exportTopTaskExcel');
+          var params = getFilterParams();
+          Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
+          window.location.href = url.toString();
+        }
+      }
+    ],
+    columns: [
+      { data: 'dateTime', title: isFrench ? 'Date' : 'Date' },
+      { data: 'taskImproveComment', title: isFrench ? 'Améliorer la tâche - commentaire' : 'Task Improve Comment' },
+      { data: 'taskWhyNotComment', title: isFrench ? 'Tâche non complétée - commentaire' : 'Task Why Not Comment' },
+      { data: 'task', title: isFrench ? 'Tâche' : 'Task' }
+    ]
   });
 
   function resetFilters() {
@@ -285,6 +367,7 @@ $(document).ready(function () {
     $("#dateRangePicker").data("daterangepicker").setEndDate(moment(latestDate));
     $("#dateRangePicker").val(earliestDate + " - " + latestDate);
     $("#commentsCheckbox").prop("checked", false);
+    $("#taskCompletion").val("");
     table.ajax.reload();
   }
 
@@ -394,6 +477,7 @@ $(document).ready(function () {
     if ($("#theme").val()) params.append('theme', $("#theme").val());
     if ($("#group").val()) params.append('group', $("#group").val());
     if ($("#language").val()) params.append('language', $("#language").val());
+    if ($("#taskCompletion").val()) params.append("taskCompletion", $("#taskCompletion").val());  //nus added
     params.append('includeCommentsOnly', $("#commentsCheckbox").is(":checked"));
   
     if (tasks && tasks.length > 0) {

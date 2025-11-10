@@ -378,3 +378,27 @@ details:not([open]) > details {
   margin: auto; /* This will center the description in the flex container */
   max-width: 25rem; /* Or whatever value you wish */
 }
+
+.feedback-tool-data { /*The table for task completion data*/
+  border: 1px solid #000;
+  max-width: 85%;
+  margin: 1em auto;
+  padding: 20px;
+  border-radius: 0;
+  width: 85%;
+}
+
+/* Adjust the space for total entries info after the table bottom border */
+#myTable_info {
+  margin-top: 18px;
+  margin-bottom: 10px;
+}
+/*Space between the dropdown entries choice and entries per page*/
+label[for="dt-length-1"] {
+  margin-left: 10px;
+}
+
+#myTable td:first-child, #myTable th:first-child {
+  padding-right: 20px !important;
+  padding-left:10px !important;
+}
