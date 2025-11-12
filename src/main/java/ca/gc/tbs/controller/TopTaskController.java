@@ -573,26 +573,9 @@ public class TopTaskController {
       }
 
 
-
     List<Map> distinctTaskCounts = topTaskRepository.findDistinctTaskCountsWithFilters(criteria);
     totalDistinctTasks = distinctTaskCounts.size();
     DataTablesOutput<TopTaskSurvey> results = topTaskRepository.findAll(input, criteria);
-
-    //see sample of results
-      List<TopTaskSurvey> returnedData = results.getData();
-      LOG.info("Total results in page: {}", returnedData.size());
-
-      int logLimit = Math.min(5, returnedData.size());
-      for (int i = 0; i < logLimit; i++) {
-          TopTaskSurvey survey = returnedData.get(i);
-          LOG.info("Result {}: task='{}', taskCompletion='{}', dateTime='{}', improveComment='{}', whyNotComment='{}'",
-                  i + 1,
-                  survey.getTask(),
-                  survey.getTaskCompletion(),
-                  survey.getDateTime(),
-                  survey.getTaskImproveComment(),
-                  survey.getTaskWhyNotComment());
-      }
 
     totalTaskCount = (int) results.getRecordsFiltered();
     return results;

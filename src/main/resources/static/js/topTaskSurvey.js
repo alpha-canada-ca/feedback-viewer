@@ -270,7 +270,7 @@ $(document).ready(function () {
       console.warn("Error fetching departments:", err);
     });
 
-$("#tasks, #taskCompletion, #commentsCheckbox").on("change", function () {
+$("#tasks, #taskCompletion, #commentsCheckbox, #language").on("change", function () {
     myTable.ajax.reload();
     table.ajax.reload();
   });
