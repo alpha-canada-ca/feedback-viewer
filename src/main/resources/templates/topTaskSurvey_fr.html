@@ -101,6 +101,21 @@
                                 <option value="SEF / SEF">SEF</option>
                             </select>
                         </div>
+                        <div class="form-group">
+                            <label for="taskCompletion">
+                                Capable<br>
+                                d'accomplir<br>
+                                la tâche:
+                            </label>
+                            <select class="form-control" id="taskCompletion" name="taskCompletion">
+                                <option value="">Tous</option>
+                                <option value="Yes / Oui">Oui</option>
+                                <option value="No / Non">Non</option>
+                                <option
+                                    value="I started this survey before I finished my visit / J'ai commencé le sondage avant de terminer la visite">
+                                    J'ai commencé le sondage avant de terminer la visite</option>
+                            </select>
+                        </div>
                         <div class="commentsCheckbox">
                             <input type="checkbox" id="commentsCheckbox" name="commentsCheckbox">
                             <label for="commentsCheckbox">N'inclure que les entrées avec commentaires</label>
@@ -136,8 +151,8 @@
         </div>
         <div class="col-lg-12">
             <div class="row custom-row">
-                <div class="tss-data hidden">
-                    <table id="topTaskTable" class="hidden">
+                <div class="feedback-tool-data">
+                    <table id="topTaskTable" class="display compact">
                         <thead>
                             <tr>
                                 <th>Date</th>
