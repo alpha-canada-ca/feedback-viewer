@@ -389,16 +389,29 @@ details:not([open]) > details {
 }
 
 /* Adjust the space for total entries info after the table bottom border */
-#myTable_info {
+#topTaskTable {
+  margin-top: 30px;
+  margin-bottom: 18px;
+}
+
+#topTaskTable td:first-child,
+#topTaskTable th:first-child {
+  padding-right: 30px !important;
+}
+
+#topTaskTable tbody td {
+  font-size: 10pt !important;
+}
+
+/* Adjust the space for total entries/info after the table bottom border */
+#topTaskTable_info {
   margin-top: 18px;
   margin-bottom: 10px;
 }
 /*Space between the dropdown entries choice and entries per page*/
-label[for="dt-length-1"] {
+label[for="dt-length-0"] {
   margin-left: 10px;
 }
 
-#myTable td:first-child, #myTable th:first-child {
-  padding-right: 20px !important;
-  padding-left:10px !important;
-}
+
+
