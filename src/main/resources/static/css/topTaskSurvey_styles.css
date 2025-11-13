@@ -394,11 +394,6 @@ details:not([open]) > details {
   margin-bottom: 18px;
 }
 
-#topTaskTable td:first-child,
-#topTaskTable th:first-child {
-  padding-right: 30px !important;
-}
-
 #topTaskTable tbody td {
   font-size: 10pt !important;
 }
