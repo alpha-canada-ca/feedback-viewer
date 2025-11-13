@@ -119,13 +119,49 @@ $(document).ready(function () {
 
   var table = new DataTable("#topTaskTable", {
     language: isFrench ? { url: "//cdn.datatables.net/plug-ins/2.3.2/i18n/fr-FR.json" } : undefined,
+    stripeClasses: [],
+    bSortClasses: false,
+    order: [[0, "desc"]],
     processing: true,
     serverSide: true,
     retrieve: true,
+    lengthMenu: [
+      [10, 25, 50, 100],
+      [10, 25, 50, 100],
+    ],
+    pageLength: 50,
+    orderCellsTop: true,
+    fixedHeader: true,
+    responsive: true,
+    dom: 'Br<"table-responsive"t>tilp',
     drawCallback: function () {
       fetchTotalDistinctTask();
       fetchTotalTaskCount();
     },
+    buttons: [
+      {
+        extend: 'csvHtml5',
+        className: 'btn btn-default',
+        text: isFrench ? 'Télécharger CSV' : 'Download CSV',
+        action: function (e, dt, button, config) {
+          e.preventDefault();
+          var url = new URL(window.location.origin + ENDPOINTS.EXPORT_CSV);
+          url.search = getFilterParams().toString();
+          window.location.href = url.toString();
+        }
+      },
+      {
+        extend: 'excelHtml5',
+        className: 'btn btn-default',
+        text: isFrench ? 'Télécharger Excel' : 'Download Excel',
+        action: function (e, dt, button, config) {
+          e.preventDefault();
+          var url = new URL(window.location.origin + ENDPOINTS.EXPORT_EXCEL);
+          url.search = getFilterParams().toString();
+          window.location.href = url.toString();
+        }
+      }
+    ],
     ajax: function(data, callback, settings) {
       loadingSpinner.show();
       
@@ -191,33 +227,33 @@ $(document).ready(function () {
       });
     },
     columns: [
-      { data: 'dateTime' },
-      { data: 'timeStamp' },
-      { data: 'surveyReferrer' },
-      { data: 'language' },
-      { data: 'device' },
-      { data: 'screener' },
-      { data: 'dept' },
-      { data: 'theme' },
-      { data: 'themeOther' },
-      { data: 'grouping' },
-      { data: 'task' },
-      { data: 'taskOther' },
-      { data: 'taskSatisfaction' },
-      { data: 'taskEase' },
-      { data: 'taskCompletion' },
-      { data: 'taskImprove' },
-      { data: 'taskImproveComment' },
-      { data: 'taskWhyNot' },
-      { data: 'taskWhyNotComment' },
-      { data: 'taskSampling' },
-      { data: 'samplingInvitation' },
-      { data: 'samplingGC' },
-      { data: 'samplingCanada' },
-      { data: 'samplingTheme' },
-      { data: 'samplingInstitution' },
-      { data: 'samplingGrouping' },
-      { data: 'samplingTask' }
+      { data: 'dateTime', title: isFrench ? 'Date' : 'Date', visible: true },
+      { data: 'timeStamp', title: isFrench ? 'Horodatage' : 'Time Stamp', visible: false },
+      { data: 'surveyReferrer', title: isFrench ? 'Référence de l\'enquête' : 'Survey Referrer', visible: false },
+      { data: 'language', title: isFrench ? 'Langue' : 'Language', visible: false },
+      { data: 'device', title: isFrench ? 'Appareil' : 'Device', visible: false },
+      { data: 'screener', title: isFrench ? 'Écran' : 'Screener', visible: false },
+      { data: 'dept', title: isFrench ? 'Ministère' : 'Department', visible: false },
+      { data: 'theme', title: isFrench ? 'Thème' : 'Theme', visible: false },
+      { data: 'themeOther', title: isFrench ? 'Autre thème' : 'Theme Other', visible: false },
+      { data: 'grouping', title: isFrench ? 'Regroupement' : 'Grouping', visible: false },
+      { data: 'task', title: isFrench ? 'Tâche' : 'Task', visible: true },
+      { data: 'taskOther', title: isFrench ? 'Autre tâche' : 'Task Other', visible: false },
+      { data: 'taskSatisfaction', title: isFrench ? 'Satisfaction de la tâche' : 'Task Satisfaction', visible: false },
+      { data: 'taskEase', title: isFrench ? 'Facilité de la tâche' : 'Task Ease', visible: false },
+      { data: 'taskCompletion', title: isFrench ? 'Accomplissement de la tâche' : 'Task Completion', visible: false },
+      { data: 'taskImprove', title: isFrench ? 'Améliorer la tâche' : 'Task Improve', visible: false },
+      { data: 'taskImproveComment', title: isFrench ? 'Améliorer la tâche - commentaire' : 'Task Improve Comment', visible: true },
+      { data: 'taskWhyNot', title: isFrench ? 'Pourquoi pas' : 'Task Why Not', visible: false },
+      { data: 'taskWhyNotComment', title: isFrench ? 'Tâche non complétée - commentaire' : 'Task Why Not Comment', visible: true },
+      { data: 'taskSampling', title: isFrench ? 'Échantillonnage de tâche' : 'Task Sampling', visible: false },
+      { data: 'samplingInvitation', title: isFrench ? 'Invitation à l\'échantillonnage' : 'Sampling Invitation', visible: false },
+      { data: 'samplingGC', title: isFrench ? 'Échantillonnage GC' : 'Sampling GC', visible: false },
+      { data: 'samplingCanada', title: isFrench ? 'Échantillonnage Canada' : 'Sampling Canada', visible: false },
+      { data: 'samplingTheme', title: isFrench ? 'Thème d\'échantillonnage' : 'Sampling Theme', visible: false },
+      { data: 'samplingInstitution', title: isFrench ? 'Institution d\'échantillonnage' : 'Sampling Institution', visible: false },
+      { data: 'samplingGrouping', title: isFrench ? 'Regroupement d\'échantillonnage' : 'Sampling Grouping', visible: false },
+      { data: 'samplingTask', title: isFrench ? 'Tâche d\'échantillonnage' : 'Sampling Task', visible: false }
     ],
   });
 
@@ -270,89 +306,8 @@ $(document).ready(function () {
       console.warn("Error fetching departments:", err);
     });
 
-$("#tasks, #taskCompletion, #commentsCheckbox, #language").on("change", function () {
-    myTable.ajax.reload();
+  $("#tasks, #taskCompletion, #commentsCheckbox, #language").on("change", function () {
     table.ajax.reload();
-  });
-
-  var myTable = new DataTable("#myTable", {
-    language: isFrench ? { url: "//cdn.datatables.net/plug-ins/2.3.2/i18n/fr-FR.json" } : undefined,
-    stripeClasses: [],
-    bSortClasses: false,
-    order: [[0, "desc"]],
-    processing: true,
-    serverSide: true,
-    retrieve: true,
-    lengthMenu: [
-      [10, 25, 50, 100],
-      [10, 25, 50, 100],
-    ],
-    pageLength: 50,
-    orderCellsTop: true,
-    fixedHeader: true,
-    responsive: true,
-    dom: 'Br<"table-responsive"t>tilp',
-    ajax: {
-      url: "/topTaskData",
-      type: "GET",
-      dataSrc: function(json) {
-        return json.data;
-      },
-      data: function (d) {
-        d.department = $("#department").val();
-        d.theme = $("#theme").val();
-        d['tasks[]'] = $("#tasks").val();
-        d.group = $("#group").val();
-        d.language = $("#language").val();
-
-        var dateRangePickerValue = $("#dateRangePicker").val();
-        if (dateRangePickerValue) {
-          var dateRange = $("#dateRangePicker").data("daterangepicker");
-          d.startDate = dateRange.startDate.format(CONFIG.BACKEND_DATE_FORMAT);
-          d.endDate = dateRange.endDate.format(CONFIG.BACKEND_DATE_FORMAT);
-        }
-        d.taskCompletion = $("#taskCompletion").val();
-        d.includeCommentsOnly = $("#commentsCheckbox").is(":checked");
-      },
-      error: function (xhr, error, thrown) {
-        alert(isFrench ? "Erreur lors de la récupération des données. Veuillez rafraîchir la page et réessayer." : "Error retrieving data. Please refresh the page and try again.");
-        console.log("xhr: " + xhr);
-        console.log("error: " + error);
-        console.log("thrown : " + thrown);
-      }
-    },
-    buttons: [
-      {
-        extend: 'csvHtml5',
-        className: 'btn btn-default',
-        text: isFrench ? 'Télécharger CSV' : 'Download CSV',
-        action: function (e, dt, button, config) {
-          e.preventDefault();
-          var url = new URL(window.location.origin + '/exportTopTaskCSV');
-          var params = getFilterParams();
-          Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
-          window.location.href = url.toString();
-        }
-      },
-      {
-        extend: 'excelHtml5',
-        className: 'btn btn-default',
-        text: isFrench ? 'Télécharger Excel' : 'Download Excel',
-        action: function (e, dt, button, config) {
-          e.preventDefault();
-          var url = new URL(window.location.origin + '/exportTopTaskExcel');
-          var params = getFilterParams();
-          Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
-          window.location.href = url.toString();
-        }
-      }
-    ],
-    columns: [
-      { data: 'dateTime', title: isFrench ? 'Date' : 'Date' },
-      { data: 'taskImproveComment', title: isFrench ? 'Améliorer la tâche - commentaire' : 'Task Improve Comment' },
-      { data: 'taskWhyNotComment', title: isFrench ? 'Tâche non complétée - commentaire' : 'Task Why Not Comment' },
-      { data: 'task', title: isFrench ? 'Tâche' : 'Task' }
-    ]
   });
 
   function resetFilters() {
