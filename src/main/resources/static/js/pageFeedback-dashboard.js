@@ -105,6 +105,12 @@ $(document).ready(function () {
     return [quarterStart, quarterEnd];
   }
 
+  // Initialize loading overlay
+  var loadingOverlay = createDataTableLoadingOverlay(isFrench, 'spinner');
+
+  // Show loading overlay immediately for initial table load
+  loadingOverlay.show();
+
   // DataTable initialization
   var table = new DataTable("#myTable", {
     language: isFrench ? { url: "//cdn.datatables.net/plug-ins/2.3.2/i18n/fr-FR.json" } : undefined,
@@ -219,6 +225,18 @@ $(document).ready(function () {
       { data: "section", visible: false }, // Section (hidden in table, but in CSV)
       { data: "theme", visible: false }, // Theme (hidden in table, but in CSV)
     ],
+  });
+
+  // Attach loading overlay to DataTable events
+  attachLoadingOverlay(table, {
+    loadingText: isFrench ? 'Chargement des données...' : 'Loading data...',
+    subtext: isFrench ? 'Veuillez patienter pendant que nous filtrons vos résultats' : 'Please wait while we filter your results',
+    spinnerType: 'spinner'
+  });
+
+  // Hide loading overlay after initial table draw
+  table.on('draw.dt', function() {
+    loadingOverlay.hide();
   });
 
   function fetchTotalCommentsCount() {

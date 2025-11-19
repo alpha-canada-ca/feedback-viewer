@@ -136,6 +136,12 @@ $(document).ready(function () {
     $("#dateRangePicker").val(moment(earliestDate).format("YYYY/MM/DD") + " - " + moment(latestDate).format("YYYY/MM/DD"));
   }
 
+  // Initialize loading overlay
+  var loadingOverlay = createDataTableLoadingOverlay(isFrench, 'spinner');
+
+  // Show loading overlay immediately for initial table load
+  loadingOverlay.show();
+
   // DataTable initialization
   var table = new DataTable("#myTable", {
     language: isFrench ? { url: "//cdn.datatables.net/plug-ins/2.3.2/i18n/fr-FR.json" } : undefined,
@@ -231,6 +237,18 @@ $(document).ready(function () {
       { data: "deviceType", visible: false },
       { data: "browser", visible: false },
     ],
+  });
+
+  // Attach loading overlay to DataTable events
+  attachLoadingOverlay(table, {
+    loadingText: isFrench ? 'Chargement des données...' : 'Loading data...',
+    subtext: isFrench ? 'Veuillez patienter pendant que nous filtrons vos résultats' : 'Please wait while we filter your results',
+    spinnerType: 'spinner'
+  });
+
+  // Hide loading overlay after initial table draw
+  table.on('draw.dt', function() {
+    loadingOverlay.hide();
   });
 
   // SlimSelect initialization

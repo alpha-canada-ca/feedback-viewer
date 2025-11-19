@@ -42,6 +42,12 @@ $(document).ready(function () {
   var formattedDate = now.getMonth() + 1 + "/" + now.getDate() + "/" + now.getFullYear();
   var loadingSpinner = $(".loading-spinner");
 
+  // Initialize loading overlay
+  var loadingOverlay = createDataTableLoadingOverlay(isFrench, 'spinner');
+
+  // Show loading overlay immediately for initial table load
+  loadingOverlay.show();
+
   // Utility functions
   function formatNumberWithCommas(number) {
     if (number == null || number === '') return number;
@@ -255,6 +261,18 @@ $(document).ready(function () {
       { data: 'samplingGrouping', title: isFrench ? 'Regroupement d\'échantillonnage' : 'Sampling Grouping', visible: false },
       { data: 'samplingTask', title: isFrench ? 'Tâche d\'échantillonnage' : 'Sampling Task', visible: false }
     ],
+  });
+
+  // Attach loading overlay to DataTable events
+  attachLoadingOverlay(table, {
+    loadingText: isFrench ? 'Chargement des données...' : 'Loading data...',
+    subtext: isFrench ? 'Veuillez patienter pendant que nous filtrons vos résultats' : 'Please wait while we filter your results',
+    spinnerType: 'spinner'
+  });
+
+  // Hide loading overlay after initial table draw
+  table.on('draw.dt', function() {
+    loadingOverlay.hide();
   });
 
   function fetchTotalDistinctTask() {
