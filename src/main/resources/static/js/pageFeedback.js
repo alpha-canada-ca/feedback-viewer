@@ -136,6 +136,75 @@ $(document).ready(function () {
     $("#dateRangePicker").val(moment(earliestDate).format("YYYY/MM/DD") + " - " + moment(latestDate).format("YYYY/MM/DD"));
   }
 
+  const $originalPages = $("#pages");
+    $originalPages.hide().css('visibility', 'hidden');
+
+    const $pagesContainer = $('<div id="pages-replacement"></div>');
+    $originalPages.after($pagesContainer);
+
+    var pageSelect = new CustomDropdown({
+      select: "#pages",
+      settings: {
+        hideSelected: true,
+        keepOrder: true,
+        placeholderText: isFrench ? "Filtrer par titre de page complet ou partiel" : "Filter by full or partial page title",
+        searchText: isFrench ? "Aucun résultat trouvé" : "No results found",
+        searchPlaceholder: isFrench ? "Recherche" : "Search",
+        searchingText: isFrench ? "Recherche en cours..." : "Searching...",
+        closeOnSelect: true,
+      },
+      events: {
+        search: (search, currentData) => {
+          return new Promise((resolve, reject) => {
+            clearTimeout(pageSelect.debounceTimer);
+            pageSelect.debounceTimer = setTimeout(() => {
+              if (search.length < 2) {
+                return reject(isFrench ? "La recherche doit comporter au moins 2 caractères" : "Search must be at least 2 characters");
+              }
+
+              fetch("/pageTitles?search=" + encodeURIComponent(search), {
+                method: "GET",
+                headers: {
+                  Accept: "application/json",
+                },
+              })
+                .then((response) => {
+                  if (!response.ok) {
+                    throw new Error(isFrench ? "La réponse du réseau n'était pas correcte" : "Network response was not ok");
+                  }
+                  return response.json();
+                })
+                .then((data) => {
+                  const options = data
+                    .filter((title) => !currentData.some((optionData) => optionData.value === title))
+                    .map((title) => ({ text: title, value: title }));
+
+                  resolve(options);
+                })
+                .catch((error) => {
+                  console.error("Error fetching page titles:", error);
+                  reject(error);
+                });
+            }, 800);
+          });
+        },
+        // Add onChange event for automatic table reload
+        onChange: function(selectedValues) {
+          console.log("Pages changed:", selectedValues);
+          if (typeof table !== 'undefined') {
+            table.ajax.reload(); // Reload the DataTable when pages change
+          }
+        }
+      },
+    });
+
+    $(document).on('pages:changed', function(event, selectedPages) {
+      console.log("Pages changed event:", selectedPages);
+      if (typeof table !== 'undefined') {
+        table.ajax.reload();
+      }
+    });
+
   // DataTable initialization
   var table = new DataTable("#myTable", {
     language: isFrench ? { url: "//cdn.datatables.net/plug-ins/2.3.2/i18n/fr-FR.json" } : undefined,
@@ -231,61 +300,6 @@ $(document).ready(function () {
       { data: "deviceType", visible: false },
       { data: "browser", visible: false },
     ],
-  });
-
-  // SlimSelect initialization
-  var pageSelect = new SlimSelect({
-    select: "#pages",
-    settings: {
-      hideSelected: true,
-      keepOrder: true,
-      placeholderText: isFrench ? "Filtrer par titre de page complet ou partiel" : "Filter by full or partial page title",
-      searchText: isFrench ? "Aucun résultat trouvé" : "No results found",
-      searchPlaceholder: isFrench ? "Recherche" : "Search",
-      searchingText: isFrench ? "Recherche en cours..." : "Searching...",
-      closeOnSelect: false,
-    },
-    events: {
-      search: (search, currentData) => {
-        return new Promise((resolve, reject) => {
-          clearTimeout(pageSelect.debounceTimer);
-          pageSelect.debounceTimer = setTimeout(() => {
-            if (search.length < 2) {
-              return reject(isFrench ? "La recherche doit comporter au moins 2 caractères" : "Search must be at least 2 characters");
-            }
-
-            fetch("/pageTitles?search=" + encodeURIComponent(search), {
-              method: "GET",
-              headers: {
-                Accept: "application/json",
-              },
-            })
-              .then((response) => {
-                if (!response.ok) {
-                  throw new Error(isFrench ? "La réponse du réseau n'était pas correcte" : "Network response was not ok");
-                }
-                return response.json();
-              })
-              .then((data) => {
-                const options = data
-                  .filter((title) => !currentData.some((optionData) => optionData.value === title))
-                  .map((title) => ({ text: title, value: title }));
-
-                resolve(options);
-              })
-              .catch((error) => {
-                console.error("Error fetching page titles:", error);
-                reject(error);
-              });
-          }, 800);
-        });
-      },
-    },
-  });
-
-  // Event bindings
-  $("#pages").on("change", function () {
-    table.ajax.reload();
   });
 
   $(".reset-filters").on("click", resetFilters);
