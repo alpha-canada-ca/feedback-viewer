@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{wide_fr}" lang="fr">
+
+<head>
+    <link href="https://fonts.googleapis.com/css?family=Noto+Sans" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css"
+        type="text/css" />
+    <link
+        href="https://cdn.datatables.net/v/dt/jq-3.7.0/jszip-3.10.1/dt-2.3.2/b-3.2.0/b-html5-3.2.0/cr-2.0.4/fh-4.0.1/r-3.0.3/datatables.min.css"
+        rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+    <link rel="stylesheet" type="text/css" href="/css/topTaskSurvey_styles.css" />
+    <link rel="stylesheet" type="text/css" href="/css/loading-overlay.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://unpkg.com/slim-select@2.13.1/dist/slimselect.min.js"></script>
+    <link href="https://unpkg.com/slim-select@2.13.1/dist/slimselect.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+    <th:block layout:fragment="content">
+        <main class="container">
+            <div class="col-lg-12">
+                <div class="row">
+                    <h1 id="wb-cont">Sondage sur la réussite des tâches</h1>
+                    <form class="tss">
+                        <h2 class="h4">Filtrer par:</h2>
+                        <label for="tasks">
+                            Tâche(s)
+                            <select id="tasks" multiple></select>
+                        </label>
+                        <div class="form-group">
+                            <label for="department">Institution</label>
+                            <select class="form-control" id="department" name="department">
+                                <option value>Tous</option>
+                                <!-- DEPARTMENTS -->
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="theme">
+                                Thème
+                                <span id="theme-tool-tip" class="glyphicon glyphicon-question-sign"
+                                    aria-hidden="true"></span>
+                            </label>
+                            <select class="form-control" id="theme" name="theme">
+                                <option value>Tous</option>
+                                <option value="Taxes / Impôts">Impôts / Taxes</option>
+                                <option value="Immigration / Immigration">Immigration / Immigration</option>
+                                <option value="Benefits / Prestations">Prestations / Benefits</option>
+                                <option value="World / Monde">Monde / World</option>
+                                <option value="Travel / Voyage">Voyage / Travel</option>
+                                <option value="Transport / Transport">Transport / Transport</option>
+                                <option value="Culture / Culture">Culture / Culture</option>
+                                <option value="Environment / Environnement">Environnement / Environment</option>
+                                <option value="Jobs / Emplois">Emplois / Jobs</option>
+                                <option value="Business / Entreprises">Entreprises / Business</option>
+                                <option value="Health / Santé">Santé / Health</option>
+                                <option value="AboutGov / À propos du Gouvernement (AboutGov)">À propos du Gouvernement
+                                    (AboutGov) / AboutGov</option>
+                                <option value="Money / Argent">Argent / Money</option>
+                                <option value="History / Histoire">Histoire / History</option>
+                                <option value="Indigenous / Autochtones">Autochtones / Indigenous</option>
+                                <option value="Security / Sécurité">Sécurité / Security</option>
+                                <option value="PublicService / Fonction publique">Fonction publique / PublicService
+                                </option>
+                                <option value="Science / Science">Science / Science</option>
+                                <option value="Policing / Police">Police / Policing</option>
+                                <option value="Business / Entreprise">Entreprise / Business</option>
+                                <option value="Money / Environnement">Environnement / Money</option>
+                                <option value="Jobs / Environnement">Environnement / Jobs</option>
+
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="language">Langue de la page</label>
+                            <select class="form-control" id="language" name="language">
+                                <option value>Tous</option>
+                                <option value="en">Anglais</option>
+                                <option value="fr">Français</option>
+                            </select>
+                        </div>
+                        <label id="drp" for="dateRangePicker">
+                            Période
+                            <input type="text" id="dateRangePicker" name="dateRangePicker" readonly="readonly"
+                                style="background-color: white; cursor: pointer" />
+                        </label>
+                        <div class="form-group">
+
+                            <label for="group">
+                                Regroupement
+                                <span id="group-tool-tip" class="glyphicon glyphicon-question-sign"
+                                    aria-hidden="true"></span>
+                            </label>
+                            <select class="form-control" id="group" name="group">
+                                <option value>Tous</option>
+                                <option value="LLO / PEC">LLO</option>
+                                <option value="MSCBA-ROE / MDESC-RE">MDESC-RE</option>
+                                <option value="MSCBA-GCOS / MDESC-SELSC">MDESC-SELSC</option>
+                                <option value="SEF / SEF">SEF</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="taskCompletion">
+                                Capable<br>
+                                d'accomplir<br>
+                                la tâche:
+                            </label>
+                            <select class="form-control" id="taskCompletion" name="taskCompletion">
+                                <option value="">Tous</option>
+                                <option value="Yes / Oui">Oui</option>
+                                <option value="No / Non">Non</option>
+                                <option
+                                    value="I started this survey before I finished my visit / J'ai commencé le sondage avant de terminer la visite">
+                                    J'ai commencé le sondage avant de terminer la visite</option>
+                            </select>
+                        </div>
+                        <div class="commentsCheckbox">
+                            <input type="checkbox" id="commentsCheckbox" name="commentsCheckbox">
+                            <label for="commentsCheckbox">N'inclure que les entrées avec commentaires</label>
+                        </div>
+
+                        <div class="download-section">
+                            <button type="button" class="btn btn-primary" id="downloadCSV">Télécharger CSV</button>
+                            <button type="button" class="btn btn-primary" id="downloadExcel">Télécharger Excel</button>
+                            <button type="button" class="btn-unstyled reset-filters">Réinitialiser les filtres</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+        </main>
+        <div class="col-lg-12">
+            <div class="stats-box">
+                <div class="stat">
+                    <span class="description">Total des tâches uniques (sur la base des filtres sélectionnés)</span>
+                    <br>
+                    <span class="totalDistinctTasks"></span>
+                </div>
+                <div class="stat">
+                    <span class="description">Total des entrées (sur la base des filtres sélectionnés)</span>
+                    <br>
+                    <span class="totalTaskCount"></span>
+                </div>
+            </div>
+        </div>
+        <!-- Add this code in your HTML file -->
+        <div class="loading-spinner" style="display: none;">
+            <i class="fa fa-spinner fa-spin fa-3x"></i>
+        </div>
+        <div class="col-lg-12">
+            <div class="row custom-row">
+                <div class="feedback-tool-data">
+                    <table id="topTaskTable" class="display compact">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Horodatage</th>
+                                <th>Référent de l'enquête</th>
+                                <th>Langue</th>
+                                <th>Dispositif</th>
+                                <th>Cribleur</th>
+                                <th>Département</th>
+                                <th>Thème</th>
+                                <th>Thème Autre</th>
+                                <th>Regroupement</th>
+                                <th>Tâche</th>
+                                <th>Tâche Autre</th>
+                                <th>Satisfaction des tâches</th>
+                                <th>Facilité d'exécution des tâches</th>
+                                <th>Achèvement des tâches</th>
+                                <th>Amélioration de la tâche</th>
+                                <th>Tâche Améliorer Commentaire</th>
+                                <th>Tâche Pourquoi pas</th>
+                                <th>Tâche Pourquoi pas Commentaire</th>
+                                <th>Échantillonnage</th>
+                                <th>Invitation à l'échantillonnage</th>
+                                <th>Échantillonnage GC</th>
+                                <th>Échantillonnage du Canada</th>
+                                <th>Thème d'échantillonnage</th>
+                                <th>Institution d'échantillonnage</th>
+                                <th>Groupe d'échantillonnage</th>
+                                <th>Tâche d'échantillonnage</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </th:block>
+    <th:block layout:fragment="script">
+        <script
+            src="https://cdn.datatables.net/v/dt/jq-3.7.0/jszip-3.10.1/dt-2.3.2/b-3.2.0/b-html5-3.2.0/cr-2.0.4/fh-4.0.1/r-3.0.3/datatables.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+        <script type="text/javascript" src="js/spring-friendly.min.js"></script>
+        <script th:inline="javascript">
+            /*
+                  <![CDATA[*/
+            var earliestDate = /*[[${earliestDate}]]*/ "";
+            var latestDate = /*[[${latestDate}]]*/ "";
+            var langSession = /*[[${session.lang}]]*/ "";
+            /*]]>*/
+        </script>
+        <script src="/js/loading-overlay.js"></script>
+        <script src="/js/topTaskSurvey.js"></script>
+        <script src="https://unpkg.com/@popperjs/core@2"></script>
+        <script src="https://unpkg.com/tippy.js@6"></script>
+    </th:block>
+</body>
+
+</html>

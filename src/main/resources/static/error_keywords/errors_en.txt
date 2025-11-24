@@ -1,0 +1,208 @@
+access denied
+access page
+available
+be saved
+been down
+blank page
+blocked
+booted me
+broken
+browser
+bug
+bumped out
+button is disabled
+cache
+can't access
+cannot access
+can not move forward
+can not submit
+can not open
+can't open
+couldn't select
+can't sign in
+cannot log in
+can't submit
+can't upload
+can not get past
+can't get past
+can't load
+cannot load
+could not access
+can not access
+cannot submit
+cannot upload
+capatcha
+could not
+could not move on
+couldn’t be submitted
+couldn't submit
+couldn't upload
+crash
+dead end
+declined
+did not match
+didn't show
+does not function
+doesn't function
+did not connect
+did not load
+did not function
+did not work
+didn't work
+does not work
+doesn't connect
+doesn't work
+doesnt work
+down again
+error
+error message
+err.
+fails
+failed
+finish loading
+freezing
+froze
+freezes
+frozen
+getting a fault
+glitch
+greyed out
+hang
+hanging
+hung
+I can't see
+insecure site
+isn't connecting
+it won't allow me
+it wouldn't allow me
+kicked out
+let me submit
+locked up
+long loading
+loop
+lost connection
+maintenance
+never able to
+network issue
+never working
+not functioning
+not available
+not upload
+no working
+not able to check
+not coming up
+nothing happens
+no success
+not compatible
+not letting me
+not save
+not saving
+not worked
+not working
+non-functional
+not allowing me
+not functional
+nothing happened
+out of service
+page does not exist
+page doesn't exist
+page is not available
+page isn't working
+page redirects me
+page says loading
+page will not load
+page will not open
+page not found
+page not available
+proxy
+re-direct
+redirect
+redirected
+reset
+scrolling
+secure connection failed
+server
+Service not available
+service unavailable
+site has been down
+site is down
+site down
+site too slow
+slow system
+spinning dial
+spins
+stalls
+system locked
+system not available
+something went wrong
+something was wrong
+spinning
+spinning wheel
+stuck
+submit button
+system down
+system says
+system failure
+system wasn't available
+system won't
+system did not respond
+technical problem
+temporary down
+to no avail
+time out
+time to load
+timed out
+timed-out
+times out
+technical difficulties
+timed me out
+timeout
+timing out
+technical issue
+there is no way
+try again later
+typo
+unable to access
+unable to advance
+unable to get
+unable to submit
+unable to update
+unavailable
+under construction
+under maintenance
+unresponsive
+was down
+website won't accept
+would not display
+would not let me
+would not load
+wouldn't accept
+wasn't available
+wasn't working
+website is down
+website problem
+website is down
+website was down
+why can't I
+why cant I
+will not accept
+will not work
+will not go through
+won't let me
+won't load
+won't submit
+won't work
+would not allow me
+would not open
+would not load
+would not accept
+wouldn't accept
+wouldn't complete
+wouldn't load
+wouldn't work
+wrong
+you don't accept
+your system
+
+
+

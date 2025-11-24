@@ -1,0 +1,134 @@
+a échoué
+accès refusé
+bloqué
+bloque
+blocage
+boucle
+bouton d'envoi
+cassé
+chargement impossible
+chargement trop long
+connexion impossible
+connexion perdue
+décliné
+disponible
+défilement
+défaillance du système
+délai d'attente expiré
+échoue
+expulsé
+échec de la connexion sécurisée
+en construction
+en maintenance
+en panne
+erreur
+err.
+être sauvegardé
+fin du chargement
+fonctionne pas
+gelé
+grisé
+hors service
+il n'y a aucun moyen
+impossible à charger
+Impossible d'accéder
+Impossible de charger
+impossible de passer
+impasse
+impossible d'envoyer
+impossible d'obtenir
+impossible d'ouvrir
+impossible de mettre à jour
+impossible de sélectionner
+incorrect
+indisponible temporairement
+impossible de vérifier
+indisponible
+la page indique qu'elle est en cours de chargement
+la page ne s'ouvre pas
+le bouton est désactivé
+le système n'a pas répondu
+m'a bloqué
+marche pas
+me laisser soumettre
+message d'erreur
+n'accepte pas
+n'acceptera pas
+n'achèvera pas
+navigateur
+ne chargera pas
+ne me laisse pas faire
+ne me laisse pas
+ne s'affiche pas
+ne fonctionne jamais
+ne fonctionne pas
+ne pas me laisser
+ne pas sauver
+ne peut être soumis
+ne peut pas avancer
+ne peut pas avancer
+ne peut pas envoyer
+ne peut pas soumettre
+ne peut pas télécharger
+ne se charge pas
+ne se connecte pas
+ne se soumet pas
+ne s'affiche pas
+ne travaillera pas
+ne fonctionnait pas
+ne me permet pas d'accéder
+ne passe pas
+ne s'est pas chargé
+ne s'ouvre pas
+ne se charge pas
+non fonctionnel
+page blanche
+page me redirige
+page ne fonctionne pas
+page ne se charge pas
+problèmes techniques
+Page indisponible
+page non trouvée
+page inexistante
+problème réseau
+problème technique
+pas compatible
+pas de sauvegarde
+pas de succès
+pas de travail
+pas disponible
+pas en mesure d'avancer
+pas fonctionné
+pas le droit
+peux pas voir
+pourquoi je ne peux pas
+problème de site web
+quelque chose n'allait pas
+redirigé
+rediriger
+réessayez plus tard
+refuserait d'accepter
+rien ne se passe
+rotation du cadran
+réinitialiser
+rien ne s'est passé
+roue qui tourne
+sans réponse
+serveur
+Service non disponible
+site indisponible
+site non sécurisé
+site trop lent
+site web n'accepte pas
+suspension
+système indisponible
+système lent
+système verrouillé
+télécharger
+temps d'attente
+temps de chargement
+temps mort
+tourne
+votre système
+vous n'acceptez pas
+verrouillé
