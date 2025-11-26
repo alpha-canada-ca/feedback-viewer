@@ -310,7 +310,7 @@ label[for="dt-length-0"] {
 .custom-select-wrapper {
   position: relative;
   width: 70% !important;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
   grid-column: 2;
   font-family: "Noto sans", sans-serif;
 }
@@ -782,7 +782,7 @@ label[for="dt-length-0"] {
  .custom-select-wrapper {
    position: relative;
    width: 70% !important;
-   margin-bottom: 15px;
+   margin-bottom: 10px;
    grid-column: 2;
    font-family: "Noto sans", sans-serif;
  }
@@ -979,7 +979,6 @@ label[for="dt-length-0"] {
  /* Ensure consistent form styling */
  .feedback-tool .custom-select-wrapper {
    width: 70%;
-   margin-bottom: 15px;
  }
 
  /* Legacy styles for fallback */
@@ -1023,7 +1022,7 @@ label[for="dt-length-0"] {
 /* Ensure consistent form styling */
 .feedback-tool .custom-select-wrapper {
   width: 70%;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
 }
 
 /* Legacy styles for fallback */

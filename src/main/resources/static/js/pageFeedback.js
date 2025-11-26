@@ -136,8 +136,15 @@ $(document).ready(function () {
     $("#dateRangePicker").val(moment(earliestDate).format("YYYY/MM/DD") + " - " + moment(latestDate).format("YYYY/MM/DD"));
   }
 
+  // Initialize loading overlay
+  var loadingOverlay = createDataTableLoadingOverlay(isFrench, 'spinner');
+
+  // Show loading overlay immediately for initial table load
+  loadingOverlay.show();
+
   var pageSelect = new CustomDropdown({
     select: "#pages",
+    multiSelect: false,
     settings: {
       hideSelected: false,
       keepOrder: true,
@@ -168,8 +175,8 @@ $(document).ready(function () {
           }, 800);
         });
       },
-      onChange: function(selectedValues) {
-        console.log("Pages changed:", selectedValues);
+      onChange: function(selectedValue) {
+        console.log("Pages changed:", selectedValue);
         if (typeof table !== 'undefined') {
           table.ajax.reload();
         }
@@ -226,7 +233,7 @@ $(document).ready(function () {
           d.titles = selectedPages;
           console.log("Sending titles to server:", d.titles);
         }
-      
+
         var dateRangePickerValue = $("#dateRangePicker").val();
         if (dateRangePickerValue) {
           var dateRange = $("#dateRangePicker").data("daterangepicker");
@@ -298,6 +305,18 @@ $(document).ready(function () {
       { data: "deviceType", visible: false },
       { data: "browser", visible: false },
     ],
+  });
+
+  // Attach loading overlay to DataTable events
+  attachLoadingOverlay(table, {
+    loadingText: isFrench ? 'Chargement des données...' : 'Loading data...',
+    subtext: isFrench ? 'Veuillez patienter pendant que nous filtrons vos résultats' : 'Please wait while we filter your results',
+    spinnerType: 'spinner'
+  });
+
+  // Hide loading overlay after initial table draw
+  table.on('draw.dt', function() {
+    loadingOverlay.hide();
   });
 
   $(".reset-filters").on("click", resetFilters);

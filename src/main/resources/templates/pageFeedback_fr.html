@@ -11,8 +11,7 @@
     rel="stylesheet" type="text/css" />
   <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
   <link rel="stylesheet" type="text/css" href="/css/pageFeedback_styles.css" />
-  <script src="https://unpkg.com/slim-select@2.13.1/dist/slimselect.min.js"></script>
-  <link href="https://unpkg.com/slim-select@2.13.1/dist/slimselect.css" rel="stylesheet" type="text/css" />
+  <link rel="stylesheet" type="text/css" href="/css/loading-overlay.css" />
 </head>
 
 <body>
@@ -207,7 +206,9 @@
     <script src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
     <script type="text/javascript" src="js/spring-friendly.min.js"></script>
-    <script th:inline="javascript">
+    <script type="text/javascript" src="js/custom-dropdown.js"></script>
+
+      <script th:inline="javascript">
       /*
           <![CDATA[*/
       var earliestDate = /*[[${earliestDate}]]*/ '';
@@ -215,6 +216,7 @@
       var langSession = /*[[${session.lang}]]*/ '';
       /*]]>*/
     </script>
+    <script src="/js/loading-overlay.js"></script>
     <script src="/js/pageFeedback.js"></script>
     <script src="https://unpkg.com/@popperjs/core@2"></script>
     <script src="https://unpkg.com/tippy.js@6"></script>

@@ -42,6 +42,12 @@ $(document).ready(function () {
   var formattedDate = now.getMonth() + 1 + "/" + now.getDate() + "/" + now.getFullYear();
   var loadingSpinner = $(".loading-spinner");
 
+  // Initialize loading overlay
+  var loadingOverlay = createDataTableLoadingOverlay(isFrench, 'spinner');
+
+  // Show loading overlay immediately for initial table load
+  loadingOverlay.show();
+
   // Utility functions
   function formatNumberWithCommas(number) {
     if (number == null || number === '') return number;
@@ -125,7 +131,7 @@ $(document).ready(function () {
 
     var taskSelect = new CustomDropdown({
       select: "#tasks",
-      multiselect: false,
+      multiSelect: false,
       settings: {
         hideSelected: false,
         keepOrder: true,
@@ -174,8 +180,8 @@ $(document).ready(function () {
             }, CONFIG.DEBOUNCE_DELAY);
           });
         },
-        onChange: function(selectedValues) {
-          console.log("Tasks changed:", selectedValues);
+        onChange: function(selectedValue) {
+          console.log("Tasks changed:", selectedValue);
           if (typeof table !== 'undefined') {
             table.ajax.reload();
           }
@@ -333,6 +339,18 @@ $(document).ready(function () {
        ],
      });
 
+  // Attach loading overlay to DataTable events
+  attachLoadingOverlay(table, {
+    loadingText: isFrench ? 'Chargement des données...' : 'Loading data...',
+    subtext: isFrench ? 'Veuillez patienter pendant que nous filtrons vos résultats' : 'Please wait while we filter your results',
+    spinnerType: 'spinner'
+  });
+
+  // Hide loading overlay after initial table draw
+  table.on('draw.dt', function() {
+    loadingOverlay.hide();
+  });
+
      function fetchTotalDistinctTask() {
        fetch(ENDPOINTS.TOTAL_DISTINCT_TASKS)
          .then((response) => {
@@ -349,136 +367,136 @@ $(document).ready(function () {
          });
      }
 
-     function fetchTotalTaskCount() {
-       fetch(ENDPOINTS.TOTAL_TASK_COUNT)
-         .then((response) => {
-           if (!response.ok) {
-             throw new Error(`HTTP error! status: ${response.status}`);
-           }
-           return response.text();
-         })
-         .then((totalTaskCount) => {
-           $(".stat .totalTaskCount").text(formatNumberWithCommas(totalTaskCount));
-         })
-         .catch((err) => {
-           console.warn("Error fetching total task count:", err);
-         });
-     }
+  function fetchTotalTaskCount() {
+    fetch(ENDPOINTS.TOTAL_TASK_COUNT)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.text();
+      })
+      .then((totalTaskCount) => {
+        $(".stat .totalTaskCount").text(formatNumberWithCommas(totalTaskCount));
+      })
+      .catch((err) => {
+        console.warn("Error fetching total task count:", err);
+      });
+  }
 
-     fetch(ENDPOINTS.DEPARTMENTS)
-       .then(response => {
-         if (!response.ok) {
-           throw new Error(`HTTP error! status: ${response.status}`);
-         }
-         return response.json();
-       })
-       .then(departments => {
-         const departmentSelect = $("#department");
-         departments.forEach(department => {
-           departmentSelect.append(`<option value="${department.value}">${department.display}</option>`);
-         });
-       })
-       .catch(err => {
-         console.warn("Error fetching departments:", err);
-       });
+  fetch(ENDPOINTS.DEPARTMENTS)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.json();
+    })
+    .then(departments => {
+      const departmentSelect = $("#department");
+      departments.forEach(department => {
+        departmentSelect.append(`<option value="${department.value}">${department.display}</option>`);
+      });
+    })
+    .catch(err => {
+      console.warn("Error fetching departments:", err);
+    });
 
-     $("#tasks, #taskCompletion, #commentsCheckbox, #language").on("change", function () {
-       table.ajax.reload();
-     });
+  $("#tasks, #taskCompletion, #commentsCheckbox, #language").on("change", function () {
+    table.ajax.reload();
+  });
 
-     function resetFilters() {
-       $("#department").val("");
-       $("#theme").val("");
-       $("#group").val("");
-       $("#language").val("");
-       taskSelect.setData([]);
-       taskSelect.setSelected([]);
-       $("#tasks").val("");
-       $("#dateRangePicker").data("daterangepicker").setStartDate(moment(earliestDate));
-       $("#dateRangePicker").data("daterangepicker").setEndDate(moment(latestDate));
-       $("#dateRangePicker").val(earliestDate + " - " + latestDate);
-       $("#commentsCheckbox").prop("checked", false);
-       $("#taskCompletion").val("");
-       table.ajax.reload();
-     }
+  function resetFilters() {
+    $("#department").val("");
+    $("#theme").val("");
+    $("#group").val("");
+    $("#language").val("");
+    taskSelect.setData([]);
+    taskSelect.setSelected([]);
+    $("#tasks").val("");
+    $("#dateRangePicker").data("daterangepicker").setStartDate(moment(earliestDate));
+    $("#dateRangePicker").data("daterangepicker").setEndDate(moment(latestDate));
+    $("#dateRangePicker").val(earliestDate + " - " + latestDate);
+    $("#commentsCheckbox").prop("checked", false);
+    $("#taskCompletion").val("");
+    table.ajax.reload();
+  }
 
-     $(".reset-filters").on("click", resetFilters);
+  $(".reset-filters").on("click", resetFilters);
 
-     $("#dateRangePicker").daterangepicker(
-       {
-         opens: "left",
-         startDate: moment(earliestDate),
-         endDate: moment(latestDate),
-         minDate: moment(earliestDate),
-         maxDate: moment(latestDate),
-         alwaysShowCalendars: true,
-         locale: {
-           format: CONFIG.DATE_FORMAT,
-           cancelLabel: isFrench ? "Effacer" : "Clear",
-           applyLabel: isFrench ? "Appliquer" : "Apply",
-           customRangeLabel: isFrench ? "Période spécifique" : "Custom Range",
-           firstDay: isFrench ? 1 : 0,
-           daysOfWeek: isFrench ? ["Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"] : undefined,
-           monthNames: isFrench ? ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"] : undefined,
-         },
-         ranges: {
-           [isFrench ? "Toutes les dates" : "All Dates"]: [moment(earliestDate), moment(latestDate)],
-           [isFrench ? "Aujourd'hui" : "Today"]: [moment(), moment()],
-           [isFrench ? "Hier" : "Yesterday"]: [moment().subtract(1, "days"), moment().subtract(1, "days")],
-           [isFrench ? "7 derniers jours" : "Last 7 Days"]: [moment().subtract(6, "days"), moment()],
-           [isFrench ? "30 derniers jours" : "Last 30 Days"]: [moment().subtract(29, "days"), moment()],
-           [isFrench ? "Ce mois-ci" : "This Month"]: [moment().startOf("month"), moment().endOf("month")],
-           [isFrench ? "Le mois dernier" : "Last Month"]: [moment().subtract(1, "month").startOf("month"), moment().subtract(1, "month").endOf("month")],
-           [isFrench ? "Dernier trimestre" : "Last Quarter"]: getLastFiscalQuarter(),
-         },
-       },
-       function (start, end, label) {
-         $("#dateRangePicker").val(start.format(CONFIG.DATE_FORMAT) + " - " + end.format(CONFIG.DATE_FORMAT));
-         table.ajax.reload();
-       }
-     );
+  $("#dateRangePicker").daterangepicker(
+    {
+      opens: "left",
+      startDate: moment(earliestDate),
+      endDate: moment(latestDate),
+      minDate: moment(earliestDate),
+      maxDate: moment(latestDate),
+      alwaysShowCalendars: true,
+      locale: {
+        format: CONFIG.DATE_FORMAT,
+        cancelLabel: isFrench ? "Effacer" : "Clear",
+        applyLabel: isFrench ? "Appliquer" : "Apply",
+        customRangeLabel: isFrench ? "Période spécifique" : "Custom Range",
+        firstDay: isFrench ? 1 : 0,
+        daysOfWeek: isFrench ? ["Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"] : undefined,
+        monthNames: isFrench ? ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"] : undefined,
+      },
+      ranges: {
+        [isFrench ? "Toutes les dates" : "All Dates"]: [moment(earliestDate), moment(latestDate)],
+        [isFrench ? "Aujourd'hui" : "Today"]: [moment(), moment()],
+        [isFrench ? "Hier" : "Yesterday"]: [moment().subtract(1, "days"), moment().subtract(1, "days")],
+        [isFrench ? "7 derniers jours" : "Last 7 Days"]: [moment().subtract(6, "days"), moment()],
+        [isFrench ? "30 derniers jours" : "Last 30 Days"]: [moment().subtract(29, "days"), moment()],
+        [isFrench ? "Ce mois-ci" : "This Month"]: [moment().startOf("month"), moment().endOf("month")],
+        [isFrench ? "Le mois dernier" : "Last Month"]: [moment().subtract(1, "month").startOf("month"), moment().subtract(1, "month").endOf("month")],
+        [isFrench ? "Dernier trimestre" : "Last Quarter"]: getLastFiscalQuarter(),
+      },
+    },
+    function (start, end, label) {
+      $("#dateRangePicker").val(start.format(CONFIG.DATE_FORMAT) + " - " + end.format(CONFIG.DATE_FORMAT));
+      table.ajax.reload();
+    }
+  );
 
-     $("#dateRangePicker").on("cancel.daterangepicker", function (ev, picker) {
-       picker.setStartDate(moment(earliestDate));
-       picker.setEndDate(moment(latestDate));
-       $("#dateRangePicker").val(moment(earliestDate).format(CONFIG.DATE_FORMAT) + " - " + moment(latestDate).format(CONFIG.DATE_FORMAT));
-       table.ajax.reload();
-     });
+  $("#dateRangePicker").on("cancel.daterangepicker", function (ev, picker) {
+    picker.setStartDate(moment(earliestDate));
+    picker.setEndDate(moment(latestDate));
+    $("#dateRangePicker").val(moment(earliestDate).format(CONFIG.DATE_FORMAT) + " - " + moment(latestDate).format(CONFIG.DATE_FORMAT));
+    table.ajax.reload();
+  });
 
-     function handleDownload(url, defaultFilename, errorMessageKey) {
-       loadingSpinner.show();
-
-       fetch(url)
-         .then(response => {
-           if (response.status === 204) {
-             loadingSpinner.hide();
-             showAlert('NO_DATA_EXPORT');
-             return null;
-           }
-           if (!response.ok) {
-             return response.text().then(text => {
-               throw new Error(text);
-             });
-           }
-
-           const disposition = response.headers.get('Content-Disposition');
-           const filename = extractFilenameFromHeader(disposition, defaultFilename);
-           return { blob: response.blob(), filename };
-         })
-         .then(result => {
-           if (result && result.blob) {
-             result.blob.then(blob => {
-               createDownloadLink(blob, result.filename);
-               setTimeout(() => {
-                 loadingSpinner.hide();
-               }, CONFIG.SPINNER_HIDE_DELAY);
-             });
-           }
-         })
-         .catch(error => {
-           handleError(error, errorMessageKey, 'File download');
-         });
-     }
+  function handleDownload(url, defaultFilename, errorMessageKey) {
+    loadingSpinner.show();
+    
+    fetch(url)
+      .then(response => {
+        if (response.status === 204) {
+          loadingSpinner.hide();
+          showAlert('NO_DATA_EXPORT');
+          return null;
+        }
+        if (!response.ok) {
+          return response.text().then(text => {
+            throw new Error(text);
+          });
+        }
+        
+        const disposition = response.headers.get('Content-Disposition');
+        const filename = extractFilenameFromHeader(disposition, defaultFilename);
+        return { blob: response.blob(), filename };
+      })
+      .then(result => {
+        if (result && result.blob) {
+          result.blob.then(blob => {
+            createDownloadLink(blob, result.filename);
+            setTimeout(() => {
+              loadingSpinner.hide();
+            }, CONFIG.SPINNER_HIDE_DELAY);
+          });
+        }
+      })
+      .catch(error => {
+        handleError(error, errorMessageKey, 'File download');
+      });
+  }
 
      $("#downloadCSV").on("click", function () {
        const url = new URL(window.location.origin + ENDPOINTS.EXPORT_CSV);
