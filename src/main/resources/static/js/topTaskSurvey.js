@@ -125,8 +125,9 @@ $(document).ready(function () {
 
     var taskSelect = new CustomDropdown({
       select: "#tasks",
+      multiselect: false,
       settings: {
-        hideSelected: true,
+        hideSelected: false,
         keepOrder: true,
         placeholderText: isFrench ? "Filtrer par mot-clé de la tâche" : "Filter by task keyword",
         searchText: isFrench ? "Aucun résultat trouvé" : "No results found",

@@ -1,5 +1,4 @@
 function CustomDropdown(options) {
-
   const settings = options.settings || {};
   const events = options.events || {};
 
@@ -11,7 +10,7 @@ function CustomDropdown(options) {
     select: options.select,
     multiSelect: false,
     searchMinChars: 2,
-    debounceDelay: 800,
+    debounceDelay: 300,
     hideSelected: settings.hideSelected !== false,
     keepOrder: settings.keepOrder !== false,
     closeOnSelect: settings.closeOnSelect !== false,
@@ -19,7 +18,8 @@ function CustomDropdown(options) {
     searchText: settings.searchText || (isFrench ? "Aucun résultat trouvé" : "No results found"),
     searchPlaceholder: settings.searchPlaceholder || (isFrench ? "Recherche" : "Search"),
     searchingText: settings.searchingText || (isFrench ? "Recherche en cours..." : "Searching..."),
-    searchFunction: events.search
+    searchFunction: events.search,
+    onChange: events.onChange
   };
 
   const $originalSelect = $(config.select);
@@ -38,7 +38,8 @@ function CustomDropdown(options) {
   const $wrapper = $('<div>').attr('id', instanceId + '-wrapper').addClass('custom-select-wrapper');
   const $display = $('<div>').addClass('custom-select-display').attr('tabindex', '0');
   const $placeholder = $('<span>').addClass('placeholder-text').text(config.placeholderText);
-  const $selectedItems = $('<div>').addClass('selected-items').hide();
+  const $selectedText = $('<span>').addClass('selected-text').hide();
+  const $clearBtn = $('<span>').addClass('clear-selection').html('&times;').attr('title', 'Clear').hide();
   const $arrow = $('<span>').addClass('dropdown-arrow').html('&#9662;');
 
   const $dropdown = $('<div>').addClass('custom-dropdown').hide();
@@ -55,39 +56,33 @@ function CustomDropdown(options) {
   // Assemble the structure
   $searchContainer.append($searchInput);
   $dropdown.append($searchContainer, $statusContainer, $resultsContainer);
-  $display.append($placeholder, $selectedItems, $arrow);
+  $display.append($placeholder, $selectedText, $clearBtn, $arrow);
   $wrapper.append($display, $dropdown);
   $originalSelect.after($wrapper);
 
   // State management
   let debounceTimer = null;
   let isDropdownOpen = false;
-  let selectedValues = [];
+  let selectedValue = null;
   let lastSearchTerm = "";
   let currentResults = [];
 
-  // Internal methods
   function updateDisplay() {
-    if (selectedValues.length === 0) {
+    if (!selectedValue) {
       $placeholder.show();
-      $selectedItems.hide().empty();
+      $selectedText.hide().text('');
+      $clearBtn.hide();
     } else {
       $placeholder.hide();
-      $selectedItems.show().empty();
-
-      selectedValues.forEach(value => {
-        const $chip = $('<span>').addClass('selected-chip').text(value);
-        const $removeBtn = $('<span>').addClass('remove-chip').attr('data-value', value).html('&times;');
-        $chip.append($removeBtn);
-        $selectedItems.append($chip);
-      });
+      $selectedText.show().text(selectedValue);
+      $clearBtn.show();
     }
 
     // Update original select
     $originalSelect.empty();
-    selectedValues.forEach(value => {
-      $originalSelect.append(new Option(value, value, false, true));
-    });
+    if (selectedValue) {
+      $originalSelect.append(new Option(selectedValue, selectedValue, false, true));
+    }
     $originalSelect.trigger('change');
   }
 
@@ -112,12 +107,14 @@ function CustomDropdown(options) {
 
     // Filter out selected items if hideSelected is true
     let availableResults = results;
-    if (config.hideSelected) {
-      availableResults = results.filter(item => !selectedValues.includes(item));
+    if (config.hideSelected && selectedValue) {
+       availableResults = results.filter(item => item !== selectedValue);
     }
 
     if (availableResults.length === 0) {
-      const $noMore = $('<div>').addClass('no-more-results').text('All matching options already selected');
+      const $noMore = $('<div>').addClass('no-more-results').text(
+        isFrench ? "Option déjà sélectionnée" : "Option already selected"
+      );
       $resultsContainer.append($noMore);
       return;
     }
@@ -127,9 +124,15 @@ function CustomDropdown(options) {
         .addClass('dropdown-option')
         .attr('data-value', item)
         .text(item);
+
+      if (item === selectedValue) {
+        $option.addClass('selected');
+      }
+
       $resultsContainer.append($option);
     });
   }
+
 
   function performSearch(searchTerm) {
     // Handle empty search - show "No results found"
@@ -156,24 +159,21 @@ function CustomDropdown(options) {
     showStatus(config.searchingText, 'loading-status');
     $resultsContainer.empty();
 
-    // Call the search function in SlimSelect format
+    // Call the search function
     if (config.searchFunction) {
-      // Create currentData in SlimSelect format
-      const currentData = selectedValues.map(value => ({ value: value, text: value }));
+      const currentData = selectedValue ? [{ value: selectedValue, text: selectedValue }] : [];
 
       const searchPromise = config.searchFunction(searchTerm, currentData);
 
       if (searchPromise && typeof searchPromise.then === 'function') {
         searchPromise
           .then(options => {
-            // Handle SlimSelect format response: [{ text: "...", value: "..." }]
             currentResults = options.map(option => option.text || option.value || option);
 
             if (currentResults.length === 0) {
               showStatus(config.searchText, 'no-results-status');
               $resultsContainer.empty();
             } else {
-              // HIDE status when showing results
               hideStatus();
               showResults(currentResults);
             }
@@ -216,54 +216,31 @@ function CustomDropdown(options) {
     $resultsContainer.empty();
   }
 
-  function selectValue(value) {
-    if (!selectedValues.includes(value)) {
-      selectedValues.push(value);
-      updateDisplay();
+   function selectValue(value) {
+        selectedValue = value;
+        updateDisplay();
 
-      // Remove from current view if hideSelected is true
-      if (config.hideSelected) {
-        $resultsContainer.find(`[data-value="${value}"]`).remove();
-        const remainingCount = $resultsContainer.find('.dropdown-option').length;
-        if (remainingCount === 0 && currentResults.length > 0) {
-          showStatus('All matching options selected', 'no-results-status');
-        } else if (remainingCount > 0) {
-          const resultsCount = isFrench ?
-            `${remainingCount} résultat${remainingCount > 1 ? 's' : ''}` :
-            `${remainingCount} result${remainingCount !== 1 ? 's' : ''}`;
-          showStatus(resultsCount, 'results-count-status');
+        if (config.onChange) {
+          config.onChange(value);
         }
-      }
 
-      // Close dropdown if closeOnSelect is true
-      if (config.closeOnSelect) {
         closeDropdown();
-      }
-    }
-  }
+   }
 
-  function removeValue(value) {
-    selectedValues = selectedValues.filter(v => v !== value);
-    updateDisplay();
+   function clearSelection() {
+     selectedValue = null;
+     updateDisplay();
 
-    // Re-add to results if dropdown is open
-    if (isDropdownOpen && currentResults.includes(value)) {
-      const $option = $('<div>')
-        .addClass('dropdown-option')
-        .attr('data-value', value)
-        .text(value);
-      $resultsContainer.append($option);
-
-      const availableCount = $resultsContainer.find('.dropdown-option').length;
-      const resultsCount = isFrench ?
-        `${availableCount} résultat${availableCount > 1 ? 's' : ''}` :
-        `${availableCount} result${availableCount !== 1 ? 's' : ''}`;
-      showStatus(resultsCount, 'results-count-status');
-    }
-  }
+     if (config.onChange) {
+       config.onChange(null);
+     }
+   }
 
   // Event handlers
   $display.on('click', function(e) {
+      if (!config.multiSelect && $(e.target).hasClass('clear-selection')) {
+            return;
+          }
     e.preventDefault();
     e.stopPropagation();
     if (isDropdownOpen) {
@@ -271,6 +248,12 @@ function CustomDropdown(options) {
     } else {
       openDropdown();
     }
+  });
+
+  $clearBtn.on('click', function(e) {
+       e.preventDefault();
+       e.stopPropagation();
+       clearSelection();
   });
 
   $searchInput.on('input', function() {
@@ -303,69 +286,74 @@ function CustomDropdown(options) {
   });
 
   $resultsContainer.on('click', '.dropdown-option', function(e) {
-    e.preventDefault();
-    e.stopPropagation();
-    const value = $(this).attr('data-value');
-    selectValue(value);
-  });
-
-  $selectedItems.on('click', '.remove-chip', function(e) {
-    e.preventDefault();
-    e.stopPropagation();
-    const value = $(this).attr('data-value');
-    removeValue(value);
-  });
-
-  $(document).on('click', function(e) {
-    if (!$(e.target).closest(`#${instanceId}-wrapper`).length) {
-      closeDropdown();
-    }
-  });
-
-  $dropdown.on('click', function(e) {
-    e.stopPropagation();
-  });
-
-  $display.on('keydown', function(e) {
-    if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();
-      if (isDropdownOpen) {
+      e.stopPropagation();
+      const value = $(this).attr('data-value');
+      console.log("=== Dropdown option clicked ===");
+      console.log("Clicked value:", value);
+      selectValue(value);
+    });
+
+    $(document).on('click', function(e) {
+        if (!$(e.target).closest(`#${instanceId}-wrapper`).length) {
         closeDropdown();
-      } else {
-        openDropdown();
+        }
+    });
+
+    $dropdown.on('click', function(e) {
+      e.stopPropagation();
+    });
+
+    $display.on('keydown', function(e) {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        if (isDropdownOpen) {
+          closeDropdown();
+        } else {
+          openDropdown();
+        }
+      } else if (e.key === 'Escape') {
+        closeDropdown();
       }
-    } else if (e.key === 'Escape') {
-      closeDropdown();
-    }
-  });
+    });
 
-  // Initialize
-  updateDisplay();
+    // Initialize
+    updateDisplay();
 
-  const publicAPI = {
-    setData: function(data) {
-      currentResults = data || [];
-    },
-    setSelected: function(values) {
-      selectedValues = Array.isArray(values) ? [...values] : [];
-      updateDisplay();
-    },
-    getSelected: function() {
-      return [...selectedValues];
-    },
-    close: function() {
-      closeDropdown();
-    },
-    open: function() {
-      openDropdown();
-    },
-    destroy: function() {
-      $wrapper.remove();
-      $originalSelect.show();
-    },
+    const publicAPI = {
+      setData: function(data) {
+        currentResults = data || [];
+      },
+      setSelected: function(values) {
+        if (Array.isArray(values) && values.length > 0) {
+                selectedValue = values[0];
+              } else if (typeof values === 'string') {
+                selectedValue = values;
+              } else {
+                selectedValue = null;
+              }
+              updateDisplay();
+            },
+            getSelected: function() {
+              return selectedValue ? [selectedValue] : [];
+            },
+            close: function() {
+              closeDropdown();
+            },
+            open: function() {
+              openDropdown();
+            },
+            destroy: function() {
+              clearTimeout(debounceTimer);
+              $wrapper.remove();
+              $originalSelect.show();
+            },
+            clearSelected: function() {
+              selectedValue = null;
+              updateDisplay();
+            },
+            debounceTimer: null
+          };
 
-    debounceTimer: null
-  };
-
-  return publicAPI;
-}
+          return publicAPI;
+        }

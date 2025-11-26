@@ -685,7 +685,10 @@ public class ProblemController {
             for (String title : titles) {
                 titleCriterias.add(Criteria.where("title").is(title));
             }
-            criteria.orOperator(titleCriterias.toArray(new Criteria[0]));
+            criteria = new Criteria().andOperator(
+                    criteria,
+                    new Criteria().orOperator(titleCriterias.toArray(new Criteria[0]))
+            );
         }
         if (url != null && !url.isEmpty()) {
             criteria.and("url").regex(url, "i");
@@ -841,7 +844,10 @@ public class ProblemController {
             for (String title : titles) {
                 titleCriterias.add(Criteria.where("title").is(title));
             }
-            criteria.orOperator(titleCriterias.toArray(new Criteria[0]));
+            criteria = new Criteria().andOperator(
+                    criteria,
+                    new Criteria().orOperator(titleCriterias.toArray(new Criteria[0]))
+            );
         }
         if (url != null && !url.isEmpty()) {
             criteria.and("url").regex(url, "i");
@@ -1011,7 +1017,10 @@ public class ProblemController {
                 titleCriterias.add(Criteria.where("title").is(title));
             }
             // Combine all title criteria using AND operation
-            criteria.orOperator(titleCriterias.toArray(new Criteria[0]));
+            criteria = new Criteria().andOperator(
+                    criteria,
+                    new Criteria().orOperator(titleCriterias.toArray(new Criteria[0]))
+            );
             System.out.println("Titles received: " + Arrays.toString(titles));
         }
         // URL filtering
