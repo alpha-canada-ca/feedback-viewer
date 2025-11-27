@@ -8,9 +8,6 @@ resource "aws_acm_certificate" "feedback_viewer" {
     Terraform  = true
   })
 
-  lifecycle {
-    create_before_destroy = true
-  }
 }
 
 resource "aws_route53_record" "feedback_viewer_certificate_validation" {
