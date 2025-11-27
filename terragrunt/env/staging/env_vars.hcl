@@ -16,9 +16,9 @@ inputs = {
     "subnet-0b491669917639c05",
     "subnet-04c4cdbafdd4d17ec",
   ]
-  dto_feedback_cj_vpc_cidr_block         = "10.0.0.0/16"
-  dto_feedback_cj_docdb_endpoint         = "feedback-cronjob-docdb-cluster.cluster-c52kwceay79r.ca-central-1.docdb.amazonaws.com"
-  dto_feedback_cj_docdb_username_arn     = "arn:aws:ssm:ca-central-1:992382783569:parameter/feedback-cronjob/staging/docdb-username"
-  dto_feedback_cj_docdb_password_arn     = "arn:aws:ssm:ca-central-1:992382783569:parameter/feedback-cronjob/staging/docdb-password"
+  dto_feedback_cj_vpc_cidr_block     = "10.0.0.0/16"
+  dto_feedback_cj_docdb_endpoint     = "feedback-cronjob-docdb-cluster.cluster-c52kwceay79r.ca-central-1.docdb.amazonaws.com"
+  dto_feedback_cj_docdb_username_arn = "arn:aws:ssm:ca-central-1:992382783569:parameter/feedback-cronjob/staging/docdb-username"
+  dto_feedback_cj_docdb_password_arn = "arn:aws:ssm:ca-central-1:992382783569:parameter/feedback-cronjob/staging/docdb-password"
 }
 
