@@ -1,24 +1,5 @@
- resource "aws_ssm_parameter" "docdb_username" {
-  name  = "docdb_username"
-  type  = "SecureString"
-  value = var.docdb_username
-
-  tags = {
-    CostCentre = var.billing_code
-    Terraform  = true
-  }
-}
-
-resource "aws_ssm_parameter" "docdb_password" {
-  name  = "docdb_password"
-  type  = "SecureString"
-  value = var.docdb_password
-
-  tags = {
-    CostCentre = var.billing_code
-    Terraform  = true
-  }
-}
+# DocumentDB credentials are managed in dto-feedback-cj repo
+# Reference them via env_vars.hcl: dto_feedback_cj_docdb_username_arn and dto_feedback_cj_docdb_password_arn
 
 resource "aws_ssm_parameter" "jwt_secret_key" {
   name  = "jwt_secret_key"

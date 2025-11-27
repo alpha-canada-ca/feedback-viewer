@@ -1,5 +1,5 @@
-locals{
-    vars = read_terragrunt_config("../env_vars.hcl")
+locals {
+  vars = read_terragrunt_config("../env_vars.hcl")
 }
 
 
@@ -16,6 +16,15 @@ inputs = {
     CostCentre = "${local.vars.inputs.cost_center_code}"
     Terraform  = true
   }
+
+  # dto-feedback-cj infrastructure (from env_vars.hcl)
+  dto_feedback_cj_vpc_id                 = "${local.vars.inputs.dto_feedback_cj_vpc_id}"
+  dto_feedback_cj_vpc_private_subnet_ids = local.vars.inputs.dto_feedback_cj_vpc_private_subnet_ids
+  dto_feedback_cj_vpc_public_subnet_ids  = local.vars.inputs.dto_feedback_cj_vpc_public_subnet_ids
+  dto_feedback_cj_vpc_cidr_block         = "${local.vars.inputs.dto_feedback_cj_vpc_cidr_block}"
+  dto_feedback_cj_docdb_endpoint         = "${local.vars.inputs.dto_feedback_cj_docdb_endpoint}"
+  dto_feedback_cj_docdb_username_arn     = "${local.vars.inputs.dto_feedback_cj_docdb_username_arn}"
+  dto_feedback_cj_docdb_password_arn     = "${local.vars.inputs.dto_feedback_cj_docdb_password_arn}"
 }
 
 
