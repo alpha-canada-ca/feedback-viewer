@@ -15,8 +15,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
         integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <script src="https://unpkg.com/slim-select@2.13.1/dist/slimselect.min.js"></script>
-    <link href="https://unpkg.com/slim-select@2.13.1/dist/slimselect.css" rel="stylesheet" type="text/css" />
 </head>
 
 <body>
@@ -29,7 +27,7 @@
                         <h2 class="h4">Filtrer par:</h2>
                         <label for="tasks">
                             Tâche(s)
-                            <select id="tasks" multiple></select>
+                            <select id="tasks" ></select>
                         </label>
                         <div class="form-group">
                             <label for="department">Institution</label>
@@ -197,6 +195,7 @@
         <script src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
         <script type="text/javascript" src="js/spring-friendly.min.js"></script>
+        <script type="text/javascript" src="js/custom-dropdown.js"></script>
         <script th:inline="javascript">
             /*
                   <![CDATA[*/

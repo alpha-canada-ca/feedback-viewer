@@ -134,6 +134,25 @@ table.dataTable.rowborder tbody th {
   margin-top: 1ch;
 }
 
+.tss label[for="tasks"] {
+  display: grid;
+  grid-template-columns: subgrid;
+  grid-column: span 2;
+  align-items: center;
+}
+
+.custom-select-wrapper {
+  position: relative;
+  width: 70%;
+  margin-bottom: 10px;
+  grid-column: 2; /* Add this to position it in the grid */
+}
+
+.tss #tasks {
+  grid-column: 2;
+  width: 70% !important;
+}
+
 .tss > h2 {
   grid-column: 1 / 1;
   margin-top: 0.4em;
@@ -155,13 +174,7 @@ table.dataTable.rowborder tbody th {
 #myTable tbody td {
   font-size: 14px; /* Set the font size for data rows */
 }
-.tss input,
-.tss select {
-  width: 70% !important;
-  padding: 6px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
+
 
 .download-section {
   text-align: right;
@@ -194,14 +207,17 @@ table.dataTable.rowborder tbody th {
   margin-top: 1em;
 }
 
-.tss input,
-.tss select {
-  width: max-content;
+.tss input:not(.search-input),
+.tss select:not(#tasks) {
+  width: 70% !important;
+  padding: 6px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
 }
+
 
 #dateRange option {
   padding: 5px;
-  /* Adjust the padding as needed */
 }
 
 .tss > details > p {
@@ -274,14 +290,14 @@ main {
   line-height: 1em !important;
 }
 .dataTables_paginate {
-  font-size: 16px; /* Adjust the font size as needed */
+  font-size: 16px;
 }
 .dataTables_info {
-  font-size: 16px; /* Adjust the font size as needed */
+  font-size: 16px;
 }
 .dataTables_length label {
-  font-weight: 400; /* Make the text bold */
-  font-size: 16px; /* Adjust the font size */
+  font-weight: 400;
+  font-size: 16px;
   margin-top: 2pt;
 }
 .tss a:visited {
@@ -408,5 +424,223 @@ label[for="dt-length-0"] {
   margin-left: 10px;
 }
 
+.custom-select-wrapper {
+  position: relative;
+  width: 70% !important;
+  margin-bottom: 15px; /* Increased for better spacing */
+  grid-column: 2;
+}
 
+.custom-select-display {
+  min-height: 38px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 6px 30px 6px 12px;
+  background-color: white;
+  cursor: pointer;
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px;
+  font-size: 16px;
+  font-family: "Noto sans", sans-serif;
+
+}
+
+.custom-select-display:focus {
+  outline: 2px solid #007bff;
+  outline-offset: -2px;
+  border-color: #007bff;
+}
+
+.placeholder-text {
+  color: #797979;
+  font-weight: 200;
+  pointer-events: none;
+  font-family: "Noto sans", sans-serif;
+
+}
+
+.selected-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  flex: 1;
+}
+
+.selected-chip {
+  background-color: #e9ecef;
+  border: 1px solid #ced4da;
+  border-radius: 3px;
+  padding: 2px 6px;
+  font-size: 0.875em;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.remove-chip {
+  cursor: pointer;
+  font-weight: bold;
+  color: #6c757d;
+  margin-left: 4px;
+  font-size: 1.1em;
+}
+
+.remove-chip:hover {
+  color: #dc3545;
+}
+
+.dropdown-arrow {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  transition: transform 0.2s;
+  pointer-events: none;
+  color: #6c757d;
+}
+
+.dropdown-arrow.open {
+  transform: translateY(-50%) rotate(180deg);
+}
+
+.custom-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid #ccc;
+  border-top: none;
+  border-radius: 0 0 4px 4px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  z-index: 1000;
+  max-height: 300px;
+  overflow: hidden;
+}
+
+.search-container {
+  padding: 8px;
+  border-bottom: 1px solid #eee;
+  background-color: #f8f9fa;
+}
+
+.search-input {
+  width: 100% !important;
+  padding: 6px 8px !important;
+  border: 1px solid #ddd !important;
+  border-radius: 3px !important;
+  outline: none;
+  font-size: 16px;
+  font-family: "Noto sans", sans-serif;
+}
+
+.search-input:focus {
+  border-color: #007bff !important;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.status-container {
+  padding: 8px 12px;
+  font-size: 0.875em;
+  border-bottom: 1px solid #eee;
+  background-color: #f8f9fa;
+}
+
+.loading-status {
+  color: #6c757d;
+  font-style: italic;
+}
+
+.no-results-status, .error-status {
+  color: #dc3545;
+}
+
+.results-count-status {
+  color: #28a745;
+}
+
+.warning-status {
+  color: #ffc107;
+}
+
+.no-more-results {
+  padding: 8px 12px;
+  color: #6c757d;
+  font-style: italic;
+  text-align: center;
+}
+
+.results-container {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.dropdown-option {
+  padding: 8px 12px;
+  cursor: pointer;
+  border-bottom: 1px solid #f0f0f0;
+  transition: background-color 0.15s ease;
+  font-size: 14px;
+  font-family: "Noto sans", sans-serif;
+}
+
+.dropdown-option:hover {
+  background-color: #007bff;
+  color: white;
+}
+
+.dropdown-option:last-child {
+  border-bottom: none;
+}
+
+.results-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.results-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.results-container::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+.results-container::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Hide original select when custom dropdown is active */
+.custom-select-wrapper ~ #tasks,
+#tasks-dropdown-wrapper ~ #tasks {
+  display: none !important;
+}
+
+/* Legacy styles for fallback */
+#tasks {
+  width: 100% !important;
+  padding: 6px 12px !important;
+  border: 1px solid #ccc !important;
+  border-radius: 4px !important;
+  font-size: 16px !important;
+  font-weight: normal !important;
+  max-height: 300px !important;
+  box-sizing: border-box !important;
+  min-width: auto !important;
+  display: block !important;
+}
+
+#tasks:focus {
+  outline: none !important;
+  border-color: #007bff !important;
+  box-shadow: inset 0 0 0 0.2rem rgba(0, 123, 255, 0.15) !important;
+}
+
+#tasks option:checked {
+  background-color: #007bff !important;
+  color: #fff !important;
+}
 

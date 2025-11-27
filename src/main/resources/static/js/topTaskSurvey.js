@@ -123,145 +123,221 @@ $(document).ready(function () {
     return [quarterStart, quarterEnd];
   }
 
-  var table = new DataTable("#topTaskTable", {
-    language: isFrench ? { url: "//cdn.datatables.net/plug-ins/2.3.2/i18n/fr-FR.json" } : undefined,
-    stripeClasses: [],
-    bSortClasses: false,
-    order: [[0, "desc"]],
-    processing: true,
-    serverSide: true,
-    retrieve: true,
-    lengthMenu: [
-      [10, 25, 50, 100],
-      [10, 25, 50, 100],
-    ],
-    pageLength: 50,
-    orderCellsTop: true,
-    fixedHeader: true,
-    responsive: true,
-    dom: 'Br<"table-responsive"t>tilp',
-    drawCallback: function () {
-      fetchTotalDistinctTask();
-      fetchTotalTaskCount();
-    },
-    buttons: [
-      {
-        extend: 'csvHtml5',
-        className: 'btn btn-default',
-        text: isFrench ? 'Télécharger CSV' : 'Download CSV',
-        action: function (e, dt, button, config) {
-          e.preventDefault();
-          var url = new URL(window.location.origin + ENDPOINTS.EXPORT_CSV);
-          url.search = getFilterParams().toString();
-          window.location.href = url.toString();
-        }
+    const $originalTasks = $("#tasks");
+    $originalTasks.hide().css('visibility', 'hidden');
+
+    const $tasksContainer = $('<div id="tasks-replacement"></div>');
+    $originalTasks.after($tasksContainer);
+
+    var taskSelect = new CustomDropdown({
+      select: "#tasks",
+      multiSelect: false,
+      settings: {
+        hideSelected: false,
+        keepOrder: true,
+        placeholderText: isFrench ? "Filtrer par mot-clé de la tâche" : "Filter by task keyword",
+        searchText: isFrench ? "Aucun résultat trouvé" : "No results found",
+        searchPlaceholder: isFrench ? "Recherche" : "Search",
+        searchingText: isFrench ? "Recherche en cours..." : "Searching...",
+        closeOnSelect: true,
       },
-      {
-        extend: 'excelHtml5',
-        className: 'btn btn-default',
-        text: isFrench ? 'Télécharger Excel' : 'Download Excel',
-        action: function (e, dt, button, config) {
-          e.preventDefault();
-          var url = new URL(window.location.origin + ENDPOINTS.EXPORT_EXCEL);
-          url.search = getFilterParams().toString();
-          window.location.href = url.toString();
+      events: {
+        search: (search, currentData) => {
+          return new Promise((resolve, reject) => {
+            clearTimeout(taskSelect.debounceTimer);
+            taskSelect.debounceTimer = setTimeout(() => {
+              if (search.length < CONFIG.SEARCH_MIN_CHARS) {
+                return reject(getMessage('SEARCH_MIN_CHARS'));
+              }
+
+              fetch(`${ENDPOINTS.TASK_NAMES}?search=${encodeURIComponent(search)}`, {
+                method: "GET",
+                headers: {
+                  Accept: "application/json",
+                },
+              })
+              .then((response) => {
+                if (!response.ok) {
+                  throw new Error(getMessage('NETWORK_ERROR'));
+                }
+                return response.json();
+              })
+              .then((data) => {
+                const options = data
+                  .filter((title) => {
+                    return !currentData.some((optionData) => optionData.value === title);
+                  })
+                  .map((title) => {
+                    return { text: title, value: title };
+                  });
+
+                resolve(options);
+              })
+              .catch((error) => {
+                console.error("Error fetching task names:", error);
+                reject(error);
+              });
+            }, CONFIG.DEBOUNCE_DELAY);
+          });
+        },
+        onChange: function(selectedValue) {
+          console.log("Tasks changed:", selectedValue);
+          if (typeof table !== 'undefined') {
+            table.ajax.reload();
+          }
         }
       }
-    ],
-    ajax: function(data, callback, settings) {
-      loadingSpinner.show();
-      
-      // Debug logging for request construction
-      console.log("=== DataTable Request Debug ===");
-      console.log("Original DataTable params:", data);
-      
-      // Filter out null or empty params before setting them
-      if ($("#department").val()) data.department = $("#department").val();
-      if ($("#theme").val()) data.theme = $("#theme").val();
-      if ($("#tasks").val()) data.tasks = $("#tasks").val();
-      if ($("#group").val()) data.group = $("#group").val();
-      if ($("#language").val()) data.language = $("#language").val();
-      
-      var dateRangePickerValue = $("#dateRangePicker").val();
-      if (dateRangePickerValue) {
-        var dateRange = $("#dateRangePicker").data("daterangepicker");
-        data.startDate = dateRange.startDate.format(CONFIG.BACKEND_DATE_FORMAT);
-        data.endDate = dateRange.endDate.format(CONFIG.BACKEND_DATE_FORMAT);
-      } else {
-        delete data.startDate;
-        delete data.endDate;
+    });
+
+    $(document).on('tasks:changed', function(event, selectedTasks) {
+      console.log("Tasks changed event:", selectedTasks);
+      if (typeof table !== 'undefined') {
+        table.ajax.reload();
       }
-      data.taskCompletion = $("#taskCompletion").val();
-      data.includeCommentsOnly = $("#commentsCheckbox").is(":checked");
-      
-      // Log final request data
-      console.log("Final request params:", data);
-      console.log("Tasks array:", data.tasks);
-      console.log("Tasks array length:", data.tasks ? data.tasks.length : 0);
-      
-      // Calculate approximate URL length and determine method
-      var paramString = $.param(data);
-      var requestMethod = paramString.length > 2000 ? "POST" : "GET";
-      console.log("Parameter string length:", paramString.length);
-      console.log("Request method will be:", requestMethod);
-      console.log("Full URL would be:", ENDPOINTS.TOP_TASK_DATA + "?" + paramString);
-      
-      if (paramString.length > 2000) {
-        console.warn("WARNING: URL length exceeds 2000 characters, switching to POST");
-      }
-      
-      // Make the AJAX request with dynamic method
-      $.ajax({
-        url: ENDPOINTS.TOP_TASK_DATA,
-        type: requestMethod,
-        data: data,
-        success: function(response) {
-          callback(response);
-        },
-        error: function(xhr, error, thrown) {
-          console.error("=== DataTable AJAX Error ===");
-          console.error("Status:", xhr.status);
-          console.error("Status Text:", xhr.statusText);
-          console.error("Response Text:", xhr.responseText);
-          console.error("Error:", error);
-          console.error("Thrown:", thrown);
-          handleError({xhr, error, thrown}, 'ERROR_RETRIEVING_DATA', 'DataTable AJAX');
-        },
-        complete: function() {
-          loadingSpinner.hide();
-        }
-      });
-    },
-    columns: [
-      { data: 'dateTime', title: isFrench ? 'Date' : 'Date', visible: true, width: "10%", className: "dt-left" },
-      { data: 'timeStamp', title: isFrench ? 'Horodatage' : 'Time Stamp', visible: false },
-      { data: 'surveyReferrer', title: isFrench ? 'Référence de l\'enquête' : 'Survey Referrer', visible: false },
-      { data: 'language', title: isFrench ? 'Langue' : 'Language', visible: false },
-      { data: 'device', title: isFrench ? 'Appareil' : 'Device', visible: false },
-      { data: 'screener', title: isFrench ? 'Écran' : 'Screener', visible: false },
-      { data: 'dept', title: isFrench ? 'Ministère' : 'Department', visible: false },
-      { data: 'theme', title: isFrench ? 'Thème' : 'Theme', visible: false },
-      { data: 'themeOther', title: isFrench ? 'Autre thème' : 'Theme Other', visible: false },
-      { data: 'grouping', title: isFrench ? 'Regroupement' : 'Grouping', visible: false },
-      { data: 'task', title: isFrench ? 'Tâche' : 'Task', visible: true, width: "20" },
-      { data: 'taskOther', title: isFrench ? 'Autre tâche' : 'Task Other', visible: false },
-      { data: 'taskSatisfaction', title: isFrench ? 'Satisfaction de la tâche' : 'Task Satisfaction', visible: false },
-      { data: 'taskEase', title: isFrench ? 'Facilité de la tâche' : 'Task Ease', visible: false },
-      { data: 'taskCompletion', title: isFrench ? 'Accomplissement de la tâche' : 'Task Completion', visible: false },
-      { data: 'taskImprove', title: isFrench ? 'Améliorer la tâche' : 'Task Improve', visible: false },
-      { data: 'taskImproveComment', title: isFrench ? 'Améliorer la tâche - commentaire' : 'Task Improve Comment', visible: true, width: "35%" },
-      { data: 'taskWhyNot', title: isFrench ? 'Pourquoi pas' : 'Task Why Not', visible: false },
-      { data: 'taskWhyNotComment', title: isFrench ? 'Tâche non complétée - commentaire' : 'Task Why Not Comment', visible: true, width: "35%"},
-      { data: 'taskSampling', title: isFrench ? 'Échantillonnage de tâche' : 'Task Sampling', visible: false },
-      { data: 'samplingInvitation', title: isFrench ? 'Invitation à l\'échantillonnage' : 'Sampling Invitation', visible: false },
-      { data: 'samplingGC', title: isFrench ? 'Échantillonnage GC' : 'Sampling GC', visible: false },
-      { data: 'samplingCanada', title: isFrench ? 'Échantillonnage Canada' : 'Sampling Canada', visible: false },
-      { data: 'samplingTheme', title: isFrench ? 'Thème d\'échantillonnage' : 'Sampling Theme', visible: false },
-      { data: 'samplingInstitution', title: isFrench ? 'Institution d\'échantillonnage' : 'Sampling Institution', visible: false },
-      { data: 'samplingGrouping', title: isFrench ? 'Regroupement d\'échantillonnage' : 'Sampling Grouping', visible: false },
-      { data: 'samplingTask', title: isFrench ? 'Tâche d\'échantillonnage' : 'Sampling Task', visible: false }
-    ],
-  });
+    });
+
+  var table = new DataTable("#topTaskTable", {
+       language: isFrench ? { url: "//cdn.datatables.net/plug-ins/2.3.2/i18n/fr-FR.json" } : undefined,
+       stripeClasses: [],
+       bSortClasses: false,
+       order: [[0, "desc"]],
+       processing: true,
+       serverSide: true,
+       retrieve: true,
+       lengthMenu: [
+         [10, 25, 50, 100],
+         [10, 25, 50, 100],
+       ],
+       pageLength: 50,
+       orderCellsTop: true,
+       fixedHeader: true,
+       responsive: true,
+       dom: 'Br<"table-responsive"t>tilp',
+       drawCallback: function () {
+         fetchTotalDistinctTask();
+         fetchTotalTaskCount();
+       },
+       buttons: [
+         {
+           extend: 'csvHtml5',
+           className: 'btn btn-default',
+           text: isFrench ? 'Télécharger CSV' : 'Download CSV',
+           action: function (e, dt, button, config) {
+             e.preventDefault();
+             var url = new URL(window.location.origin + ENDPOINTS.EXPORT_CSV);
+             url.search = getFilterParams().toString();
+             window.location.href = url.toString();
+           }
+         },
+         {
+           extend: 'excelHtml5',
+           className: 'btn btn-default',
+           text: isFrench ? 'Télécharger Excel' : 'Download Excel',
+           action: function (e, dt, button, config) {
+             e.preventDefault();
+             var url = new URL(window.location.origin + ENDPOINTS.EXPORT_EXCEL);
+             url.search = getFilterParams().toString();
+             window.location.href = url.toString();
+           }
+         }
+       ],
+       ajax: function(data, callback, settings) {
+         loadingSpinner.show();
+
+         // Debug logging for request construction
+         console.log("=== DataTable Request Debug ===");
+         console.log("Original DataTable params:", data);
+
+         // Filter out null or empty params before setting them
+         if ($("#department").val()) data.department = $("#department").val();
+         if ($("#theme").val()) data.theme = $("#theme").val();
+         var selectedTasks = taskSelect.getSelected();
+         if (selectedTasks && selectedTasks.length > 0) {
+            data.tasks = selectedTasks;
+         }
+         if ($("#group").val()) data.group = $("#group").val();
+         if ($("#language").val()) data.language = $("#language").val();
+
+         var dateRangePickerValue = $("#dateRangePicker").val();
+         if (dateRangePickerValue) {
+           var dateRange = $("#dateRangePicker").data("daterangepicker");
+           data.startDate = dateRange.startDate.format(CONFIG.BACKEND_DATE_FORMAT);
+           data.endDate = dateRange.endDate.format(CONFIG.BACKEND_DATE_FORMAT);
+         } else {
+           delete data.startDate;
+           delete data.endDate;
+         }
+         data.taskCompletion = $("#taskCompletion").val();
+         data.includeCommentsOnly = $("#commentsCheckbox").is(":checked");
+
+         // Log final request data
+         console.log("Final request params:", data);
+         console.log("Tasks array:", data.tasks);
+         console.log("Tasks array length:", data.tasks ? data.tasks.length : 0);
+
+         // Calculate approximate URL length and determine method
+         var paramString = $.param(data);
+         var requestMethod = paramString.length > 2000 ? "POST" : "GET";
+         console.log("Parameter string length:", paramString.length);
+         console.log("Request method will be:", requestMethod);
+         console.log("Full URL would be:", ENDPOINTS.TOP_TASK_DATA + "?" + paramString);
+
+         if (paramString.length > 2000) {
+           console.warn("WARNING: URL length exceeds 2000 characters, switching to POST");
+         }
+
+         // Make the AJAX request with dynamic method
+         $.ajax({
+           url: ENDPOINTS.TOP_TASK_DATA,
+           type: requestMethod,
+           data: data,
+           success: function(response) {
+             callback(response);
+           },
+           error: function(xhr, error, thrown) {
+             console.error("=== DataTable AJAX Error ===");
+             console.error("Status:", xhr.status);
+             console.error("Status Text:", xhr.statusText);
+             console.error("Response Text:", xhr.responseText);
+             console.error("Error:", error);
+             console.error("Thrown:", thrown);
+             handleError({xhr, error, thrown}, 'ERROR_RETRIEVING_DATA', 'DataTable AJAX');
+           },
+           complete: function() {
+             loadingSpinner.hide();
+           }
+         });
+       },
+       columns: [
+         { data: 'dateTime', title: isFrench ? 'Date' : 'Date', visible: true, width: "10%", className: "dt-left" },
+         { data: 'timeStamp', title: isFrench ? 'Horodatage' : 'Time Stamp', visible: false },
+         { data: 'surveyReferrer', title: isFrench ? 'Référence de l\'enquête' : 'Survey Referrer', visible: false },
+         { data: 'language', title: isFrench ? 'Langue' : 'Language', visible: false },
+         { data: 'device', title: isFrench ? 'Appareil' : 'Device', visible: false },
+         { data: 'screener', title: isFrench ? 'Écran' : 'Screener', visible: false },
+         { data: 'dept', title: isFrench ? 'Ministère' : 'Department', visible: false },
+         { data: 'theme', title: isFrench ? 'Thème' : 'Theme', visible: false },
+         { data: 'themeOther', title: isFrench ? 'Autre thème' : 'Theme Other', visible: false },
+         { data: 'grouping', title: isFrench ? 'Regroupement' : 'Grouping', visible: false },
+         { data: 'task', title: isFrench ? 'Tâche' : 'Task', visible: true, width: "20" },
+         { data: 'taskOther', title: isFrench ? 'Autre tâche' : 'Task Other', visible: false },
+         { data: 'taskSatisfaction', title: isFrench ? 'Satisfaction de la tâche' : 'Task Satisfaction', visible: false },
+         { data: 'taskEase', title: isFrench ? 'Facilité de la tâche' : 'Task Ease', visible: false },
+         { data: 'taskCompletion', title: isFrench ? 'Accomplissement de la tâche' : 'Task Completion', visible: false },
+         { data: 'taskImprove', title: isFrench ? 'Améliorer la tâche' : 'Task Improve', visible: false },
+         { data: 'taskImproveComment', title: isFrench ? 'Améliorer la tâche - commentaire' : 'Task Improve Comment', visible: true, width: "35%" },
+         { data: 'taskWhyNot', title: isFrench ? 'Pourquoi pas' : 'Task Why Not', visible: false },
+         { data: 'taskWhyNotComment', title: isFrench ? 'Tâche non complétée - commentaire' : 'Task Why Not Comment', visible: true, width: "35%"},
+         { data: 'taskSampling', title: isFrench ? 'Échantillonnage de tâche' : 'Task Sampling', visible: false },
+         { data: 'samplingInvitation', title: isFrench ? 'Invitation à l\'échantillonnage' : 'Sampling Invitation', visible: false },
+         { data: 'samplingGC', title: isFrench ? 'Échantillonnage GC' : 'Sampling GC', visible: false },
+         { data: 'samplingCanada', title: isFrench ? 'Échantillonnage Canada' : 'Sampling Canada', visible: false },
+         { data: 'samplingTheme', title: isFrench ? 'Thème d\'échantillonnage' : 'Sampling Theme', visible: false },
+         { data: 'samplingInstitution', title: isFrench ? 'Institution d\'échantillonnage' : 'Sampling Institution', visible: false },
+         { data: 'samplingGrouping', title: isFrench ? 'Regroupement d\'échantillonnage' : 'Sampling Grouping', visible: false },
+         { data: 'samplingTask', title: isFrench ? 'Tâche d\'échantillonnage' : 'Sampling Task', visible: false }
+       ],
+     });
 
   // Attach loading overlay to DataTable events
   attachLoadingOverlay(table, {
@@ -275,21 +351,21 @@ $(document).ready(function () {
     loadingOverlay.hide();
   });
 
-  function fetchTotalDistinctTask() {
-    fetch(ENDPOINTS.TOTAL_DISTINCT_TASKS)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.text();
-      })
-      .then((totalDistinctTasks) => {
-        $(".stat .totalDistinctTasks").text(formatNumberWithCommas(totalDistinctTasks));
-      })
-      .catch((err) => {
-        console.warn("Error fetching total distinct tasks:", err);
-      });
-  }
+     function fetchTotalDistinctTask() {
+       fetch(ENDPOINTS.TOTAL_DISTINCT_TASKS)
+         .then((response) => {
+           if (!response.ok) {
+             throw new Error(`HTTP error! status: ${response.status}`);
+           }
+           return response.text();
+         })
+         .then((totalDistinctTasks) => {
+           $(".stat .totalDistinctTasks").text(formatNumberWithCommas(totalDistinctTasks));
+         })
+         .catch((err) => {
+           console.warn("Error fetching total distinct tasks:", err);
+         });
+     }
 
   function fetchTotalTaskCount() {
     fetch(ENDPOINTS.TOTAL_TASK_COUNT)
@@ -422,103 +498,52 @@ $(document).ready(function () {
       });
   }
 
-  $("#downloadCSV").on("click", function () {
-    const url = new URL(window.location.origin + ENDPOINTS.EXPORT_CSV);
-    url.search = getFilterParams().toString();
-    handleDownload(url, 'top_task_survey_export.csv', 'ERROR_CSV_DOWNLOAD');
-  });
+     $("#downloadCSV").on("click", function () {
+       const url = new URL(window.location.origin + ENDPOINTS.EXPORT_CSV);
+       url.search = getFilterParams().toString();
+       handleDownload(url, 'top_task_survey_export.csv', 'ERROR_CSV_DOWNLOAD');
+     });
 
-  $("#downloadExcel").on("click", function () {
-    const url = new URL(window.location.origin + ENDPOINTS.EXPORT_EXCEL);
-    url.search = getFilterParams().toString();
-    handleDownload(url, 'top_task_survey_export.xlsx', 'ERROR_EXCEL_DOWNLOAD');
-  });
-  tippy("#theme-tool-tip", {
-    content: isFrench ? "Thèmes de navigation de Canada.ca " : "Canada.ca navigation themes ",
-  });
+     $("#downloadExcel").on("click", function () {
+       const url = new URL(window.location.origin + ENDPOINTS.EXPORT_EXCEL);
+       url.search = getFilterParams().toString();
+       handleDownload(url, 'top_task_survey_export.xlsx', 'ERROR_EXCEL_DOWNLOAD');
+     });
+     tippy("#theme-tool-tip", {
+       content: isFrench ? "Thèmes de navigation de Canada.ca " : "Canada.ca navigation themes ",
+     });
 
-  $("#department, #theme, #commentsCheckbox, #group, #language").on("change", function () {
-    table.ajax.reload();
-  });
+     $("#department, #theme, #commentsCheckbox, #group, #language").on("change", function () {
+       table.ajax.reload();
+     });
 
-  function getFilterParams() {
-    var tasks = $("#tasks").val();
-    var params = new URLSearchParams();
-    
-    // Filter out null or empty params before setting them
-    if ($("#department").val()) params.append('department', $("#department").val());
-    if ($("#theme").val()) params.append('theme', $("#theme").val());
-    if ($("#group").val()) params.append('group', $("#group").val());
-    if ($("#language").val()) params.append('language', $("#language").val());
-    if ($("#taskCompletion").val()) params.append("taskCompletion", $("#taskCompletion").val());  //nus added
-    params.append('includeCommentsOnly', $("#commentsCheckbox").is(":checked"));
-  
-    if (tasks && tasks.length > 0) {
-      tasks.forEach(function(task) {
-        params.append('tasks[]', task);
-      });
-    }
-  
-    var dateRangePickerValue = $("#dateRangePicker").val();
-    if (dateRangePickerValue) {
-      var dateRange = $("#dateRangePicker").data('daterangepicker');
-      params.append('startDate', dateRange.startDate.format(CONFIG.BACKEND_DATE_FORMAT));
-      params.append('endDate', dateRange.endDate.format(CONFIG.BACKEND_DATE_FORMAT));
-    }
-  
-    return params;
-  }
+     function getFilterParams() {
+       var tasks = $("#tasks").val();
+       var params = new URLSearchParams();
 
-  var taskSelect = new SlimSelect({
-    select: "#tasks",
-    settings: {
-      hideSelected: true,
-      keepOrder: true,
-      placeholderText: isFrench ? "Filtrer par mot-clé de la tâche" : "Filter by task keyword",
-      searchText: isFrench ? "Aucun résultat trouvé" : "No results found",
-      searchPlaceholder: isFrench ? "Recherche" : "Search",
-      searchingText: isFrench ? "Recherche en cours..." : "Searching...",
-      closeOnSelect: false,
-    },
-    events: {
-      search: (search, currentData) => {
-        return new Promise((resolve, reject) => {
-          clearTimeout(taskSelect.debounceTimer);
-          taskSelect.debounceTimer = setTimeout(() => {
-            if (search.length < CONFIG.SEARCH_MIN_CHARS) {
-              return reject(getMessage('SEARCH_MIN_CHARS'));
-            }
+       // Filter out null or empty params before setting them
+       if ($("#department").val()) params.append('department', $("#department").val());
+       if ($("#theme").val()) params.append('theme', $("#theme").val());
+       if ($("#group").val()) params.append('group', $("#group").val());
+       if ($("#language").val()) params.append('language', $("#language").val());
+       if ($("#taskCompletion").val()) params.append("taskCompletion", $("#taskCompletion").val());  //nus added
+       params.append('includeCommentsOnly', $("#commentsCheckbox").is(":checked"));
 
-            fetch(`${ENDPOINTS.TASK_NAMES}?search=${encodeURIComponent(search)}`, {
-              method: "GET",
-              headers: {
-                Accept: "application/json",
-              },
-            })
-            .then((response) => {
-              if (!response.ok) {
-                throw new Error(getMessage('NETWORK_ERROR'));
-              }
-              return response.json();
-            })
-            .then((data) => {
-              const options = data
-                .filter((title) => {
-                  return !currentData.some((optionData) => optionData.value === title);
-                })
-                .map((title) => {
-                  return { text: title, value: title };
-                });
+       var selectedTasks = taskSelect.getSelected();
+       if (selectedTasks && selectedTasks.length > 0) {
+         selectedTasks.forEach(function(task) {
+           params.append('tasks[]', task);
+         });
+       }
 
-              resolve(options);
-            })
-            .catch((error) => {
-              console.error("Error fetching page titles:", error);
-              reject(error);
-            });
-          }, CONFIG.DEBOUNCE_DELAY);
-        });
-      },
-    },
-  });
+       var dateRangePickerValue = $("#dateRangePicker").val();
+       if (dateRangePickerValue) {
+         var dateRange = $("#dateRangePicker").data('daterangepicker');
+         params.append('startDate', dateRange.startDate.format(CONFIG.BACKEND_DATE_FORMAT));
+         params.append('endDate', dateRange.endDate.format(CONFIG.BACKEND_DATE_FORMAT));
+       }
+
+       return params;
+     }
+
 });

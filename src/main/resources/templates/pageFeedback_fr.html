@@ -12,8 +12,6 @@
   <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
   <link rel="stylesheet" type="text/css" href="/css/pageFeedback_styles.css" />
   <link rel="stylesheet" type="text/css" href="/css/loading-overlay.css" />
-  <script src="https://unpkg.com/slim-select@2.13.1/dist/slimselect.min.js"></script>
-  <link href="https://unpkg.com/slim-select@2.13.1/dist/slimselect.css" rel="stylesheet" type="text/css" />
 </head>
 
 <body>
@@ -77,7 +75,7 @@
               <label for="url">URL</label>
               <input type="text" id="url" name="url" placeholder="Filtre par URL complet ou partiel">
             </div>
-            <label for="pages">Page(s) <select id="pages" multiple></select>
+            <label for="pages">Page(s) <select id="pages"></select>
             </label>
             <div class="form-group">
               <label for="comments">Commentaires</label>
@@ -208,7 +206,9 @@
     <script src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
     <script type="text/javascript" src="js/spring-friendly.min.js"></script>
-    <script th:inline="javascript">
+    <script type="text/javascript" src="js/custom-dropdown.js"></script>
+
+      <script th:inline="javascript">
       /*
           <![CDATA[*/
       var earliestDate = /*[[${earliestDate}]]*/ '';

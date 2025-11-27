@@ -142,6 +142,59 @@ $(document).ready(function () {
   // Show loading overlay immediately for initial table load
   loadingOverlay.show();
 
+  var pageSelect = new CustomDropdown({
+    select: "#pages",
+    multiSelect: false,
+    settings: {
+      hideSelected: false,
+      keepOrder: true,
+      placeholderText: isFrench ? "Filtrer par titre de page complet ou partiel" : "Filter by full or partial page title",
+      searchText: isFrench ? "Aucun résultat trouvé" : "No results found",
+      searchPlaceholder: isFrench ? "Recherche" : "Search",
+      searchingText: isFrench ? "Recherche en cours..." : "Searching...",
+      closeOnSelect: true,
+    },
+    events: {
+      search: (search, currentData) => {
+        return new Promise((resolve, reject) => {
+          clearTimeout(pageSelect.debounceTimer);
+          pageSelect.debounceTimer = setTimeout(() => {
+            if (search.length < 2) {
+              return reject(isFrench ? "La recherche doit comporter au moins 2 caractères" : "Search must be at least 2 characters");
+            }
+
+            fetch("/pageTitles?search=" + encodeURIComponent(search))
+              .then(response => response.json())
+              .then(data => {
+                const options = data
+                  .filter(title => !currentData.some(optionData => optionData.value === title))
+                  .map(title => ({ text: title, value: title }));
+                resolve(options);
+              })
+              .catch(error => reject(error));
+          }, 800);
+        });
+      },
+      onChange: function(selectedValue) {
+        console.log("Pages changed:", selectedValue);
+        if (typeof table !== 'undefined') {
+          table.ajax.reload();
+        }
+      }
+    },
+  });
+
+  // Simple helper function
+  function getSelectedPages() {
+    try {
+      return pageSelect ? pageSelect.getSelected() || [] : [];
+    } catch (error) {
+      console.error("Error getting selected pages:", error);
+      return [];
+    }
+  }
+
+
   // DataTable initialization
   var table = new DataTable("#myTable", {
     language: isFrench ? { url: "//cdn.datatables.net/plug-ins/2.3.2/i18n/fr-FR.json" } : undefined,
@@ -164,7 +217,6 @@ $(document).ready(function () {
       url: "/feedbackData",
       type: "GET",
       data: function (d) {
-        d.titles = $("#pages").val();
         d.language = $("#language").val();
         d.department = $("#department").val();
         d.comments = $("#comments").val();
@@ -174,7 +226,14 @@ $(document).ready(function () {
         if ($("#errorComments").prop("checked")) {
           d.error_keyword = "true";  // Only send if checked
       }
-      
+        const selectedPages = getSelectedPages();
+        console.log("Selected pages:", selectedPages);
+
+        if (selectedPages && selectedPages.length > 0) {
+          d.titles = selectedPages;
+          console.log("Sending titles to server:", d.titles);
+        }
+
         var dateRangePickerValue = $("#dateRangePicker").val();
         if (dateRangePickerValue) {
           var dateRange = $("#dateRangePicker").data("daterangepicker");
@@ -201,9 +260,18 @@ $(document).ready(function () {
           e.preventDefault();
           var url = new URL(window.location.origin + '/exportCSV');
           var params = getFilterParams();
-          Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
-          window.location.href = url.toString();
-        }
+          Object.keys(params).forEach(key => {
+             if (key === 'titles' && Array.isArray(params[key])) {
+               params[key].forEach(title => {
+                 url.searchParams.append('titles[]', title);
+               });
+             } else {
+               url.searchParams.append(key, params[key]);
+             }
+           });
+
+           window.location.href = url.toString();
+          }
       },
       {
         extend: 'excelHtml5',
@@ -249,61 +317,6 @@ $(document).ready(function () {
   // Hide loading overlay after initial table draw
   table.on('draw.dt', function() {
     loadingOverlay.hide();
-  });
-
-  // SlimSelect initialization
-  var pageSelect = new SlimSelect({
-    select: "#pages",
-    settings: {
-      hideSelected: true,
-      keepOrder: true,
-      placeholderText: isFrench ? "Filtrer par titre de page complet ou partiel" : "Filter by full or partial page title",
-      searchText: isFrench ? "Aucun résultat trouvé" : "No results found",
-      searchPlaceholder: isFrench ? "Recherche" : "Search",
-      searchingText: isFrench ? "Recherche en cours..." : "Searching...",
-      closeOnSelect: false,
-    },
-    events: {
-      search: (search, currentData) => {
-        return new Promise((resolve, reject) => {
-          clearTimeout(pageSelect.debounceTimer);
-          pageSelect.debounceTimer = setTimeout(() => {
-            if (search.length < 2) {
-              return reject(isFrench ? "La recherche doit comporter au moins 2 caractères" : "Search must be at least 2 characters");
-            }
-
-            fetch("/pageTitles?search=" + encodeURIComponent(search), {
-              method: "GET",
-              headers: {
-                Accept: "application/json",
-              },
-            })
-              .then((response) => {
-                if (!response.ok) {
-                  throw new Error(isFrench ? "La réponse du réseau n'était pas correcte" : "Network response was not ok");
-                }
-                return response.json();
-              })
-              .then((data) => {
-                const options = data
-                  .filter((title) => !currentData.some((optionData) => optionData.value === title))
-                  .map((title) => ({ text: title, value: title }));
-
-                resolve(options);
-              })
-              .catch((error) => {
-                console.error("Error fetching page titles:", error);
-                reject(error);
-              });
-          }, 800);
-        });
-      },
-    },
-  });
-
-  // Event bindings
-  $("#pages").on("change", function () {
-    table.ajax.reload();
   });
 
   $(".reset-filters").on("click", resetFilters);
@@ -368,7 +381,6 @@ $(document).ready(function () {
   // Add this new function to get filter parameters
   function getFilterParams() {
     var params = {
-      titles: $("#pages").val(),
       language: $("#language").val(),
       error_keyword: $("#errorComments").prop("checked"),
       department: $("#department").val(),
@@ -377,6 +389,11 @@ $(document).ready(function () {
       theme: $("#theme").val(),
       url: $("#url").val()
     };
+
+    const selectedPages = getSelectedPages();
+    if (selectedPages && selectedPages.length > 0) {
+      params.titles = selectedPages;
+    }
 
     var dateRangePickerValue = $("#dateRangePicker").val();
     if (dateRangePickerValue) {
