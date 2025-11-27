@@ -14,6 +14,13 @@ buildNumber.properties
 **/application.properties
 **/application-local.properties
 
+# Docker environment files
+docker/.env
+.env
+
+# Terraform files
+.lock.hcl
+.terragrunt-cache/
 # System files
 .DS_Store
 
@@ -30,3 +37,4 @@ kubernetes/feedback-viewer-ingress.yml
 
 # Other
 google-java-format-*.jar
+.terraform.lock.hcl
