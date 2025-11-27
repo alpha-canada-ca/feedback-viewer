@@ -48,17 +48,7 @@ dependency "ssm" {
   mock_outputs_allowed_terraform_commands = ["init", "fmt", "validate", "plan", "show"]
   mock_outputs_merge_with_state           = true
   mock_outputs = {
-    azure_openai_api_key_arn     = ""
-    azure_openai_endpoint_arn    = ""
-    azure_openai_api_version_arn = ""
-    canada_ca_search_uri_arn     = ""
-    canada_ca_search_api_key_arn = ""
-    user_agent_arn               = ""
-    jwt_secret_key_arn           = ""
-    google_api_key_arn           = ""
-    gc_notify_api_key_arn        = ""
-    google_search_engine_id_arn  = ""
-    adobe_analytics_url_arn      = ""
+    jwt_secret_key_arn = ""
   }
 }
 
