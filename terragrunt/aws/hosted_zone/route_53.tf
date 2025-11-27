@@ -1,4 +1,4 @@
- resource "aws_route53_zone" "feedback_viewer" {
+resource "aws_route53_zone" "feedback_viewer" {
   name = var.domain
 
   tags = {
