@@ -58,19 +58,19 @@ variable "container_port" {
 variable "cpu" {
   description = "Fargate task CPU units"
   type        = number
-  default     = 512
+  default     = 1024
 }
 
 variable "memory" {
   description = "Fargate task memory in MB"
   type        = number
-  default     = 1024
+  default     = 4096
 }
 
 variable "desired_count" {
   description = "Desired number of ECS tasks"
   type        = number
-  default     = 2
+  default     = 1
 }
 
 variable "docdb_username_arn" {
