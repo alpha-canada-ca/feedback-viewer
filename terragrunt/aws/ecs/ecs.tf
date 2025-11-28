@@ -56,7 +56,7 @@ module "feedback_viewer" {
 
   # Forward logs to Sentinel
   sentinel_forwarder           = true
-  sentinel_forwarder_layer_arn = "arn:aws:lambda:ca-central-1:283582579564:layer:aws-sentinel-connector-layer:227"
+  sentinel_forwarder_layer_arn = "arn:aws:lambda:ca-central-1:283582579564:layer:aws-sentinel-connector-layer:238"
 
   billing_tag_value = var.billing_code
 
