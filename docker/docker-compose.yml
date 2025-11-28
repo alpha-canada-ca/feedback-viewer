@@ -1,19 +1,49 @@
-version: '3'
 services:
   mongodb:
     image: mongo:latest
+    container_name: feedback-viewer-mongodb
     ports:
-      - 27017:27017
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=admin123
     volumes:
-      - mongodb_data_container:/data/db
-  pagesuccess:
-    build: .
-    working_dir: /app
+      - mongodb_data:/data/db
+    networks:
+      - feedback-network
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    container_name: feedback-viewer-app
     ports:
-      - 8181:8080
-      - 8000:8000
-    command: mvn -X clean spring-boot:run
+      - "3001:3001"
+    environment:
+      - SPRING_DATA_MONGODB_HOST=mongodb
+      - SPRING_DATA_MONGODB_PORT=27017
+      - SPRING_DATA_MONGODB_DATABASE=feedback_viewer
+      - SPRING_DATA_MONGODB_USERNAME=admin
+      - SPRING_DATA_MONGODB_PASSWORD=admin123
+      - SERVER_PORT=3001
+      - JWT_SECRET_KEY=local-dev-secret-key-change-in-production
+      - DOCDB_USERNAME=admin
+      - DOCDB_PASSWORD=admin123
     depends_on:
-      - mongodb
+      mongodb:
+        condition: service_healthy
+    networks:
+      - feedback-network
+    restart: unless-stopped
+
 volumes:
-  mongodb_data_container:
+  mongodb_data:
+
+networks:
+  feedback-network:
+    driver: bridge
