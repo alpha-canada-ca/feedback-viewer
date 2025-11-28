@@ -41,14 +41,13 @@ jobs:
         uses: aws-actions/amazon-ecr-login@062b18b96a7aff071d4dc91bc00c4c1a7945b076 # v2.0.1
 
       - name: Build container
-        working-directory: ./docker
         run: |
           docker build \
           -t $REGISTRY/feedback-viewer:$GITHUB_SHA-`date '+%Y-%m-%d'` \
-          -t $REGISTRY/feedback-viewer:latest .
+          -t $REGISTRY/feedback-viewer:latest \
+          -f docker/Dockerfile .
 
       - name: Push containers to Amazon ECR
-        working-directory: ./docker
         run: |
           docker push $REGISTRY/feedback-viewer:$GITHUB_SHA-`date '+%Y-%m-%d'`
           docker push $REGISTRY/feedback-viewer:latest
