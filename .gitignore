@@ -36,4 +36,3 @@ kubernetes/feedback-viewer-ingress.yml
 
 # Other
 google-java-format-*.jar
-.terraform.lock.hcl
