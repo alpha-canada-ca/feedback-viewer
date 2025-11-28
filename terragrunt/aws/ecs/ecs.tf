@@ -23,13 +23,44 @@ module "feedback_viewer" {
   service_name = "${var.product_name}-app-service"
 
   # Task/Container definition
-  container_image            = "${var.ecr_repository_url}:${var.image_tag}"
-  container_name             = var.product_name
-  task_cpu                   = var.cpu
-  task_memory                = var.memory
-  container_port             = var.container_port
-  container_host_port        = 3001
-  container_secrets          = local.container_secrets
+  container_image     = "${var.ecr_repository_url}:${var.image_tag}"
+  container_name      = var.product_name
+  task_cpu            = var.cpu
+  task_memory         = var.memory
+  container_port      = var.container_port
+  container_host_port = 3001
+  container_secrets = [
+    {
+      name      = "SPRING_DATA_MONGODB_USERNAME"
+      valueFrom = var.docdb_username_arn
+    },
+    {
+      name      = "SPRING_DATA_MONGODB_PASSWORD"
+      valueFrom = var.docdb_password_arn
+    },
+    {
+      name      = "JWT_SECRET_KEY"
+      valueFrom = var.jwt_secret_key_arn
+    }
+  ]
+  container_environment = [
+    {
+      name  = "SPRING_DATA_MONGODB_HOST"
+      value = var.docdb_endpoint
+    },
+    {
+      name  = "SPRING_DATA_MONGODB_PORT"
+      value = "27017"
+    },
+    {
+      name  = "SPRING_DATA_MONGODB_DATABASE"
+      value = "pagesuccess"
+    },
+    {
+      name  = "SPRING_DATA_MONGODB_SSL_ENABLED"
+      value = "true"
+    }
+  ]
   container_linux_parameters = {}
   container_ulimits = [
     {
