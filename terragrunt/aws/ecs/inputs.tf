@@ -13,13 +13,8 @@ variable "private_subnet_ids" {
   type        = list(string)
 }
 
-variable "iam_role_feedback-viewer-ecs-role_arn" {
+variable "iam_role_arn" {
   description = "IAM role ARN for ECS tasks"
-  type        = string
-}
-
-variable "feedback_viewer-ecs-policy_attachment" {
-  description = "IAM policy attachment for ECS"
   type        = string
 }
 

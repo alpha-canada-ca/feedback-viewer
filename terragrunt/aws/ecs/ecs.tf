@@ -22,8 +22,7 @@ module "feedback_viewer" {
   cluster_name = "${var.product_name}-cluster"
   service_name = "${var.product_name}-app-service"
   depends_on = [
-    var.lb_listener,
-    var.feedback_viewer-ecs-policy_attachment
+    var.lb_listener
   ]
 
   # Task/Container definition
@@ -46,8 +45,8 @@ module "feedback_viewer" {
 
   # Task definition
   task_name          = "${var.product_name}-task"
-  task_exec_role_arn = var.iam_role_feedback-viewer-ecs-role_arn
-  task_role_arn      = var.iam_role_feedback-viewer-ecs-role_arn
+  task_exec_role_arn = var.iam_role_arn
+  task_role_arn      = var.iam_role_arn
 
   # Scaling
   enable_autoscaling = true
