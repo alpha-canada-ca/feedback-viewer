@@ -23,12 +23,12 @@ module "feedback_viewer" {
   service_name = "${var.product_name}-app-service"
 
   # Task/Container definition
-  container_image            = "${var.ecr_repository_url}:${var.image_tag}"
-  container_name             = var.product_name
-  task_cpu                   = var.cpu
-  task_memory                = var.memory
-  container_port             = var.container_port
-  container_host_port        = 3001
+  container_image     = "${var.ecr_repository_url}:${var.image_tag}"
+  container_name      = var.product_name
+  task_cpu            = var.cpu
+  task_memory         = var.memory
+  container_port      = var.container_port
+  container_host_port = 3001
   container_secrets = [
     {
       name      = "SPRING_DATA_MONGODB_USERNAME"
