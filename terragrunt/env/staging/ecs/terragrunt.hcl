@@ -12,8 +12,7 @@ dependency "iam" {
   mock_outputs_allowed_terraform_commands = ["init", "fmt", "validate", "plan", "show"]
   mock_outputs_merge_with_state           = true
   mock_outputs = {
-    iam_role_feedback-viewer-ecs-role_arn = ""
-    feedback-viewer-ecs-policy_attachment = ""
+    feedback_viewer_ecs_role_arn = ""
   }
 }
 
@@ -24,8 +23,8 @@ dependency "ecr" {
   mock_outputs_allowed_terraform_commands = ["init", "fmt", "validate", "plan", "show"]
   mock_outputs_merge_with_state           = true
   mock_outputs = {
-    ecr_repository_arn = ""
-    ecr_repository_url = ""
+    repository_arn = ""
+    repository_url = ""
   }
 }
 
@@ -61,8 +60,7 @@ inputs = {
   # product_name, billing_code, env are available
 
   # IAM
-  iam_role_feedback-viewer-ecs-role_arn = dependency.iam.outputs.iam_role_feedback-viewer-ecs-role_arn
-  feedback_viewer-ecs-policy_attachment = dependency.iam.outputs.feedback-viewer-ecs-policy_attachment
+  iam_role_arn = dependency.iam.outputs.feedback_viewer_ecs_role_arn
 
   # Network - from env_vars.hcl (dto-feedback-cj infrastructure)
   vpc_id             = local.env_vars.inputs.dto_feedback_cj_vpc_id
@@ -75,7 +73,7 @@ inputs = {
   lb_security_group_id = dependency.load_balancer.outputs.feedback_viewer_load_balancer_sg
 
   # ECR
-  ecr_repository_url = dependency.ecr.outputs.ecr_repository_url
+  ecr_repository_url = dependency.ecr.outputs.repository_url
 
   # DocumentDB - from env_vars.hcl (dto-feedback-cj infrastructure)
   docdb_endpoint     = local.env_vars.inputs.dto_feedback_cj_docdb_endpoint
