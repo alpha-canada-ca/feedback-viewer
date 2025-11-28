@@ -34,7 +34,6 @@ dependency "load_balancer" {
   mock_outputs_allowed_terraform_commands = ["init", "fmt", "validate", "plan", "show"]
   mock_outputs_merge_with_state           = true
   mock_outputs = {
-    lb_listener                      = ""
     lb_target_group_arn              = ""
     feedback_viewer_load_balancer_sg = ""
   }
@@ -68,7 +67,6 @@ inputs = {
   private_subnet_ids = local.env_vars.inputs.dto_feedback_cj_vpc_private_subnet_ids
 
   # Load balancer
-  lb_listener          = dependency.load_balancer.outputs.lb_listener
   lb_target_group_arn  = dependency.load_balancer.outputs.lb_target_group_arn
   lb_security_group_id = dependency.load_balancer.outputs.feedback_viewer_load_balancer_sg
 

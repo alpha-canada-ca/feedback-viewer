@@ -18,11 +18,6 @@ variable "iam_role_arn" {
   type        = string
 }
 
-variable "lb_listener" {
-  description = "Load balancer listener dependency"
-  type        = string
-}
-
 variable "lb_target_group_arn" {
   description = "Load balancer target group ARN"
   type        = string

@@ -21,9 +21,6 @@ module "feedback_viewer" {
   # Cluster and service
   cluster_name = "${var.product_name}-cluster"
   service_name = "${var.product_name}-app-service"
-  depends_on = [
-    var.lb_listener
-  ]
 
   # Task/Container definition
   container_image            = "${var.ecr_repository_url}:${var.image_tag}"
