@@ -19,7 +19,6 @@ docker/.env
 .env
 
 # Terraform files
-.lock.hcl
 .terragrunt-cache/
 # System files
 .DS_Store
