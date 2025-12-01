@@ -19,27 +19,8 @@
         <java.version>1.8</java.version>
     </properties>
 
-    <repositories>
-        <repository>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-            <id>bintray-gov-uk-notify-maven</id>
-            <name>bintray</name>
-            <url>https://dl.bintray.com/gov-uk-notify/maven</url>
-        </repository>
-    </repositories>
-
-    <pluginRepositories>
-        <pluginRepository>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-            <id>bintray-gov-uk-notify-maven</id>
-            <name>bintray-plugins</name>
-            <url>https://dl.bintray.com/gov-uk-notify/maven</url>
-        </pluginRepository>
-    </pluginRepositories>
+    <!-- Removed Bintray repositories - JFrog shut down Bintray in May 2021
+         GOV.UK Notify Java client is now available on Maven Central -->
 
     <dependencies>
         <dependency>
@@ -119,17 +100,6 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-csv</artifactId>
             <version>1.8</version>
-        </dependency>
-        <dependency>
-            <groupId>uk.gov.service.notify</groupId>
-            <artifactId>notifications-java-client</artifactId>
-            <version>3.15.1-RELEASE</version>
-            <type>pom</type>
-        </dependency>
-        <dependency>
-            <groupId>uk.gov.service.notify</groupId>
-            <artifactId>notifications-java-client</artifactId>
-            <version>3.15.1-RELEASE</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>

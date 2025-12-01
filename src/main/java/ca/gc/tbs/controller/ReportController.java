@@ -22,23 +22,14 @@ public class ReportController {
 
   @Autowired ProblemRepository problemRepository;
 
-  @Value("${pagesuccess.pythonPath}")
-  private String pythonPath;
-
-  @Value("${pagesuccess.pythonScriptPath}")
-  private String pythonScriptPath;
-
   public static String INPUT_FILENAME = "page_success_may_24.csv";
-
-  public static String PYTHON_SCRIPT = "page_success_widget.py";
 
   public ReportController() {}
 
   @GetMapping("/reports")
   public View generateReports() throws Exception {
-    new File(Paths.get(pythonPath + "/" + INPUT_FILENAME).toString()).delete();
     BufferedWriter writer =
-        Files.newBufferedWriter(Paths.get(pythonScriptPath + "/" + INPUT_FILENAME));
+        Files.newBufferedWriter(Paths.get("/tmp/" + INPUT_FILENAME));
 
     try (CSVPrinter csvPrinter =
         new CSVPrinter(
@@ -74,8 +65,6 @@ public class ReportController {
       }
       csvPrinter.flush();
     }
-    // call python
-    this.executePython();
 
     return new RedirectView("/reports/view");
   }
@@ -83,24 +72,5 @@ public class ReportController {
   @GetMapping("/reports/view")
   public String viewReports() {
     return "reports";
-  }
-
-  public int executePython() throws Exception {
-    File pathToExecutable = new File(this.pythonPath);
-    ProcessBuilder builder = new ProcessBuilder(pathToExecutable.getAbsolutePath(), PYTHON_SCRIPT);
-    builder.directory(new File(this.pythonScriptPath).getAbsoluteFile());
-    builder.redirectErrorStream(true);
-    Process process = builder.start();
-
-    Scanner s = new Scanner(process.getInputStream());
-    StringBuilder text = new StringBuilder();
-    while (s.hasNextLine()) {
-      text.append(s.nextLine());
-      text.append("\n");
-    }
-    System.out.println(text);
-    s.close();
-
-    return process.waitFor();
   }
 }
