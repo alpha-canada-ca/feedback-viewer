@@ -270,6 +270,8 @@ $(document).ready(function () {
          data.taskCompletion = $("#taskCompletion").val();
          data.includeCommentsOnly = $("#commentsCheckbox").is(":checked");
 
+         if ($("#comments").val()) data.comments = $("#comments").val();
+
          // Log final request data
          console.log("Final request params:", data);
          console.log("Tasks array:", data.tasks);
