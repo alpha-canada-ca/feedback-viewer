@@ -46,7 +46,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         .permitAll()
         .antMatchers("/api/user/**")
         .hasRole("USER")
-        .antMatchers("/", "/checkExists", "/error", "/enableAdmin", "/login", "/signup", "/success")
+        .antMatchers("/", "/checkExists", "/error", "/enableAdmin", "/login", "/signup", "/success", "/health", "/actuator/health")
         .permitAll()
         .antMatchers("/u/**")
         .hasAnyAuthority("ADMIN")
