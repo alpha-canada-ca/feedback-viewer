@@ -24,10 +24,27 @@ resource "aws_security_group_rule" "ecs_ingress_lb" {
 
 resource "aws_security_group_rule" "ecs_egress_all" {
   #checkov:skip=CKV_AWS_382 # We need to allow all traffic for ECS to work
-  description       = "Allow ECS security group to send all traffic"
-  type              = "egress"
-  protocol          = "-1"
+  description = "Allow ECS security group to send all traffic"
+  type        = "egress"
+  from_port   = 0
+  to_port     = 0
+  protocol    = "-1"
+  depends_on  = [aws_security_group.ecs_tasks]
+
   cidr_blocks       = ["0.0.0.0/0"]
   security_group_id = aws_security_group.ecs_tasks.id
-  depends_on        = [aws_security_group.ecs_tasks]
 }
+
+resource "aws_security_group_rule" "ecs_egress_docdb" {
+  description       = "Allow ECS security group to send traffic to DocumentDB"
+  type              = "egress"
+  from_port         = 27017
+  to_port           = 27017
+  protocol          = "tcp"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = aws_security_group.ecs_tasks.id
+}
+
+###
+# Traffic to DocumentDB should only come from ECS
+###
