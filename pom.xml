@@ -147,7 +147,7 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-cache</artifactId>
         </dependency>
-        
+
         <!-- Spring Boot Actuator for health checks -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
