@@ -26,8 +26,8 @@ resource "aws_security_group_rule" "ecs_egress_all" {
   #checkov:skip=CKV_AWS_382 # We need to allow all traffic for ECS to work
   description = "Allow ECS security group to send all traffic"
   type        = "egress"
-  from_port   = 0
-  to_port     = 0
+  from_port   = -1
+  to_port     = -1
   protocol    = "-1"
   depends_on  = [aws_security_group.ecs_tasks]
 
