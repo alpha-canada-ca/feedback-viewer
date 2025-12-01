@@ -1,13 +1,9 @@
 package ca.gc.tbs.service;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
@@ -32,8 +28,6 @@ public class BadWords {
     for (String file : DEFAULT_FILES) {
       loadFileConfigs(file);
     }
-    loadGoogleConfigs(
-        "https://docs.google.com/spreadsheets/d/1hIEi2YG3ydav1E06Bzf2mQbGZ12kh2fe4ISgLg_UBuM/export?format=csv");
     loadAllowedWords(ALLOWED_WORDS_FILE);
     logger.info("Loaded {} words to filter out", words.size());
     logger.info("Loaded {} allowed words that will not be filtered", allowedWords.size());
@@ -66,19 +60,6 @@ public class BadWords {
       }
     } catch (Exception e) {
       logger.error("Error loading file config {}", filePath, e);
-    }
-  }
-
-  private static void loadGoogleConfigs(String googleSheetUrl) {
-    try (BufferedReader reader =
-        new BufferedReader(
-            new InputStreamReader(new URL(googleSheetUrl).openConnection().getInputStream()))) {
-      String line;
-      while ((line = reader.readLine()) != null) {
-        words.add(line.trim().split(",")[0].toLowerCase()); // assuming first column has the word
-      }
-    } catch (IOException e) {
-      logger.error("Error loading Google config from {}", googleSheetUrl, e);
     }
   }
 
