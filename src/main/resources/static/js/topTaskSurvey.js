@@ -270,6 +270,8 @@ $(document).ready(function () {
          data.taskCompletion = $("#taskCompletion").val();
          data.includeCommentsOnly = $("#commentsCheckbox").is(":checked");
 
+         if ($("#comments").val()) data.comments = $("#comments").val();
+
          // Log final request data
          console.log("Final request params:", data);
          console.log("Tasks array:", data.tasks);
@@ -400,7 +402,7 @@ $(document).ready(function () {
       console.warn("Error fetching departments:", err);
     });
 
-  $("#tasks, #taskCompletion, #commentsCheckbox, #language").on("change", function () {
+  $("#tasks, #taskCompletion, #commentsCheckbox, #language, #comments").on("change", function () {
     table.ajax.reload();
   });
 
@@ -409,6 +411,7 @@ $(document).ready(function () {
     $("#theme").val("");
     $("#group").val("");
     $("#language").val("");
+    $("#comments").val("");
     taskSelect.setData([]);
     taskSelect.setSelected([]);
     $("#tasks").val("");

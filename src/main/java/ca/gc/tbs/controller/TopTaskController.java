@@ -498,7 +498,7 @@ public class TopTaskController {
     String includeCommentsOnlyParam = request.getParameter("includeCommentsOnly");
     boolean includeCommentsOnly = includeCommentsOnlyParam != null && includeCommentsOnlyParam.equals("true");
     String taskCompletionFilterVal = request.getParameter("taskCompletion");
-
+    String comments = request.getParameter("comments");
 
     // Log specific filter values
     LOG.info("Department: {}", departmentFilterVal);
@@ -570,6 +570,17 @@ public class TopTaskController {
           if (!allowed.isEmpty()) {
               criteria.and("taskCompletion").in(allowed);
           }
+      }
+      // Comments filtering
+      if (comments != null && !comments.trim().isEmpty() && !"null".equalsIgnoreCase(comments. trim())) {
+          String escapedComment = escapeSpecialRegexCharacters(comments.trim());
+          List<Criteria> commentCriteria = new ArrayList<>();
+          commentCriteria.add(Criteria.where("taskImproveComment").regex(escapedComment, "i"));
+          commentCriteria.add(Criteria.where("taskWhyNotComment").regex(escapedComment, "i"));
+          commentCriteria.add(Criteria.where("themeOther").regex(escapedComment, "i"));
+          commentCriteria.add(Criteria.where("taskOther").regex(escapedComment, "i"));
+
+          criteria.andOperator(new Criteria().andOperator(criteria, new Criteria().orOperator(commentCriteria.toArray(new Criteria[0]))));
       }
 
 
@@ -817,6 +828,7 @@ public class TopTaskController {
     String language = request.getParameter("language");
     String startDate = request.getParameter("startDate");
     String endDate = request.getParameter("endDate");
+    String comments = request.getParameter("comments");
     boolean includeCommentsOnly = Boolean.parseBoolean(request.getParameter("includeCommentsOnly"));
 
     Criteria criteria = Criteria.where("processed").is("true");
@@ -867,6 +879,17 @@ public class TopTaskController {
     } else if (!combinedOrCriteria.isEmpty()) {
       criteria.andOperator(new Criteria().orOperator(combinedOrCriteria.toArray(new Criteria[0])));
     }
+
+      if (comments != null && !comments.isEmpty()) {
+          String escapedComment = escapeSpecialRegexCharacters(comments);
+          List<Criteria> commentCriteria = new ArrayList<>();
+          commentCriteria.add(Criteria.where("taskImproveComment").regex(escapedComment, "i"));
+          commentCriteria.add(Criteria.where("taskWhyNotComment").regex(escapedComment, "i"));
+          commentCriteria.add(Criteria.where("themeOther").regex(escapedComment, "i"));
+          commentCriteria.add(Criteria. where("taskOther").regex(escapedComment, "i"));
+
+          criteria.andOperator(new Criteria().andOperator(criteria, new Criteria().orOperator(commentCriteria.toArray(new Criteria[0]))));
+      }
 
     return criteria;
   }
@@ -1112,6 +1135,14 @@ public class TopTaskController {
       // Return all page titles if no search term is provided
       return topTaskRepository.findDistinctTaskNames();
     }
+  }
+
+  private String escapeSpecialRegexCharacters(String input) {
+      if (input == null) {
+          return null;
+      }
+      // Escape all regex metacharacters
+      return input.replaceAll("([\\\\.|^$|()\\[\\]{}*+?])", "\\\\$1");
   }
 
   public UserService getUserService() {
