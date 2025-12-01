@@ -12,15 +12,27 @@ RUN mvn clean package -DskipTests
 
 # Runtime stage
 FROM eclipse-temurin:8-jre-jammy
-RUN rm -rf /var/lib/apt/lists/*
-RUN apt-get update && apt-get install -y wget && apt-get clean
 
 WORKDIR /app
 
-# Download AWS RDS CA bundle
-RUN wget https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem \
-    && keytool -import -alias aws-rds-global -file global-bundle.pem -keystore $JAVA_HOME/lib/security/cacerts -storepass changeit -noprompt \
-    && rm global-bundle.pem
+# Install wget and clean up in single layer
+RUN apt-get update && \
+    apt-get install -y wget ca-certificates && \
+    rm -rf /var/lib/apt/lists/*
+
+# Download and import AWS RDS CA bundle for DocumentDB
+RUN wget https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem -O /tmp/rds-combined-ca-bundle.pem && \
+    keytool -import \
+    -trustcacerts \
+    -alias aws-rds-ca-bundle \
+    -file /tmp/rds-combined-ca-bundle.pem \
+    -keystore ${JAVA_HOME}/lib/security/cacerts \
+    -storepass changeit \
+    -noprompt && \
+    rm /tmp/rds-combined-ca-bundle.pem
+
+# Verify the certificate was imported
+RUN keytool -list -keystore ${JAVA_HOME}/lib/security/cacerts -storepass changeit -alias aws-rds-ca-bundle
 
 COPY --from=build /build/target/PageSuccess-0.0.1-SNAPSHOT.jar app.jar
 
