@@ -45,20 +45,8 @@ module "feedback_viewer" {
   ]
   container_environment = [
     {
-      name  = "SPRING_DATA_MONGODB_HOST"
-      value = var.docdb_endpoint
-    },
-    {
-      name  = "SPRING_DATA_MONGODB_PORT"
-      value = "27017"
-    },
-    {
-      name  = "SPRING_DATA_MONGODB_DATABASE"
-      value = "pagesuccess"
-    },
-    {
-      name  = "SPRING_DATA_MONGODB_SSL_ENABLED"
-      value = "true"
+      name  = "SPRING_DATA_MONGODB_URI"
+      value = "mongodb://$${SPRING_DATA_MONGODB_USERNAME}:$${SPRING_DATA_MONGODB_PASSWORD}@${var.docdb_endpoint}:27017/pagesuccess?ssl=true&retryWrites=false&tlsAllowInvalidHostnames=true"
     }
   ]
   container_linux_parameters = {}
