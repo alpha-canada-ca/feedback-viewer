@@ -53,6 +53,10 @@ module "feedback_viewer" {
       value = "health"
     },
     {
+      name  = "MANAGEMENT_ENDPOINTS_WEB_BASE_PATH"
+      value = "/"
+    },
+    {
       name  = "MANAGEMENT_ENDPOINT_HEALTH_SHOW_DETAILS"
       value = "always"
     },
