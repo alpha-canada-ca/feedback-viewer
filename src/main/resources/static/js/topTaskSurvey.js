@@ -402,9 +402,17 @@ $(document).ready(function () {
       console.warn("Error fetching departments:", err);
     });
 
-  $("#tasks, #taskCompletion, #commentsCheckbox, #language, #comments").on("change", function () {
+  $("#tasks, #taskCompletion, #commentsCheckbox, #language").on("change", function () {
     table.ajax.reload();
   });
+
+  //comments filter
+    $("#comments, #url").on(
+      "keyup",
+      debounce(function (e) {
+        table.ajax.reload();
+      }, 800)
+    );
 
   function resetFilters() {
     $("#department").val("");
