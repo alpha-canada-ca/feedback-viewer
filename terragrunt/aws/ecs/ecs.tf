@@ -47,6 +47,22 @@ module "feedback_viewer" {
     {
       name  = "SPRING_DATA_MONGODB_URI"
       value = "mongodb://$${SPRING_DATA_MONGODB_USERNAME}:$${SPRING_DATA_MONGODB_PASSWORD}@${var.docdb_endpoint}:27017/pagesuccess?ssl=true&retryWrites=false&tlsAllowInvalidHostnames=true"
+    },
+    {
+      name  = "MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE"
+      value = "health"
+    },
+    {
+      name  = "MANAGEMENT_ENDPOINTS_WEB_BASE_PATH"
+      value = "/"
+    },
+    {
+      name  = "MANAGEMENT_ENDPOINT_HEALTH_SHOW_DETAILS"
+      value = "always"
+    },
+    {
+      name  = "MANAGEMENT_HEALTH_DEFAULTS_ENABLED"
+      value = "true"
     }
   ]
   container_linux_parameters = {}
