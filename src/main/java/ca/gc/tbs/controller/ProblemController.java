@@ -916,17 +916,17 @@ public class ProblemController {
                                         writer.write(
                                                 String.format(
                                                         "%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n",
-                                                        problem.getProblemDate(),
-                                                        problem.getTimeStamp(),
+                                                        escapeCSV(problem.getProblemDate()),
+                                                        escapeCSV(problem.getTimeStamp()),
                                                         escapeCSV(problem.getProblemDetails()),
-                                                        problem.getLanguage(),
+                                                        escapeCSV(problem.getLanguage()),
                                                         escapeCSV(problem.getTitle()),
-                                                        problem.getUrl(),
-                                                        problem.getInstitution(),
-                                                        problem.getSection(),
-                                                        problem.getTheme(),
-                                                        problem.getDeviceType(),
-                                                        problem.getBrowser()));
+                                                        escapeCSV(problem.getUrl()),
+                                                        escapeCSV(problem.getInstitution()),
+                                                        escapeCSV(problem.getSection()),
+                                                        escapeCSV(problem.getTheme()),
+                                                        escapeCSV(problem.getDeviceType()),
+                                                        escapeCSV(problem.getBrowser())));
                                     } catch (IOException e) {
                                         LOG.error("Error writing CSV data", e);
                                     }
