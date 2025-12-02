@@ -49,6 +49,10 @@ module "feedback_viewer" {
       value = "mongodb://$${SPRING_DATA_MONGODB_USERNAME}:$${SPRING_DATA_MONGODB_PASSWORD}@${var.docdb_endpoint}:27017/pagesuccess?ssl=true&retryWrites=false&tlsAllowInvalidHostnames=true"
     },
     {
+      name  = "SERVER_FORWARD_HEADERS_STRATEGY"
+      value = "FRAMEWORK"
+    },
+    {
       name  = "MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE"
       value = "health"
     },
