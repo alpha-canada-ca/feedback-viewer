@@ -6,8 +6,13 @@ WORKDIR /build
 COPY pom.xml .
 RUN mvn dependency:go-offline -B
 
-# Copy source and build
+# Copy source code
 COPY src ./src
+
+# Copy decrypted whitelist file (decrypted in GitHub Actions)
+COPY secrets/gc_ip_whitelist.txt ./secrets/
+
+# Build the application
 RUN mvn clean package -DskipTests
 
 # Runtime stage
@@ -39,9 +44,15 @@ RUN cd /app/certs && \
 # Verify truststore contents
 RUN keytool -list -keystore /app/certs/rds-truststore.jks -storepass changeit
 
+# Create config directory for whitelist file
+RUN mkdir -p /app/config
+
+# Copy application JAR and decrypted whitelist file from build stage
 COPY --from=build /build/target/PageSuccess-0.0.1-SNAPSHOT.jar app.jar
+COPY --from=build /build/secrets/gc_ip_whitelist.txt /app/config/gc_ip_whitelist.txt
 
 ENV SERVER_PORT=3001
+ENV GC_IP_FILTER_WHITELIST_FILE=/app/config/gc_ip_whitelist.txt
 EXPOSE 3001
 
 # Set JVM system properties to use the custom truststore
