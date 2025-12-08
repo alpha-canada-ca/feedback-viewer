@@ -14,6 +14,9 @@ buildNumber.properties
 **/application.properties
 **/application-local.properties
 
+# Secrets - never commit unencrypted files
+secrets/gc_ip_whitelist.txt
+
 # Docker environment files
 docker/.env
 .env
