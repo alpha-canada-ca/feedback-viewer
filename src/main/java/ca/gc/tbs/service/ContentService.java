@@ -22,8 +22,26 @@ public class ContentService {
   private static final Pattern PHONE_PATTERN_2 =
       Pattern.compile(
           "(?:(?:\\+?1\\s*(?:[.-]\\s*)?)?(?:\\(\\s*([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9])\\s*\\)|([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9]))\\s*(?:[.-]\\s*)?)?([2-9]1[02-9]|[2-9][02-9]1|[2-9][02-9]{2})\\s*(?:[.-]\\s*)?([0-9]{4})(?:\\s*(?:#|x\\.?|ext\\.?|extension)\\s*(\\d+))?");
+  // Updated email pattern to catch obfuscated emails: supports +, spaces in domain, optional TLD, longer TLDs
   private static final Pattern EMAIL_PATTERN =
-      Pattern.compile("([a-zA-Z0-9_\\-\\.]+)\\s*@([\\sa-zA-Z0-9_\\-\\.]+)[\\.\\,]([a-zA-Z]{1,5})");
+      Pattern.compile("([a-zA-Z0-9_+\\-\\.]+)\\s*@\\s*([a-zA-Z0-9_\\-\\.]+)(?:\\s*[\\.,]\\s*([a-zA-Z]{0,10}))?");
+  
+  // Address patterns for English and French street addresses
+  // Pattern 1: NUMBER + WORD(S) + SUFFIX + DIRECTION (optional)
+  private static final Pattern ADDRESS_PATTERN_1 = 
+      Pattern.compile("(?i)\\b(\\d{1,6}[A-Za-z]?)\\s+([A-Za-z][A-Za-z''\\-]*(?:\\s+[A-Za-z][A-Za-z''\\-]*){0,3})\\s+" +
+          "(?:st|street|ave|avenue|av|av\\.|rd|road|dr|drive|blvd|boulevard|boul|boul\\.|ln|lane|ct|court|pl|place|ter|terrace|terr|pkwy|parkway|cir|circle|hwy|highway|rue|chemin|ch|ch\\.|chem|chem\\.|route|rte|all[ée]e?|all\\.|allee|cours|voie|terrain|terrasse|rang|promenade|prom|prom\\.)" +
+          "(?:\\s+(?:n|s|e|w|ne|nw|se|sw|o|no|so))?\\b");
+  
+  // Pattern 2: NUMBER + DIRECTION + WORD(S) + SUFFIX
+  private static final Pattern ADDRESS_PATTERN_2 = 
+      Pattern.compile("(?i)\\b(\\d{1,6}[A-Za-z]?)\\s+(?:n|s|e|w|ne|nw|se|sw|o|no|so)\\s+([A-Za-z][A-Za-z''\\-]*(?:\\s+[A-Za-z][A-Za-z''\\-]*){0,3})\\s+" +
+          "(?:st|street|ave|avenue|av|av\\.|rd|road|dr|drive|blvd|boulevard|boul|boul\\.|ln|lane|ct|court|pl|place|ter|terrace|terr|pkwy|parkway|cir|circle|hwy|highway|rue|chemin|ch|ch\\.|chem|chem\\.|route|rte|all[ée]e?|all\\.|allee|cours|voie|terrain|terrasse|rang|promenade|prom|prom\\.)\\b");
+  
+  // Pattern 3: NUMBER + WORD(S) + SUFFIX (fallback pattern)
+  private static final Pattern ADDRESS_PATTERN_3 = 
+      Pattern.compile("(?i)\\b(\\d{1,6}[A-Za-z]?)\\s+([A-Za-z][A-Za-z''\\-]*(?:\\s+[A-Za-z][A-Za-z''\\-]*){0,3})\\s+" +
+          "(?:st|street|ave|avenue|av|av\\.|rd|road|dr|drive|blvd|boulevard|boul|boul\\.|ln|lane|ct|court|pl|place|ter|terrace|terr|pkwy|parkway|cir|circle|hwy|highway|rue|chemin|ch|ch\\.|chem|chem\\.|route|rte|all[ée]e?|all\\.|allee|cours|voie|terrain|terrasse|rang|promenade|prom|prom\\.)\\b");
 
   // Singleton NLP pipeline for better performance
   private static final StanfordCoreNLP nlpPipeline;
@@ -80,6 +98,11 @@ public class ContentService {
       content = newContent;
       System.out.println("Email Address cleaned: " + content);
     }
+    newContent = this.cleanStreetAddress(content);
+    if (!newContent.contentEquals(content)) {
+      content = newContent;
+      System.out.println("Street address cleaned: " + content);
+    }
     newContent = this.cleanNames(content);
     if (!newContent.contentEquals(content)) {
       content = newContent;
@@ -113,6 +136,23 @@ public class ContentService {
   /** Cleans email addresses from the content. */
   private String cleanEmailAddress(String content) {
     return EMAIL_PATTERN.matcher(content).replaceAll("####@####.####");
+  }
+
+  /** 
+   * Cleans street addresses from the content.
+   * Applies three patterns in order: 
+   * 1. Pattern 2 (NUMBER + DIRECTION + WORD(S) + SUFFIX) - most specific
+   * 2. Pattern 1 (NUMBER + WORD(S) + SUFFIX + optional DIRECTION)
+   * 3. Pattern 3 (NUMBER + WORD(S) + SUFFIX) - fallback
+   */
+  private String cleanStreetAddress(String content) {
+    // Apply Pattern 2 first (most specific with direction)
+    content = ADDRESS_PATTERN_2.matcher(content).replaceAll("### #### ######");
+    // Apply Pattern 1 (with optional direction at end)
+    content = ADDRESS_PATTERN_1.matcher(content).replaceAll("### #### ######");
+    // Apply Pattern 3 last (fallback pattern)
+    content = ADDRESS_PATTERN_3.matcher(content).replaceAll("### #### ######");
+    return content;
   }
 
   /**
