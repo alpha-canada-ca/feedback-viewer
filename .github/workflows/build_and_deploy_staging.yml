@@ -40,6 +40,13 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@062b18b96a7aff071d4dc91bc00c4c1a7945b076 # v2.0.1
 
+      - name: Decrypt IP whitelist
+        run: |
+          echo "${{ secrets.GPG_PASSPHRASE }}" | gpg --batch --yes --quiet \
+            --passphrase-fd 0 --decrypt \
+            --output secrets/gc_ip_whitelist.txt \
+            secrets/gc_ip_whitelist.txt.gpg
+
       - name: Build container
         run: |
           docker build \

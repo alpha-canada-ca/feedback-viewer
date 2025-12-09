@@ -18,9 +18,9 @@ public class ProblemCacheService {
   @Autowired private ProblemRepository problemRepository;
 
   @Scheduled(cron = "0 0 0 * * *")
-  @CacheEvict(value = {"distinctUrls", "processedProblems"}, allEntries = true)
+  @CacheEvict(value = {"distinctUrls", "processedProblems", "gcIpCache"}, allEntries = true)
   public void clearCacheDaily() {
-    LOGGER.info("Evicting all caches at midnight");
+    LOGGER.info("Evicting all caches at midnight: distinctUrls, processedProblems, gcIpCache");
   }
 
   @Cacheable("processedProblems")
