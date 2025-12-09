@@ -56,6 +56,14 @@ public class GcIpFilter implements Filter {
             return;
         }
 
+        // Skip filter for health check endpoints (ALB health checks)
+        String requestPath = httpRequest.getRequestURI();
+        if ("/health".equals(requestPath) || "/actuator/health".equals(requestPath)) {
+            logger.debug("Skipping GC IP filter for health check endpoint: {}", requestPath);
+            chain.doFilter(request, response);
+            return;
+        }
+
         String clientIp = getClientIpAddress(httpRequest);
         logger.debug("Request from IP: {}", clientIp);
 
