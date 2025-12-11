@@ -585,8 +585,57 @@ public class DashboardController {
     @EventListener(ApplicationReadyEvent.class)
     public void init() {
         LOGGER.info("DashboardController: Starting initial data fetch and cache population.");
-        problemCacheService.getProcessedProblems();
-        problemDateService.getProblemDates();
+        
+        // Preload dashboard totals for fast initial page load
+        try {
+            LOGGER.info("DashboardController: Calculating initial totalComments and totalPages...");
+            List<Problem> processedProblems = problemCacheService.getProcessedProblems();
+            problemDateService.getProblemDates();
+            
+            // Group by URL and problemDate to get merged problems
+            List<Problem> mergedProblems = new ArrayList<>(
+                processedProblems.stream()
+                    .collect(
+                        Collectors.groupingBy(
+                            p -> new AbstractMap.SimpleEntry<>(p.getUrl(), p.getProblemDate()),
+                            Collectors.collectingAndThen(
+                                Collectors.toList(),
+                                list -> {
+                                    Problem problem = new Problem();
+                                    problem.setUrl(list.get(0).getUrl());
+                                    problem.setProblemDate(list.get(0).getProblemDate());
+                                    problem.setUrlEntries(list.size());
+                                    problem.setInstitution(list.get(0).getInstitution());
+                                    problem.setTitle(list.get(0).getTitle());
+                                    problem.setLanguage(list.get(0).getLanguage());
+                                    problem.setSection(list.get(0).getSection());
+                                    problem.setTheme(list.get(0).getTheme());
+                                    return problem;
+                                })))
+                    .values());
+            
+            // Filter out future dates
+            LocalDate currentDate = LocalDate.now();
+            mergedProblems = mergedProblems.stream()
+                .filter(p -> {
+                    LocalDate problemDate = LocalDate.parse(p.getProblemDate(), DateTimeFormatter.ISO_LOCAL_DATE);
+                    return !problemDate.isAfter(currentDate);
+                })
+                .collect(Collectors.toList());
+            
+            // Merge problems with same URL (across different dates)
+            mergedProblems = mergeProblems(mergedProblems);
+            
+            // Calculate totals
+            totalComments = mergedProblems.stream().mapToInt(Problem::getUrlEntries).sum();
+            totalPages = mergedProblems.size();
+            
+            LOGGER.info("DashboardController: Preloaded totals - {} comments across {} pages", 
+                totalComments, totalPages);
+        } catch (Exception e) {
+            LOGGER.error("DashboardController: Error calculating initial totals", e);
+        }
+        
         LOGGER.info("DashboardController: Initial data fetch and cache population complete.");
     }
 

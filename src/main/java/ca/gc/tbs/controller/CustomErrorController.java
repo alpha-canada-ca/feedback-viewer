@@ -14,8 +14,4 @@ public class CustomErrorController implements ErrorController {
     return "error_" + lang;
   }
 
-  @Override
-  public String getErrorPath() {
-    return "/error";
-  }
 }
