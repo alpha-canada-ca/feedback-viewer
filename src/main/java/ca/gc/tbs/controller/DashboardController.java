@@ -251,6 +251,9 @@ public class DashboardController {
         institutionMappings.put(
                 "HC", Arrays.asList("HC", "SC", "HEALTH CANADA", "SANTÉ CANADA", "HC/SC"));
         institutionMappings.put(
+                "HICC", Arrays.asList(
+                        "HICC", "LICC", "HOUSING, INFRASTRUCTURE AND COMMUNITIES CANADA", "LOGEMENT, INFRASTRUCTURES ET COLLECTIVITÉS CANADA", "HICC/LICC"));
+        institutionMappings.put(
                 "INFC", Arrays.asList("INFC", "INFC", "INFRASTRUCTURE CANADA", "INFRASTRUCTURE CANADA"));
         institutionMappings.put(
                 "IOGC",
