@@ -254,7 +254,7 @@ public class DashboardController {
                 "HICC", Arrays.asList(
                         "HICC", "LICC", "HOUSING, INFRASTRUCTURE AND COMMUNITIES CANADA", "LOGEMENT, INFRASTRUCTURES ET COLLECTIVITÉS CANADA", "HICC/LICC"));
         institutionMappings.put(
-                "INFC", Arrays.asList("INFC", "INFC", "INFRASTRUCTURE CANADA", "INFRASTRUCTURE CANADA"));
+                "INFC", Arrays.asList("INFC", "INFC", "INFRASTRUCTURE CANADA", "INFRASTRUCTURE CANADA", "INFC / INFC"));
         institutionMappings.put(
                 "IOGC",
                 Arrays.asList(
