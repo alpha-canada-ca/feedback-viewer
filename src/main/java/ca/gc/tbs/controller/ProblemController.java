@@ -1,12 +1,25 @@
 package ca.gc.tbs.controller;
 
-import ca.gc.tbs.domain.Problem;
-import ca.gc.tbs.domain.User;
-import ca.gc.tbs.repository.ProblemRepository;
-import ca.gc.tbs.security.JWTUtil;
-import ca.gc.tbs.service.ErrorKeywordService;
-import ca.gc.tbs.service.ProblemDateService;
-import ca.gc.tbs.service.UserService;
+import java.io.IOException;
+import java.io.Writer;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.regex.Pattern;
+
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
+
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
@@ -29,17 +42,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
-import java.io.IOException;
-import java.io.Writer;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
-import java.util.*;
-import java.util.regex.Pattern;
+import ca.gc.tbs.domain.Problem;
+import ca.gc.tbs.domain.User;
+import ca.gc.tbs.repository.ProblemRepository;
+import ca.gc.tbs.security.JWTUtil;
+import ca.gc.tbs.service.ErrorKeywordService;
+import ca.gc.tbs.service.ProblemDateService;
+import ca.gc.tbs.service.UserService;
 
 @Controller
 public class ProblemController {
