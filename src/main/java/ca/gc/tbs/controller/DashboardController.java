@@ -307,14 +307,11 @@ public class DashboardController {
             List<Criteria> regexCriteria = new ArrayList<>();//added for combined regex
 
             // Build regex pattern from all keywords
-            Set<String> keywordsToCheck = new HashSet<>();
-            keywordsToCheck.addAll(errorKeywordService.getEnglishKeywords());
-            keywordsToCheck.addAll(errorKeywordService.getFrenchKeywords());
-            keywordsToCheck.addAll(errorKeywordService.getBilingualKeywords());
+            String combinedKeywordRegex = errorKeywordService.getCombinedKeywordRegex();
 
 
-            if (!keywordsToCheck.isEmpty()) {
-                regexCriteria.add(Criteria.where("problemDetails").regex(String.join("|", keywordsToCheck), "i"));
+            if (!combinedKeywordRegex.isEmpty()) {
+                regexCriteria.add(Criteria.where("problemDetails").regex(combinedKeywordRegex, "i"));
             }
             // Comment filter regex
             if (comments != null && !comments.trim().isEmpty() && !"null".equalsIgnoreCase(comments.trim())) {

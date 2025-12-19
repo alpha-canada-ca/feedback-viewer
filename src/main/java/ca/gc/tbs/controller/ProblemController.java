@@ -304,14 +304,11 @@ public class ProblemController {
         // Apply error keyword filter
         if (error_keyword) {
             // Build regex pattern from all keywords
-            Set<String> keywordsToCheck = new HashSet<>();
-            keywordsToCheck.addAll(errorKeywordService.getEnglishKeywords());
-            keywordsToCheck.addAll(errorKeywordService.getFrenchKeywords());
-            keywordsToCheck.addAll(errorKeywordService.getBilingualKeywords());
+            String combinedKeywordRegex = errorKeywordService.getCombinedKeywordRegex();
 
-            if (!keywordsToCheck.isEmpty()) {
-                LOG.debug("Checking {} error keywords for Excel export", keywordsToCheck.size());
-                criteria.and("problemDetails").regex(String.join("|", keywordsToCheck), "i");
+            if (!combinedKeywordRegex.isEmpty()) {
+                LOG.debug("Checking error keywords for Excel export");
+                criteria.and("problemDetails").regex(combinedKeywordRegex, "i");
             }
         }
 
@@ -457,14 +454,11 @@ public class ProblemController {
         // Apply error keyword filter
         if (error_keyword) {
             // Build regex pattern from all keywords
-            Set<String> keywordsToCheck = new HashSet<>();
-            keywordsToCheck.addAll(errorKeywordService.getEnglishKeywords());
-            keywordsToCheck.addAll(errorKeywordService.getFrenchKeywords());
-            keywordsToCheck.addAll(errorKeywordService.getBilingualKeywords());
+            String combinedKeywordRegex = errorKeywordService.getCombinedKeywordRegex();
 
-            if (!keywordsToCheck.isEmpty()) {
-                LOG.debug("Checking {} error keywords for CSV export", keywordsToCheck.size());
-                criteria.and("problemDetails").regex(String.join("|", keywordsToCheck), "i");
+            if (!combinedKeywordRegex.isEmpty()) {
+                LOG.debug("Checking error keywords for CSV export");
+                criteria.and("problemDetails").regex(combinedKeywordRegex, "i");
             }
         }
 
@@ -635,14 +629,11 @@ public class ProblemController {
 
         if (error_keyword) {
             // Build regex pattern from all keywords
-            Set<String> keywordsToCheck = new HashSet<>();
-            keywordsToCheck.addAll(errorKeywordService.getEnglishKeywords());
-            keywordsToCheck.addAll(errorKeywordService.getFrenchKeywords());
-            keywordsToCheck.addAll(errorKeywordService.getBilingualKeywords());
+            String combinedKeywordRegex = errorKeywordService.getCombinedKeywordRegex();
 
-            if (!keywordsToCheck.isEmpty()) {
-                LOG.debug("Checking {} error keywords", keywordsToCheck.size());
-                criteria.and("problemDetails").regex(String.join("|", keywordsToCheck), "i");
+            if (!combinedKeywordRegex.isEmpty()) {
+                LOG.debug("Checking error keywords");
+                criteria.and("problemDetails").regex(combinedKeywordRegex, "i");
                 results = problemRepository.findAll(input, criteria);
             } else {
                 results = problemRepository.findAll(input, criteria);
