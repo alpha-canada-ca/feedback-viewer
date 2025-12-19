@@ -35,3 +35,4 @@ google-java-format-*.jar
 .idea/compiler.xml
 .idea/encodings.xml
 .idea/jarRepositories.xml
+.prettierrc.json
