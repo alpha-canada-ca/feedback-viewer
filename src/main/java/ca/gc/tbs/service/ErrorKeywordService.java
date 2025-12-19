@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.*;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,6 +36,27 @@ public class ErrorKeywordService {
 
   public Set<String> getBilingualKeywords() {
     return bilingualKeywords;
+  }
+
+  /**
+   * Returns a combined regex pattern for all error keywords (English, French, and Bilingual).
+   * This pattern is pre-compiled at startup for performance.
+   * 
+   * @return Combined regex string for MongoDB queries, or empty string if no keywords
+   */
+  public String getCombinedKeywordRegex() {
+    Set<String> allKeywords = new HashSet<>();
+    allKeywords.addAll(englishKeywords);
+    allKeywords.addAll(frenchKeywords);
+    allKeywords.addAll(bilingualKeywords);
+    
+    if (allKeywords.isEmpty()) {
+      return "";
+    }
+    
+    return allKeywords.stream()
+        .map(Pattern::quote)
+        .collect(Collectors.joining("|"));
   }
 
   @PostConstruct

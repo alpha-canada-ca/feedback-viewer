@@ -31,8 +31,6 @@ import javax.validation.Valid;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
 import java.util.stream.Collectors;
 
 @Controller
@@ -484,8 +482,9 @@ public class DashboardController {
     @GetMapping(value = "/chartData")
     @ResponseBody
     public List<Map<String, Object>> commentsByDate(HttpServletRequest request) {
-        Boolean error_keyword = "true".equals(request.getParameter("error_keyword"));
-        String comments = request.getParameter("comments");
+        // Extract request parameters
+        boolean filterByErrorKeywords = "true".equals(request.getParameter("error_keyword"));
+        String commentFilter = request.getParameter("comments");
         String startDate = request.getParameter("startDate");
         String endDate = request.getParameter("endDate");
         String theme = request.getParameter("theme");
@@ -494,92 +493,117 @@ public class DashboardController {
         String url = request.getParameter("url");
         String department = request.getParameter("department");
 
-        Criteria criteria = buildFilterCriteria(startDate, endDate, theme, section, language, url, department);
+        // Build base filter criteria (date range, theme, section, language, url, department)
+        Criteria baseCriteria = buildFilterCriteria(startDate, endDate, theme, section, language, url, department);
+        
+        // Add text search criteria if needed (error keywords or comment search)
+        Criteria finalCriteria = buildTextSearchCriteria(baseCriteria, filterByErrorKeywords, commentFilter);
+        
+        // Determine data source: use database for text search, cache for simple filters
+        boolean requiresDatabaseQuery = filterByErrorKeywords || isValidCommentFilter(commentFilter);
+        
+        if (requiresDatabaseQuery) {
+            return aggregateCommentsFromDatabase(finalCriteria);
+        }
+        
+        return aggregateCommentsFromCache();
+    }
 
-        List<Criteria> regexCriteria = new ArrayList<>();
+    /**
+     * Checks if the comment filter is valid and should be applied.
+     */
+    private boolean isValidCommentFilter(String commentFilter) {
+        return commentFilter != null && !commentFilter.trim().isEmpty() && !"null".equalsIgnoreCase(commentFilter.trim());
+    }
 
-        if (error_keyword) {
-            Set<String> keywordsToCheck = new HashSet<>();
-            keywordsToCheck.addAll(errorKeywordService.getEnglishKeywords());
-            keywordsToCheck.addAll(errorKeywordService.getFrenchKeywords());
-            keywordsToCheck.addAll(errorKeywordService.getBilingualKeywords());
-
-            if (!keywordsToCheck.isEmpty()) {
-                String combinedRegex = keywordsToCheck.stream()
-                        .map(Pattern::quote)
-                        .collect(Collectors.joining("|"));
-                regexCriteria.add(Criteria.where("problemDetails").regex(combinedRegex, "i"));
-                //criteria.and("problemDetails").regex(combinedRegex, "i");
+    /**
+     * Builds criteria for text search (error keywords and/or comment filter).
+     * Returns combined criteria using AND operator if text search is needed.
+     */
+    private Criteria buildTextSearchCriteria(Criteria baseCriteria, boolean filterByErrorKeywords, String commentFilter) {
+        List<Criteria> textSearchCriteria = new ArrayList<>();
+        
+        // Add error keyword criteria if requested
+        if (filterByErrorKeywords) {
+            String combinedKeywordRegex = errorKeywordService.getCombinedKeywordRegex();
+            if (!combinedKeywordRegex.isEmpty()) {
+                textSearchCriteria.add(Criteria.where("problemDetails").regex(combinedKeywordRegex, "i"));
             }
+        }
+        
+        // Add comment filter criteria if provided
+        if (isValidCommentFilter(commentFilter)) {
+            String escapedComment = escapeSpecialRegexCharacters(commentFilter.trim());
+            textSearchCriteria.add(Criteria.where("problemDetails").regex(escapedComment, "i"));
+        }
+        
+        // Combine base criteria with text search criteria
+        if (textSearchCriteria.isEmpty()) {
+            return baseCriteria;
+        }
+        
+        List<Criteria> allCriteria = new ArrayList<>();
+        allCriteria.add(baseCriteria);
+        allCriteria.addAll(textSearchCriteria);
+        return new Criteria().andOperator(allCriteria.toArray(new Criteria[0]));
+    }
 
-        }
-        // Comment filter, if set
-        if (comments != null && !comments.trim().isEmpty() && !"null".equalsIgnoreCase(comments.trim())) {
-            String escapedComment = escapeSpecialRegexCharacters(comments.trim());
-            regexCriteria.add(Criteria.where("problemDetails").regex(escapedComment, "i"));
-        }
-
-        Criteria finalCriteria;
-        if (!regexCriteria.isEmpty()) {
-            List<Criteria> ands = new ArrayList<>();
-            ands.add(criteria);
-            ands.addAll(regexCriteria);
-            finalCriteria = new Criteria().andOperator(ands.toArray(new Criteria[0]));
-        } else {
-            finalCriteria = criteria;
-        }
-        boolean useDatabase = error_keyword || (comments != null && !comments.trim().isEmpty() && !"null".equalsIgnoreCase(comments.trim()));
-        if (useDatabase) {
-        // MongoDB aggregation by problemDate
+    /**
+     * Aggregates comments by date using MongoDB aggregation pipeline.
+     * Used when text search (error keywords or comment filter) is required.
+     */
+    private List<Map<String, Object>> aggregateCommentsFromDatabase(Criteria criteria) {
+        // Build aggregation pipeline: match -> group by date -> sort by date
         GroupOperation groupByDate = Aggregation.group("problemDate").count().as("comments");
         SortOperation sortByDate = Aggregation.sort(Sort.Direction.ASC, "_id");
-        Aggregation agg = Aggregation.newAggregation(
-                Aggregation.match(finalCriteria),
+        
+        Aggregation aggregation = Aggregation.newAggregation(
+                Aggregation.match(criteria),
                 groupByDate,
                 sortByDate
         );
-        AggregationResults<Document> aggResults = mongoTemplate.aggregate(agg, "problem", Document.class);
-
-        // Build dailyCommentsList
+        
+        AggregationResults<Document> results = mongoTemplate.aggregate(aggregation, "problem", Document.class);
+        
+        // Convert results to list of maps
         List<Map<String, Object>> dailyCommentsList = new ArrayList<>();
-        for (Document doc : aggResults) {
-            Map<String, Object> map = new HashMap<>();
-            map.put("date", doc.getString("_id")); // group by "problemDate"
-            map.put("comments", doc.getInteger("comments", 0));
-            dailyCommentsList.add(map);
+        for (Document doc : results) {
+            Map<String, Object> entry = new HashMap<>();
+            entry.put("date", doc.getString("_id"));
+            entry.put("comments", doc.getInteger("comments", 0));
+            dailyCommentsList.add(entry);
         }
+        
         return dailyCommentsList;
     }
 
+    /**
+     * Aggregates comments by date from cached problem list.
+     * Used for simple filters without text search for better performance.
+     */
+    private List<Map<String, Object>> aggregateCommentsFromCache() {
         if (problems == null) {
             return new ArrayList<>();
         }
-        Map<String, Integer> dateToCommentCountMap = new HashMap<>();
-
-        // Sort problems by date in ascending order
-        problems.sort(Comparator.comparing(Problem::getProblemDate));
-        for (Problem problem : problems) {
-            if (problem != null && problem.getProblemDate() != null) {
-                String date = problem.getProblemDate();
-                Integer urlEntries = problem.getUrlEntries();
-                // Update the count for the given date
-                dateToCommentCountMap.merge(date, urlEntries, Integer::sum);
-            }
-        }
-        // Convert the map to a list of maps
-        List<Map<String, Object>> dailyCommentsList = new ArrayList<>();
-        dateToCommentCountMap.forEach(
-                (date, count) -> {
-                    Map<String, Object> dateComments = new HashMap<>();
-                    dateComments.put("date", date);
-                    dateComments.put("comments", count);
-                    dailyCommentsList.add(dateComments);
-                });
-
-        // Sort the list by date in ascending order
-        dailyCommentsList.sort(Comparator.comparing(map -> (String) map.get("date")));
-
-        return dailyCommentsList;
+        
+        // Group and sum URL entries by date using streams
+        Map<String, Integer> commentCountsByDate = problems.stream()
+                .filter(problem -> problem != null && problem.getProblemDate() != null)
+                .collect(Collectors.groupingBy(
+                        Problem::getProblemDate,
+                        Collectors.summingInt(Problem::getUrlEntries)
+                ));
+        
+        // Convert to list of maps and sort by date
+        return commentCountsByDate.entrySet().stream()
+                .sorted(Map.Entry.comparingByKey())
+                .map(entry -> {
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("date", entry.getKey());
+                    map.put("comments", entry.getValue());
+                    return map;
+                })
+                .collect(Collectors.toList());
     }
 
 
