@@ -1031,7 +1031,7 @@ label[for="dt-length-0"] {
   visibility: hidden !important;
 }
 
-/*fix for url bug occurring with news URL*/
+/*fix for URL bug*/
 #myTable td,
 table.dataTable td {
   word-break: break-all;
