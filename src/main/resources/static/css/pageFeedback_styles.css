@@ -1030,3 +1030,12 @@ label[for="dt-length-0"] {
   display: none !important;
   visibility: hidden !important;
 }
+
+/*fix for url bug occurring with news URL*/
+#myTable td,
+table.dataTable td {
+  word-break: break-all;
+  overflow-wrap: anywhere;
+  max-width: 350px;
+  white-space: normal;
+}
