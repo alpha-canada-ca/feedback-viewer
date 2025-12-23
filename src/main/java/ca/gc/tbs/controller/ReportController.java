@@ -1,13 +1,11 @@
 package ca.gc.tbs.controller;
 
-import ca.gc.tbs.domain.Problem;
-import ca.gc.tbs.repository.ProblemRepository;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.List;
 import java.util.Scanner;
+
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +14,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.view.RedirectView;
+
+import ca.gc.tbs.domain.Problem;
+import ca.gc.tbs.repository.ProblemRepository;
 
 @Controller
 public class ReportController {
@@ -58,7 +59,7 @@ public class ReportController {
                 "",
                 "Test - auto-topic generator"))) {
 
-      List<Problem> problems = this.problemRepository.findAll();
+      Iterable<Problem> problems = this.problemRepository.findAll();
       for (Problem problem : problems) {
         csvPrinter.printRecord(
             problem.getId(),

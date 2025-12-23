@@ -1,19 +1,22 @@
 package ca.gc.tbs.repository;
 
-import ca.gc.tbs.domain.Problem;
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.MongoTemplate;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public class UserRepositoryCustomImpl implements UserRepositoryCustom {
 
-  @Autowired MongoTemplate mongoTemplate;
+  @PersistenceContext
+  private EntityManager entityManager;
 
   public UserRepositoryCustomImpl() {}
 
+  @Override
   public List<String> findAllInstitutions() {
-    List<String> instList =
-        mongoTemplate.query(Problem.class).distinct("institution").as(String.class).all();
-    return instList;
+    return entityManager
+        .createQuery("SELECT DISTINCT p.institution FROM Problem p WHERE p.institution IS NOT NULL ORDER BY p.institution", String.class)
+        .getResultList();
   }
 }

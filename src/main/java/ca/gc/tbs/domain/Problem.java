@@ -2,36 +2,101 @@ package ca.gc.tbs.domain;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.index.Indexed;
 
+import javax.persistence.CollectionTable;
+import javax.persistence.Column;
+import javax.persistence.DiscriminatorColumn;
+import javax.persistence.DiscriminatorType;
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Index;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
+import javax.persistence.Table;
+
+import org.hibernate.annotations.GenericGenerator;
+
+@Entity
+@Table(
+    name = "problems",
+    indexes = {
+      @Index(name = "idx_problem_url", columnList = "url"),
+      @Index(name = "idx_problem_language", columnList = "language"),
+      @Index(name = "idx_problem_date", columnList = "problemDate"),
+      @Index(name = "idx_problem_timestamp", columnList = "timeStamp"),
+      @Index(name = "idx_problem_title", columnList = "title"),
+      @Index(name = "idx_problem_processed", columnList = "processed"),
+      @Index(name = "idx_problem_airtable_sync", columnList = "airTableSync"),
+      @Index(name = "idx_problem_personal_info", columnList = "personalInfoProcessed"),
+      @Index(name = "idx_problem_auto_tag", columnList = "autoTagProcessed"),
+      @Index(name = "idx_problem_processed_date", columnList = "processedDate"),
+      @Index(name = "idx_problem_institution", columnList = "institution"),
+      @Index(name = "idx_problem_theme", columnList = "theme"),
+      @Index(name = "idx_problem_section", columnList = "section"),
+      @Index(name = "idx_problem_device_type", columnList = "deviceType"),
+      @Index(name = "idx_problem_browser", columnList = "browser")
+    })
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "problem_type", discriminatorType = DiscriminatorType.STRING)
+@DiscriminatorValue("PROBLEM")
 public class Problem {
 
-  @Id private String id;
-  @Indexed private String url;
-  private int urlEntries;
-  private String problemDetails;
-  @Indexed
-  private String language;
-  @Indexed private String problemDate;
-  @Indexed private String timeStamp;
-  @Indexed private String title;
-  private String dataOrigin;
-  private List<String> tags;
-  // Pipeline fields
-  @Indexed private String processed;
-  @Indexed private String airTableSync;
-  @Indexed private String personalInfoProcessed;
-  @Indexed private String autoTagProcessed;
-  @Indexed private String processedDate; // New field for processed date
+  @Id
+  @GeneratedValue(generator = "uuid")
+  @GenericGenerator(name = "uuid", strategy = "uuid2")
+  private String id;
 
-  @Indexed private String institution;
-  @Indexed private String theme;
-  @Indexed private String section;
+  @Column(length = 2048)
+  private String url;
+
+  private int urlEntries;
+
+  @Column(columnDefinition = "TEXT")
+  private String problemDetails;
+
+  private String language;
+
+  private String problemDate;
+
+  private String timeStamp;
+
+  @Column(length = 1024)
+  private String title;
+
+  @Column(columnDefinition = "TEXT")
+  private String dataOrigin;
+
+  @ElementCollection(fetch = FetchType.LAZY)
+  @CollectionTable(name = "problem_tags", joinColumns = @JoinColumn(name = "problem_id"))
+  @Column(name = "tag")
+  private List<String> tags = new ArrayList<>();
+
+  // Pipeline fields
+  private String processed;
+  private String airTableSync;
+  private String personalInfoProcessed;
+  private String autoTagProcessed;
+  private String processedDate;
+
+  @Column(columnDefinition = "TEXT")
+  private String institution;
+  @Column(columnDefinition = "TEXT")
+  private String theme;
+  @Column(columnDefinition = "TEXT")
+  private String section;
+  @Column(columnDefinition = "TEXT")
   private String oppositeLang;
+  @Column(columnDefinition = "TEXT")
   private String contact;
-  @Indexed private String deviceType;
-  @Indexed private String browser;
+  @Column(columnDefinition = "TEXT")
+  private String deviceType;
+  @Column(columnDefinition = "TEXT")
+  private String browser;
 
   public Problem() {
     this.tags = new ArrayList<>();
@@ -93,8 +158,6 @@ public class Problem {
 
   // Getter and Setter methods
 
-  // Add getters and setters for all fields
-  // Example:
   public String getId() {
     return id;
   }

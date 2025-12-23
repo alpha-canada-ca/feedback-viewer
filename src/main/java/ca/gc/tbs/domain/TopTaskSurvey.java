@@ -1,63 +1,113 @@
 package ca.gc.tbs.domain;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.index.CompoundIndex;
-import org.springframework.data.mongodb.core.index.Indexed;
-import org.springframework.data.mongodb.core.mapping.Document;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Index;
+import javax.persistence.Table;
 
-@Document(collection = "toptasksurvey")
-@CompoundIndex(def = "{'processed': 1, 'dateTime': 1}")
-@CompoundIndex(def = "{'processed': 1, 'dateTime': 1, 'language': 1}")
-@CompoundIndex(def = "{'processed': 1, 'dateTime': 1, 'dept': 1}")
-@CompoundIndex(def = "{'processed': 1, 'dateTime': 1, 'theme': 1}")
-@CompoundIndex(def = "{'processed': 1, 'dateTime': 1, 'grouping': 1}")
-@CompoundIndex(def = "{'processed': 1, 'dateTime': 1, 'task': 1}")
-@CompoundIndex(def = "{'processed': 1, 'processedDate': 1}")
+import org.hibernate.annotations.GenericGenerator;
+
+@Entity
+@Table(
+    name = "top_task_surveys",
+    indexes = {
+      @Index(name = "idx_tts_processed_datetime", columnList = "processed, dateTime"),
+      @Index(name = "idx_tts_processed_datetime_lang", columnList = "processed, dateTime, language"),
+      @Index(name = "idx_tts_processed_datetime_dept", columnList = "processed, dateTime, dept"),
+      @Index(name = "idx_tts_processed_datetime_theme", columnList = "processed, dateTime, theme"),
+      @Index(name = "idx_tts_processed_datetime_grouping", columnList = "processed, dateTime, grouping"),
+      @Index(name = "idx_tts_processed_datetime_task", columnList = "processed, dateTime, task"),
+      @Index(name = "idx_tts_processed_processeddate", columnList = "processed, processedDate")
+    })
 public class TopTaskSurvey {
-  @Id private String id = "";
+
+  @Id
+  @GeneratedValue(generator = "uuid")
+  @GenericGenerator(name = "uuid", strategy = "uuid2")
+  private String id = "";
 
   // Time-related fields
+  @Column(columnDefinition = "TEXT")
   private String dateTime;
+  @Column(columnDefinition = "TEXT")
   private String timeStamp;
+  @Column(columnDefinition = "TEXT")
   private String processedDate;
 
   // Survey metadata
+  @Column(columnDefinition = "TEXT")
   private String surveyReferrer;
+
+  @Column(columnDefinition = "TEXT")
   private String language;
+  @Column(columnDefinition = "TEXT")
   private String device;
+  @Column(columnDefinition = "TEXT")
   private String screener;
 
   // Organization-related fields
+  @Column(columnDefinition = "TEXT")
   private String dept;
+  @Column(columnDefinition = "TEXT")
   private String theme;
+  @Column(columnDefinition = "TEXT")
   private String themeOther;
+  @Column(columnDefinition = "TEXT")
   private String grouping;
 
   // Task-related fields
+  @Column(columnDefinition = "TEXT")
   private String task;
+
+  @Column(columnDefinition = "TEXT")
   private String taskOther;
+
+  @Column(columnDefinition = "TEXT")
   private String taskSatisfaction;
+  @Column(columnDefinition = "TEXT")
   private String taskEase;
+  @Column(columnDefinition = "TEXT")
   private String taskCompletion;
+  @Column(columnDefinition = "TEXT")
   private String taskImprove;
+
+  @Column(columnDefinition = "TEXT")
   private String taskImproveComment;
+
+  @Column(columnDefinition = "TEXT")
   private String taskWhyNot;
+
+  @Column(columnDefinition = "TEXT")
   private String taskWhyNotComment;
 
   // Sampling-related fields
+  @Column(columnDefinition = "TEXT")
   private String taskSampling;
+  @Column(columnDefinition = "TEXT")
   private String samplingInvitation;
+  @Column(columnDefinition = "TEXT")
   private String samplingGC;
+  @Column(columnDefinition = "TEXT")
   private String samplingCanada;
+  @Column(columnDefinition = "TEXT")
   private String samplingTheme;
+  @Column(columnDefinition = "TEXT")
   private String samplingInstitution;
+  @Column(columnDefinition = "TEXT")
   private String samplingGrouping;
+  @Column(columnDefinition = "TEXT")
   private String samplingTask;
 
   // Processing flags
+  @Column(columnDefinition = "TEXT")
   private String processed;
+  @Column(columnDefinition = "TEXT")
   private String topTaskAirTableSync;
+  @Column(columnDefinition = "TEXT")
   private String personalInfoProcessed;
+  @Column(columnDefinition = "TEXT")
   private String autoTagProcessed;
 
   // Default constructor

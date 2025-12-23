@@ -1,22 +1,47 @@
 package ca.gc.tbs.domain;
 
+import java.util.HashSet;
 import java.util.Set;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DBRef;
-import org.springframework.data.mongodb.core.mapping.Document;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.Table;
+import org.hibernate.annotations.GenericGenerator;
 
-@Document(collection = "user")
+@Entity
+@Table(name = "users")
 public class User {
 
-  @Id private String id;
+  @Id
+  @GeneratedValue(generator = "uuid")
+  @GenericGenerator(name = "uuid", strategy = "uuid2")
+  private String id;
+
+  @Column(unique = true, nullable = false)
   private String email;
+
+  @Column(nullable = false)
   private String password;
+
   private String institution;
+
   private boolean enabled;
 
   private String dateCreated;
 
-  @DBRef private Set<Role> roles;
+  @ManyToMany(fetch = FetchType.EAGER)
+  @JoinTable(
+      name = "user_roles",
+      joinColumns = @JoinColumn(name = "user_id"),
+      inverseJoinColumns = @JoinColumn(name = "role_id"))
+  private Set<Role> roles = new HashSet<>();
+
+  public User() {}
 
   public String getId() {
     return id;

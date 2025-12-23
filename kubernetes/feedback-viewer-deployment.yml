@@ -18,6 +18,30 @@ spec:
         - name: feedback-viewer
           image: tbsacr.azurecr.io/feedback-viewer:1.0.0
           imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: "postgres"
+            - name: DB_HOST
+              value: "postgres"
+            - name: DB_PORT
+              value: "5432"
+            - name: DB_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: postgres-config
+                  key: POSTGRES_DB
+            - name: DB_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: postgres-config
+                  key: POSTGRES_USER
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: POSTGRES_PASSWORD
           resources:
             limits:
               cpu: "2"
@@ -27,9 +51,17 @@ spec:
               memory: 4Gi
           livenessProbe:
             httpGet:
-              path: /health # The endpoint in your application that indicates it is healthy
+              path: /health
               port: 8080
-            initialDelaySeconds: 60 # Adjust based on your application startup time
+            initialDelaySeconds: 60
             periodSeconds: 10
             timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 5
+            timeoutSeconds: 3
             failureThreshold: 3

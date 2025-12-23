@@ -1,0 +1,69 @@
+# PostgreSQL Helm Chart Values
+# Bitnami PostgreSQL Chart Configuration
+
+# Global settings
+global:
+  postgresql:
+    auth:
+      postgresPassword: "changeme-in-production"
+      database: "feedbackdb"
+
+# Authentication
+auth:
+  postgresPassword: "changeme-in-production"
+  database: "feedbackdb"
+
+# Primary PostgreSQL configuration
+primary:
+  persistence:
+    enabled: true
+    size: 10Gi
+    storageClass: ""
+  resources:
+    limits:
+      cpu: "1"
+      memory: 2Gi
+    requests:
+      cpu: 250m
+      memory: 512Mi
+
+# Disable read replicas for simpler setup
+architecture: standalone
+
+# Service configuration
+service:
+  type: ClusterIP
+  port: 5432
+
+# Metrics configuration (optional)
+metrics:
+  enabled: false
+
+# Volume permissions
+volumePermissions:
+  enabled: false
+
+# Security context
+securityContext:
+  enabled: true
+  fsGroup: 1001
+
+# Container security context
+containerSecurityContext:
+  enabled: true
+  runAsUser: 1001
+
+# PostgreSQL configuration
+postgresqlConfiguration:
+  max_connections: "200"
+  shared_buffers: "256MB"
+  effective_cache_size: "1GB"
+  maintenance_work_mem: "128MB"
+  checkpoint_completion_target: "0.9"
+  wal_buffers: "16MB"
+  default_statistics_target: "100"
+  random_page_cost: "1.1"
+  effective_io_concurrency: "200"
+  work_mem: "4MB"
+  min_wal_size: "1GB"
+  max_wal_size: "4GB"

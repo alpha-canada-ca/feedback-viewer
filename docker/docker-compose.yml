@@ -1,19 +1,46 @@
-version: '3'
+version: "3.8"
+
 services:
-  mongodb:
-    image: mongo:latest
+  postgres:
+    image: postgres:15-alpine
+    container_name: feedback-postgres
     ports:
-      - 27017:27017
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: feedbackdb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
     volumes:
-      - mongodb_data_container:/data/db
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-db:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d feedbackdb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
   pagesuccess:
-    build: .
+    build:
+      context: ..
+      dockerfile: ./docker/Dockerfile
+    container_name: feedback-viewer
     working_dir: /app
     ports:
-      - 8181:8080
-      - 8000:8000
-    command: mvn -X clean spring-boot:run
+      - "8181:8080"
+      - "8000:8000"
+    environment:
+      - SPRING_PROFILES_ACTIVE=postgres
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=feedbackdb
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
     depends_on:
-      - mongodb
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
 volumes:
-  mongodb_data_container:
+  postgres_data:
+    driver: local
