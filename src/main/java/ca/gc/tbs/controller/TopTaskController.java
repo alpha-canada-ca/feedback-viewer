@@ -1131,13 +1131,59 @@ public class TopTaskController {
 
   @GetMapping("/taskNames")
   @ResponseBody
-  public List<String> getTaskNames(@RequestParam(name = "search", required = false) String search) {
+  public List<String> getTaskNames(
+      @RequestParam(name = "search", required = false) String search,
+      @RequestParam(name = "department", required = false) String department,
+      @RequestParam(name = "theme", required = false) String theme,
+      @RequestParam(name = "group", required = false) String group,
+      @RequestParam(name = "language", required = false) String language,
+      @RequestParam(name = "startDate", required = false) String startDate,
+      @RequestParam(name = "endDate", required = false) String endDate) {
+
+    // Build criteria based on applied filters
+    Criteria criteria = Criteria.where("processed").is("true");
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+    // Apply date range filter
+    if (startDate != null && endDate != null) {
+      LocalDate start = LocalDate.parse(startDate, formatter);
+      LocalDate end = LocalDate.parse(endDate, formatter);
+      criteria.and("dateTime").gte(start.format(formatter)).lte(end.format(formatter));
+    }
+
+    // Apply language filter
+    if (language != null && !language.isEmpty()) {
+      criteria.and("language").is(language);
+    }
+
+    // Apply theme filter
+    if (theme != null && !theme.isEmpty()) {
+      String cleanedTheme = theme.trim().replaceAll("\\s+", " ");
+      criteria.and("theme").regex(Pattern.quote(cleanedTheme), "i");
+    }
+
+    // Apply group filter
+    if (group != null && !group.isEmpty()) {
+      criteria.and("grouping").is(group);
+    }
+
+    // Apply department filter
+    if (department != null && !department.isEmpty()) {
+      Criteria departmentCriteria = applyDepartmentFilter(new Criteria(), department);
+      criteria = new Criteria().andOperator(criteria, departmentCriteria);
+    }
+
     if (search != null && !search.isEmpty()) {
-      // Use the new repository method to filter page titles based on the search term
-      return topTaskRepository.findTaskTitlesBySearch(search);
+      // Use the new repository method with filters applied
+      return topTaskRepository.findTaskNamesBySearchWithFilters(search, criteria);
     } else {
-      // Return all page titles if no search term is provided
-      return topTaskRepository.findDistinctTaskNames();
+      // Return all tasks matching the current filters (without search term)
+      // This uses the existing findDistinctTaskCountsWithFilters method
+      List<Map> distinctTaskCounts = topTaskRepository.findDistinctTaskCountsWithFilters(criteria);
+      return distinctTaskCounts.stream()
+          .map(map -> (String) map.get("_id"))
+          .sorted()
+          .collect(Collectors.toList());
     }
   }
 
