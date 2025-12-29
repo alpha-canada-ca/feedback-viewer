@@ -150,7 +150,22 @@ $(document).ready(function () {
                 return reject(getMessage('SEARCH_MIN_CHARS'));
               }
 
-              fetch(`${ENDPOINTS.TASK_NAMES}?search=${encodeURIComponent(search)}`, {
+              // Build URL with current filters using existing getFilterParams function
+              var url = new URL(window.location.origin + ENDPOINTS.TASK_NAMES);
+              var filterParams = getFilterParams();
+              
+              // Add all existing filter parameters
+              filterParams.forEach((value, key) => {
+                // Skip task-related params since we're searching for tasks
+                if (!key.startsWith('tasks')) {
+                  url.searchParams.append(key, value);
+                }
+              });
+              
+              // Add the search term
+              url.searchParams.append('search', search);
+
+              fetch(url.toString(), {
                 method: "GET",
                 headers: {
                   Accept: "application/json",

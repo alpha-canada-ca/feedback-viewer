@@ -33,4 +33,26 @@ public class CustomTopTaskRepositoryImpl implements CustomTopTaskRepository {
         mongoTemplate.aggregate(aggregation, TopTaskSurvey.class, Map.class);
     return results.getMappedResults();
   }
+
+  @Override
+  public List<String> findTaskNamesBySearchWithFilters(String search, Criteria criteria) {
+    // Add the task search regex to the existing criteria
+    Criteria taskSearchCriteria = Criteria.where("task").regex(search, "i");
+    Criteria combinedCriteria = new Criteria().andOperator(criteria, taskSearchCriteria);
+
+    Aggregation aggregation =
+        Aggregation.newAggregation(
+            Aggregation.match(combinedCriteria), // Apply both filter criteria and search
+            Aggregation.group("task"), // Group by task to get distinct values
+            Aggregation.sort(org.springframework.data.domain.Sort.Direction.ASC, "_id") // Sort alphabetically
+        );
+
+    AggregationResults<Map> results =
+        mongoTemplate.aggregate(aggregation, TopTaskSurvey.class, Map.class);
+
+    // Extract the task names from the aggregation results
+    return results.getMappedResults().stream()
+        .map(map -> (String) map.get("_id"))
+        .collect(java.util.stream.Collectors.toList());
+  }
 }
