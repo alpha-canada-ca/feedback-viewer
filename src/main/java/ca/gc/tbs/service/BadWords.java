@@ -5,12 +5,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
@@ -22,7 +20,7 @@ public class BadWords {
   private static final Set<String> words = Collections.newSetFromMap(new ConcurrentHashMap<>());
   private static final Set<String> allowedWords = Collections.newSetFromMap(new ConcurrentHashMap<>());
   private static final String[] DEFAULT_FILES = {
-    "static/badwords/badwords_en.txt", "static/badwords/badwords_fr.txt",
+          "static/badwords/badwords_en.txt", "static/badwords/badwords_fr.txt",
     //            "static/badwords/threats_fr.txt",
     //            "static/badwords/threats_en.txt"
   };
@@ -80,6 +78,7 @@ public class BadWords {
       logger.error("Error loading Google config from {}", googleSheetUrl, e);
     }
   }
+
 
   /**
    * Returns the set of allowed words that should not be redacted.
