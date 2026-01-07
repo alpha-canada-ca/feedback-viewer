@@ -1127,7 +1127,7 @@ public class TopTaskController {
           for (String variation :  variations) {
               deptCriteria.add(Criteria.where("dept").regex("^" + Pattern.quote(variation) + "$", "i"));
           }
-          criteria. orOperator(deptCriteria. toArray(new Criteria[0]));
+          criteria.orOperator(deptCriteria.toArray(new Criteria[0]));
       }
 
       return criteria;
