@@ -1115,18 +1115,14 @@ public class TopTaskController {
     List<String> variations = new ArrayList<>();
       for (Map.Entry<String, List<String>> entry : institutionMappings.entrySet()) {
           List<String> mappingValues = entry.getValue();
-          // Check if the department matches any value in this mapping
           if (mappingValues.stream().anyMatch(v -> v.equalsIgnoreCase(department))) {
-              // Add all variations from this mapping
               variations.addAll(mappingValues);
               break;
           }
       }
       if (variations.isEmpty()) {
-    // First try direct case-insensitive match for exact database values
     criteria.and("dept").regex("^" + Pattern.quote(department) + "$", "i");
       } else {
-          // Create regex pattern to match any variation
           List<Criteria> deptCriteria = new ArrayList<>();
           for (String variation :  variations) {
               deptCriteria.add(Criteria.where("dept").regex("^" + Pattern.quote(variation) + "$", "i"));
