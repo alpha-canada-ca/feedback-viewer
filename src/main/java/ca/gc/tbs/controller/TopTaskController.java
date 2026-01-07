@@ -244,17 +244,17 @@ public class TopTaskController {
     institutionMappings.put(
         "HC", Arrays.asList("HC", "SC", "HEALTH CANADA", "SANTÉ CANADA", "HC / SC"));
     institutionMappings.put(
-        "HICC",
+        "INFC",
         Arrays.asList(
             "HICC",
             "LICC",
             "HOUSING, INFRASTRUCTURE AND COMMUNITIES CANADA",
             "LOGEMENT, INFRASTRUCTURES ET COLLECTIVITÉS CANADA",
+            "INFC / INFC",
+            "INFC",
+            "INFRASTRUCTURE CANADA",
+            "INFRASTRUCTURE CANADA",
             "HICC / LICC"));
-      institutionMappings.put(
-              "INFC",
-              Arrays.asList(
-                      "INFC", "INFC", "INFRASTRUCTURE CANADA", "INFRASTRUCTURE CANADA", "INFC / INFC"));
     institutionMappings.put(
         "IOGC",
         Arrays.asList(
@@ -1112,9 +1112,29 @@ public class TopTaskController {
   }
 
   private Criteria applyDepartmentFilter(Criteria criteria, String department) {
+    List<String> variations = new ArrayList<>();
+      for (Map.Entry<String, List<String>> entry : institutionMappings.entrySet()) {
+          List<String> mappingValues = entry.getValue();
+          // Check if the department matches any value in this mapping
+          if (mappingValues.stream().anyMatch(v -> v.equalsIgnoreCase(department))) {
+              // Add all variations from this mapping
+              variations.addAll(mappingValues);
+              break;
+          }
+      }
+      if (variations.isEmpty()) {
     // First try direct case-insensitive match for exact database values
     criteria.and("dept").regex("^" + Pattern.quote(department) + "$", "i");
-    return criteria;
+      } else {
+          // Create regex pattern to match any variation
+          List<Criteria> deptCriteria = new ArrayList<>();
+          for (String variation :  variations) {
+              deptCriteria.add(Criteria.where("dept").regex("^" + Pattern.quote(variation) + "$", "i"));
+          }
+          criteria. orOperator(deptCriteria. toArray(new Criteria[0]));
+      }
+
+      return criteria;
   }
 
   @GetMapping(value = "/topTaskSurvey")
