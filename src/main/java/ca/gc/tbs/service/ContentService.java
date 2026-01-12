@@ -1,5 +1,6 @@
 package ca.gc.tbs.service;
 
+import ca.gc.tbs.repository.BadWordEntryRepository;
 import edu.stanford.nlp.pipeline.CoreDocument;
 import edu.stanford.nlp.pipeline.CoreEntityMention;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
@@ -55,9 +56,13 @@ public class ContentService {
 
   // Set of allowed words that should never be redacted, loaded from BadWords
   private Set<String> allowedWords;
+  private final BadWordEntryRepository badWordEntryRepository;
 
-  public ContentService() {
+  public ContentService(BadWordEntryRepository badWordEntryRepository) {
+      this.badWordEntryRepository = badWordEntryRepository;
+
     System.out.println("attempting to load bad words config...");
+    BadWords.setRepository(badWordEntryRepository);
     BadWords.loadConfigs();
     // Get the allowed words from BadWords class
     this.allowedWords = BadWords.getAllowedWords();

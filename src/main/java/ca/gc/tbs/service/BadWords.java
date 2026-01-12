@@ -9,6 +9,8 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
+import ca.gc.tbs.domain.BadWordEntry;
+import ca.gc.tbs.repository.BadWordEntryRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
@@ -22,21 +24,75 @@ public class BadWords {
   private static final String[] DEFAULT_FILES = {
           "static/badwords/badwords_en.txt",
           "static/badwords/badwords_fr.txt",
-          //"static/badwords/threats_fr.txt",
-          //"static/badwords/threats_en.txt"
+          //"static/wordlists/threats_fr.txt",
+          //"static/wordlists/threats_en.txt"
   };
 
-  private static final String ALLOWED_WORDS_FILE = "static/wordlists/allowed_words.txt";
+  private static BadWordEntryRepository repository;
+
+    public static void setRepository(BadWordEntryRepository repo) {
+        repository = repo;
+    }
+
+    private static final String ALLOWED_WORDS_FILE = "static/wordlists/allowed_words.txt";
 
   public static void loadConfigs() {
     for (String file : DEFAULT_FILES) {
       loadFileConfigs(file);
     }
 
+      if (repository.countByType("profanity") == 0) {
+          logger.info("Database empty - migrating bad words from files.. .");
+          migrateToDatabase();
+      }
+
+      //load badwords from database
+      loadFromDatabase();
+
+
     loadAllowedWords(ALLOWED_WORDS_FILE);
     logger.info("Loaded {} words to filter out", words.size());
     logger.info("Loaded {} allowed words that will not be filtered", allowedWords.size());
   }
+
+  private static void loadFromDatabase() {
+      words.clear();
+      repository.findByTypeAndActive("profanity", true)
+              .forEach(entry -> words.add(entry.getWord()));
+  }
+
+  private static void migrateToDatabase() {
+      List<BadWordEntry> entries = new ArrayList<>();
+      entries.addAll(loadFileForMigration("static/badwords/badwords_en.txt", "en", "profanity"));
+      entries.addAll(loadFileForMigration("static/badwords/badwords_fr.txt", "fr", "profanity"));
+
+  }
+
+    private static List<BadWordEntry> loadFileForMigration(String filePath, String language, String type) {
+        List<BadWordEntry> entries = new ArrayList<>();
+        Set<String> seen = new HashSet<>();
+
+        try {
+            Resource resource = new ClassPathResource(filePath, BadWords.class. getClassLoader());
+            try (BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(resource.getInputStream(), StandardCharsets.UTF_8))) {
+                reader.lines()
+                        .map(String::trim)
+                        .filter(line -> ! line.isEmpty())
+                        .forEach(line -> {
+                            String w = line.toLowerCase();
+                            if (! seen.contains(w)) {
+                                seen.add(w);
+                                entries.add(new BadWordEntry(w, language, type));
+                            }
+                        });
+            }
+            logger.info("Read {} words from {} for migration", entries.size(), filePath);
+        } catch (Exception e) {
+            logger.warn("Could not load {}: {}", filePath, e.getMessage());
+        }
+        return entries;
+    }
   
   private static void loadAllowedWords(String filePath) {
     try {
@@ -88,6 +144,17 @@ public class BadWords {
    */
   public static Set<String> getAllowedWords() {
     return Collections.unmodifiableSet(allowedWords);
+  }
+
+  public static Set<String> getWords() {
+      return Collections.unmodifiableSet(words);
+  }
+
+  public static void refresh() {
+      if (repository != null) {
+          loadFromDatabase();
+          logger.info("Bad words cache refreshed");
+      }
   }
 
   public static String censor(String text) {
