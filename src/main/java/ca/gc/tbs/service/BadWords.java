@@ -26,7 +26,7 @@ public class BadWords {
           //"static/badwords/threats_en.txt"
   };
 
-  private static final String ALLOWED_WORDS_FILE = "static/badwords/allowed_words.txt";
+  private static final String ALLOWED_WORDS_FILE = "static/wordlists/allowed_words.txt";
 
   public static void loadConfigs() {
     for (String file : DEFAULT_FILES) {
