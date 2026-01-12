@@ -66,6 +66,12 @@ public class BadWords {
       entries.addAll(loadFileForMigration("static/badwords/badwords_en.txt", "en", "profanity"));
       entries.addAll(loadFileForMigration("static/badwords/badwords_fr.txt", "fr", "profanity"));
 
+      if (!entries.isEmpty()) {
+          repository. saveAll(entries);
+          logger.info("MIGRATED {} words to database", entries.size());
+      } else {
+          logger.warn("No words to migrate!");
+      }
   }
 
     private static List<BadWordEntry> loadFileForMigration(String filePath, String language, String type) {
