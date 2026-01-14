@@ -95,26 +95,38 @@ public class BadWords {
       List<BadWordEntry> entries = new ArrayList<>();
 
       //badwords
-      entries.addAll(loadFileForMigration("static/badwords/badwords_en.txt", "en", "profanity"));
-      entries.addAll(loadFileForMigration("static/badwords/badwords_fr.txt", "fr", "profanity"));
+      if (repository.countByType("profanity") == 0) {
+          logger.info("Migrating profanity words.. .");
+          entries.addAll(loadFileForMigration("static/badwords/badwords_en.txt", "en", "profanity"));
+          entries.addAll(loadFileForMigration("static/badwords/badwords_fr.txt", "fr", "profanity"));
+      }
 
       //threats
-      entries.addAll(loadFileForMigration("static/wordlists/threats_en.txt", "en", "threat"));
-      entries.addAll(loadFileForMigration("static/wordlists/threats_fr.txt", "fr", "threat"));
+      if (repository.countByType("threat") == 0) {
+          logger.info("Migrating threat words...");
+          entries.addAll(loadFileForMigration("static/wordlists/threats_en.txt", "en", "threat"));
+          entries.addAll(loadFileForMigration("static/wordlists/threats_fr.txt", "fr", "threat"));
+      }
 
       //allowed words
-      entries.addAll(loadFileForMigration("static/wordlists/allowed_words.txt", "en", "allowed"));
+      if (repository.countByType("allowed") == 0) {
+          logger.info("Migrating allowed words...");
+          entries.addAll(loadFileForMigration("static/wordlists/allowed_words.txt", "en", "allowed"));
+      }
 
       //error keywords
-      entries.addAll(loadFileForMigration("static/error_keywords/errors_en.txt", "en", "error"));
-      entries.addAll(loadFileForMigration("static/error_keywords/errors_fr.txt", "fr", "error"));
-      entries.addAll(loadFileForMigration("static/error_keywords/errors_bilingual.txt", "bilingual", "error"));
+      if (repository.countByType("error") == 0) {
+          logger.info("Migrating error keywords...");
+          entries.addAll(loadFileForMigration("static/error_keywords/errors_en.txt", "en", "error"));
+          entries.addAll(loadFileForMigration("static/error_keywords/errors_fr.txt", "fr", "error"));
+          entries.addAll(loadFileForMigration("static/error_keywords/errors_bilingual.txt", "bilingual", "error"));
+      }
 
       if (!entries.isEmpty()) {
           repository. saveAll(entries);
           logger.info("MIGRATED {} words to database", entries.size());
       } else {
-          logger.warn("No words to migrate!");
+          logger.warn("Nothing to migrate!");
       }
   }
 
