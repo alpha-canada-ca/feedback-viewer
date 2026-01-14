@@ -24,28 +24,15 @@ public class BadWords {
   private static final Set<String> threats = Collections.newSetFromMap(new ConcurrentHashMap<>());
   private static final Set<String> errorKeywords = Collections.newSetFromMap(new ConcurrentHashMap<>());
 
-    private static final String[] DEFAULT_FILES = {
-          "static/badwords/badwords_en.txt",
-          "static/badwords/badwords_fr.txt"
-    };
-
   private static BadWordEntryRepository repository;
 
     public static void setRepository(BadWordEntryRepository repo) {
         repository = repo;
     }
 
-    private static final String ALLOWED_WORDS_FILE = "static/wordlists/allowed_words.txt";
-
   public static void loadConfigs() {
     if (repository == null) {
-        logger.warn("No repository - loading from files only");
-        for (String file : DEFAULT_FILES) {
-            loadFileConfigs(file);
-        }
-        loadAllowedWords(ALLOWED_WORDS_FILE);
-        logger.info("Loaded {} words to filter out", words.size());
-        logger.info("Loaded {} allowed words that will not be filtered", allowedWords.size());
+        logger.error("No repository available - BadWords cannot load!");
         return;
     }
       // Check if database is empty (check all types)
@@ -57,7 +44,7 @@ public class BadWords {
       logger.info("Current DB counts - profanity: {}, threats: {}, allowed:  {}, errors: {}",
               profanityCount, threatCount, allowedCount, errorCount);
 
-    //migrate if any type is empty
+    //migrate if any type is empty, remove after migration is deployed
       if (needsMigration()) {
           logger.info("Database missing data, migrating now");
           migrateToDatabase();
@@ -69,7 +56,7 @@ public class BadWords {
       logger.info("Loaded {} profanity, {} threats, {} allowed, {} errors",
               words.size(), threats.size(), allowedWords.size(), errorKeywords.size());
   }
-
+    //remove after migration deployed
     private static boolean needsMigration() {
         return repository.countByType("profanity") == 0 ||
                 repository.countByType("threat") == 0 ||
@@ -90,13 +77,13 @@ public class BadWords {
               .forEach(entry -> targetSet.add(entry. getWord().toLowerCase()));
       logger.info("Loaded {} {} words from database", targetSet.size(), type);
   }
-
+    //remove after migration is deployed
   private static void migrateToDatabase() {
       List<BadWordEntry> entries = new ArrayList<>();
 
       //badwords
       if (repository.countByType("profanity") == 0) {
-          logger.info("Migrating profanity words.. .");
+          logger.info("Migrating profanity words...");
           entries.addAll(loadFileForMigration("static/badwords/badwords_en.txt", "en", "profanity"));
           entries.addAll(loadFileForMigration("static/badwords/badwords_fr.txt", "fr", "profanity"));
       }
@@ -155,36 +142,6 @@ public class BadWords {
         }
         return entries;
     }
-  
-  private static void loadAllowedWords(String filePath) {
-    try {
-      Resource resource = new ClassPathResource(filePath, BadWords.class.getClassLoader());
-      try (BufferedReader reader =
-          new BufferedReader(
-              new InputStreamReader(resource.getInputStream(), StandardCharsets.UTF_8))) {
-        allowedWords.addAll(
-            reader.lines().map(String::trim).map(String::toLowerCase).collect(Collectors.toSet()));
-      }
-    } catch (Exception e) {
-      logger.warn("Allowed words file {} not found, creating empty set", filePath);
-      // If file doesn't exist yet, start with an empty set but add CARM as default
-      allowedWords.add("carm");
-    }
-  }
-
-  private static void loadFileConfigs(String filePath) {
-    try {
-      Resource resource = new ClassPathResource(filePath, BadWords.class.getClassLoader());
-      try (BufferedReader reader =
-          new BufferedReader(
-              new InputStreamReader(resource.getInputStream(), StandardCharsets.UTF_8))) {
-        words.addAll(
-            reader.lines().map(String::trim).map(String::toLowerCase).collect(Collectors.toSet()));
-      }
-    } catch (Exception e) {
-      logger.error("Error loading file config {}", filePath, e);
-    }
-  }
 
   private static void loadGoogleConfigs(String googleSheetUrl) {
     try (BufferedReader reader =
@@ -199,7 +156,6 @@ public class BadWords {
     }
   }
 
-
   /**
    * Returns the set of allowed words that should not be redacted.
    * This is used by other services that need to know which words to exclude from redaction.
@@ -210,13 +166,6 @@ public class BadWords {
 
   public static Set<String> getWords() {
       return Collections.unmodifiableSet(words);
-  }
-
-  public static void refresh() {
-      if (repository != null) {
-          loadAllFromDatabase();
-          logger.info("All words cache refreshed");
-      }
   }
 
   public static String censor(String text) {

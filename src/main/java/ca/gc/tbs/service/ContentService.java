@@ -7,6 +7,7 @@ import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 import java.util.*;
 import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -58,6 +59,7 @@ public class ContentService {
   private Set<String> allowedWords;
   private final BadWordEntryRepository badWordEntryRepository;
 
+  @Autowired
   public ContentService(BadWordEntryRepository badWordEntryRepository) {
       this.badWordEntryRepository = badWordEntryRepository;
 
