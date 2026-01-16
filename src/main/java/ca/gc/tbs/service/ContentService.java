@@ -1,14 +1,18 @@
 package ca.gc.tbs.service;
 
+import ca.gc.tbs.domain.BadWordEntry;
 import ca.gc.tbs.repository.BadWordEntryRepository;
 import edu.stanford.nlp.pipeline.CoreDocument;
 import edu.stanford.nlp.pipeline.CoreEntityMention;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 import java.util.*;
 import java.util.regex.Pattern;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import javax.annotation.PostConstruct;
 
 @Service
 public class ContentService {
@@ -57,17 +61,17 @@ public class ContentService {
 
   // Set of allowed words that should never be redacted, loaded from BadWords
   private Set<String> allowedWords;
-  private final BadWordEntryRepository badWordEntryRepository;
-
   @Autowired
-  public ContentService(BadWordEntryRepository badWordEntryRepository) {
-      this.badWordEntryRepository = badWordEntryRepository;
+  private BadWordEntryRepository badWordEntryRepository;
 
-    System.out.println("attempting to load bad words config...");
-    BadWords.setRepository(badWordEntryRepository);
-    BadWords.loadConfigs();
-    // Get the allowed words from BadWords class
+
+  @PostConstruct
+  public void initialize() {
+     BadWords.setRepository(badWordEntryRepository);
+     BadWords.loadConfigs();
+
     this.allowedWords = BadWords.getAllowedWords();
+
   }
 
   public String cleanContent(String content) {

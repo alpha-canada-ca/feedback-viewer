@@ -8,6 +8,7 @@ import ca.gc.tbs.repository.UserRepository;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -19,6 +20,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
+@Profile("!batch")
 public class UserService implements UserDetailsService {
 
   public static final String USER_ROLE = "USER";
