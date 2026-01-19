@@ -620,6 +620,7 @@ public class DashboardController {
             // Filter out future dates
             LocalDate currentDate = LocalDate.now();
             mergedProblems = mergedProblems.stream()
+                .filter(p -> isValidDate(p.getProblemDate(), DateTimeFormatter.ISO_LOCAL_DATE))
                 .filter(p -> {
                     LocalDate problemDate = LocalDate.parse(p.getProblemDate(), DateTimeFormatter.ISO_LOCAL_DATE);
                     return !problemDate.isAfter(currentDate);
@@ -824,10 +825,9 @@ public class DashboardController {
                                     .values());
 
             LocalDate currentDate = LocalDate.now();
-            problems =
-                    problems.stream()
-                            .filter(
-                                    p -> {
+            problems = problems.stream()
+                            .filter(p -> isValidDate(p.getProblemDate(), DateTimeFormatter.ISO_LOCAL_DATE))
+                            .filter(p -> {
                                         LocalDate problemDate =
                                                 LocalDate.parse(p.getProblemDate(), DateTimeFormatter.ISO_LOCAL_DATE);
                                         return !problemDate.isAfter(currentDate); //was isBefore - changed to !isAfter for more entries including current date
@@ -870,6 +870,16 @@ public class DashboardController {
 
         return output;
     }
+
+    private static boolean isValidDate(String value, DateTimeFormatter formatter) {
+        try {
+            LocalDate.parse(value, formatter);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
     //Helper method for criteria building with filters
     private Criteria buildFilterCriteria(String startDate, String endDate, String theme,
                                          String section, String language, String url,
@@ -984,6 +994,7 @@ public class DashboardController {
             LocalDate end = LocalDate.parse(endDate, formatter);
 
             return problems.stream()
+                    .filter(problem -> isValidDate(problem.getProblemDate(), formatter))
                     .filter(
                             problem -> {
                                 LocalDate problemDate = LocalDate.parse(problem.getProblemDate(), formatter);
