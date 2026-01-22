@@ -6,6 +6,9 @@ import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 import java.util.*;
 import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -53,14 +56,25 @@ public class ContentService {
     nlpPipeline = new StanfordCoreNLP(props);
   }
 
-  // Set of allowed words that should never be redacted, loaded from BadWords
-  private Set<String> allowedWords;
+  // BadWords service for profanity and threat filtering
+  private final BadWords badWords;
 
-  public ContentService() {
-    System.out.println("attempting to load bad words config...");
-    BadWords.loadConfigs();
-    // Get the allowed words from BadWords class
-    this.allowedWords = BadWords.getAllowedWords();
+  @Autowired
+  public ContentService(BadWords badWords) {
+    logger.info("=== ContentService constructor START ===");
+    this.badWords = badWords;
+    logger.info("BadWords service injected successfully");
+    logger.info("=== ContentService constructor COMPLETED ===");
+  }
+  
+  private static final Logger logger = LoggerFactory.getLogger(ContentService.class);
+  
+  /**
+   * Get allowed words from BadWords service (lazy-loaded).
+   * This ensures BadWords has finished initialization before accessing the words.
+   */
+  private Set<String> getAllowedWords() {
+    return badWords.getAllowedWords();
   }
 
   public String cleanContent(String content) {
@@ -68,7 +82,7 @@ public class ContentService {
       return content; // Return empty string if content is empty
     }
     content = StringUtils.normalizeSpace(content);
-    String newContent = BadWords.censor(content);
+    String newContent = badWords.censor(content);
     if (!newContent.contentEquals(content)) {
       content = newContent;
       System.out.println("curse words cleaned: " + content);
@@ -181,13 +195,13 @@ public class ContentService {
 
           // Skip if it's a common pronoun, if its POS tag is a pronoun (PRP or PRP$),
           // or if it's in our allowed words list
-          boolean isAllowed = allowedWords.contains(mentionText);
+          boolean isAllowed = getAllowedWords().contains(mentionText);
           
           // Also check if any word in the mention is in the allowed list
           // This handles multi-word names where one part might be allowed
           if (!isAllowed && mentionText.contains(" ")) {
             for (String word : mentionText.split("\\s+")) {
-              if (allowedWords.contains(word)) {
+              if (getAllowedWords().contains(word)) {
                 isAllowed = true;
                 break;
               }
