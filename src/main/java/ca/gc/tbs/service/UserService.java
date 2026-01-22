@@ -20,7 +20,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
-@Profile("!batch")
 public class UserService implements UserDetailsService {
 
   public static final String USER_ROLE = "USER";

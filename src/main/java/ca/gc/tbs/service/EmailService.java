@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import uk.gov.service.notify.NotificationClient;
 
 @Service
-@Profile("!batch")
 public class EmailService {
 
   @Value("${notify.templateid.accountenabled}")
