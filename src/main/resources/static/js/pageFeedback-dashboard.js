@@ -436,7 +436,8 @@ $(document).ready(function () {
                       fontSize: "16px", // Adjust font size for text in the tooltip on hover
                   },
                   formatter: function() {
-                      return '<b>' + this.x + '</b><br/>' +
+                          const date = categories[this.point.index];
+                          return 'Date: <b>' + date + '</b><br/>' +
                              this.series.name + ': <b>' + formatNumberWithCommas(this.y) + '</b>' +
                              (isFrench ? " commentaires" : " comments");
                   }
