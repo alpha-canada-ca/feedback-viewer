@@ -157,7 +157,7 @@ public class BadWords {
               .replaceAll("[^a-zà-ÿ]", ""); // Including accented characters for French
       
       // Skip censoring if the word is in the allowed words list
-      boolean shouldCensor = allFilterWords.stream().anyMatch(wordToCheck::contains) &&
+      boolean shouldCensor = allFilterWords.contains(wordToCheck) &&
                              !allowedWords.contains(wordToCheck);
       
       result
