@@ -191,24 +191,6 @@ public class BadWords {
     return result.toString();
   }
 
-    
-//    StringBuilder result = new StringBuilder();
-//    for (String word : text.split("\\s+")) {
-//      String wordToCheck =
-//          word.toLowerCase()
-//              .replaceAll("[^a-zà-ÿ]", ""); // Including accented characters for French
-//
-//      // Skip censoring if the word is in the allowed words list
-//      boolean shouldCensor = allFilterWords.contains(wordToCheck) &&
-//                             !allowedWords.contains(wordToCheck);
-//
-//      result
-//          .append(shouldCensor ? createMask(word) : word)
-//          .append(' ');
-//    }
-//    return result.toString().trim();
-//  }
-
   /**
    * Creates a mask of asterisks for a given word.
    * 
