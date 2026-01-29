@@ -4,6 +4,9 @@ import ca.gc.tbs.domain.BadWordEntry;
 import ca.gc.tbs.repository.BadWordEntryRepository;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +33,8 @@ public class BadWords {
   // Combined set of all words to filter (profanity + threats)
   private final Set<String> allFilterWords = Collections.newSetFromMap(new ConcurrentHashMap<>());
 
+  private Pattern filterPattern;
+
   @Autowired
   public BadWords(BadWordEntryRepository badWordEntryRepository) {
     this.badWordEntryRepository = badWordEntryRepository;
@@ -53,6 +58,7 @@ public class BadWords {
         String word = entry.getWord().trim().toLowerCase();
         profanityWords.add(word);
         allFilterWords.add(word);
+        compileFilterPattern();
       });
       
       // Load threat words
@@ -138,10 +144,24 @@ public class BadWords {
     return Collections.unmodifiableSet(threatWords);
   }
 
+
+  private void compileFilterPattern() {
+    if (allFilterWords.isEmpty()) {
+      filterPattern = null;
+      return;
+    }
+    String patternString = allFilterWords.stream()
+            .filter(word -> word != null && !word.trim().isEmpty())
+            .map(Pattern::quote)
+            .map(word -> "\\b" + word + "\\b")  // exact whole word only
+            .collect(Collectors.joining("|"));
+    filterPattern = Pattern.compile(patternString, Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
+  }
+
   /**
    * Censors profanity and threats in the given text by replacing them with asterisks.
    * Words in the allowed words list are never censored.
-   * 
+   *
    * @param text The text to censor
    * @return The censored text
    */
@@ -149,23 +169,45 @@ public class BadWords {
     if (text == null || text.isEmpty()) {
       return text;
     }
-    
-    StringBuilder result = new StringBuilder();
-    for (String word : text.split("\\s+")) {
-      String wordToCheck =
-          word.toLowerCase()
-              .replaceAll("[^a-zà-ÿ]", ""); // Including accented characters for French
-      
-      // Skip censoring if the word is in the allowed words list
-      boolean shouldCensor = allFilterWords.contains(wordToCheck) &&
-                             !allowedWords.contains(wordToCheck);
-      
-      result
-          .append(shouldCensor ? createMask(word) : word)
-          .append(' ');
+    if (filterPattern == null) {
+      // No filter words loaded
+      return text;
     }
-    return result.toString().trim();
+
+    Matcher matcher = filterPattern.matcher(text);
+    StringBuffer result = new StringBuffer();
+
+    while (matcher.find()) {
+      String match = matcher.group();
+      String normalized = match.toLowerCase().replaceAll("[^a-zà-ÿ]", "");
+
+      if (allowedWords.contains(normalized)) {
+        matcher.appendReplacement(result, Matcher.quoteReplacement(match));
+      } else {
+        matcher.appendReplacement(result, Matcher.quoteReplacement(createMask(match)));
+      }
+    }
+    matcher.appendTail(result);
+    return result.toString();
   }
+
+    
+//    StringBuilder result = new StringBuilder();
+//    for (String word : text.split("\\s+")) {
+//      String wordToCheck =
+//          word.toLowerCase()
+//              .replaceAll("[^a-zà-ÿ]", ""); // Including accented characters for French
+//
+//      // Skip censoring if the word is in the allowed words list
+//      boolean shouldCensor = allFilterWords.contains(wordToCheck) &&
+//                             !allowedWords.contains(wordToCheck);
+//
+//      result
+//          .append(shouldCensor ? createMask(word) : word)
+//          .append(' ');
+//    }
+//    return result.toString().trim();
+//  }
 
   /**
    * Creates a mask of asterisks for a given word.
@@ -190,6 +232,7 @@ public class BadWords {
     allowedWords.clear();
     errorKeywords.clear();
     allFilterWords.clear();
+    compileFilterPattern();
     
     // Reload from database
     loadConfigs();
