@@ -82,7 +82,8 @@ h1#wb-cont,
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 14px;
-  width: 160px;
+  min-width: 160px;
+  width: auto;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
@@ -296,7 +297,7 @@ table.wb-tables tbody td:first-child {
 
 table.wb-tables tbody td:last-child {
   white-space: nowrap;
-  min-width: 280px;
+  min-width: 320px;
 }
 
 /* Tag/Badge styles - Compact version */
