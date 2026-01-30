@@ -1,0 +1,1023 @@
+/* Keywords Management Styles - Modern Design with Animations */
+
+/* Base styles */
+body {
+  font-family: "Noto sans", sans-serif;
+}
+
+main.container {
+  line-height: 1.5 !important;
+  font-size: 16px !important;
+}
+
+/* Header with gradient underline like page feedback */
+h1#wb-cont,
+.keywords-header h1 {
+  border-bottom: 5px solid #af3c43;
+  border-image: linear-gradient(to right, #af3c43 71px, transparent 71px);
+  border-image-slice: 1;
+  margin-bottom: 0.5em;
+}
+
+.keywords-header {
+  margin-bottom: 30px;
+  animation: fadeInDown 0.5s ease-out;
+}
+
+.keywords-header .lead {
+  color: #555;
+  font-size: 1.1em;
+  margin-top: 1em;
+}
+
+/* Compact Filter section */
+.filter-section-compact {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  padding: 15px 20px;
+  margin-bottom: 20px;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  animation: fadeIn 0.6s ease-out;
+  flex-wrap: wrap;
+}
+
+.filter-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 6px;
+  align-self: center;
+}
+
+.filter-controls {
+  display: flex;
+  gap: 12px;
+  align-items: flex-end;
+  flex: 1;
+  flex-wrap: wrap;
+}
+
+.filter-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.filter-item label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #555;
+  white-space: nowrap;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.filter-item select,
+.filter-item input {
+  padding: 7px 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+  min-width: 160px;
+  width: auto;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.filter-item:last-child {
+  margin-left: auto;
+}
+
+.filter-item select:focus,
+.filter-item input:focus {
+  border-color: #26374a;
+  box-shadow: 0 0 0 2px rgba(38, 55, 74, 0.1);
+  outline: none;
+}
+
+.filter-item .btn-clear,
+#clearFilters {
+  padding: 7px 18px;
+  background: #f8f9fa;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.filter-item .btn-clear:hover,
+#clearFilters:hover {
+  background: #e9ecef;
+  border-color: #999;
+}
+
+/* Action buttons section */
+.action-buttons {
+  display: flex;
+  gap: 1em;
+  margin-bottom: 20px;
+  animation: fadeIn 0.7s ease-out;
+}
+
+.action-buttons .btn {
+  padding: 10px 20px;
+  border: 1px solid #dcdee1;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.action-buttons .btn::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transform: translate(-50%, -50%);
+  transition: width 0.5s, height 0.5s;
+}
+
+.action-buttons .btn:hover::before {
+  width: 300px;
+  height: 300px;
+}
+
+.action-buttons .btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.action-buttons .btn:active {
+  transform: translateY(0);
+}
+
+.btn-primary {
+  background: #26374a;
+  color: white;
+  border-color: #26374a;
+}
+
+.btn-primary:hover {
+  background: #1a2633;
+}
+
+.btn-success {
+  background: #5cb85c;
+  color: white;
+  border-color: #4cae4c;
+}
+
+.btn-success:hover {
+  background: #449d44;
+}
+
+/* Table container with animation */
+.keywords-table-wrapper {
+	background: #fff;
+	padding: 1.5em 1.5em 0;
+	border: 1px solid #ddd;
+	border-bottom: none;
+	border-radius: 6px 6px 0 0;
+	margin: 2ch 0 0;
+	overflow: visible;
+}
+
+/* Scrollable table body container */
+.table-scroll-container {
+	position: relative;
+	overflow-x: hidden;
+	overflow-y: auto;
+	max-height: 500px;
+	border-bottom: 2px solid #e0e0e0;
+	margin-bottom: 0;
+}
+
+/* Fixed table layout for scrolling */
+.keywords-table-wrapper table.dataTable {
+	width: 100% !important;
+	table-layout: fixed;
+	margin-bottom: 0 !important;
+}
+
+/* Sticky table header */
+.keywords-table-wrapper table.dataTable thead {
+	position: sticky;
+	top: 0;
+	z-index: 10;
+	background: #f8f9fa;
+}
+
+/* Ensure header cells don't lose background on scroll */
+.keywords-table-wrapper table.dataTable thead th {
+	background: #f8f9fa !important;
+}
+
+.keywords-table-wrapper.loading {
+	opacity: 0.6;
+}
+
+/* Hide DataTables wrapper elements that might interfere */
+.keywords-table-wrapper .dataTables_wrapper {
+	overflow: visible !important;
+}
+
+.keywords-table-wrapper .dataTables_scroll,
+.keywords-table-wrapper .dataTables_scrollBody,
+.keywords-table-wrapper .dataTables_scrollHead {
+	overflow: visible !important;
+}
+
+/* Table styles - Compact version */
+table.wb-tables,
+table.dataTable {
+  width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+table.wb-tables thead tr th,
+table.dataTable thead th {
+  padding: 10px 8px;
+  border-bottom: 2px solid #333 !important;
+  border-top: none !important;
+  font-weight: 600;
+  text-align: left;
+  background: #f8f9fa;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+table.wb-tables tbody tr,
+table.dataTable tbody tr {
+  transition: background-color 0.2s ease;
+  border: none !important;
+}
+
+table.wb-tables tbody tr:hover,
+table.dataTable tbody tr:hover {
+  background-color: #f8fafb;
+}
+
+table.wb-tables tbody td,
+table.dataTable tbody td {
+  padding: 10px 8px;
+  vertical-align: middle;
+  font-size: 13px;
+  border-top: 1px solid #e0e0e0 !important;
+  border-bottom: none !important;
+  border-left: none !important;
+  border-right: none !important;
+}
+
+table.wb-tables tbody tr:first-child td,
+table.dataTable tbody tr:first-child td {
+  border-top: none !important;
+}
+
+table.wb-tables tbody td:first-child {
+  font-weight: 600;
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+table.wb-tables tbody td:last-child {
+  white-space: nowrap;
+  min-width: 320px;
+}
+
+/* Tag/Badge styles - Compact version */
+.tag {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 3px;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+/* Type tags - Following best practices for semantic meaning */
+.tag-profanity {
+  background: #dc3545;
+  color: white;
+  border: 1px solid #bd2130;
+}
+
+.tag-threat {
+  background: #fd7e14;
+  color: white;
+  border: 1px solid #e8590c;
+}
+
+.tag-allowed {
+  background: #28a745;
+  color: white;
+  border: 1px solid #218838;
+}
+
+.tag-error {
+  background: #17a2b8;
+  color: white;
+  border: 1px solid #138496;
+}
+
+/* Language tags - Neutral colors */
+.tag-language {
+  background: #6c757d;
+  color: white;
+  border: 1px solid #545b62;
+  font-size: 10px;
+  padding: 3px 8px;
+}
+
+.tag-language.tag-en {
+  background: #007bff;
+  border-color: #0056b3;
+}
+
+.tag-language.tag-fr {
+  background: #6610f2;
+  border-color: #510bc4;
+}
+
+.tag-language.tag-both {
+  background: linear-gradient(90deg, #007bff 50%, #6610f2 50%);
+  border: 1px solid #0056b3;
+}
+
+/* Status tags */
+.tag-active {
+  background: #28a745;
+  color: white;
+  border: 1px solid #218838;
+}
+
+.tag-inactive {
+  background: #6c757d;
+  color: white;
+  border: 1px solid #545b62;
+}
+
+/* Tag hover effects */
+.tag:hover {
+  transform: scale(1.05);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* Action buttons in table - Compact inline */
+.btn-action {
+  padding: 5px 10px;
+  margin-right: 4px;
+  margin-bottom: 0;
+  font-size: 11px;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+  display: inline-block;
+  white-space: nowrap;
+  line-height: 1.2;
+}
+
+.btn-action:last-child {
+  margin-right: 0;
+}
+
+.btn-edit {
+  background: #495057;
+  color: white;
+  border-color: #383d41;
+}
+
+.btn-edit:hover {
+  background: #383d41;
+}
+
+.btn-activate {
+  background: #28a745;
+  color: white;
+  border-color: #218838;
+}
+
+.btn-activate:hover {
+  background: #218838;
+}
+
+.btn-deactivate {
+  background: #ffc107;
+  color: #212529;
+  border-color: #e0a800;
+}
+
+.btn-deactivate:hover {
+  background: #e0a800;
+}
+
+.btn-delete {
+  background: #dc3545;
+  color: white;
+  border-color: #bd2130;
+}
+
+.btn-delete:hover {
+  background: #c82333;
+}
+
+.btn-action:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Modal styles - Enhanced */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  animation: fadeIn 0.2s ease-out;
+}
+
+.modal-overlay.show {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-content {
+  background-color: white;
+  padding: 0;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 550px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  animation: modalSlideIn 0.3s ease-out;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal-header {
+  padding: 24px;
+  border-bottom: 2px solid #e5e5e5;
+  background: #f8f9fa;
+  border-radius: 8px 8px 0 0;
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: 22px;
+  color: #26374a;
+  font-weight: 600;
+}
+
+.modal-body {
+  padding: 24px;
+}
+
+.modal-footer {
+  padding: 20px 24px;
+  border-top: 2px solid #e5e5e5;
+  text-align: right;
+  background: #f8f9fa;
+  border-radius: 0 0 8px 8px;
+}
+
+.modal-footer button {
+  margin-left: 10px;
+}
+
+/* Form styles */
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #333;
+  font-size: 14px;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  border-color: #26374a;
+  box-shadow: 0 0 0 3px rgba(38, 55, 74, 0.1);
+  outline: none;
+}
+
+.form-group .help-block {
+  display: block;
+  margin-top: 6px;
+  font-size: 12px;
+  color: #6c757d;
+}
+
+.checkbox {
+  display: flex;
+  align-items: center;
+  margin-top: 15px;
+}
+
+.checkbox input[type="checkbox"] {
+  width: auto;
+  margin-right: 10px;
+  transform: scale(1.2);
+  cursor: pointer;
+}
+
+.checkbox label {
+  margin: 0;
+  cursor: pointer;
+}
+
+/* Alert styles */
+.alert {
+  padding: 14px 16px;
+  border-radius: 6px;
+  margin-bottom: 18px;
+  animation: slideDown 0.3s ease-out;
+  border-left: 4px solid;
+}
+
+.alert-danger {
+  background: #f8d7da;
+  border-color: #dc3545;
+  color: #721c24;
+}
+
+.alert-success {
+  background: #d4edda;
+  border-color: #28a745;
+  color: #155724;
+}
+
+.alert strong {
+  font-weight: 600;
+}
+
+/* DataTables customizations - Enhanced for better performance */
+.dataTables_wrapper {
+	padding: 0;
+	margin-top: 1em;
+}
+
+.dataTables_wrapper .row {
+	margin-bottom: 15px;
+}
+
+/* Table controls - OUTSIDE and ALWAYS VISIBLE */
+.table-controls-outside {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 15px 1.5em;
+	background: #fff;
+	border: 1px solid #ddd;
+	border-top: none;
+	border-radius: 0 0 6px 6px;
+	margin-bottom: 4ch;
+	position: relative;
+}
+
+.dataTables_info {
+	font-size: 13px;
+	color: #555;
+	font-weight: 400;
+}
+
+.dataTables_paginate {
+	flex: 1;
+	text-align: center;
+}
+
+.dataTables_length {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.dataTables_length label {
+	font-size: 13px;
+	color: #555;
+	font-weight: 400;
+	margin: 0;
+}
+
+.dataTables_length select {
+	padding: 5px 8px 5px 10px;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+	font-size: 13px;
+	background: #fff;
+	cursor: pointer;
+	transition: all 0.2s ease;
+	appearance: none;
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23333' d='M10.293 3.293L6 7.586 1.707 3.293A1 1 0 00.293 4.707l5 5a1 1 0 001.414 0l5-5a1 1 0 10-1.414-1.414z'/%3E%3C/svg%3E");
+	background-repeat: no-repeat;
+	background-position: right 6px center;
+	background-size: 10px;
+	padding-right: 28px;
+}
+
+.dataTables_length select:hover {
+	border-color: #999;
+	background-color: #fafafa;
+}
+
+.dataTables_length select:focus {
+	border-color: #26374a;
+	outline: none;
+	box-shadow: 0 0 0 3px rgba(38, 55, 74, 0.08);
+}
+
+/* Hide default search - using custom filter instead */
+.dataTables_filter {
+	display: none;
+}
+
+/* Pagination - Clean borderless design (DataTables 2.x) */
+.dt-paging {
+	display: inline-flex;
+	gap: 2px;
+	align-items: center;
+}
+
+.dt-paging-button {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding: 6px 12px !important;
+	border: none !important;
+	background: transparent !important;
+	color: #555 !important;
+	cursor: pointer;
+	transition: all 0.2s ease;
+	font-size: 13px;
+	min-width: 32px;
+	height: 32px;
+	text-decoration: none !important;
+	border-radius: 4px;
+	font-weight: 400;
+	box-shadow: none !important;
+	outline: none !important;
+}
+
+.dt-paging-button:hover:not(.disabled):not(.current) {
+	background: #f0f0f0 !important;
+	color: #26374a !important;
+	border: none !important;
+}
+
+.dt-paging-button:active:not(.disabled):not(.current) {
+	background: #e0e0e0 !important;
+}
+
+.dt-paging-button.current,
+.dt-paging-button.current:hover {
+	background: #26374a !important;
+	color: white !important;
+	font-weight: 500;
+	border: none !important;
+}
+
+.dt-paging-button.disabled,
+.dt-paging-button.disabled:hover {
+	color: #bbb !important;
+	cursor: not-allowed;
+	background: transparent !important;
+	border: none !important;
+	opacity: 0.5;
+}
+
+.dt-paging .ellipsis {
+	padding: 6px 8px !important;
+	color: #999;
+	font-size: 13px;
+	min-width: auto;
+	border: none !important;
+	background: transparent !important;
+}
+
+/* First/Previous/Next/Last buttons - text style */
+.dt-paging-button.first,
+.dt-paging-button.previous,
+.dt-paging-button.next,
+.dt-paging-button.last {
+	font-size: 13px;
+	color: #26374a !important;
+	font-weight: 500;
+	padding: 6px 10px !important;
+	background: transparent !important;
+	border: none !important;
+}
+
+.dt-paging-button.first:hover:not(.disabled),
+.dt-paging-button.previous:hover:not(.disabled),
+.dt-paging-button.next:hover:not(.disabled),
+.dt-paging-button.last:hover:not(.disabled) {
+	background: #f0f0f0 !important;
+	color: #1a2633 !important;
+	text-decoration: none !important;
+	border: none !important;
+}
+
+/* Remove all DataTables default borders/outlines */
+.dt-paging-button,
+.dt-paging-button:focus,
+.dt-paging-button:active {
+	border: none !important;
+	box-shadow: none !important;
+	outline: none !important;
+}
+
+/* Legacy DataTables 1.x support */
+.dataTables_paginate {
+	display: inline-flex;
+	gap: 2px;
+	align-items: center;
+}
+
+.dataTables_paginate .paginate_button {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding: 6px 12px !important;
+	border: none !important;
+	background: transparent !important;
+	color: #555 !important;
+	cursor: pointer;
+	transition: all 0.2s ease;
+	font-size: 13px;
+	min-width: 32px;
+	height: 32px;
+	text-decoration: none !important;
+	border-radius: 4px;
+	font-weight: 400;
+	box-shadow: none !important;
+	outline: none !important;
+}
+
+.dataTables_paginate .paginate_button:hover:not(.disabled):not(.current) {
+	background: #f0f0f0 !important;
+	color: #26374a !important;
+	border: none !important;
+}
+
+.dataTables_paginate .paginate_button.current,
+.dataTables_paginate .paginate_button.current:hover {
+	background: #26374a !important;
+	color: white !important;
+	font-weight: 500;
+	border: none !important;
+}
+
+.dataTables_paginate .paginate_button.disabled,
+.dataTables_paginate .paginate_button.disabled:hover {
+	color: #bbb !important;
+	cursor: not-allowed;
+	background: transparent !important;
+	border: none !important;
+}
+
+/* Better table header sorting indicators */
+table.dataTable thead .sorting,
+table.dataTable thead .sorting_asc,
+table.dataTable thead .sorting_desc {
+	cursor: pointer;
+	position: relative;
+}
+
+table.dataTable thead .sorting:after,
+table.dataTable thead .sorting_asc:after,
+table.dataTable thead .sorting_desc:after {
+	position: absolute;
+	right: 10px;
+	top: 50%;
+	transform: translateY(-50%);
+	opacity: 0.3;
+}
+
+table.dataTable thead .sorting_asc:after,
+table.dataTable thead .sorting_desc:after {
+	opacity: 1;
+}
+
+/* Processing indicator */
+.dataTables_processing {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	background: rgba(255, 255, 255, 0.95);
+	border: 2px solid #26374a;
+	border-radius: 6px;
+	padding: 20px 40px;
+	font-size: 16px;
+	font-weight: 600;
+	color: #26374a;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+	z-index: 100;
+}
+
+/* Loading spinner */
+.spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 0.8s linear infinite;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes tagPop {
+  0% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes spin {
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+/* Spinning animation for glyphicons */
+.spinning {
+	animation: spin 0.8s linear infinite;
+	display: inline-block;
+}
+
+/* Removed staggered row animations to improve initial page load performance */
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .filter-section-compact {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .filter-controls {
+    width: 100%;
+    flex-direction: column;
+  }
+  
+  .filter-item {
+    width: 100%;
+  }
+  
+  .filter-item select,
+  .filter-item input {
+    width: 100%;
+    min-width: unset;
+  }
+  
+  .action-buttons {
+    flex-direction: column;
+  }
+  
+  .action-buttons .btn {
+    width: 100%;
+  }
+  
+  .bottom-controls {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .table-scroll-container {
+    max-height: 400px;
+  }
+  
+  .keywords-table-wrapper {
+    overflow-x: auto;
+  }
+  
+  .table-controls-outside {
+    flex-direction: column;
+    gap: 10px;
+  }
+}
+
+/* Accessibility improvements */
+.btn:focus,
+.btn-action:focus {
+  outline: 2px solid #26374a;
+  outline-offset: 2px;
+}
+
+button:focus-visible {
+  outline: 2px solid #26374a;
+  outline-offset: 2px;
+}
+
+/* Required field indicator */
+label span[style*="color: red"] {
+  color: #dc3545 !important;
+  font-weight: 700;
+}
+
+/* Success state for form elements */
+.form-group.has-success input,
+.form-group.has-success select {
+  border-color: #28a745;
+}
+
+/* Error state for form elements */
+.form-group.has-error input,
+.form-group.has-error select {
+  border-color: #dc3545;
+}

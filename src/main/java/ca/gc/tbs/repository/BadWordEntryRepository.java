@@ -1,9 +1,11 @@
 package ca.gc.tbs.repository;
 
-import ca.gc.tbs.domain.BadWordEntry;
 import java.util.List;
+
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
+
+import ca.gc.tbs.domain.BadWordEntry;
 
 /**
  * Repository for managing BadWordEntry entities in MongoDB.
@@ -46,4 +48,15 @@ public interface BadWordEntryRepository extends MongoRepository<BadWordEntry, St
    * @return List of matching BadWordEntry entities
    */
   List<BadWordEntry> findByTypeAndLanguageAndActive(String type, String language, Boolean active);
+  
+  /**
+   * Find a word entry by word text, language, and type.
+   * Used for duplicate detection before creating or updating entries.
+   * 
+   * @param word The word text (case-sensitive)
+   * @param language The language ("en", "fr", or "both")
+   * @param type The type of word (profanity, threat, allowed, error)
+   * @return The matching BadWordEntry if found, null otherwise
+   */
+  BadWordEntry findByWordAndLanguageAndType(String word, String language, String type);
 }

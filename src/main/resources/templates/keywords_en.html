@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{wide_en}" lang="en">
+
+<head>
+	<link
+		href="https://cdn.datatables.net/v/dt/jq-3.7.0/jszip-3.10.1/dt-2.3.2/b-3.2.0/b-html5-3.2.0/cr-2.0.4/fh-4.0.1/r-3.0.3/datatables.min.css"
+		rel="stylesheet" type="text/css" />
+	<link rel="stylesheet" type="text/css" href="/css/keywords_styles.css" />
+</head>
+
+<th:block layout:fragment="content">
+	<main class="container">
+		<div class="keywords-header">
+			<h1 id="wb-cont">Keywords Management</h1>
+			<p class="lead">Manage content filtering keywords including profanity, threats, allowed words, and error
+				keywords.</p>
+		</div>
+
+		<!-- Quick Filters -->
+		<div class="filter-section-compact">
+			<div class="filter-title">Filter by:</div>
+			<div class="filter-controls">
+				<div class="filter-item">
+					<label for="filterType">Type</label>
+					<select id="filterType" class="form-control">
+						<option value="">All Types</option>
+						<option value="profanity">Profanity</option>
+						<option value="threat">Threat</option>
+						<option value="allowed">Allowed</option>
+						<option value="error">Error</option>
+					</select>
+				</div>
+				<div class="filter-item">
+					<label for="filterLanguage">Language</label>
+					<select id="filterLanguage" class="form-control">
+						<option value="">All Languages</option>
+						<option value="en">English</option>
+						<option value="fr">French</option>
+						<option value="both">Both</option>
+					</select>
+				</div>
+				<div class="filter-item">
+					<label for="filterStatus">Status</label>
+					<select id="filterStatus" class="form-control">
+						<option value="">All Statuses</option>
+						<option value="active">Active</option>
+						<option value="inactive">Inactive</option>
+					</select>
+				</div>
+				<div class="filter-item">
+					<label for="filterSearch">Search</label>
+					<input type="text" id="filterSearch" class="form-control" placeholder="Filter by keyword">
+				</div>
+				<div class="filter-item">
+					<button id="clearFilters" class="btn-clear">Clear Filters</button>
+				</div>
+			</div>
+		</div>
+
+		<!-- Action buttons -->
+		<div class="action-buttons">
+			<button id="addNewBtn" class="btn btn-primary">
+				<span class="glyphicon glyphicon-plus"></span> Add New Keyword
+			</button>
+			<button id="exportBtn" class="btn btn-success">
+				<span class="glyphicon glyphicon-download-alt"></span> Export to CSV
+			</button>
+		</div>
+
+		<!-- Add/Edit modal -->
+		<div id="editModal" class="modal-overlay">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h2 id="modalTitle">Add New Keyword</h2>
+				</div>
+				<form id="editForm">
+					<div class="modal-body">
+						<input type="hidden" id="editId" value="">
+
+						<div id="errorMessage" class="alert alert-danger" style="display: none;"></div>
+						<div id="successMessage" class="alert alert-success" style="display: none;"></div>
+
+						<div class="form-group">
+							<label for="editWord">Word <span style="color: red;">*</span></label>
+							<input type="text" class="form-control" id="editWord" placeholder="Enter keyword" required
+								autofocus>
+							<span class="help-block">The word will be automatically converted to lowercase.</span>
+						</div>
+
+						<div class="row">
+							<div class="col-sm-6">
+								<div class="form-group">
+									<label for="editLanguage">Language <span style="color: red;">*</span></label>
+									<select class="form-control" id="editLanguage" required>
+										<option value="en">English</option>
+										<option value="fr">French</option>
+										<option value="both">Both Languages</option>
+									</select>
+								</div>
+							</div>
+							<div class="col-sm-6">
+								<div class="form-group">
+									<label for="editType">Type <span style="color: red;">*</span></label>
+									<select class="form-control" id="editType" required>
+										<option value="profanity">Profanity</option>
+										<option value="threat">Threat</option>
+										<option value="allowed">Allowed</option>
+										<option value="error">Error</option>
+									</select>
+								</div>
+							</div>
+						</div>
+
+						<div class="checkbox">
+							<input type="checkbox" id="editActive" checked>
+							<label for="editActive">
+								<strong>Active</strong>
+								<span class="help-block">Inactive keywords won't be used for filtering</span>
+							</label>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" id="cancelBtn" class="btn btn-default">Cancel</button>
+						<button type="submit" class="btn btn-primary">Save Keyword</button>
+					</div>
+				</form>
+			</div>
+		</div>
+
+		<!-- Keywords table with scrollable body -->
+		<div class="keywords-table-wrapper">
+			<div class="table-scroll-container">
+				<table id="keywordsTable" class="wb-tables dataTable">
+					<thead>
+						<tr>
+							<th>Word</th>
+							<th>Language</th>
+							<th>Type</th>
+							<th>Status</th>
+							<th>Actions</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:remove="tag" th:utext="${data}"></tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</main>
+</th:block>
+
+<th:block layout:fragment="script">
+	<script
+		src="https://cdn.datatables.net/v/dt/jq-3.7.0/jszip-3.10.1/dt-2.3.2/b-3.2.0/b-html5-3.2.0/cr-2.0.4/fh-4.0.1/r-3.0.3/datatables.min.js"></script>
+	<script th:inline="none">
+		$(document).ready(function () {
+			// Initialize DataTable
+			var table = new DataTable('#keywordsTable', {
+				pageLength: 10,
+				lengthMenu: [[10, 25, 50, 100], [10, 25, 50, 100]],
+				order: [[0, 'asc']],
+				language: {
+					lengthMenu: "Show _MENU_ entries",
+					info: "Showing _START_ to _END_ of _TOTAL_ keywords",
+					infoEmpty: "No keywords to display",
+					infoFiltered: "(filtered from _MAX_ total keywords)",
+					paginate: {
+						first: "First",
+						last: "Last",
+						next: "Next",
+						previous: "Previous"
+					}
+				},
+				dom: 't<"table-controls-outside"lip>',
+				paging: true,
+				responsive: false
+			});
+
+			// Move controls outside the table wrapper after DataTables initializes
+			$('.table-controls-outside').insertAfter('.keywords-table-wrapper');
+
+			// Custom search input
+			$("#filterSearch").on("keyup", function () {
+				table.search(this.value).draw();
+			});
+
+			// Filter functionality
+			$("#filterType, #filterLanguage, #filterStatus").on("change", function () {
+				var typeFilter = $("#filterType").val();
+				var langFilter = $("#filterLanguage").val();
+				var statusFilter = $("#filterStatus").val();
+
+				table.column(1).search(langFilter).draw();
+				table.column(2).search(typeFilter).draw();
+				table.column(3).search(statusFilter).draw();
+			});
+
+			$("#clearFilters").on("click", function () {
+				$("#filterType").val("");
+				$("#filterLanguage").val("");
+				$("#filterStatus").val("");
+				$("#filterSearch").val("");
+				table.search("").columns().search("").draw();
+			});
+
+			// Add new keyword button
+			$("#addNewBtn").on("click", function () {
+				$("#modalTitle").text("Add New Keyword");
+				$("#editId").val("");
+				$("#editWord").val("");
+				$("#editLanguage").val("en");
+				$("#editType").val("profanity");
+				$("#editActive").prop("checked", true);
+				$("#errorMessage").hide();
+				$("#successMessage").hide();
+				$("#editModal").addClass("show");
+				setTimeout(function () { $("#editWord").focus(); }, 300);
+			});
+
+			// Cancel button
+			$("#cancelBtn").on("click", function () {
+				$("#editModal").removeClass("show");
+			});
+
+			// Close modal on outside click
+			$("#editModal").on("click", function (e) {
+				if ($(e.target).hasClass("modal-overlay")) {
+					$("#editModal").removeClass("show");
+				}
+			});
+
+			// ESC key closes modal
+			$(document).on("keyup", function (e) {
+				if (e.key === "Escape" && $("#editModal").hasClass("show")) {
+					$("#editModal").removeClass("show");
+				}
+			});
+
+			// Edit button
+			$("body").on("click", ".editBtn", function (e) {
+				var btn = $(e.target).closest("button");
+				$("#modalTitle").text("Edit Keyword");
+				$("#editId").val(btn.data("id"));
+				$("#editWord").val(btn.data("word"));
+				$("#editLanguage").val(btn.data("language"));
+				$("#editType").val(btn.data("type"));
+				$("#editActive").prop("checked", btn.data("active"));
+				$("#errorMessage").hide();
+				$("#successMessage").hide();
+				$("#editModal").addClass("show");
+				setTimeout(function () { $("#editWord").focus(); }, 300);
+			});
+
+			// Form submission
+			$("#editForm").on("submit", function (e) {
+				e.preventDefault();
+				$("#errorMessage").hide();
+				$("#successMessage").hide();
+
+				var submitBtn = $(this).find("button[type=submit]");
+				var originalText = submitBtn.html();
+				submitBtn.prop("disabled", true).html('<span class="spinner"></span> Saving...');
+
+				var id = $("#editId").val();
+				var url = id ? "/keywords/update" : "/keywords/create";
+				var data = {
+					word: $("#editWord").val(),
+					language: $("#editLanguage").val(),
+					type: $("#editType").val(),
+					active: $("#editActive").is(":checked")
+				};
+
+				if (id) {
+					data.id = id;
+				}
+
+				$.ajax({
+					type: "get",
+					data: data,
+					cache: false,
+					url: url,
+					dataType: "text",
+					error: function (xhr, status, error) {
+						submitBtn.prop("disabled", false).html(originalText);
+						$("#errorMessage").html("<strong>Error:</strong> " + xhr.responseText).show();
+					},
+					success: function (response) {
+						submitBtn.prop("disabled", false).html(originalText);
+						if (response.startsWith("Error")) {
+							$("#errorMessage").html("<strong>Error:</strong> " + response.replace("Error: ", "")).show();
+						} else {
+							$("#successMessage").html("<strong>Success!</strong> Keyword saved. Reloading...").show();
+							setTimeout(function () {
+								location.reload();
+							}, 1000);
+						}
+					}
+				});
+			});
+
+			// Delete button
+			$("body").on("click", ".deleteBtn", function (e) {
+				var btn = $(e.target).closest("button");
+				var word = btn.closest("tr").find("td:first").text().trim();
+
+				if (!confirm("Are you sure you want to delete the keyword '" + word + "'?\n\nThis action cannot be undone.")) {
+					return;
+				}
+
+				var originalHtml = btn.html();
+				btn.prop("disabled", true).html('<span class="spinner"></span>');
+
+				var id = btn.attr("id").replace("delete", "");
+				$.ajax({
+					type: "get",
+					data: { "id": id },
+					cache: false,
+					url: "/keywords/delete",
+					dataType: "text",
+					error: function (xhr, status, error) {
+						btn.prop("disabled", false).html(originalHtml);
+						alert("Error deleting keyword: " + xhr.responseText);
+					},
+					success: function (response) {
+						if (response.startsWith("Error")) {
+							btn.prop("disabled", false).html(originalHtml);
+							alert(response);
+						} else {
+							var row = btn.closest("tr");
+							row.css("background-color", "#f8d7da");
+							row.fadeOut(400, function () {
+								table.row(row).remove().draw();
+							});
+						}
+					}
+				});
+			});
+
+			// Activate button
+			$("body").on("click", ".activateBtn", function (e) {
+				var btn = $(e.target).closest("button");
+				var originalHtml = btn.html();
+				btn.prop("disabled", true).html('<span class="spinner"></span>');
+
+				var id = btn.attr("id").replace("activate", "");
+				$.ajax({
+					type: "get",
+					data: { "id": id, "active": true },
+					cache: false,
+					url: "/keywords/update",
+					dataType: "text",
+					error: function (xhr, status, error) {
+						btn.prop("disabled", false).html(originalHtml);
+						alert("Error activating keyword: " + xhr.responseText);
+					},
+					success: function (response) {
+						if (response.startsWith("Error")) {
+							btn.prop("disabled", false).html(originalHtml);
+							alert(response);
+						} else {
+							var row = btn.closest("tr");
+							row.find("td:eq(3)").html("<span class='tag tag-active'>ACTIVE</span>");
+							btn.replaceWith("<button id='deactivate" + id + "' class='btn-action btn-deactivate deactivateBtn' title='Deactivate keyword'>Deactivate</button>");
+						}
+					}
+				});
+			});
+
+			// Deactivate button
+			$("body").on("click", ".deactivateBtn", function (e) {
+				var btn = $(e.target).closest("button");
+				var originalHtml = btn.html();
+				btn.prop("disabled", true).html('<span class="spinner"></span>');
+
+				var id = btn.attr("id").replace("deactivate", "");
+				$.ajax({
+					type: "get",
+					data: { "id": id, "active": false },
+					cache: false,
+					url: "/keywords/update",
+					dataType: "text",
+					error: function (xhr, status, error) {
+						btn.prop("disabled", false).html(originalHtml);
+						alert("Error deactivating keyword: " + xhr.responseText);
+					},
+					success: function (response) {
+						if (response.startsWith("Error")) {
+							btn.prop("disabled", false).html(originalHtml);
+							alert(response);
+						} else {
+							var row = btn.closest("tr");
+							row.find("td:eq(3)").html("<span class='tag tag-inactive'>INACTIVE</span>");
+							btn.replaceWith("<button id='activate" + id + "' class='btn-action btn-activate activateBtn' title='Activate keyword'>Activate</button>");
+						}
+					}
+				});
+			});
+
+			// Export button
+			$("#exportBtn").on("click", function () {
+				window.location.href = "/keywords/export";
+			});
+		});
+	</script>
+</th:block>
+
+</html>

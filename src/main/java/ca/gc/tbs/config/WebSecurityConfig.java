@@ -1,8 +1,7 @@
 package ca.gc.tbs.config; // package ca.gc.tbs.config;
 
-import ca.gc.tbs.security.JWTFilter;
-import ca.gc.tbs.service.UserService;
 import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,6 +15,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.thymeleaf.extras.springsecurity4.dialect.SpringSecurityDialect;
+
+import ca.gc.tbs.security.JWTFilter;
+import ca.gc.tbs.service.UserService;
 
 @Configuration
 @EnableWebSecurity
@@ -49,6 +51,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         .antMatchers("/", "/checkExists", "/error", "/enableAdmin", "/login", "/signup", "/success")
         .permitAll()
         .antMatchers("/u/**")
+        .hasAnyAuthority("ADMIN")
+        .antMatchers("/keywords/**")
         .hasAnyAuthority("ADMIN")
         .antMatchers("/python/**", "/reports/**", "/dashboard/**")
         .hasAnyAuthority("USER", "ADMIN")
