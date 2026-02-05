@@ -1034,8 +1034,341 @@ label[for="dt-length-0"] {
 /*fix for URL bug*/
 #myTable td,
 table.dataTable td {
-  word-break: break-all;
+  word-break: break-word;
   overflow-wrap: anywhere;
-  max-width: 350px;
   white-space: normal;
+}
+
+/* ========================================
+   KEYWORDS MANAGEMENT STYLE IMPORT
+   Scrollable table with modern pagination
+   ======================================== */
+
+/* Scrollable table body container */
+.table-scroll-container {
+  position: relative;
+  overflow-x: auto;
+  overflow-y: auto;
+  max-height: 500px;
+  border-bottom: 2px solid #e0e0e0;
+  margin-bottom: 0;
+}
+
+/* Auto table layout for proper column sizing */
+.feedback-tool-data table.dataTable {
+  width: 100% !important;
+  table-layout: auto;
+  margin-bottom: 0 !important;
+  min-width: 1200px;
+}
+
+/* Sticky table header */
+.feedback-tool-data table.dataTable thead {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: #f8f9fa;
+}
+
+/* Ensure header cells don't lose background on scroll */
+.feedback-tool-data table.dataTable thead th {
+  background: #f8f9fa !important;
+  padding: 10px 8px;
+  border-bottom: 2px solid #333 !important;
+  border-top: none !important;
+  font-weight: 600;
+  text-align: left;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+/* Table row styles with hover effect */
+.feedback-tool-data table.dataTable tbody tr {
+  transition: background-color 0.2s ease;
+  border: none !important;
+}
+
+.feedback-tool-data table.dataTable tbody tr:hover {
+  background-color: #f8fafb;
+}
+
+.feedback-tool-data table.dataTable tbody td {
+  padding: 10px 8px;
+  vertical-align: middle;
+  font-size: 13px;
+  border-top: 1px solid #e0e0e0 !important;
+  border-bottom: none !important;
+  border-left: none !important;
+  border-right: none !important;
+}
+
+.feedback-tool-data table.dataTable tbody tr:first-child td {
+  border-top: none !important;
+}
+
+/* Updated table wrapper to match Keywords Management */
+.feedback-tool-data {
+  background: #fff;
+  padding: 1.5em 1.5em 0;
+  border: 1px solid #ddd;
+  border-bottom: none;
+  border-radius: 6px 6px 0 0;
+  margin: 2ch auto 0;
+  overflow: visible;
+  width: 85%;
+}
+
+/* Table controls - OUTSIDE and ALWAYS VISIBLE */
+.table-controls-outside {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 1.5em;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-top: none;
+  border-radius: 0 0 6px 6px;
+  margin: 0 auto 4ch;
+  position: relative;
+  width: 85%;
+}
+
+.dataTables_info {
+  font-size: 13px;
+  color: #555;
+  font-weight: 400;
+}
+
+.dataTables_paginate {
+  flex: 1;
+  text-align: center;
+}
+
+.dataTables_length {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dataTables_length label {
+  font-size: 13px;
+  color: #555;
+  font-weight: 400;
+  margin: 0;
+}
+
+.dataTables_length select {
+  padding: 5px 8px 5px 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 13px;
+  background: #fff;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23333' d='M10.293 3.293L6 7.586 1.707 3.293A1 1 0 00.293 4.707l5 5a1 1 0 001.414 0l5-5a1 1 0 10-1.414-1.414z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 6px center;
+  background-size: 10px;
+  padding-right: 28px;
+}
+
+.dataTables_length select:hover {
+  border-color: #999;
+  background-color: #fafafa;
+}
+
+.dataTables_length select:focus {
+  border-color: #26374a;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(38, 55, 74, 0.08);
+}
+
+/* Hide default search - using custom filter instead */
+.dataTables_filter {
+  display: none;
+}
+
+/* Pagination - Clean borderless design (DataTables 2.x) */
+.dt-paging {
+  display: inline-flex;
+  gap: 2px;
+  align-items: center;
+}
+
+.dt-paging-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 12px !important;
+  border: none !important;
+  background: transparent !important;
+  color: #555 !important;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 13px;
+  min-width: 32px;
+  height: 32px;
+  text-decoration: none !important;
+  border-radius: 4px;
+  font-weight: 400;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+.dt-paging-button:hover:not(.disabled):not(.current) {
+  background: #f0f0f0 !important;
+  color: #26374a !important;
+  border: none !important;
+}
+
+.dt-paging-button:active:not(.disabled):not(.current) {
+  background: #e0e0e0 !important;
+}
+
+.dt-paging-button.current,
+.dt-paging-button.current:hover {
+  background: #26374a !important;
+  color: white !important;
+  font-weight: 500;
+  border: none !important;
+}
+
+.dt-paging-button.disabled,
+.dt-paging-button.disabled:hover {
+  color: #bbb !important;
+  cursor: not-allowed;
+  background: transparent !important;
+  border: none !important;
+  opacity: 0.5;
+}
+
+.dt-paging .ellipsis {
+  padding: 6px 8px !important;
+  color: #999;
+  font-size: 13px;
+  min-width: auto;
+  border: none !important;
+  background: transparent !important;
+}
+
+/* First/Previous/Next/Last buttons - text style */
+.dt-paging-button.first,
+.dt-paging-button.previous,
+.dt-paging-button.next,
+.dt-paging-button.last {
+  font-size: 13px;
+  color: #26374a !important;
+  font-weight: 500;
+  padding: 6px 10px !important;
+  background: transparent !important;
+  border: none !important;
+}
+
+.dt-paging-button.first:hover:not(.disabled),
+.dt-paging-button.previous:hover:not(.disabled),
+.dt-paging-button.next:hover:not(.disabled),
+.dt-paging-button.last:hover:not(.disabled) {
+  background: #f0f0f0 !important;
+  color: #1a2633 !important;
+  text-decoration: none !important;
+  border: none !important;
+}
+
+/* Remove all DataTables default borders/outlines */
+.dt-paging-button,
+.dt-paging-button:focus,
+.dt-paging-button:active {
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+/* Legacy DataTables 1.x support */
+.dataTables_paginate {
+  display: inline-flex;
+  gap: 2px;
+  align-items: center;
+}
+
+.dataTables_paginate .paginate_button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 12px !important;
+  border: none !important;
+  background: transparent !important;
+  color: #555 !important;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 13px;
+  min-width: 32px;
+  height: 32px;
+  text-decoration: none !important;
+  border-radius: 4px;
+  font-weight: 400;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+.dataTables_paginate .paginate_button:hover:not(.disabled):not(.current) {
+  background: #f0f0f0 !important;
+  color: #26374a !important;
+  border: none !important;
+}
+
+.dataTables_paginate .paginate_button.current,
+.dataTables_paginate .paginate_button.current:hover {
+  background: #26374a !important;
+  color: white !important;
+  font-weight: 500;
+  border: none !important;
+}
+
+.dataTables_paginate .paginate_button.disabled,
+.dataTables_paginate .paginate_button.disabled:hover {
+  color: #bbb !important;
+  cursor: not-allowed;
+  background: transparent !important;
+  border: none !important;
+}
+
+/* Better table header sorting indicators */
+table.dataTable thead .sorting,
+table.dataTable thead .sorting_asc,
+table.dataTable thead .sorting_desc {
+  cursor: pointer;
+  position: relative;
+}
+
+table.dataTable thead .sorting:after,
+table.dataTable thead .sorting_asc:after,
+table.dataTable thead .sorting_desc:after {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: 0.3;
+}
+
+table.dataTable thead .sorting_asc:after,
+table.dataTable thead .sorting_desc:after {
+  opacity: 1;
+}
+
+/* Processing indicator */
+.dataTables_processing {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(255, 255, 255, 0.95);
+  border: 2px solid #26374a;
+  border-radius: 6px;
+  padding: 20px 40px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #26374a;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 100;
 }

@@ -76,10 +76,10 @@
               <label for="url">URL</label>
               <input type="text" id="url" name="url" placeholder="Filter by full or partial URL">
             </div>
-              <div class="form-group">
-                  <label for="pages">Page(s)</label>
-                  <select id="pages"></select>
-              </div>
+            <div class="form-group">
+              <label for="pages">Page(s)</label>
+              <select id="pages"></select>
+            </div>
             <div class="form-group">
               <label for="comments">Comments</label>
               <input type="text" id="comments" name="comments" placeholder="Filter by keyword">
@@ -181,24 +181,26 @@
     <div class="col-lg-12">
       <div class="row custom-row">
         <div class="feedback-tool-data">
-          <table id="myTable" class="display compact">
-            <thead>
-              <tr>
-                <th>Date</th>
-                <th>Comments</th>
-                <th>Department</th>
-                <th>Page title</th>
-                <th>Page URL</th>
-                <th>Time stamp</th>
-                <th>Language</th>
-                <th>Section</th>
-                <th>Theme</th>
-                <th>Device type</th>
-                <th>Browser</th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
+          <div class="table-scroll-container">
+            <table id="myTable" class="wb-tables dataTable">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Comments</th>
+                  <th>Department</th>
+                  <th>Page title</th>
+                  <th>Page URL</th>
+                  <th>Time stamp</th>
+                  <th>Language</th>
+                  <th>Section</th>
+                  <th>Theme</th>
+                  <th>Device type</th>
+                  <th>Browser</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
@@ -211,7 +213,7 @@
     <script type="text/javascript" src="js/spring-friendly.min.js"></script>
     <script type="text/javascript" src="js/custom-dropdown.js"></script>
 
-      <script th:inline="javascript">
+    <script th:inline="javascript">
       /*
           <![CDATA[*/
       var earliestDate = /*[[${earliestDate}]]*/ '';
