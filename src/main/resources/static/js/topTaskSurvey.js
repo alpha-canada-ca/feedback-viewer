@@ -225,9 +225,14 @@ $(document).ready(function () {
        ],
        pageLength: 50,
        orderCellsTop: true,
-       fixedHeader: true,
-       responsive: true,
-       dom: 'Br<"table-responsive"t>tilp',
+       fixedHeader: false,
+       responsive: false,
+       autoWidth: false,
+       dom: 't<"table-controls-outside"lip>',
+       initComplete: function() {
+         // Move pagination controls outside the table wrapper
+         $('.table-controls-outside').insertAfter('.keywords-table-wrapper');
+       },
        drawCallback: function () {
          fetchTotalDistinctTask();
          fetchTotalTaskCount();

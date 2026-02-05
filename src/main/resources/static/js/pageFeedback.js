@@ -197,7 +197,26 @@ $(document).ready(function () {
 
   // DataTable initialization
   var table = new DataTable("#myTable", {
-    language: isFrench ? { url: "//cdn.datatables.net/plug-ins/2.3.2/i18n/fr-FR.json" } : undefined,
+    language: isFrench ? {
+      url: "//cdn.datatables.net/plug-ins/2.3.2/i18n/fr-FR.json",
+      lengthMenu: "Afficher _MENU_ entrées",
+      info: "Affichage de _START_ à _END_ sur _TOTAL_ entrées",
+      paginate: {
+        first: "Premier",
+        last: "Dernier",
+        next: "Suivant",
+        previous: "Précédent"
+      }
+    } : {
+      lengthMenu: "Show _MENU_ entries",
+      info: "Showing _START_ to _END_ of _TOTAL_ entries",
+      paginate: {
+        first: "First",
+        last: "Last",
+        next: "Next",
+        previous: "Previous"
+      }
+    },
     stripeClasses: [],
     bSortClasses: false,
     order: [[0, "desc"]],
@@ -210,9 +229,9 @@ $(document).ready(function () {
     ],
     pageLength: 50, //adds default comment count to 50
     orderCellsTop: true,
-    fixedHeader: true,
-    responsive: true,
-    dom: 'Br<"table-responsive"t>tilp',
+    fixedHeader: false,
+    responsive: false,
+    dom: 't<"table-controls-outside"lip>',
     ajax: {
       url: "/feedbackData",
       type: "GET",
@@ -251,6 +270,10 @@ $(document).ready(function () {
         console.log("thrown : " + thrown);
       },
     },
+    initComplete: function() {
+      // Move pagination controls outside the table wrapper
+      $('.table-controls-outside').insertAfter('.feedback-tool-data');
+    },
     buttons: [
       {
         extend: 'csvHtml5',
@@ -287,13 +310,13 @@ $(document).ready(function () {
       }
     ],
     columns: [
-      { data: "problemDate", width: "6%" },
-      { data: "problemDetails", width: "50%" },
-      { data: "institution", width: "6%" },
-      { data: "title", width: "14%" },
+      { data: "problemDate", width: "8%" },
+      { data: "problemDetails", width: "35%" },
+      { data: "institution", width: "8%" },
+      { data: "title", width: "22%" },
       {
         data: "url",
-        width: "24%",
+        width: "27%",
         render: function (data, type, row) {
           return '<a href="' + data + '" target="_blank">' + data + "</a>";
         },
