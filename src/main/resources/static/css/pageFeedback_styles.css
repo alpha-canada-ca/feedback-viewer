@@ -12,9 +12,216 @@ h1#wb-cont {
   border-bottom: 5px solid #af3c43;
   border-image: linear-gradient(to right, #af3c43 71px, transparent 71px);
   border-image-slice: 1;
+  margin-bottom: 20px;
 }
 
-/* Feedback tool container */
+/* ============================================
+   PF FILTER PANEL - Clean Professional Design
+   ============================================ */
+
+.pf-filter-panel {
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.pf-filter-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px;
+}
+
+.pf-filter-row {
+  display: flex;
+  gap: 16px;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+
+.pf-filter-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 100px;
+  flex: 1;
+}
+
+.pf-filter-field label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.pf-filter-field select,
+.pf-filter-field input[type="text"] {
+  padding: 8px 12px;
+  border: 1px solid #d0d0d0;
+  border-radius: 4px;
+  font-size: 14px;
+  background-color: #fff;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  height: 38px;
+  box-sizing: border-box;
+  width: 100% !important;
+}
+
+.pf-filter-field select:focus,
+.pf-filter-field input:focus {
+  border-color: #26374a;
+  box-shadow: 0 0 0 3px rgba(38, 55, 74, 0.1);
+  outline: none;
+}
+
+/* URL field - wider */
+.pf-filter-url {
+  flex: 2;
+  min-width: 200px;
+}
+
+/* Pages field */
+.pf-filter-pages {
+  flex: 2;
+  min-width: 200px;
+}
+
+/* Comments field */
+.pf-filter-comments {
+  flex: 2;
+  min-width: 200px;
+}
+
+/* Checkbox field */
+.pf-filter-checkbox {
+  flex: 0 0 auto;
+  min-width: auto;
+  justify-content: flex-end;
+}
+
+.pf-filter-checkbox label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  text-transform: none;
+  cursor: pointer;
+  padding: 8px 0;
+  white-space: nowrap;
+}
+
+.pf-filter-checkbox input[type="checkbox"] {
+  width: 16px !important;
+  height: 16px;
+  cursor: pointer;
+}
+
+/* Filter Footer with Stats and Actions */
+.pf-filter-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 20px;
+  background: #f8f9fa;
+  border-top: 1px solid #e0e0e0;
+  border-radius: 0 0 8px 8px;
+}
+
+.pf-stats {
+  display: flex;
+  gap: 24px;
+}
+
+.pf-stats .stat {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  color: #555;
+}
+
+.pf-stats .stat span:first-child {
+  font-size: 18px;
+  font-weight: 700;
+  color: #26374a;
+}
+
+.pf-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.pf-actions .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 0 14px !important;
+  font-size: 13px;
+  border-radius: 4px;
+  transition: all 0.2s;
+  height: 34px !important;
+  line-height: 32px !important;
+  box-sizing: border-box;
+  vertical-align: middle;
+  margin: 0 !important;
+}
+
+.pf-actions .btn-default {
+  background: #fff;
+  color: #333;
+  border: 1px solid #ccc;
+}
+
+.pf-actions .btn-default:hover {
+  background: #f0f0f0;
+  border-color: #999;
+}
+
+.pf-actions .btn-primary {
+  background: #26374a;
+  color: #fff;
+  border: 1px solid #26374a;
+}
+
+.pf-actions .btn-primary:hover {
+  background: #1a2633;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+/* Date Range Picker */
+#dateRangePicker {
+  background-color: white;
+  cursor: pointer;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+  .pf-filter-row {
+    flex-wrap: wrap;
+  }
+  .pf-filter-field {
+    min-width: 140px;
+  }
+}
+
+@media (max-width: 768px) {
+  .pf-filter-field {
+    min-width: 100%;
+  }
+  .pf-filter-footer {
+    flex-direction: column;
+    gap: 12px;
+  }
+}
+
+/* Feedback tool container - LEGACY (keeping for backwards compatibility) */
 .feedback-tool {
   display: grid;
   grid-template-columns: 0.5fr 0.5fr 3fr;

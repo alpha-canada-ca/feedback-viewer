@@ -20,88 +20,80 @@
             <div class="col-lg-12">
                 <div class="row">
                     <h1 id="wb-cont">Rétroaction GC - Tableau de bord</h1>
-                    <form class="feedback-tool">
-                        <h2 class="h4">Filtrer par:</h2>
-                        <div class="form-group">
-                            <label for="department">Institution</label>
-                            <select class="form-control" id="department" name="department">
-                                <option value>Tous</option>
-                                <option value="AAFC">AAC/AAFC</option>
-                                <option value="CBSA">ASFC/CBSA</option>
-                                <option value="CCG">GCC/CCG</option>
-                                <option value="CER">REC/CER</option>
-                                <option value="CFIA">ACIA/CFIA</option>
-                                <option value="CIRNAC">RCAANC/CIRNAC</option>
-                                <option value="CRA">ARC/CRA</option>
-                                <option value="CSC">SCC/CSC</option>
-                                <option value="CSE">CST/CSE</option>
-                                <option value="DFO">MPO/DFO</option>
-                                <option value="DND">MND/DND</option>
-                                <option value="ECCC">ECCC/ECCC</option>
-                                <option value="ESDC">EDSC/ESDC</option>
-                                <option value="FCAC">ACFC/FCAC</option>
-                                <option value="FIN">FIN/FIN</option>
-                                <option value="GAC">AMC/GAC</option>
-                                <option value="HC">SC/HC</option>
-                                <option value="HICC">HICC/LICC</option>
-                                <option value="IRCC">IRCC/IRCC</option>
-                                <option value="ISC">SAC/ISC</option>
-                                <option value="ISED">ISDE/ISED</option>
-                                <option value="LAC">BAC/LAC</option>
-                                <option value="NRC">CNRC/NRC</option>
-                                <option value="NRCAN">RNCAN/NRCAN</option>
-                                <option value="NSERC">CRSNG/NSERC</option>
-                                <option value="OMBDNDCAF">OMBMDNFAC/OMBDNDCAF</option>
-                                <option value="PS">SP/PS</option>
-                                <option value="PSPC">SPAC/PSPC</option>
-                                <option value="PHAC">ASPC/PHAC</option>
-                                <option value="SC">SC/SC</option>
-                                <option value="SSHRC">CSRH/SSHRC</option>
-                                <option value="SST">TSS/SST</option>
-                                <option value="TBS">SCT/TBS</option>
-                            </select>
-                        </div>
-                        <label id="drp" for="dateRangePicker">Période <input type="text" id="dateRangePicker"
-                                name="dateRangePicker" readonly="readonly"
-                                style="background-color: white; cursor: pointer;" />
-                        </label>
-                        <div class="form-group">
-                            <label for="language">Langue de la page</label>
-                            <select class="form-control" id="language" name="language">
-                                <option value>Tous</option>
-                                <option value="en">Anglais</option>
-                                <option value="fr">Français</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="url">URL</label>
-                            <input type="text" id="url" name="url" placeholder="Filtre par URL complet ou partiel">
-                        </div>
-                        <div class="form-group">
-                            <label for="comments">Commentaires</label>
-                            <input type="text" id="comments" name="comments" placeholder="Filtrer par mot-clé">
-                        </div>
 
-                        <details id="filterDetails">
-                            <summary id="filterSummary">Voir plus de filtres</summary>
-                            <p>
-                                <label for="section">Section <span id="section-tool-tip"
-                                        class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
-                                    <select id="section">
+                    <!-- Filter Panel -->
+                    <div class="pf-filter-panel">
+                        <div class="pf-filter-grid">
+                            <!-- Row 1: Main filters -->
+                            <div class="pf-filter-row">
+                                <div class="pf-filter-field">
+                                    <label for="department">Institution</label>
+                                    <select class="form-control" id="department" name="department">
                                         <option value>Tous</option>
-                                        <!-- Additional options -->
+                                        <option value="AAFC">AAC</option>
+                                        <option value="CBSA">ASFC</option>
+                                        <option value="CCG">GCC</option>
+                                        <option value="CER">REC</option>
+                                        <option value="CFIA">ACIA</option>
+                                        <option value="CIRNAC">RCAANC</option>
+                                        <option value="CRA">ARC</option>
+                                        <option value="CSC">SCC</option>
+                                        <option value="CSE">CST</option>
+                                        <option value="DFO">MPO</option>
+                                        <option value="DND">MDN</option>
+                                        <option value="ECCC">ECCC</option>
+                                        <option value="ESDC">EDSC</option>
+                                        <option value="FCAC">ACFC</option>
+                                        <option value="FIN">FIN</option>
+                                        <option value="GAC">AMC</option>
+                                        <option value="HC">SC</option>
+                                        <option value="HICC">LICC</option>
+                                        <option value="IRCC">IRCC</option>
+                                        <option value="ISC">SAC</option>
+                                        <option value="ISED">ISDE</option>
+                                        <option value="LAC">BAC</option>
+                                        <option value="NRC">CNRC</option>
+                                        <option value="NRCAN">RNCAN</option>
+                                        <option value="NSERC">CRSNG</option>
+                                        <option value="OMBDNDCAF">OMBMDNFAC</option>
+                                        <option value="PS">SP</option>
+                                        <option value="PSPC">SPAC</option>
+                                        <option value="PHAC">ASPC</option>
+                                        <option value="SC">SC</option>
+                                        <option value="SSHRC">CRSH</option>
+                                        <option value="SST">TSS</option>
+                                        <option value="TBS">SCT</option>
+                                    </select>
+                                </div>
+                                <div class="pf-filter-field">
+                                    <label for="language">Langue</label>
+                                    <select class="form-control" id="language" name="language">
+                                        <option value>Tous</option>
+                                        <option value="en">AN</option>
+                                        <option value="fr">FR</option>
+                                    </select>
+                                </div>
+                                <div class="pf-filter-field">
+                                    <label for="dateRangePicker">Période</label>
+                                    <input type="text" id="dateRangePicker" name="dateRangePicker" readonly="readonly"
+                                        class="form-control" />
+                                </div>
+                                <div class="pf-filter-field">
+                                    <label for="section">Section</label>
+                                    <select class="form-control" id="section" name="section">
+                                        <option value>Tous</option>
                                         <option value="budget">Budget</option>
                                         <option value="business">Entreprises</option>
                                         <option value="c&p">C&P</option>
                                         <option value="child">Enfants</option>
-                                        <option value="cpp retirement pension">Pension de retraite du RPC</option>
+                                        <option value="cpp retirement pension">Retraite RPC</option>
                                         <option value="death">Décès</option>
                                         <option value="dental">Dentaire</option>
                                         <option value="disability">Invalidité</option>
                                         <option value="disability benefit">Prestation d'invalidité</option>
                                         <option value="ecm">MCE</option>
                                         <option value="education">Éducation</option>
-                                        <option value="employment insurance">Assurance Emploi</option>
+                                        <option value="employment insurance">AE</option>
                                         <option value="eol">EOL</option>
                                         <option value="family">Famille</option>
                                         <option value="feddevon">FedDev Ontario</option>
@@ -111,87 +103,86 @@
                                         <option value="health data">Données de santé</option>
                                         <option value="help centre">Centre d'aide</option>
                                         <option value="housing">Logement</option>
-                                        <option value="job bank">Banque d'emplois</option>
+                                        <option value="job bank">Guichet-emplois</option>
                                         <option value="mortgages">Hypothèques</option>
                                         <option value="msca">MDSC</option>
                                         <option value="navigation">Navigation</option>
                                         <option value="news">Nouvelles</option>
-                                        <option value="old age security">Pension de la Sécurité de vieillesse</option>
+                                        <option value="old age security">SV</option>
                                         <option value="passports">Passeports</option>
                                         <option value="pay">Rémunération</option>
                                         <option value="pensions">Pensions</option>
                                         <option value="ptr">DFP</option>
                                         <option value="retirement">Retraite</option>
-                                        <option value="retirement planning">Planification de la retraite</option>
-                                        <option value="sign in">Se connecter</option>
-                                        <option value="skills for success">Compétences pour réussir</option>
+                                        <option value="retirement planning">Planification retraite</option>
+                                        <option value="sign in">Connexion</option>
+                                        <option value="skills for success">Compétences</option>
                                         <option value="vaccines">Vaccins</option>
                                     </select>
-                                </label>
-                                <span class="spacer">OU</span>
-                                <label for="theme">Thème<span id="theme-tool-tip"
-                                        class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
-                                    <select id="theme">
+                                </div>
+                                <div class="pf-filter-field">
+                                    <label for="theme">Thème</label>
+                                    <select class="form-control" id="theme" name="theme">
                                         <option value>Tous</option>
-                                        <!-- aboutgov option -->
-                                        <option value="aboutgov">À propos du gouvernement</option>
+                                        <option value="aboutgov">Gouvernement</option>
                                         <option value="benefits">Prestations</option>
-                                        <option value="business">Entreprise</option>
-                                        <option value="canada and the world">Canada et le monde</option>
-                                        <option value="culture, history and sport">Culture, histoire et sport</option>
+                                        <option value="business">Entreprises</option>
+                                        <option value="canada and the world">Monde</option>
+                                        <option value="culture, history and sport">Culture</option>
                                         <option value="defence">Défense</option>
-                                        <option value="environment and natural resources">Environnement et Ressources
-                                            Naturelles</option>
+                                        <option value="environment and natural resources">Environnement</option>
                                         <option value="health">Santé</option>
                                         <option value="immigration">Immigration</option>
                                         <option value="indegeneous">Autochtones</option>
                                         <option value="jobs">Emplois</option>
-                                        <option value="money and finances">Argent et finances</option>
-                                        <option value="policing, justice and emergencies">Police, justice et urgences
-                                        </option>
-                                        <option value="public service">Service Public</option>
-                                        <option value="science and innovation">Science et innovation</option>
+                                        <option value="money and finances">Argent</option>
+                                        <option value="policing, justice and emergencies">Police</option>
+                                        <option value="public service">Fonction publique</option>
+                                        <option value="science and innovation">Science</option>
                                         <option value="taxes">Impôts</option>
                                         <option value="travel">Voyage</option>
                                         <option value="youth">Jeunesse</option>
-                                        <!-- Additional options -->
                                     </select>
-                                </label>
-                            </p>
-                            <p>
-                                <label>
-                                    <input type="checkbox" id="errorComments" name="errorComments">
-                                    Afficher les commentaires avec <a
-                                        href="https://github.com/alpha-canada-ca/feedback-viewer/tree/master/src/main/resources/static/error_keywords"
-                                        target="_blank">mots-clés d'erreur</a>
-                                </label>
-                            </p>
-                        </details>
-                        <div class="download-section">
-                            <button type="button" class="btn btn-primary" id="downloadCSV">Télécharger CSV</button>
-                            <button type="button" class="btn btn-primary" id="downloadExcel">Télécharger Excel</button>
-                            <button type="button" class="btn-unstyled reset-filters"
-                                onclick="resetFilters()">Réinitialiser les filtres</button>
+                                </div>
+                            </div>
+                            <!-- Row 2: URL, Comments -->
+                            <div class="pf-filter-row">
+                                <div class="pf-filter-field pf-filter-url">
+                                    <label for="url">URL</label>
+                                    <input type="text" id="url" name="url" class="form-control"
+                                        placeholder="Filtrer par URL...">
+                                </div>
+                                <div class="pf-filter-field pf-filter-comments">
+                                    <label for="comments">Commentaires</label>
+                                    <input type="text" id="comments" name="comments" class="form-control"
+                                        placeholder="Rechercher...">
+                                </div>
+                                <div class="pf-filter-field pf-filter-checkbox">
+                                    <label><input type="checkbox" id="errorComments" name="errorComments"> Mots-clés
+                                        d'erreur</label>
+                                </div>
+                            </div>
                         </div>
-                    </form>
+                        <div class="pf-filter-footer">
+                            <div class="pf-stats">
+                                <div class="stat"><span class="totalPagesCount">0</span> Pages avec rétroaction</div>
+                                <div class="stat"><span class="totalCommentCount">0</span> Commentaires totaux</div>
+                            </div>
+                            <div class="pf-actions">
+                                <button type="button" class="btn btn-default btn-sm reset-filters"><i
+                                        class="fa fa-refresh"></i> Réinitialiser</button>
+                                <button type="button" class="btn btn-primary btn-sm" id="downloadCSV"><i
+                                        class="fa fa-download"></i> CSV</button>
+                                <button type="button" class="btn btn-primary btn-sm" id="downloadExcel"><i
+                                        class="fa fa-file-excel-o"></i> Excel</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="clearfix"></div>
         </main>
-        <div class="col-lg-12">
-            <div class="stats-box">
-                <div class="stat">
-                    <span class="description">Nombre total de pages avec l'outil de rétroaction</span>
-                    <br>
-                    <span class="totalPagesCount"></span>
-                </div>
-                <div class="stat">
-                    <span class="description">Total des commentaires dans la période sélectionnée</span>
-                    <br>
-                    <span class="totalCommentCount"></span>
-                </div>
-            </div>
-        </div>
+
         <div class="col-lg-12">
             <div class="row custom-row">
                 <div id="chart"></div>

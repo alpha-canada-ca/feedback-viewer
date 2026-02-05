@@ -20,90 +20,80 @@
       <div class="col-lg-12">
         <div class="row">
           <h1 id="wb-cont">GC Feedback</h1>
-          <form class="feedback-tool">
-            <h2 class="h4">Filter by:</h2>
-            <div class="form-group">
-              <label for="department">Department</label>
-              <select class="form-control" id="department" name="department">
-                <option value>All</option>
-                <option value="AAFC">AAFC/AAC</option>
-                <option value="CBSA">CBSA/ASFC</option>
-                <option value="CCG">CCG/GCC</option>
-                <option value="CER">CER/REC</option>
-                <option value="CFIA">CFIA/ACIA</option>
-                <option value="CIRNAC">CIRNAC/RCAANC</option>
-                <option value="CRA">CRA/ARC</option>
-                <option value="CSC">CSC/SCC</option>
-                <option value="CSE">CSE/CST</option>
-                <option value="DFO">DFO/MPO</option>
-                <option value="DND">DND/MND</option>
-                <option value="ECCC">ECCC/ECCC</option>
-                <option value="ESDC">ESDC/EDSC</option>
-                <option value="FCAC">FCAC/ACFC</option>
-                <option value="FIN">FIN/FIN</option>
-                <option value="GAC">GAC/AMC</option>
-                <option value="HC">HC/SC</option>
-                <option value="HICC">HICC/LICC</option>
-                <option value="IRCC">IRCC/IRCC</option>
-                <option value="ISC">ISC/SAC</option>
-                <option value="ISED">ISED/ISDE</option>
-                <option value="LAC">LAC/BAC</option>
-                <option value="NRC">NRC/CNRC</option>
-                <option value="NRCAN">NRCAN/RNCAN</option>
-                <option value="NSERC">NSERC/CRSNG</option>
-                <option value="OMBDNDCAF">OMBDNDCAF/OMBMDNFAC</option>
-                <option value="PS">PS/SP</option>
-                <option value="PSPC">PSPC/SPAC</option>
-                <option value="PHAC">PHAC/ASPC</option>
-                <option value="SC">SC/SC</option>
-                <option value="SSHRC">SSHRC/CSRH</option>
-                <option value="SST">SST/TSS</option>
-                <option value="TBS">TBS/SCT</option>
-              </select>
-            </div>
-            <label id="drp" for="dateRangePicker">Date Range <input type="text" id="dateRangePicker"
-                name="dateRangePicker" readonly="readonly" style="background-color: white; cursor: pointer;" />
-            </label>
-            <div class="form-group">
-              <label for="language">Page Language</label>
-              <select class="form-control" id="language" name="language">
-                <option value>All</option>
-                <option value="en">English</option>
-                <option value="fr">French</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="url">URL</label>
-              <input type="text" id="url" name="url" placeholder="Filter by full or partial URL">
-            </div>
-            <div class="form-group">
-              <label for="pages">Page(s)</label>
-              <select id="pages"></select>
-            </div>
-            <div class="form-group">
-              <label for="comments">Comments</label>
-              <input type="text" id="comments" name="comments" placeholder="Filter by keyword">
-            </div>
-            <details id="filterDetails">
-              <summary id="filterSummary">See more filters</summary>
-              <p>
-                <label for="section">Section <span id="section-tool-tip" class="glyphicon glyphicon-question-sign"
-                    aria-hidden="true"></span>
-                  <select id="section">
+
+          <!-- Filter Panel -->
+          <div class="pf-filter-panel">
+            <div class="pf-filter-grid">
+              <!-- Row 1: Main filters -->
+              <div class="pf-filter-row">
+                <div class="pf-filter-field">
+                  <label for="department">Department</label>
+                  <select class="form-control" id="department" name="department">
                     <option value>All</option>
-                    <!-- Additional options -->
+                    <option value="AAFC">AAFC</option>
+                    <option value="CBSA">CBSA</option>
+                    <option value="CCG">CCG</option>
+                    <option value="CER">CER</option>
+                    <option value="CFIA">CFIA</option>
+                    <option value="CIRNAC">CIRNAC</option>
+                    <option value="CRA">CRA</option>
+                    <option value="CSC">CSC</option>
+                    <option value="CSE">CSE</option>
+                    <option value="DFO">DFO</option>
+                    <option value="DND">DND</option>
+                    <option value="ECCC">ECCC</option>
+                    <option value="ESDC">ESDC</option>
+                    <option value="FCAC">FCAC</option>
+                    <option value="FIN">FIN</option>
+                    <option value="GAC">GAC</option>
+                    <option value="HC">HC</option>
+                    <option value="HICC">HICC</option>
+                    <option value="IRCC">IRCC</option>
+                    <option value="ISC">ISC</option>
+                    <option value="ISED">ISED</option>
+                    <option value="LAC">LAC</option>
+                    <option value="NRC">NRC</option>
+                    <option value="NRCAN">NRCAN</option>
+                    <option value="NSERC">NSERC</option>
+                    <option value="OMBDNDCAF">OMBDNDCAF</option>
+                    <option value="PS">PS</option>
+                    <option value="PSPC">PSPC</option>
+                    <option value="PHAC">PHAC</option>
+                    <option value="SC">SC</option>
+                    <option value="SSHRC">SSHRC</option>
+                    <option value="SST">SST</option>
+                    <option value="TBS">TBS</option>
+                  </select>
+                </div>
+                <div class="pf-filter-field">
+                  <label for="language">Language</label>
+                  <select class="form-control" id="language" name="language">
+                    <option value>All</option>
+                    <option value="en">EN</option>
+                    <option value="fr">FR</option>
+                  </select>
+                </div>
+                <div class="pf-filter-field">
+                  <label for="dateRangePicker">Date Range</label>
+                  <input type="text" id="dateRangePicker" name="dateRangePicker" readonly="readonly"
+                    class="form-control" />
+                </div>
+                <div class="pf-filter-field">
+                  <label for="section">Section</label>
+                  <select class="form-control" id="section" name="section">
+                    <option value>All</option>
                     <option value="budget">Budget</option>
                     <option value="business">Business</option>
                     <option value="c&p">C&P</option>
                     <option value="child">Child</option>
-                    <option value="cpp retirement pension">CPP Retirement pension</option>
+                    <option value="cpp retirement pension">CPP Retirement</option>
                     <option value="death">Death</option>
                     <option value="dental">Dental</option>
                     <option value="disability">Disability</option>
                     <option value="disability benefit">Disability benefit</option>
                     <option value="ecm">ECM</option>
                     <option value="education">Education</option>
-                    <option value="employment insurance">Employment Insurance</option>
+                    <option value="employment insurance">EI</option>
                     <option value="eol">EOL</option>
                     <option value="family">Family</option>
                     <option value="feddevon">FedDev Ontario</option>
@@ -118,7 +108,7 @@
                     <option value="msca">MSCA</option>
                     <option value="navigation">Navigation</option>
                     <option value="news">News</option>
-                    <option value="old age security">Old Age Security</option>
+                    <option value="old age security">OAS</option>
                     <option value="passports">Passports</option>
                     <option value="pay">Pay</option>
                     <option value="pensions">Pensions</option>
@@ -129,51 +119,62 @@
                     <option value="skills for success">Skills for Success</option>
                     <option value="vaccines">Vaccines</option>
                   </select>
-                </label>
-                <span class="spacer">OR</span>
-                <label for="theme">Theme <span id="theme-tool-tip" class="glyphicon glyphicon-question-sign"
-                    aria-hidden="true"></span>
-                  <select id="theme">
+                </div>
+                <div class="pf-filter-field">
+                  <label for="theme">Theme</label>
+                  <select class="form-control" id="theme" name="theme">
                     <option value>All</option>
-                    <!-- aboutgov option -->
                     <option value="aboutgov">About Gov</option>
                     <option value="benefits">Benefits</option>
                     <option value="business">Business</option>
-                    <option value="canada and the world">Canada and the world</option>
-                    <option value="culture, history and sport">Culture, history and sport</option>
+                    <option value="canada and the world">World</option>
+                    <option value="culture, history and sport">Culture</option>
                     <option value="defence">Defence</option>
-                    <option value="environment and natural resources">Environment and Natural Resources </option>
+                    <option value="environment and natural resources">Environment</option>
                     <option value="health">Health</option>
                     <option value="immigration">Immigration</option>
                     <option value="indegeneous">Indigenous</option>
                     <option value="jobs">Jobs</option>
-                    <option value="money and finances">Money and finances</option>
-                    <option value="policing, justice and emergencies">Policing, justice and emergencies </option>
+                    <option value="money and finances">Money</option>
+                    <option value="policing, justice and emergencies">Policing</option>
                     <option value="public service">Public service</option>
-                    <option value="science and innovation">Science and innovation</option>
+                    <option value="science and innovation">Science</option>
                     <option value="taxes">Taxes</option>
                     <option value="travel">Travel</option>
                     <option value="youth">Youth</option>
-                    <!-- Additional options -->
                   </select>
-                </label>
-              </p>
-              <p>
-                <label>
-                  <input type="checkbox" id="errorComments" name="errorComments">
-                  Show feedback with <a
-                    href="https://github.com/alpha-canada-ca/feedback-viewer/tree/master/src/main/resources/static/error_keywords"
-                    target="_blank">error keywords</a>
-                </label>
-              </p>
-            </details>
-            <div class="download-section">
-              <button type="button" class="btn btn-primary" id="downloadCSV">Download CSV</button>
-              <button type="button" class="btn btn-primary" id="downloadExcel">Download Excel</button>
-              <button type="button" class="btn-unstyled reset-filters">Reset Filters</button>
-
+                </div>
+              </div>
+              <!-- Row 2: URL, Pages, Comments -->
+              <div class="pf-filter-row">
+                <div class="pf-filter-field pf-filter-url">
+                  <label for="url">URL</label>
+                  <input type="text" id="url" name="url" class="form-control" placeholder="Filter by URL...">
+                </div>
+                <div class="pf-filter-field pf-filter-pages">
+                  <label for="pages">Page(s)</label>
+                  <select id="pages" class="form-control" style="display: none;"></select>
+                </div>
+                <div class="pf-filter-field pf-filter-comments">
+                  <label for="comments">Comments</label>
+                  <input type="text" id="comments" name="comments" class="form-control" placeholder="Search comments...">
+                </div>
+                <div class="pf-filter-field pf-filter-checkbox">
+                  <label><input type="checkbox" id="errorComments" name="errorComments"> Error keywords</label>
+                </div>
+              </div>
             </div>
-          </form>
+            <div class="pf-filter-footer">
+              <div class="pf-stats">
+                <div class="stat"><span class="totalCommentsCount">0</span> Total Comments</div>
+              </div>
+              <div class="pf-actions">
+                <button type="button" class="btn btn-default btn-sm reset-filters"><i class="fa fa-refresh"></i> Reset</button>
+                <button type="button" class="btn btn-primary btn-sm" id="downloadCSV"><i class="fa fa-download"></i> CSV</button>
+                <button type="button" class="btn btn-primary btn-sm" id="downloadExcel"><i class="fa fa-file-excel-o"></i> Excel</button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
       <div class="clearfix"></div>
