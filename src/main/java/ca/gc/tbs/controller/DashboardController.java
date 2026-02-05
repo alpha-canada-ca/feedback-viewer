@@ -1,11 +1,24 @@
 package ca.gc.tbs.controller;
 
-import ca.gc.tbs.domain.Problem;
-import ca.gc.tbs.repository.ProblemRepository;
-import ca.gc.tbs.service.ErrorKeywordService;
-import ca.gc.tbs.service.ProblemCacheService;
-import ca.gc.tbs.service.ProblemDateService;
-import ca.gc.tbs.service.UserService;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.AbstractMap;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+
 import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,7 +27,11 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.aggregation.*;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.AggregationResults;
+import org.springframework.data.mongodb.core.aggregation.GroupOperation;
+import org.springframework.data.mongodb.core.aggregation.MatchOperation;
+import org.springframework.data.mongodb.core.aggregation.SortOperation;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.datatables.DataTablesInput;
@@ -26,14 +43,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.*;
-import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
-import java.util.stream.Collectors;
+import ca.gc.tbs.domain.Problem;
+import ca.gc.tbs.repository.ProblemRepository;
+import ca.gc.tbs.service.ErrorKeywordService;
+import ca.gc.tbs.service.ProblemCacheService;
+import ca.gc.tbs.service.ProblemDateService;
+import ca.gc.tbs.service.UserService;
 
 @Controller
 public class DashboardController {
@@ -731,9 +746,6 @@ public class DashboardController {
             output.setRecordsTotal(groupedProblems.size());
             output.setRecordsFiltered(groupedProblems.size());
 
-            output.setRecordsTotal(totalComments);
-            output.setRecordsFiltered(totalComments);
-
             // Adjust institution names based on language (same as normal dashboard)
             setInstitution(output, pageLang);
 
@@ -789,8 +801,8 @@ public class DashboardController {
             DataTablesOutput<Problem> output = new DataTablesOutput<>();
             output.setData(groupedProblems);
             output.setDraw(input.getDraw());
-            output.setRecordsTotal(totalComments);
-            output.setRecordsFiltered(totalComments);
+            output.setRecordsTotal(groupedProblems.size());
+            output.setRecordsFiltered(groupedProblems.size());
 
 
             setInstitution(output, pageLang);
@@ -858,9 +870,6 @@ public class DashboardController {
             output.setDraw(input.getDraw());
             output.setRecordsTotal(mergedProblems.size());
             output.setRecordsFiltered(mergedProblems.size());
-
-            output.setRecordsTotal(totalComments);
-            output.setRecordsFiltered(totalComments);
 
             // Adjust institution names based on language
             setInstitution(output, pageLang);
