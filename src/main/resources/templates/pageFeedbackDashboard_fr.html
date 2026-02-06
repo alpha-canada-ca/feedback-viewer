@@ -145,7 +145,7 @@
                                     </select>
                                 </div>
                             </div>
-                            <!-- Row 2: URL, Comments -->
+                            <!-- Row 2: URL, Comments, Page(s) -->
                             <div class="pf-filter-row">
                                 <div class="pf-filter-field pf-filter-url">
                                     <label for="url">URL</label>
@@ -154,12 +154,15 @@
                                 </div>
                                 <div class="pf-filter-field pf-filter-comments">
                                     <label for="comments">Commentaires</label>
-                                    <input type="text" id="comments" name="comments" class="form-control"
-                                        placeholder="Rechercher...">
-                                </div>
-                                <div class="pf-filter-field pf-filter-checkbox">
-                                    <label><input type="checkbox" id="errorComments" name="errorComments"> Mots-clés
-                                        d'erreur</label>
+                                    <div class="pf-input-with-checkbox">
+                                        <input type="text" id="comments" name="comments" class="form-control"
+                                            placeholder="Rechercher...">
+                                        <label class="pf-inline-checkbox"
+                                            title="Afficher seulement les commentaires contenant des mots-clés d'erreur (ex: 'brisé', 'ne fonctionne pas', 'erreur')">
+                                            <input type="checkbox" id="errorComments" name="errorComments">
+                                            <span>Afficher les commentaires avec erreurs</span>
+                                        </label>
+                                    </div>
                                 </div>
                             </div>
                         </div>

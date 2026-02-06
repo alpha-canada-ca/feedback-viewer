@@ -145,7 +145,7 @@
                                     </select>
                                 </div>
                             </div>
-                            <!-- Row 2: URL, Comments -->
+                            <!-- Row 2: URL, Comments, Page(s) -->
                             <div class="pf-filter-row">
                                 <div class="pf-filter-field pf-filter-url">
                                     <label for="url">URL</label>
@@ -154,12 +154,15 @@
                                 </div>
                                 <div class="pf-filter-field pf-filter-comments">
                                     <label for="comments">Comments</label>
-                                    <input type="text" id="comments" name="comments" class="form-control"
-                                        placeholder="Search comments...">
-                                </div>
-                                <div class="pf-filter-field pf-filter-checkbox">
-                                    <label><input type="checkbox" id="errorComments" name="errorComments"> Error
-                                        keywords</label>
+                                    <div class="pf-input-with-checkbox">
+                                        <input type="text" id="comments" name="comments" class="form-control"
+                                            placeholder="Search comments...">
+                                        <label class="pf-inline-checkbox"
+                                            title="Only show comments containing error-related keywords (e.g., 'broken', 'not working', 'error')">
+                                            <input type="checkbox" id="errorComments" name="errorComments">
+                                            <span>Show comments with errors</span>
+                                        </label>
+                                    </div>
                                 </div>
                             </div>
                         </div>
