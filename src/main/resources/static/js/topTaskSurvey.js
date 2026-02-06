@@ -126,9 +126,6 @@ $(document).ready(function () {
     const $originalTasks = $("#tasks");
     $originalTasks.hide().css('visibility', 'hidden');
 
-    const $tasksContainer = $('<div id="tasks-replacement"></div>');
-    $originalTasks.after($tasksContainer);
-
     var taskSelect = new CustomDropdown({
       select: "#tasks",
       multiSelect: false,
@@ -212,7 +209,26 @@ $(document).ready(function () {
     });
 
   var table = new DataTable("#topTaskTable", {
-       language: isFrench ? { url: "//cdn.datatables.net/plug-ins/2.3.2/i18n/fr-FR.json" } : undefined,
+       language: isFrench ? {
+         url: "//cdn.datatables.net/plug-ins/2.3.2/i18n/fr-FR.json",
+         lengthMenu: "Afficher _MENU_ entrées",
+         info: "Affichage de _START_ à _END_ sur _TOTAL_ entrées",
+         paginate: {
+           first: "Premier",
+           last: "Dernier",
+           next: "Suivant",
+           previous: "Précédent"
+         }
+       } : {
+         lengthMenu: "Show _MENU_ entries",
+         info: "Showing _START_ to _END_ of _TOTAL_ entries",
+         paginate: {
+           first: "First",
+           last: "Last",
+           next: "Next",
+           previous: "Previous"
+         }
+       },
        stripeClasses: [],
        bSortClasses: false,
        order: [[0, "desc"]],

@@ -63,7 +63,7 @@ h1#wb-cont {
 
 .tss-filter-row {
   display: flex;
-  gap: 16px;
+  gap: 12px;
   align-items: flex-end;
   flex-wrap: wrap;
 }
@@ -71,8 +71,9 @@ h1#wb-cont {
 .tss-filter-field {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  min-width: 120px;
+  gap: 4px;
+  flex: 1 1 calc(33.333% - 12px);
+  min-width: 200px;
 }
 
 .tss-filter-field label {
@@ -93,6 +94,7 @@ h1#wb-cont {
   transition: border-color 0.2s, box-shadow 0.2s;
   height: 38px;
   box-sizing: border-box;
+  width: 100% !important;
 }
 
 .tss-filter-field select:focus,
@@ -102,10 +104,32 @@ h1#wb-cont {
   outline: none;
 }
 
-/* Task field - full width search-style input */
+/* Task field - same width as other filters */
 .tss-filter-task {
-  flex: 1;
-  min-width: 100%;
+  flex: 1 1 calc(33.333% - 12px);
+  min-width: 200px;
+}
+
+.tss-filter-task label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: block;
+}
+
+.custom-dropdown-wrapper {
+  width: 100% !important;
+  display: block !important;
+  position: relative !important;
+}
+
+.tss-filter-task .custom-select-display,
+.tss-filter-task #tasks {
+  height: 38px !important;
+  min-height: 38px !important;
+  box-sizing: border-box;
 }
 
 /* Task Search Styles */
@@ -116,9 +140,9 @@ h1#wb-cont {
 
 .task-search-wrapper #taskSearch {
   width: 100%;
-  height: 42px;
-  padding: 10px 36px 10px 14px;
-  font-size: 15px;
+  height: 38px;
+  padding: 8px 36px 8px 12px;
+  font-size: 14px;
   border: 1px solid #d0d0d0;
   border-radius: 6px;
   background: #fff;
@@ -165,10 +189,10 @@ h1#wb-cont {
 }
 
 .tss-filter-task .custom-select-display {
-  height: 42px;
+  height: 38px;
   box-sizing: border-box;
-  padding: 10px 40px 10px 14px;
-  font-size: 15px;
+  padding: 8px 40px 8px 12px;
+  font-size: 14px;
   border: 1px solid #d0d0d0;
   border-radius: 6px;
   background: #fff;
@@ -193,7 +217,8 @@ h1#wb-cont {
 }
 
 .tss-filter-task #tasks-placeholder {
-  min-height: 42px;
+  min-height: 38px;
+  height: 38px;
 }
 
 /* Date range field - wider */
@@ -201,33 +226,57 @@ h1#wb-cont {
   min-width: 200px;
 }
 
-/* Comments field */
-.tss-filter-comments {
-  flex: 1;
-  max-width: 350px;
-}
-
-.tss-filter-checkbox {
-  justify-content: flex-end;
-}
-  justify-content: flex-end;
-}
-
-.tss-filter-checkbox label {
+/* Checkbox in row - matching pageFeedback design */
+.tss-filter-checkbox-row {
   display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-end;
+  flex: 1 1 calc(33.333% - 12px);
+  min-width: 200px;
+  gap: 4px;
+}
+
+.tss-filter-checkbox-row::before {
+  content: '';
+  display: block;
+  height: 15px;
+}
+
+.tss-row-checkbox {
+  display: inline-flex;
   align-items: center;
   gap: 8px;
   font-size: 13px;
   font-weight: 500;
-  text-transform: none;
+  color: #333;
   cursor: pointer;
-  padding: 8px 0;
+  padding: 9px 0;
+  height: 38px;
+  box-sizing: border-box;
+  text-transform: none;
+  margin: 0;
 }
 
-.tss-filter-checkbox input[type="checkbox"] {
-  width: 16px;
+.tss-row-checkbox input[type="checkbox"] {
+  width: 16px !important;
   height: 16px;
   cursor: pointer;
+  margin: 0;
+}
+
+.tss-row-checkbox span {
+  white-space: nowrap;
+}
+
+.tss-row-checkbox:hover {
+  color: #26374a;
+}
+
+/* Comments field - same width as other filters */
+.tss-filter-comments {
+  flex: 1 1 calc(33.333% - 12px);
+  min-width: 200px;
 }
 
 /* Filter Footer with Stats and Actions */
@@ -313,24 +362,50 @@ h1#wb-cont {
 
 /* Responsive adjustments */
 @media (max-width: 1200px) {
-  .tss-filter-grid {
-    grid-template-columns: 1fr 1fr 1fr;
+  .tss-filter-row {
+    flex-wrap: wrap;
   }
+  
+  .tss-filter-field {
+    flex: 1 1 calc(33.333% - 12px);
+    min-width: 150px;
+  }
+  
   .tss-filter-task {
-    grid-column: span 3;
+    flex: 1 1 100%;
+  }
+  
+  .tss-filter-comments {
+    flex: 1 1 calc(66.666% - 12px);
+  }
+  
+  .tss-filter-checkbox-row {
+    flex: 1 1 calc(33.333% - 12px);
   }
 }
 
 @media (max-width: 768px) {
-  .tss-filter-grid {
-    grid-template-columns: 1fr 1fr;
+  .tss-filter-row {
+    flex-wrap: wrap;
   }
-  .tss-filter-task {
-    grid-column: span 2;
+  
+  .tss-filter-field,
+  .tss-filter-task,
+  .tss-filter-comments,
+  .tss-filter-checkbox-row {
+    flex: 1 1 100%;
+    min-width: 100%;
   }
+
   .tss-filter-footer {
     flex-direction: column;
     gap: 12px;
+  }
+
+  .keywords-table-wrapper,
+  .table-controls-outside {
+    width: 100%;
+    max-width: 100%;
   }
 }
 
@@ -989,25 +1064,27 @@ label[for="dt-length-0"] {
 
 .custom-select-display {
   min-height: 38px;
-  border: 1px solid #ccc;
+  height: 38px;
+  border: 1px solid #d0d0d0;
   border-radius: 4px;
-  padding: 6px 30px 6px 12px;
+  padding: 8px 30px 8px 12px;
   background-color: white;
   cursor: pointer;
   position: relative;
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 4px;
-  font-size: 16px;
+  font-size: 14px;
   font-family: "Noto sans", sans-serif;
-
+  transition: border-color 0.2s, box-shadow 0.2s;
+  box-sizing: border-box;
 }
 
 .custom-select-display:focus {
-  outline: 2px solid #007bff;
-  outline-offset: -2px;
-  border-color: #007bff;
+  outline: none;
+  border-color: #26374a;
+  box-shadow: 0 0 0 3px rgba(38, 55, 74, 0.1);
 }
 
 .placeholder-text {
@@ -1068,10 +1145,10 @@ label[for="dt-length-0"] {
   left: 0;
   right: 0;
   background: white;
-  border: 1px solid #ccc;
+  border: 1px solid #d0d0d0;
   border-top: none;
   border-radius: 0 0 4px 4px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
   z-index: 1000;
   max-height: 300px;
   overflow: hidden;
@@ -1094,8 +1171,8 @@ label[for="dt-length-0"] {
 }
 
 .search-input:focus {
-  border-color: #007bff !important;
-  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+  border-color: #26374a !important;
+  box-shadow: 0 0 0 3px rgba(38, 55, 74, 0.1);
 }
 
 .status-container {
@@ -1144,7 +1221,7 @@ label[for="dt-length-0"] {
 }
 
 .dropdown-option:hover {
-  background-color: #007bff;
+  background-color: #26374a;
   color: white;
 }
 
@@ -1171,32 +1248,14 @@ label[for="dt-length-0"] {
 
 /* Hide original select when custom dropdown is active */
 .custom-select-wrapper ~ #tasks,
-#tasks-dropdown-wrapper ~ #tasks {
-  display: none !important;
-}
-
-/* Legacy styles for fallback */
+#tasks-dropdown-wrapper ~ #tasks,
 #tasks {
-  width: 100% !important;
-  padding: 6px 12px !important;
-  border: 1px solid #ccc !important;
-  border-radius: 4px !important;
-  font-size: 16px !important;
-  font-weight: normal !important;
-  max-height: 300px !important;
-  box-sizing: border-box !important;
-  min-width: auto !important;
-  display: block !important;
-}
-
-#tasks:focus {
-  outline: none !important;
-  border-color: #007bff !important;
-  box-shadow: inset 0 0 0 0.2rem rgba(0, 123, 255, 0.15) !important;
-}
-
-#tasks option:checked {
-  background-color: #007bff !important;
-  color: #fff !important;
+  display: none !important;
+  visibility: hidden !important;
+  position: absolute !important;
+  left: -9999px !important;
+  width: 0 !important;
+  height: 0 !important;
+  opacity: 0 !important;
 }
 

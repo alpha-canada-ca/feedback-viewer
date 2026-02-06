@@ -27,14 +27,7 @@
           <!-- Filter Panel -->
           <div class="tss-filter-panel">
             <div class="tss-filter-grid">
-              <!-- Row 1: Task (full width) -->
-              <div class="tss-filter-row">
-                <div class="tss-filter-field tss-filter-task">
-                  <label for="tasks">Task</label>
-                  <select id="tasks" class="form-control" style="display: none;"></select>
-                </div>
-              </div>
-              <!-- Row 2: Main filters -->
+              <!-- Row 1: Department, Theme, Language -->
               <div class="tss-filter-row">
                 <div class="tss-filter-field">
                   <label for="department">Department</label>
@@ -75,6 +68,9 @@
                     <option value="fr">FR</option>
                   </select>
                 </div>
+              </div>
+              <!-- Row 2: Group, Completion, Date Range -->
+              <div class="tss-filter-row">
                 <div class="tss-filter-field">
                   <label for="group">Group</label>
                   <select class="form-control" id="group" name="group">
@@ -100,16 +96,22 @@
                     class="form-control" />
                 </div>
               </div>
-              <!-- Row 3: Comments and checkbox -->
+              <!-- Row 3: Task, Comments, Checkbox -->
               <div class="tss-filter-row">
+                <div class="tss-filter-field tss-filter-task">
+                  <label for="tasks">Task</label>
+                  <select id="tasks" class="form-control" style="display: none;"></select>
+                </div>
                 <div class="tss-filter-field tss-filter-comments">
                   <label for="comments">Comments</label>
                   <input type="text" id="comments" name="comments" class="form-control"
                     placeholder="Search in comments...">
                 </div>
-                <div class="tss-filter-field tss-filter-checkbox">
-                  <label><input type="checkbox" id="commentsCheckbox" name="commentsCheckbox"> With comments
-                    only</label>
+                <div class="tss-filter-field tss-filter-checkbox-row">
+                  <label class="tss-row-checkbox" title="Only show entries that have comments">
+                    <input type="checkbox" id="commentsCheckbox" name="commentsCheckbox">
+                    <span>With comments only</span>
+                  </label>
                 </div>
               </div>
             </div>

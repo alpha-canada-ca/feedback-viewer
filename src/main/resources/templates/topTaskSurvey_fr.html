@@ -27,14 +27,7 @@
                     <!-- Filter Panel -->
                     <div class="tss-filter-panel">
                         <div class="tss-filter-grid">
-                            <!-- Row 1: Task (full width) -->
-                            <div class="tss-filter-row">
-                                <div class="tss-filter-field tss-filter-task">
-                                    <label for="tasks">Tâche</label>
-                                    <select id="tasks" class="form-control" style="display: none;"></select>
-                                </div>
-                            </div>
-                            <!-- Row 2: Main filters -->
+                            <!-- Row 1: Department, Theme, Language -->
                             <div class="tss-filter-row">
                                 <div class="tss-filter-field">
                                     <label for="department">Institution</label>
@@ -76,6 +69,9 @@
                                         <option value="fr">FR</option>
                                     </select>
                                 </div>
+                            </div>
+                            <!-- Row 2: Group, Completion, Date Range -->
+                            <div class="tss-filter-row">
                                 <div class="tss-filter-field">
                                     <label for="group">Regroupement</label>
                                     <select class="form-control" id="group" name="group">
@@ -103,16 +99,23 @@
                                         class="form-control" />
                                 </div>
                             </div>
-                            <!-- Row 3: Comments and checkbox -->
+                            <!-- Row 3: Task, Comments, Checkbox -->
                             <div class="tss-filter-row">
+                                <div class="tss-filter-field tss-filter-task">
+                                    <label for="tasks">Tâche</label>
+                                    <select id="tasks" class="form-control" style="display: none;"></select>
+                                </div>
                                 <div class="tss-filter-field tss-filter-comments">
                                     <label for="comments">Commentaires</label>
                                     <input type="text" id="comments" name="comments" class="form-control"
                                         placeholder="Rechercher dans les commentaires...">
                                 </div>
-                                <div class="tss-filter-field tss-filter-checkbox">
-                                    <label><input type="checkbox" id="commentsCheckbox" name="commentsCheckbox"> Avec
-                                        commentaires seulement</label>
+                                <div class="tss-filter-field tss-filter-checkbox-row">
+                                    <label class="tss-row-checkbox"
+                                        title="Afficher seulement les entrées avec des commentaires">
+                                        <input type="checkbox" id="commentsCheckbox" name="commentsCheckbox">
+                                        <span>Avec commentaires seulement</span>
+                                    </label>
                                 </div>
                             </div>
                         </div>
