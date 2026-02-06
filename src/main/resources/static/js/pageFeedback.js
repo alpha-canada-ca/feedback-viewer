@@ -337,9 +337,12 @@ $(document).ready(function () {
     spinnerType: 'spinner'
   });
 
-  // Hide loading overlay after initial table draw
-  table.on('draw.dt', function() {
+  // Hide loading overlay and update total comments count after table draw
+  table.on('draw.dt', function(e, settings) {
     loadingOverlay.hide();
+    // Update total comments count using settings._iRecordsDisplay (filtered count)
+    var count = settings._iRecordsDisplay || 0;
+    $('.totalCommentsCount').text(count.toLocaleString());
   });
 
   $(".reset-filters").on("click", resetFilters);

@@ -89,13 +89,144 @@ h1#wb-cont {
   min-width: 200px;
 }
 
+/* Pages CustomDropdown alignment fix */
+.pf-filter-pages .custom-select-wrapper {
+  width: 100% !important;
+  margin: 0 !important;
+}
+
+.pf-filter-pages .custom-select-display {
+  height: 38px;
+  padding: 8px 40px 8px 12px;
+  border: 1px solid #d0d0d0;
+  border-radius: 4px;
+  font-size: 14px;
+  background-color: #fff;
+  box-sizing: border-box;
+  position: relative;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+
+.pf-filter-pages .custom-select-display .selected-text,
+.pf-filter-pages .custom-select-display .placeholder-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
+  max-width: calc(100% - 30px);
+}
+
+.pf-filter-pages .custom-select-display .clear-selection {
+  position: absolute;
+  right: 24px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.pf-filter-pages .custom-select-display .dropdown-arrow {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.pf-filter-pages .custom-select-display:hover {
+  border-color: #999;
+}
+
+.pf-filter-pages .custom-select-display:focus,
+.pf-filter-pages .custom-select-wrapper.open .custom-select-display {
+  border-color: #26374a;
+  box-shadow: 0 0 0 3px rgba(38, 55, 74, 0.1);
+  outline: none;
+}
+
 /* Comments field */
 .pf-filter-comments {
   flex: 2;
+  min-width: 300px;
+}
+
+/* Input with inline checkbox (for Comments + Show errors toggle) */
+.pf-input-with-checkbox {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+}
+
+.pf-input-with-checkbox input[type="text"] {
+  flex: 1;
+  min-width: 180px;
+}
+
+.pf-inline-checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #555;
+  cursor: pointer;
+  padding: 2px 0;
+  white-space: nowrap;
+}
+
+.pf-inline-checkbox input[type="checkbox"] {
+  width: 14px !important;
+  height: 14px;
+  cursor: pointer;
+  margin: 0;
+}
+
+.pf-inline-checkbox span {
+  white-space: nowrap;
+}
+
+.pf-inline-checkbox:hover {
+  color: #26374a;
+}
+
+/* Checkbox in its own row (Section, Theme, Error row) */
+.pf-filter-checkbox-row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-start;
+  flex: 1;
   min-width: 200px;
 }
 
-/* Checkbox field */
+.pf-row-checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+  cursor: pointer;
+  padding: 8px 0;
+  height: 38px;
+  box-sizing: border-box;
+}
+
+.pf-row-checkbox input[type="checkbox"] {
+  width: 16px !important;
+  height: 16px;
+  cursor: pointer;
+  margin: 0;
+}
+
+.pf-row-checkbox span {
+  white-space: nowrap;
+}
+
+.pf-row-checkbox:hover {
+  color: #26374a;
+}
+
+/* Checkbox field (legacy - kept for backwards compatibility) */
 .pf-filter-checkbox {
   flex: 0 0 auto;
   min-width: auto;

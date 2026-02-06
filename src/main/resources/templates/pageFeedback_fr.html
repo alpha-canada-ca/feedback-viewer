@@ -24,7 +24,7 @@
           <!-- Filter Panel -->
           <div class="pf-filter-panel">
             <div class="pf-filter-grid">
-              <!-- Row 1: Main filters -->
+              <!-- Row 1: Department, Language, Date Range -->
               <div class="pf-filter-row">
                 <div class="pf-filter-field">
                   <label for="department">Institution</label>
@@ -78,6 +78,24 @@
                   <input type="text" id="dateRangePicker" name="dateRangePicker" readonly="readonly"
                     class="form-control" />
                 </div>
+              </div>
+              <!-- Row 2: URL, Pages, Comments -->
+              <div class="pf-filter-row">
+                <div class="pf-filter-field pf-filter-url">
+                  <label for="url">URL</label>
+                  <input type="text" id="url" name="url" class="form-control" placeholder="Filtrer par URL...">
+                </div>
+                <div class="pf-filter-field pf-filter-pages">
+                  <label for="pages">Page(s)</label>
+                  <select id="pages" class="form-control" style="display: none;"></select>
+                </div>
+                <div class="pf-filter-field pf-filter-comments">
+                  <label for="comments">Commentaires</label>
+                  <input type="text" id="comments" name="comments" class="form-control" placeholder="Rechercher...">
+                </div>
+              </div>
+              <!-- Row 3: Section, Theme, Error filter -->
+              <div class="pf-filter-row">
                 <div class="pf-filter-field">
                   <label for="section">Section</label>
                   <select class="form-control" id="section" name="section">
@@ -144,23 +162,12 @@
                     <option value="youth">Jeunesse</option>
                   </select>
                 </div>
-              </div>
-              <!-- Row 2: URL, Pages, Comments -->
-              <div class="pf-filter-row">
-                <div class="pf-filter-field pf-filter-url">
-                  <label for="url">URL</label>
-                  <input type="text" id="url" name="url" class="form-control" placeholder="Filtrer par URL...">
-                </div>
-                <div class="pf-filter-field pf-filter-pages">
-                  <label for="pages">Page(s)</label>
-                  <select id="pages" class="form-control" style="display: none;"></select>
-                </div>
-                <div class="pf-filter-field pf-filter-comments">
-                  <label for="comments">Commentaires</label>
-                  <input type="text" id="comments" name="comments" class="form-control" placeholder="Rechercher...">
-                </div>
-                <div class="pf-filter-field pf-filter-checkbox">
-                  <label><input type="checkbox" id="errorComments" name="errorComments"> Mots-clés d'erreur</label>
+                <div class="pf-filter-field pf-filter-checkbox-row">
+                  <label class="pf-row-checkbox"
+                    title="Afficher seulement les commentaires contenant des mots-clés d'erreur (ex: 'brisé', 'ne fonctionne pas', 'erreur')">
+                    <input type="checkbox" id="errorComments" name="errorComments">
+                    <span>Afficher les commentaires avec erreurs</span>
+                  </label>
                 </div>
               </div>
             </div>
@@ -169,9 +176,12 @@
                 <div class="stat"><span class="totalCommentsCount">0</span> Commentaires totaux</div>
               </div>
               <div class="pf-actions">
-                <button type="button" class="btn btn-default btn-sm reset-filters"><i class="fa fa-refresh"></i> Réinitialiser</button>
-                <button type="button" class="btn btn-primary btn-sm" id="downloadCSV"><i class="fa fa-download"></i> CSV</button>
-                <button type="button" class="btn btn-primary btn-sm" id="downloadExcel"><i class="fa fa-file-excel-o"></i> Excel</button>
+                <button type="button" class="btn btn-default btn-sm reset-filters"><i class="fa fa-refresh"></i>
+                  Réinitialiser</button>
+                <button type="button" class="btn btn-primary btn-sm" id="downloadCSV"><i class="fa fa-download"></i>
+                  CSV</button>
+                <button type="button" class="btn btn-primary btn-sm" id="downloadExcel"><i
+                    class="fa fa-file-excel-o"></i> Excel</button>
               </div>
             </div>
           </div>
