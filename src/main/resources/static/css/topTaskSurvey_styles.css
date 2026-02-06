@@ -119,106 +119,132 @@ h1#wb-cont {
   display: block;
 }
 
-.custom-dropdown-wrapper {
-  width: 100% !important;
-  display: block !important;
-  position: relative !important;
-}
+/* ============================================
+   Task Autocomplete Component
+   ============================================ */
 
-.tss-filter-task .custom-select-display,
-.tss-filter-task #tasks {
-  height: 38px !important;
-  min-height: 38px !important;
-  box-sizing: border-box;
-}
-
-/* Task Search Styles */
-.task-search-wrapper {
+.task-autocomplete-wrapper {
   position: relative;
   width: 100%;
 }
 
-.task-search-wrapper #taskSearch {
+.task-autocomplete-wrapper input[type="text"] {
   width: 100%;
   height: 38px;
   padding: 8px 36px 8px 12px;
   font-size: 14px;
   border: 1px solid #d0d0d0;
-  border-radius: 6px;
+  border-radius: 4px;
   background: #fff;
   box-sizing: border-box;
   transition: border-color 0.2s, box-shadow 0.2s;
   font-family: "Noto sans", sans-serif;
 }
 
-.task-search-wrapper #taskSearch:hover {
+.task-autocomplete-wrapper input[type="text"]:hover {
   border-color: #999;
 }
 
-.task-search-wrapper #taskSearch:focus {
+.task-autocomplete-wrapper input[type="text"]:focus {
   border-color: #26374a;
   box-shadow: 0 0 0 3px rgba(38, 55, 74, 0.1);
   outline: none;
 }
 
-.task-search-clear {
+.task-autocomplete-wrapper input.has-selection {
+  background-color: #f8f9fa;
+  font-weight: 500;
+}
+
+.task-autocomplete-clear {
   position: absolute;
-  right: 12px;
+  right: 10px;
   top: 50%;
   transform: translateY(-50%);
+  background: none;
+  border: none;
   font-size: 18px;
   color: #6c757d;
   cursor: pointer;
-  display: none;
+  padding: 2px 6px;
   line-height: 1;
-  padding: 2px 4px;
+  z-index: 2;
 }
 
-.task-search-clear:hover {
+.task-autocomplete-clear:hover {
   color: #dc3545;
 }
 
-.task-search-wrapper.has-value .task-search-clear {
-  display: block;
+.task-autocomplete-clear:focus {
+  outline: 2px solid #26374a;
+  outline-offset: 2px;
+  border-radius: 2px;
 }
 
-/* Legacy styles - keep for backward compatibility but not used */
-.tss-filter-task .custom-select-wrapper {
-  width: 100% !important;
-  margin-bottom: 0 !important;
-}
-
-.tss-filter-task .custom-select-display {
-  height: 38px;
-  box-sizing: border-box;
-  padding: 8px 40px 8px 12px;
-  font-size: 14px;
-  border: 1px solid #d0d0d0;
-  border-radius: 6px;
+.task-autocomplete-listbox {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin: 4px 0 0;
+  padding: 0;
+  list-style: none;
   background: #fff;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  border: 1px solid #d0d0d0;
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  max-height: 300px;
+  overflow-y: auto;
 }
 
-.tss-filter-task .custom-select-display:hover {
-  border-color: #999;
+.task-autocomplete-listbox li {
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 13px;
+  font-family: "Noto sans", sans-serif;
+  border-bottom: 1px solid #f0f0f0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.tss-filter-task .custom-select-display:focus,
-.tss-filter-task .custom-select-wrapper.open .custom-select-display {
-  border-color: #26374a;
-  box-shadow: 0 0 0 3px rgba(38, 55, 74, 0.1);
-  outline: none;
+.task-autocomplete-listbox li:last-child {
+  border-bottom: none;
 }
 
-.tss-filter-task .custom-select-dropdown {
-  border-radius: 6px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-  margin-top: 4px;
+.task-autocomplete-listbox li.task-autocomplete-highlighted {
+  background-color: #26374a;
+  color: #fff;
 }
 
-.tss-filter-task #tasks-placeholder {
-  min-height: 38px;
-  height: 38px;
+.task-autocomplete-listbox li:hover:not(.task-autocomplete-no-results) {
+  background-color: #26374a;
+  color: #fff;
+}
+
+.task-autocomplete-listbox li.task-autocomplete-no-results {
+  color: #6c757d;
+  font-style: italic;
+  cursor: default;
+  text-align: center;
+}
+
+.task-autocomplete-listbox::-webkit-scrollbar {
+  width: 6px;
+}
+
+.task-autocomplete-listbox::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.task-autocomplete-listbox::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+.task-autocomplete-listbox::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
 }
 
 /* Date range field - wider */
@@ -388,7 +414,7 @@ h1#wb-cont {
   .tss-filter-row {
     flex-wrap: wrap;
   }
-  
+
   .tss-filter-field,
   .tss-filter-task,
   .tss-filter-comments,
@@ -406,6 +432,11 @@ h1#wb-cont {
   .table-controls-outside {
     width: 100%;
     max-width: 100%;
+  }
+
+  .task-autocomplete-listbox li {
+    white-space: normal;
+    word-break: break-word;
   }
 }
 
@@ -448,24 +479,6 @@ table.dataTable.rowborder tbody th {
   margin-top: 1ch;
 }
 
-.tss label[for="tasks"] {
-  display: grid;
-  grid-template-columns: subgrid;
-  grid-column: span 2;
-  align-items: center;
-}
-
-.custom-select-wrapper {
-  position: relative;
-  width: 70%;
-  margin-bottom: 10px;
-  grid-column: 2; /* Add this to position it in the grid */
-}
-
-.tss #tasks {
-  grid-column: 2;
-  width: 70% !important;
-}
 
 .tss > h2 {
   grid-column: 1 / 1;
@@ -1055,207 +1068,4 @@ label[for="dt-length-0"] {
   margin-left: 10px;
 }
 
-.custom-select-wrapper {
-  position: relative;
-  width: 70% !important;
-  margin-bottom: 15px; /* Increased for better spacing */
-  grid-column: 2;
-}
-
-.custom-select-display {
-  min-height: 38px;
-  height: 38px;
-  border: 1px solid #d0d0d0;
-  border-radius: 4px;
-  padding: 8px 30px 8px 12px;
-  background-color: white;
-  cursor: pointer;
-  position: relative;
-  display: flex;
-  align-items: center;
-  flex-wrap: nowrap;
-  gap: 4px;
-  font-size: 14px;
-  font-family: "Noto sans", sans-serif;
-  transition: border-color 0.2s, box-shadow 0.2s;
-  box-sizing: border-box;
-}
-
-.custom-select-display:focus {
-  outline: none;
-  border-color: #26374a;
-  box-shadow: 0 0 0 3px rgba(38, 55, 74, 0.1);
-}
-
-.placeholder-text {
-  color: #797979;
-  font-weight: 200;
-  pointer-events: none;
-  font-family: "Noto sans", sans-serif;
-
-}
-
-.selected-items {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-  flex: 1;
-}
-
-.selected-chip {
-  background-color: #e9ecef;
-  border: 1px solid #ced4da;
-  border-radius: 3px;
-  padding: 2px 6px;
-  font-size: 0.875em;
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.remove-chip {
-  cursor: pointer;
-  font-weight: bold;
-  color: #6c757d;
-  margin-left: 4px;
-  font-size: 1.1em;
-}
-
-.remove-chip:hover {
-  color: #dc3545;
-}
-
-.dropdown-arrow {
-  position: absolute;
-  right: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  transition: transform 0.2s;
-  pointer-events: none;
-  color: #6c757d;
-}
-
-.dropdown-arrow.open {
-  transform: translateY(-50%) rotate(180deg);
-}
-
-.custom-dropdown {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  right: 0;
-  background: white;
-  border: 1px solid #d0d0d0;
-  border-top: none;
-  border-radius: 0 0 4px 4px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-  z-index: 1000;
-  max-height: 300px;
-  overflow: hidden;
-}
-
-.search-container {
-  padding: 8px;
-  border-bottom: 1px solid #eee;
-  background-color: #f8f9fa;
-}
-
-.search-input {
-  width: 100% !important;
-  padding: 6px 8px !important;
-  border: 1px solid #ddd !important;
-  border-radius: 3px !important;
-  outline: none;
-  font-size: 16px;
-  font-family: "Noto sans", sans-serif;
-}
-
-.search-input:focus {
-  border-color: #26374a !important;
-  box-shadow: 0 0 0 3px rgba(38, 55, 74, 0.1);
-}
-
-.status-container {
-  padding: 8px 12px;
-  font-size: 0.875em;
-  border-bottom: 1px solid #eee;
-  background-color: #f8f9fa;
-}
-
-.loading-status {
-  color: #6c757d;
-  font-style: italic;
-}
-
-.no-results-status, .error-status {
-  color: #dc3545;
-}
-
-.results-count-status {
-  color: #28a745;
-}
-
-.warning-status {
-  color: #6c757d;
-}
-
-.no-more-results {
-  padding: 8px 12px;
-  color: #6c757d;
-  font-style: italic;
-  text-align: center;
-}
-
-.results-container {
-  max-height: 200px;
-  overflow-y: auto;
-}
-
-.dropdown-option {
-  padding: 8px 12px;
-  cursor: pointer;
-  border-bottom: 1px solid #f0f0f0;
-  transition: background-color 0.15s ease;
-  font-size: 14px;
-  font-family: "Noto sans", sans-serif;
-}
-
-.dropdown-option:hover {
-  background-color: #26374a;
-  color: white;
-}
-
-.dropdown-option:last-child {
-  border-bottom: none;
-}
-
-.results-container::-webkit-scrollbar {
-  width: 6px;
-}
-
-.results-container::-webkit-scrollbar-track {
-  background: #f1f1f1;
-}
-
-.results-container::-webkit-scrollbar-thumb {
-  background: #c1c1c1;
-  border-radius: 3px;
-}
-
-.results-container::-webkit-scrollbar-thumb:hover {
-  background: #a8a8a8;
-}
-
-/* Hide original select when custom dropdown is active */
-.custom-select-wrapper ~ #tasks,
-#tasks-dropdown-wrapper ~ #tasks,
-#tasks {
-  display: none !important;
-  visibility: hidden !important;
-  position: absolute !important;
-  left: -9999px !important;
-  width: 0 !important;
-  height: 0 !important;
-  opacity: 0 !important;
-}
 

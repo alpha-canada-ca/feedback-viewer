@@ -102,8 +102,20 @@
                             <!-- Row 3: Task, Comments, Checkbox -->
                             <div class="tss-filter-row">
                                 <div class="tss-filter-field tss-filter-task">
-                                    <label for="tasks">Tâche</label>
-                                    <select id="tasks" class="form-control" style="display: none;"></select>
+                                    <label id="task-autocomplete-label" for="task-autocomplete-input">Tâche</label>
+                                    <div class="task-autocomplete-wrapper" role="combobox"
+                                         aria-expanded="false" aria-owns="task-autocomplete-listbox" aria-haspopup="listbox">
+                                      <input type="text" id="task-autocomplete-input" class="form-control"
+                                             autocomplete="off" aria-autocomplete="list"
+                                             aria-controls="task-autocomplete-listbox"
+                                             aria-labelledby="task-autocomplete-label"
+                                             placeholder="Filtrer par mot-clé de la tâche" />
+                                      <button type="button" class="task-autocomplete-clear"
+                                              aria-label="Effacer la sélection de tâche" style="display:none;">&times;</button>
+                                      <ul id="task-autocomplete-listbox" class="task-autocomplete-listbox"
+                                          role="listbox" aria-labelledby="task-autocomplete-label"
+                                          style="display:none;"></ul>
+                                    </div>
                                 </div>
                                 <div class="tss-filter-field tss-filter-comments">
                                     <label for="comments">Commentaires</label>
@@ -191,7 +203,6 @@
         <script src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
         <script type="text/javascript" src="js/spring-friendly.min.js"></script>
-        <script type="text/javascript" src="js/custom-dropdown.js"></script>
         <script th:inline="javascript">
             /*
                   <![CDATA[*/
