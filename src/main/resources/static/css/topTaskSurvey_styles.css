@@ -617,14 +617,14 @@ main {
   line-height: 1em !important;
 }
 .dataTables_paginate {
-  font-size: 16px;
+  font-size: 13px;
 }
 .dataTables_info {
-  font-size: 16px;
+  font-size: 13px;
 }
 .dataTables_length label {
   font-weight: 400;
-  font-size: 16px;
+  font-size: 13px;
   margin-top: 2pt;
 }
 .tss a:visited {

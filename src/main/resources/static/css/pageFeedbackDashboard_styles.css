@@ -1024,3 +1024,9 @@ details:not([open]) details summary {
   right: 1em;
   top: 1em;
 }
+
+.dataTables_paginate,
+.dataTables_info,
+.dataTables_length label {
+  font-size: 13px;
+}

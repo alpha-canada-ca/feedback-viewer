@@ -575,7 +575,7 @@ table.dataTable.rowborder tbody th {
 .dataTables_paginate,
 .dataTables_info,
 .dataTables_length label {
-  font-size: 16px;
+  font-size: 13px;
 }
 
 .dataTables_length label {
@@ -1047,7 +1047,7 @@ label[for="dt-length-0"] {
  .dataTables_paginate,
  .dataTables_info,
  .dataTables_length label {
-   font-size: 16px;
+   font-size: 13px;
  }
 
  .dataTables_length label {
