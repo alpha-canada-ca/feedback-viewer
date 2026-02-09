@@ -1051,10 +1051,20 @@ details:not([open]) > details {
 #topTaskTable {
   margin-top: 0;
   margin-bottom: 0;
+  table-layout: fixed;
+  width: 100% !important;
+}
+
+#topTaskTable thead th {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 #topTaskTable tbody td {
   font-size: 10pt !important;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 /* Adjust the space for total entries/info after the table bottom border */

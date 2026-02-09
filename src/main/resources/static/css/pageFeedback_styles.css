@@ -554,8 +554,21 @@ table.dataTable.rowborder tbody th {
   border-top: 3px solid #d8d8d8 !important;
 }
 
+#myTable {
+  table-layout: fixed;
+  width: 100% !important;
+}
+
+#myTable thead th {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 #myTable tbody td {
   font-size: 14px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 /* DataTables specific styles */

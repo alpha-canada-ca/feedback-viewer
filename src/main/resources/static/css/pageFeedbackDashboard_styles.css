@@ -437,8 +437,21 @@ table.dataTable > thead > tr > td {
   border-top: none !important;
 }
 
+#myTable {
+  table-layout: fixed;
+  width: 100% !important;
+}
+
+#myTable thead th {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 #myTable tbody td {
   font-size: 14px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 table.dataTable.compact tbody td {

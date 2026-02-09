@@ -404,6 +404,13 @@ $(document).ready(function () {
     }, 800)
   );
 
+  // Force recalculate column widths after window fully loads to prevent footer squishing
+  $(window).on('load', function() {
+    setTimeout(function() {
+      table.columns.adjust().draw();
+    }, 100);
+  });
+
   // Add this new function to get filter parameters
   function getFilterParams() {
     var params = {

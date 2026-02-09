@@ -532,15 +532,15 @@ $(document).ready(function () {
          { data: 'theme', title: isFrench ? 'Thème' : 'Theme', visible: false },
          { data: 'themeOther', title: isFrench ? 'Autre thème' : 'Theme Other', visible: false },
          { data: 'grouping', title: isFrench ? 'Regroupement' : 'Grouping', visible: false },
-         { data: 'task', title: isFrench ? 'Tâche' : 'Task', visible: true, width: "20" },
+         { data: 'task', title: isFrench ? 'Tâche' : 'Task', visible: true, width: "25%" },
          { data: 'taskOther', title: isFrench ? 'Autre tâche' : 'Task Other', visible: false },
          { data: 'taskSatisfaction', title: isFrench ? 'Satisfaction de la tâche' : 'Task Satisfaction', visible: false },
          { data: 'taskEase', title: isFrench ? 'Facilité de la tâche' : 'Task Ease', visible: false },
          { data: 'taskCompletion', title: isFrench ? 'Accomplissement de la tâche' : 'Task Completion', visible: false },
          { data: 'taskImprove', title: isFrench ? 'Améliorer la tâche' : 'Task Improve', visible: false },
-         { data: 'taskImproveComment', title: isFrench ? 'Améliorer la tâche - commentaire' : 'Task Improve Comment', visible: true, width: "35%" },
+         { data: 'taskImproveComment', title: isFrench ? 'Améliorer la tâche - commentaire' : 'Task Improve Comment', visible: true, width: "32%" },
          { data: 'taskWhyNot', title: isFrench ? 'Pourquoi pas' : 'Task Why Not', visible: false },
-         { data: 'taskWhyNotComment', title: isFrench ? 'Tâche non complétée - commentaire' : 'Task Why Not Comment', visible: true, width: "35%"},
+         { data: 'taskWhyNotComment', title: isFrench ? 'Tâche non complétée - commentaire' : 'Task Why Not Comment', visible: true, width: "33%"},
          { data: 'taskSampling', title: isFrench ? 'Échantillonnage de tâche' : 'Task Sampling', visible: false },
          { data: 'samplingInvitation', title: isFrench ? 'Invitation à l\'échantillonnage' : 'Sampling Invitation', visible: false },
          { data: 'samplingGC', title: isFrench ? 'Échantillonnage GC' : 'Sampling GC', visible: false },
@@ -735,6 +735,13 @@ $(document).ready(function () {
 
      $("#department, #theme, #commentsCheckbox, #group, #language").on("change", function () {
        table.ajax.reload();
+     });
+
+     // Force recalculate column widths after window fully loads to prevent footer squishing
+     $(window).on('load', function() {
+       setTimeout(function() {
+         table.columns.adjust().draw();
+       }, 100);
      });
 
      function getFilterParams() {
