@@ -581,7 +581,6 @@ public class TopTaskController {
           List<Criteria> commentCriteria = new ArrayList<>();
           commentCriteria.add(Criteria.where("taskImproveComment").regex(escapedComment, "i"));
           commentCriteria.add(Criteria.where("taskWhyNotComment").regex(escapedComment, "i"));
-          commentCriteria.add(Criteria.where("themeOther").regex(escapedComment, "i"));
           commentCriteria.add(Criteria.where("taskOther").regex(escapedComment, "i"));
 
           criteria.andOperator(new Criteria().andOperator(criteria, new Criteria().orOperator(commentCriteria.toArray(new Criteria[0]))));
