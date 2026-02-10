@@ -1,50 +1,300 @@
+/* ============================================
+   GC FEEDBACK DASHBOARD STYLES
+   ============================================
+   Table of Contents:
+   1. Base & Typography
+   2. Page Header
+   3. Filter Panel
+   4. Filter Panel - Footer & Actions
+   5. Stats Box & Charts
+   6. Data Table Container
+   7. DataTables - Base Styles
+   8. DataTables - Pagination
+   9. DataTables - Controls & Info
+   10. Download Section
+   11. Details/Summary Elements
+   12. Slim Select Overrides
+   13. Utility Classes
+   14. Responsive Styles
+   ============================================ */
+
+/* ============================================
+   1. BASE & TYPOGRAPHY
+   ============================================ */
+
 body {
   font-family: "Noto sans", sans-serif;
 }
 
-.daterangepicker .ranges li.active {
-  background-color: #26374a;
+main {
+  line-height: 1em !important;
 }
-.daterangepicker td.active,
-.daterangepicker td.active:hover {
-  background-color: #26374a;
-}
+
+/* ============================================
+   2. PAGE HEADER
+   ============================================ */
 
 h1#wb-cont {
   border-bottom: 5px solid #af3c43;
   -o-border-image: linear-gradient(to right, #af3c43 71px, transparent 71px);
   border-image: linear-gradient(to right, #af3c43 71px, transparent 71px);
   border-image-slice: 1;
-  /* margin-top:12px; */
+  margin-bottom: 20px;
 }
-.feedback-tool .btn-unstyled {
+
+.pagedetails {
+  max-width: 1140px;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+/* ============================================
+   3. FILTER PANEL
+   ============================================ */
+
+.pf-filter-panel {
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.pf-filter-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px;
+}
+
+.pf-filter-row {
+  display: flex;
+  gap: 16px;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+
+/* Filter Fields */
+.pf-filter-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 100px;
+  flex: 1;
+}
+
+.pf-filter-field label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.pf-filter-field select,
+.pf-filter-field input[type="text"] {
+  padding: 8px 12px;
+  border: 1px solid #d0d0d0;
+  border-radius: 4px;
+  font-size: 14px;
+  background-color: #fff;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  height: 38px;
+  box-sizing: border-box;
+  width: 100% !important;
+}
+
+.pf-filter-field select:focus,
+.pf-filter-field input:focus {
+  border-color: #26374a;
+  box-shadow: 0 0 0 3px rgba(38, 55, 74, 0.1);
+  outline: none;
+}
+
+/* Field Width Variants */
+.pf-filter-url {
+  flex: 1;
+  min-width: 200px;
+}
+
+.pf-filter-comments {
+  flex: 2;
+  min-width: 300px;
+}
+
+/* Input with inline checkbox (for Comments + Show errors toggle) */
+.pf-input-with-checkbox {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+}
+
+.pf-input-with-checkbox input[type="text"] {
+  flex: 1;
+  min-width: 180px;
+}
+
+.pf-inline-checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #555;
+  cursor: pointer;
+  padding: 2px 0;
+}
+
+.pf-inline-checkbox input[type="checkbox"] {
+  width: 14px !important;
+  height: 14px;
+  cursor: pointer;
+  margin: 0;
+}
+
+.pf-inline-checkbox span {
+  white-space: nowrap;
+}
+
+.pf-inline-checkbox:hover {
+  color: #26374a;
+}
+
+/* Checkbox field (legacy - kept for backwards compatibility) */
+.pf-filter-checkbox {
+  flex: 0 0 auto;
+  min-width: auto;
+  justify-content: flex-end;
+}
+
+.pf-filter-checkbox label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  text-transform: none;
+  cursor: pointer;
+  padding: 8px 0;
+  white-space: nowrap;
+}
+
+.pf-filter-checkbox input[type="checkbox"] {
+  width: 16px !important;
+  height: 16px;
+  cursor: pointer;
+}
+
+/* Date Range Picker */
+#dateRangePicker {
   background-color: white;
-  margin-top: 7px;
-  border: none;
-  margin-left: 2em;
-  font-size: 90%;
+  cursor: pointer;
 }
-.feedback-tool .btn-unstyled:hover {
-  color: #3a00d1;
+
+.daterangepicker .ranges li.active {
+  background-color: #26374a;
 }
-.feedback-tool {
-  padding: 1em 0em 2em;
-  /* border: 5px solid #000000; */
-  margin-top: 2ch;
-  display: grid;
-  grid-template-columns: 0.5fr 0.5fr 3fr;
-  grid-auto-rows: auto;
-  position: relative;
-  /* Add position relative to the feedback tool */
+
+.daterangepicker td.active,
+.daterangepicker td.active:hover {
+  background-color: #26374a;
 }
-.feedback-tool .form-group {
-  margin-bottom: 10px;
+
+/* ============================================
+   4. FILTER PANEL - FOOTER & ACTIONS
+   ============================================ */
+
+.pf-filter-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 20px;
+  background: #f8f9fa;
+  border-top: 1px solid #e0e0e0;
+  border-radius: 0 0 8px 8px;
 }
-/* Ensure that the new styles are scoped to .stats-box to avoid conflicts */
+
+/* Stats in Footer */
+.pf-stats {
+  display: flex;
+  gap: 24px;
+}
+
+.pf-stats .stat {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  color: #555;
+}
+
+.pf-stats .stat span:first-child {
+  font-size: 18px;
+  font-weight: 700;
+  color: #26374a;
+}
+
+/* Action Buttons */
+.pf-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.pf-actions .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 0 14px !important;
+  font-size: 13px;
+  border-radius: 4px;
+  transition: all 0.2s;
+  height: 34px !important;
+  line-height: 32px !important;
+  box-sizing: border-box;
+  vertical-align: middle;
+  margin: 0 !important;
+}
+
+.pf-actions .btn-default {
+  background: #fff;
+  color: #333;
+  border: 1px solid #ccc;
+}
+
+.pf-actions .btn-default:hover {
+  background: #f0f0f0;
+  border-color: #999;
+}
+
+.pf-actions .btn-primary {
+  background: #26374a;
+  color: #fff;
+  border: 1px solid #26374a;
+}
+
+.pf-actions .btn-primary:hover {
+  background: #1a2633;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.reset-filters {
+  cursor: pointer;
+  text-decoration: underline;
+  white-space: nowrap;
+}
+
+/* ============================================
+   5. STATS BOX & CHARTS
+   ============================================ */
+
 .stats-box {
   display: flex;
-  flex-wrap: wrap; /* Allows items to wrap onto the next line if needed */
-  justify-content: center; /* Centers items horizontally in the container */
+  flex-wrap: wrap;
+  justify-content: center;
   align-items: center;
   padding: 20px;
   border: 1px solid #000;
@@ -54,32 +304,10 @@ h1#wb-cont {
 
 .stats-box .stat {
   text-align: center;
-  /* Adjust 'flex' to not grow or shrink and set a basis if needed, or remove it entirely */
-  margin: 0 5rem; /* Adds margin to the left and right of each .stat element */
-  /* You may remove 'flex: 1' if you want to control the width explicitly */
+  margin: 0 5rem;
 }
 
-.highcharts-credits {
-    display: none;
-}
-
-.stats-box .totalCommentCount {
-  display: block;
-  font-size: 2em;
-  font-weight: bold;
-  margin-bottom: 0.5em;
-}
-#chart {
-  display: flex;
-  flex-wrap: wrap; /* Allows items to wrap onto the next line if needed */
-  justify-content: center; /* Centers items horizontally in the container */
-  align-items: center;
-  padding: 20px;
-  border: 1px solid #000;
-  margin: 1em auto;
-  max-width: 85%;
-}
-
+.stats-box .totalCommentCount,
 .stats-box .totalPagesCount {
   display: block;
   font-size: 2em;
@@ -91,42 +319,148 @@ h1#wb-cont {
   font-size: 18px;
   font-weight: bold;
   color: #333;
-  display: block; /* Ensures that the description is on its own line */
-  margin: auto; /* This will center the description in the flex container */
-  max-width: 25rem; /* Or whatever value you wish */
+  display: block;
+  margin: auto;
+  max-width: 25rem;
 }
 
-
-#drp,
-.ss-main {
-  margin-bottom: 10px !important;
-  height: 38px;
-}
-.feedback-tool .ss-main {
-  width: 70%;
-}
-
-.feedback-tool .ss-main .ss-values .ss-placeholder {
-  font-weight: normal;
-  color: #797979;
+#chart {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  border: 1px solid #000;
+  margin: 1em auto;
+  max-width: 85%;
 }
 
-.feedback-tool .ss-main .ss-arrow {
-  height: 9px;
-  width: 9px;
-  margin-right: -0.01em;
+.highcharts-credits {
+  display: none;
 }
-table.dataTable.compact tbody td {
-  padding: 4px;
+
+/* ============================================
+   6. DATA TABLE CONTAINER
+   ============================================ */
+
+.feedback-tool-data {
+  background: #fff;
+  padding: 1.5em 1.5em 0;
+  border: 1px solid #ddd;
+  border-bottom: none;
+  border-radius: 6px 6px 0 0;
+  margin: 2ch auto 0;
+  overflow: visible;
+  width: 85%;
 }
-table.dataTable.row-border > tbody > tr > *,
-table.dataTable.display > tbody > tr > * {
-  border-top: 1px solid rgba(0, 0, 0, 0.15);
+
+.table-scroll-container {
+  position: relative;
+  overflow-x: auto;
+  overflow-y: auto;
+  max-height: 500px;
+  border-bottom: 2px solid #e0e0e0;
+  margin-bottom: 0;
 }
+
+.table-controls-outside {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 1.5em;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-top: none;
+  border-radius: 0 0 6px 6px;
+  margin: 0 auto 4ch;
+  position: relative;
+  width: 85%;
+}
+
+/* ============================================
+   7. DATATABLES - BASE STYLES
+   ============================================ */
+
+.feedback-tool-data table.dataTable {
+  width: 100% !important;
+  table-layout: auto;
+  margin-bottom: 0 !important;
+  min-width: 800px;
+}
+
+/* Table Header */
+.feedback-tool-data table.dataTable thead {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: #f8f9fa;
+}
+
+.feedback-tool-data table.dataTable thead th {
+  background: #f8f9fa !important;
+  padding: 10px 8px;
+  border-bottom: 2px solid #333 !important;
+  border-top: none !important;
+  font-weight: 600;
+  text-align: left;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
 table.dataTable > thead > tr > th,
 table.dataTable > thead > tr > td {
   padding: 10px;
   border-bottom: 6px solid rgba(0, 0, 0, 1);
+}
+
+/* Table Body */
+.feedback-tool-data table.dataTable tbody tr {
+  transition: background-color 0.2s ease;
+  border: none !important;
+}
+
+.feedback-tool-data table.dataTable tbody tr:hover {
+  background-color: #f8fafb;
+}
+
+.feedback-tool-data table.dataTable tbody td {
+  padding: 10px 8px;
+  vertical-align: middle;
+  font-size: 13px;
+  border-top: 1px solid #e0e0e0 !important;
+  border-bottom: none !important;
+  border-left: none !important;
+  border-right: none !important;
+}
+
+.feedback-tool-data table.dataTable tbody tr:first-child td {
+  border-top: none !important;
+}
+
+#myTable {
+  table-layout: fixed;
+  width: 100% !important;
+}
+
+#myTable thead th {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#myTable tbody td {
+  font-size: 14px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+table.dataTable.compact tbody td {
+  padding: 4px;
+}
+
+table.dataTable.row-border > tbody > tr > *,
+table.dataTable.display > tbody > tr > * {
+  border-top: 1px solid rgba(0, 0, 0, 0.15);
 }
 
 table.dataTable.display tbody td,
@@ -136,54 +470,264 @@ table.dataTable.rowborder tbody th {
   border-top: 3px solid #d8d8d8 !important;
 }
 
-.feedback-tool-data {
-  width: 85%; /* Or your desired width */
-  padding: 1em;
-  border: 1px solid #333;
+/* Sorting Indicators */
+table.dataTable thead .sorting,
+table.dataTable thead .sorting_asc,
+table.dataTable thead .sorting_desc {
+  cursor: pointer;
+  position: relative;
+}
+
+table.dataTable thead .sorting:after,
+table.dataTable thead .sorting_asc:after,
+table.dataTable thead .sorting_desc:after {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: 0.3;
+}
+
+table.dataTable thead .sorting_asc:after,
+table.dataTable thead .sorting_desc:after {
+  opacity: 1;
+}
+
+/* Processing Indicator */
+.dataTables_processing {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(255, 255, 255, 0.95);
+  border: 2px solid #26374a;
   border-radius: 6px;
-  margin-top: 2ch;
-  margin-left: auto; /* Center the div horizontally */
-  margin-right: auto; /* Center the div horizontally */
-  margin-bottom: 4ch;
+  padding: 20px 40px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #26374a;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 100;
 }
 
-.feedback-tool label {
-  font-weight: bold;
-}
+/* ============================================
+   8. DATATABLES - PAGINATION
+   ============================================ */
 
-.feedback-tool label + label {
-  margin-top: 1ch;
-}
-
-.feedback-tool > h2 {
-  grid-column: 1 / 1;
-  margin-top: 0.4em;
-  /* font-weight: normal; */
-}
-
-.feedback-tool > :not(.download-section):not(h2) {
-  grid-column: 2 / span 2;
-  display: grid;
-  grid-template-columns: subgrid;
+/* DataTables 2.x Pagination */
+.dt-paging {
+  display: inline-flex;
+  gap: 2px;
   align-items: center;
 }
 
-.feedback-tool > details > label {
-  display: grid;
-  grid-template-columns: subgrid;
-  grid-column: span 2;
-}
-#myTable tbody td {
-  font-size: 14px; /* Set the font size for data rows */
-}
-.feedback-tool input,
-.feedback-tool select {
-  width: 70% !important;
-  padding: 6px;
-  border: 1px solid #ccc;
+.dt-paging-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 12px !important;
+  border: none !important;
+  background: transparent !important;
+  color: #555 !important;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 13px;
+  min-width: 32px;
+  height: 32px;
+  text-decoration: none !important;
   border-radius: 4px;
+  font-weight: 400;
+  box-shadow: none !important;
+  outline: none !important;
 }
 
+.dt-paging-button:hover:not(.disabled):not(.current) {
+  background: #f0f0f0 !important;
+  color: #26374a !important;
+  border: none !important;
+}
+
+.dt-paging-button:active:not(.disabled):not(.current) {
+  background: #e0e0e0 !important;
+}
+
+.dt-paging-button.current,
+.dt-paging-button.current:hover {
+  background: #26374a !important;
+  color: white !important;
+  font-weight: 500;
+  border: none !important;
+}
+
+.dt-paging-button.disabled,
+.dt-paging-button.disabled:hover {
+  color: #bbb !important;
+  cursor: not-allowed;
+  background: transparent !important;
+  border: none !important;
+  opacity: 0.5;
+}
+
+.dt-paging .ellipsis {
+  padding: 6px 8px !important;
+  color: #999;
+  font-size: 13px;
+  min-width: auto;
+  border: none !important;
+  background: transparent !important;
+}
+
+.dt-paging-button.first,
+.dt-paging-button.previous,
+.dt-paging-button.next,
+.dt-paging-button.last {
+  font-size: 13px;
+  color: #26374a !important;
+  font-weight: 500;
+  padding: 6px 10px !important;
+  background: transparent !important;
+  border: none !important;
+}
+
+.dt-paging-button.first:hover:not(.disabled),
+.dt-paging-button.previous:hover:not(.disabled),
+.dt-paging-button.next:hover:not(.disabled),
+.dt-paging-button.last:hover:not(.disabled) {
+  background: #f0f0f0 !important;
+  color: #1a2633 !important;
+  text-decoration: none !important;
+  border: none !important;
+}
+
+.dt-paging-button,
+.dt-paging-button:focus,
+.dt-paging-button:active {
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+/* DataTables 1.x Legacy Pagination */
+.dataTables_paginate {
+  display: inline-flex;
+  gap: 2px;
+  align-items: center;
+  flex: 1;
+  text-align: center;
+}
+
+.dataTables_paginate .paginate_button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 12px !important;
+  border: none !important;
+  background: transparent !important;
+  color: #555 !important;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 13px;
+  min-width: 32px;
+  height: 32px;
+  text-decoration: none !important;
+  border-radius: 4px;
+  font-weight: 400;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+.dataTables_paginate .paginate_button:hover:not(.disabled):not(.current) {
+  background: #f0f0f0 !important;
+  color: #26374a !important;
+  border: none !important;
+}
+
+.dataTables_paginate .paginate_button.current,
+.dataTables_paginate .paginate_button.current:hover {
+  background: #26374a !important;
+  color: white !important;
+  font-weight: 500;
+  border: none !important;
+}
+
+.dataTables_paginate .paginate_button.disabled,
+.dataTables_paginate .paginate_button.disabled:hover {
+  color: #bbb !important;
+  cursor: not-allowed;
+  background: transparent !important;
+  border: none !important;
+}
+
+/* ============================================
+   9. DATATABLES - CONTROLS & INFO
+   ============================================ */
+
+.dataTables_info {
+  font-size: 13px;
+  color: #555;
+  font-weight: 400;
+}
+
+#myTable_info {
+  margin-top: 18px;
+  margin-bottom: 10px;
+}
+
+.dataTables_length {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dataTables_length label {
+  font-size: 13px;
+  color: #555;
+  font-weight: 400;
+  margin: 0;
+}
+
+label[for="dt-length-0"] {
+  margin-left: 10px;
+}
+
+.dataTables_length select {
+  padding: 5px 8px 5px 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 13px;
+  background: #fff;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23333' d='M10.293 3.293L6 7.586 1.707 3.293A1 1 0 00.293 4.707l5 5a1 1 0 001.414 0l5-5a1 1 0 10-1.414-1.414z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 6px center;
+  background-size: 10px;
+  padding-right: 28px;
+}
+
+.dataTables_length select:hover {
+  border-color: #999;
+  background-color: #fafafa;
+}
+
+.dataTables_length select:focus {
+  border-color: #26374a;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(38, 55, 74, 0.08);
+}
+
+.dataTables_filter {
+  display: none;
+}
+
+.dt-buttons {
+  display: none;
+}
+
+/* ============================================
+   10. DOWNLOAD SECTION
+   ============================================ */
 
 .download-section {
   text-align: right;
@@ -207,15 +751,64 @@ table.dataTable.rowborder tbody th {
   border-radius: 4px;
 }
 
+/* ============================================
+   11. DETAILS/SUMMARY ELEMENTS
+   ============================================ */
+
+details {
+  margin-bottom: 0.25em;
+}
+
+details[open] {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+details:not([open]) {
+  visibility: hidden;
+}
+
+details:not([open]) > *,
+details:not([open]) > details {
+  display: none;
+}
+
+summary {
+  cursor: pointer;
+  display: list-item !important;
+  list-style-type: disclosure-closed;
+  visibility: visible !important;
+}
+
+details summary {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  color: #000000;
+  padding: 5px 15px;
+}
+
+details summary:focus,
+details summary:hover {
+  background-color: transparent;
+  color: #000000;
+  text-decoration: underline;
+}
+
+details summary:focus {
+  outline-style: dotted;
+  outline-width: 1px;
+}
+
+details .out details summary,
+details:not([open]) details summary {
+  display: none !important;
+}
+
 #filterDetails {
   margin: 1em 0;
   width: 100%;
   grid-column: 2 / span 2 !important;
   display: block !important;
-}
-
-.feedback-tool > details {
-  margin-top: 1em;
 }
 
 #filterDetails > p {
@@ -225,22 +818,6 @@ table.dataTable.rowborder tbody th {
   padding: 1em;
   gap: 1em;
   margin: 0;
-}
-
-/* Error comments checkbox styling */
-#filterDetails label:has(#errorComments) {
-  display: flex;
-  align-items: center;
-  padding: 0.75em 1em;
-  margin: 0.5em 1em;
-  transition: all 0.2s ease-in-out;
-}
-
-#errorComments {
-  width: auto !important;
-  margin-right: 0.75em;
-  transform: scale(1.2);
-  cursor: pointer;
 }
 
 #filterDetails > p > label {
@@ -257,14 +834,152 @@ table.dataTable.rowborder tbody th {
   width: 70%;
 }
 
-.feedback-tool input,
-.feedback-tool select {
-  width: max-content;
+#filterDetails label:has(#errorComments) {
+  display: flex;
+  align-items: center;
+  padding: 0.75em 1em;
+  margin: 0.5em 1em;
+  transition: all 0.2s ease-in-out;
+}
+
+#errorComments {
+  width: auto !important;
+  margin-right: 0.75em;
+  transform: scale(1.2);
+  cursor: pointer;
 }
 
 #dateRange option {
   padding: 5px;
-  /* Adjust the padding as needed */
+}
+
+#dateRange .separator::after {
+  content: " ";
+  display: block;
+  height: 10px;
+}
+
+/* ============================================
+   12. SLIM SELECT OVERRIDES
+   ============================================ */
+
+#drp,
+.ss-main {
+  margin-bottom: 10px !important;
+  height: 38px;
+}
+
+.feedback-tool .ss-main {
+  width: 70%;
+}
+
+.feedback-tool .ss-main .ss-values .ss-placeholder {
+  font-weight: normal;
+  color: #797979;
+}
+
+.feedback-tool .ss-main .ss-arrow {
+  height: 9px;
+  width: 9px;
+  margin-right: -0.01em;
+}
+
+/* ============================================
+   13. UTILITY CLASSES
+   ============================================ */
+
+.spacer {
+  margin: 0 2em;
+}
+
+.custom-row {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+/* ============================================
+   14. RESPONSIVE STYLES
+   ============================================ */
+
+@media (max-width: 1200px) {
+  .pf-filter-row {
+    flex-wrap: wrap;
+  }
+
+  .pf-filter-field {
+    min-width: 140px;
+  }
+}
+
+@media (max-width: 768px) {
+  .pf-filter-field {
+    min-width: 100%;
+  }
+
+  .pf-filter-footer {
+    flex-direction: column;
+    gap: 12px;
+  }
+}
+
+/* ============================================
+   LEGACY STYLES
+   Kept for backwards compatibility
+   ============================================ */
+
+.feedback-tool {
+  padding: 1em 0em 2em;
+  margin-top: 2ch;
+  display: grid;
+  grid-template-columns: 0.5fr 0.5fr 3fr;
+  grid-auto-rows: auto;
+  position: relative;
+}
+
+.feedback-tool .form-group {
+  margin-bottom: 10px;
+}
+
+.feedback-tool .btn-unstyled {
+  background-color: white;
+  margin-top: 7px;
+  border: none;
+  margin-left: 2em;
+  font-size: 90%;
+}
+
+.feedback-tool .btn-unstyled:hover {
+  color: #3a00d1;
+}
+
+.feedback-tool label {
+  font-weight: bold;
+}
+
+.feedback-tool label + label {
+  margin-top: 1ch;
+}
+
+.feedback-tool > h2 {
+  grid-column: 1 / 1;
+  margin-top: 0.4em;
+}
+
+.feedback-tool > :not(.download-section):not(h2) {
+  grid-column: 2 / span 2;
+  display: grid;
+  grid-template-columns: subgrid;
+  align-items: center;
+}
+
+.feedback-tool > details > label {
+  display: grid;
+  grid-template-columns: subgrid;
+  grid-column: span 2;
+}
+
+.feedback-tool > details {
+  margin-top: 1em;
 }
 
 .feedback-tool > details > p {
@@ -284,128 +999,34 @@ table.dataTable.rowborder tbody th {
   margin-left: 1em;
 }
 
-.spacer {
-  margin: 0 2em;
-}
-
-summary {
-  cursor: pointer;
-}
-
-summary {
-  display: list-item !important;
-  list-style-type: none;
-  list-style-type: disclosure-closed;
-  visibility: visible !important;
-}
-
-details .out details summary,
-details:not([open]) details summary {
-  display: none !important;
-}
-
-details {
-  margin-bottom: 0.25em;
-}
-
-details summary {
-  border: 1px solid #ddd;
+.feedback-tool input,
+.feedback-tool select {
+  width: max-content;
+  padding: 6px;
+  border: 1px solid #ccc;
   border-radius: 4px;
-  color: #000000;
-  padding: 5px 15px;
 }
 
-#dateRange .separator::after {
-  content: " ";
-  display: block;
-  height: 10px;
-}
-
-details summary:focus,
-details summary:hover {
-  background-color: transparent;
-  color: #000000;
-  text-decoration: underline;
-}
-
-details summary:focus {
-  outline-style: dotted;
-  outline-width: 1px;
-}
-main {
-  /*    font-size: 16px !important;*/
-  line-height: 1em !important;
-}
-.dataTables_paginate {
-  font-size: 16px; /* Adjust the font size as needed */
-}
-.dataTables_info {
-  font-size: 16px; /* Adjust the font size as needed */
-}
-.dataTables_length label {
-  font-weight: 400; /* Make the text bold */
-  font-size: 16px; /* Adjust the font size */
-  margin-top: 2pt;
-}
 .feedback-tool a:visited {
   color: #284162;
 }
+
 .feedback-tool .glyphicon {
   opacity: 0.5;
   padding-left: 6px;
   margin-bottom: 3px;
 }
-.custom-row {
-  margin-left: 0;
-  margin-right: 0;
-}
-.pagedetails {
-  max-width: 1140px; /* Adjust based on your main container's width */
-  margin-right: auto;
-  margin-left: auto;
-}
 
-details[open] {
-  border: 1px solid #ddd;
-  border-radius: 4px;
-}
-
-details:not([open]) {
-  visibility: hidden;
-}
-
-details:not([open]) > *,
-details:not([open]) > details {
-  display: none;
-}
-.dt-buttons {
-  display: none;
-}
 .feedback-tool-header {
   display: flex;
   justify-content: flex-end;
-  /* Align items to the right */
   position: absolute;
-  /* Absolute position */
   right: 1em;
-  /* Same as padding to align with the form fields */
   top: 1em;
-  /* Same as padding from the top */
 }
 
-/* Adjust the space for total entries info after the table bottom border */
-#myTable_info {
-  margin-top: 18px;
-  margin-bottom: 10px;
-}
-
-/* space between the dropdown choice and label in the table entries*/
-label[for="dt-length-0"] {
-  margin-left: 10px;
-}
-
-.reset-filters {
-  cursor: pointer;
-  text-decoration: underline;
-  white-space: nowrap;
+.dataTables_paginate,
+.dataTables_info,
+.dataTables_length label {
+  font-size: 13px;
 }

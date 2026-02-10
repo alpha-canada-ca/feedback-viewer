@@ -1,23 +1,25 @@
 package ca.gc.tbs.controller;
 
-import ca.gc.tbs.domain.TopTaskSurvey;
-import ca.gc.tbs.domain.User;
-import ca.gc.tbs.repository.TopTaskRepository;
-import ca.gc.tbs.security.JWTUtil;
-import ca.gc.tbs.service.ProblemDateService;
-import ca.gc.tbs.service.UserService;
 import java.io.IOException;
 import java.io.Writer;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
@@ -34,9 +36,20 @@ import org.springframework.data.mongodb.datatables.DataTablesOutput;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
+
+import ca.gc.tbs.domain.TopTaskSurvey;
+import ca.gc.tbs.domain.User;
+import ca.gc.tbs.repository.TopTaskRepository;
+import ca.gc.tbs.security.JWTUtil;
+import ca.gc.tbs.service.ProblemDateService;
+import ca.gc.tbs.service.UserService;
 
 @Controller
 public class TopTaskController {
@@ -581,7 +594,6 @@ public class TopTaskController {
           List<Criteria> commentCriteria = new ArrayList<>();
           commentCriteria.add(Criteria.where("taskImproveComment").regex(escapedComment, "i"));
           commentCriteria.add(Criteria.where("taskWhyNotComment").regex(escapedComment, "i"));
-          commentCriteria.add(Criteria.where("themeOther").regex(escapedComment, "i"));
           commentCriteria.add(Criteria.where("taskOther").regex(escapedComment, "i"));
 
           criteria.andOperator(new Criteria().andOperator(criteria, new Criteria().orOperator(commentCriteria.toArray(new Criteria[0]))));

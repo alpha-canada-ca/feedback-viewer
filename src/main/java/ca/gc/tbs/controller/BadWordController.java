@@ -207,7 +207,7 @@ public class BadWordController {
    * @param active Whether the word is active
    * @return Success or error message
    */
-  @GetMapping(value = "/keywords/create")
+  @PostMapping(value = "/keywords/create")
   public @ResponseBody String create(
       @RequestParam String word,
       @RequestParam String language,
@@ -265,7 +265,7 @@ public class BadWordController {
    * @param active The new active status (optional)
    * @return Success or error message
    */
-  @GetMapping(value = "/keywords/update")
+  @PostMapping(value = "/keywords/update")
   public @ResponseBody String update(
       @RequestParam String id,
       @RequestParam(required = false) String word,
@@ -355,7 +355,7 @@ public class BadWordController {
    * @param id The entry ID
    * @return Success or error message
    */
-  @GetMapping(value = "/keywords/delete")
+  @PostMapping(value = "/keywords/delete")
   public @ResponseBody String delete(@RequestParam String id) {
     try {
       if (!repository.existsById(id)) {

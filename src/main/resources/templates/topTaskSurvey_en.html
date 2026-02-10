@@ -23,170 +23,172 @@
       <div class="col-lg-12">
         <div class="row">
           <h1 id="wb-cont">GC Task Success Survey</h1>
-          <form class="tss">
-            <h2 class="h4">Filter by:</h2>
-            <label for="tasks">
-              Task(s)
-                <div id="tasks-placeholder">
-                    <select id="tasks" style="display: none;"></select>
+
+          <!-- Filter Panel -->
+          <div class="tss-filter-panel">
+            <div class="tss-filter-grid">
+              <!-- Row 1: Department, Theme, Language -->
+              <div class="tss-filter-row">
+                <div class="tss-filter-field">
+                  <label for="department">Department</label>
+                  <select class="form-control" id="department" name="department">
+                    <option value>All</option>
+                  </select>
                 </div>
-            </label>
-            <div class="form-group">
-              <label for="department">Department</label>
-              <select class="form-control" id="department" name="department">
-                <option value>All</option>
-                <!-- DEPARTMENTS -->
-              </select>
-            </div>
-
-            <div class="form-group">
-              <label for="theme">
-                Theme
-                <span id="theme-tool-tip" class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
-              </label>
-              <select class="form-control" id="theme" name="theme">
-                <option value>All</option>
-                <option value="Taxes / Impôts">Taxes / Impôts</option>
-                <option value="Immigration / Immigration">Immigration / Immigration</option>
-                <option value="Benefits / Prestations">Benefits / Prestations</option>
-                <option value="World / Monde">World / Monde</option>
-                <option value="Travel / Voyage">Travel / Voyage</option>
-                <option value="Transport / Transport">Transport / Transport</option>
-                <option value="Culture / Culture">Culture / Culture</option>
-                <option value="Environment / Environnement">Environment / Environnement</option>
-                <option value="Jobs / Emplois">Jobs / Emplois</option>
-                <option value="Business / Entreprises">Business / Entreprises</option>
-                <option value="Health / Santé">Health / Santé</option>
-                <option value="AboutGov / À propos du Gouvernement (AboutGov)">AboutGov / À propos du Gouvernement
-                  (AboutGov)</option>
-                <option value="Money / Argent">Money / Argent</option>
-                <option value="History / Histoire">History / Histoire</option>
-                <option value="Indigenous / Autochtones">Indigenous / Autochtones</option>
-                <option value="Security / Sécurité">Security / Sécurité</option>
-                <option value="PublicService / Fonction publique">PublicService / Fonction publique</option>
-                <option value="Science / Science">Science / Science</option>
-                <option value="Policing / Police">Policing / Police</option>
-                <option value="Business / Entreprise">Business / Entreprise</option>
-                <option value="Money / Environnement">Money / Environnement</option>
-                <option value="Jobs / Environnement">Jobs / Environnement</option>
-
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="language">Language</label>
-              <select class="form-control" id="language" name="language">
-                <option value>All</option>
-                <option value="en">English</option>
-                <option value="fr">French</option>
-              </select>
-            </div>
-            <label id="drp" for="dateRangePicker">
-              Date Range
-              <input type="text" id="dateRangePicker" name="dateRangePicker" readonly="readonly"
-                style="background-color: white; cursor: pointer" />
-            </label>
-            <div class="form-group">
-
-              <label for="group">
-                Group
-                <span id="group-tool-tip" class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
-              </label>
-              <select class="form-control" id="group" name="group">
-                <option value>All</option>
-                <option value="LLO / PEC">LLO</option>
-                <option value="MSCBA-ROE / MDESC-RE">MSCBA-ROE</option>
-                <option value="MSCBA-GCOS / MDESC-SELSC">MSCBA-GCOS</option>
-                <option value="SEF / SEF">SEF</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="taskCompletion">
-                Able to<br>
-                complete<br>
-                task:
-              </label>
-              <select class="form-control" id="taskCompletion" name="taskCompletion">
-                <option value="">All</option>
-                <option value="Yes">Yes</option>
-                <option value="No">No</option>
-                <option value="I started this survey before I finished my visit">I started this survey before I finished
-                  my visit</option>
-              </select>
-            </div>
-              <div class="form-group">
-                  <label for="comments">Comments</label>
-                  <input type="text" id="comments" name="comments" placeholder="Filter by keyword">
+                <div class="tss-filter-field">
+                  <label for="theme">Theme</label>
+                  <select class="form-control" id="theme" name="theme">
+                    <option value>All</option>
+                    <option value="Taxes / Impôts">Taxes</option>
+                    <option value="Immigration / Immigration">Immigration</option>
+                    <option value="Benefits / Prestations">Benefits</option>
+                    <option value="World / Monde">World</option>
+                    <option value="Travel / Voyage">Travel</option>
+                    <option value="Transport / Transport">Transport</option>
+                    <option value="Culture / Culture">Culture</option>
+                    <option value="Environment / Environnement">Environment</option>
+                    <option value="Jobs / Emplois">Jobs</option>
+                    <option value="Business / Entreprises">Business</option>
+                    <option value="Health / Santé">Health</option>
+                    <option value="AboutGov / À propos du Gouvernement (AboutGov)">AboutGov</option>
+                    <option value="Money / Argent">Money</option>
+                    <option value="History / Histoire">History</option>
+                    <option value="Indigenous / Autochtones">Indigenous</option>
+                    <option value="Security / Sécurité">Security</option>
+                    <option value="PublicService / Fonction publique">Public Service</option>
+                    <option value="Science / Science">Science</option>
+                    <option value="Policing / Police">Policing</option>
+                  </select>
+                </div>
+                <div class="tss-filter-field">
+                  <label for="language">Language</label>
+                  <select class="form-control" id="language" name="language">
+                    <option value>All</option>
+                    <option value="en">EN</option>
+                    <option value="fr">FR</option>
+                  </select>
+                </div>
               </div>
-            <div class="commentsCheckbox">
-              <input type="checkbox" id="commentsCheckbox" name="commentsCheckbox">
-              <label for="commentsCheckbox">Include only entries with comments</label>
+              <!-- Row 2: Group, Completion, Date Range -->
+              <div class="tss-filter-row">
+                <div class="tss-filter-field">
+                  <label for="group">Group</label>
+                  <select class="form-control" id="group" name="group">
+                    <option value>All</option>
+                    <option value="LLO / PEC">LLO</option>
+                    <option value="MSCBA-ROE / MDESC-RE">MSCBA-ROE</option>
+                    <option value="MSCBA-GCOS / MDESC-SELSC">MSCBA-GCOS</option>
+                    <option value="SEF / SEF">SEF</option>
+                  </select>
+                </div>
+                <div class="tss-filter-field">
+                  <label for="taskCompletion">Completion</label>
+                  <select class="form-control" id="taskCompletion" name="taskCompletion">
+                    <option value="">All</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                    <option value="I started this survey before I finished my visit">In Progress</option>
+                  </select>
+                </div>
+                <div class="tss-filter-field">
+                  <label for="dateRangePicker">Date Range</label>
+                  <input type="text" id="dateRangePicker" name="dateRangePicker" readonly="readonly"
+                    class="form-control" />
+                </div>
+              </div>
+              <!-- Row 3: Task, Comments, Checkbox -->
+              <div class="tss-filter-row">
+                <div class="tss-filter-field tss-filter-task">
+                  <label id="task-autocomplete-label" for="task-autocomplete-input">Task</label>
+                  <div class="task-autocomplete-wrapper" role="combobox"
+                       aria-expanded="false" aria-owns="task-autocomplete-listbox" aria-haspopup="listbox">
+                    <input type="text" id="task-autocomplete-input" class="form-control"
+                           autocomplete="off" aria-autocomplete="list"
+                           aria-controls="task-autocomplete-listbox"
+                           aria-labelledby="task-autocomplete-label"
+                           placeholder="Filter by task keyword" />
+                    <button type="button" class="task-autocomplete-clear"
+                            aria-label="Clear task selection" style="display:none;">&times;</button>
+                    <ul id="task-autocomplete-listbox" class="task-autocomplete-listbox"
+                        role="listbox" aria-labelledby="task-autocomplete-label"
+                        style="display:none;"></ul>
+                  </div>
+                </div>
+                <div class="tss-filter-field tss-filter-comments">
+                  <label for="comments">Comments</label>
+                  <input type="text" id="comments" name="comments" class="form-control"
+                    placeholder="Search in comments...">
+                </div>
+                <div class="tss-filter-field tss-filter-checkbox-row">
+                  <label class="tss-row-checkbox" title="Only show entries that have comments">
+                    <input type="checkbox" id="commentsCheckbox" name="commentsCheckbox">
+                    <span>With comments only</span>
+                  </label>
+                </div>
+              </div>
             </div>
-
-            <div class="download-section">
-              <button type="button" class="btn btn-primary" id="downloadCSV">Download CSV</button>
-              <button type="button" class="btn btn-primary" id="downloadExcel">Download Excel</button>
-              <button type="button" class="btn-unstyled reset-filters">Reset Filters</button>
+            <div class="tss-filter-footer">
+              <div class="tss-stats">
+                <div class="stat"><span class="totalDistinctTasks">0</span> Unique Tasks</div>
+                <div class="stat"><span class="totalTaskCount">0</span> Total Entries</div>
+              </div>
+              <div class="tss-actions">
+                <button type="button" class="btn btn-default btn-sm reset-filters"><i class="fa fa-refresh"></i>
+                  Reset</button>
+                <button type="button" class="btn btn-primary btn-sm" id="downloadCSV"><i class="fa fa-download"></i>
+                  CSV</button>
+                <button type="button" class="btn btn-primary btn-sm" id="downloadExcel"><i
+                    class="fa fa-file-excel-o"></i> Excel</button>
+              </div>
             </div>
-          </form>
+          </div>
         </div>
       </div>
       <div class="clearfix"></div>
     </main>
-    <div class="col-lg-12">
-      <div class="stats-box">
-        <div class="stat">
-          <span class="description">Total unique tasks based on filters</span>
-          <br>
-          <span class="totalDistinctTasks"></span>
-        </div>
-        <div class="stat">
-          <span class="description">Total Entries based on filters</span>
-          <br>
-          <span class="totalTaskCount"></span>
-        </div>
-      </div>
-    </div>
-    <!-- Add this code in your HTML file -->
+
     <div class="loading-spinner" style="display: none;">
       <i class="fa fa-spinner fa-spin fa-3x"></i>
     </div>
     <div class="col-lg-12">
       <div class="row custom-row">
-        <div class="feedback-tool-data">
-          <table id="topTaskTable" class="display compact">
-            <thead>
-              <tr>
-                <th>Date</th>
-                <th>Time stamp</th>
-                <th>Survey Referrer</th>
-                <th>Language</th>
-                <th>Device</th>
-                <th>Screener</th>
-                <th>Department</th>
-                <th>Theme</th>
-                <th>Theme Other</th>
-                <th>Grouping</th>
-                <th>Task</th>
-                <th>Task Other</th>
-                <th>Task Satisfaction</th>
-                <th>Task Ease</th>
-                <th>Task Completion</th>
-                <th>Task Improve</th>
-                <th>Task Improve Comment</th>
-                <th>Task Why Not</th>
-                <th>Task Why Not Comment</th>
-                <th>Sampling</th>
-                <th>Sampling Invitation</th>
-                <th>Sampling GC</th>
-                <th>Sampling Canada</th>
-                <th>Sampling Theme</th>
-                <th>Sampling Institution</th>
-                <th>Sampling Group</th>
-                <th>Sampling Task</th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
+        <div class="keywords-table-wrapper">
+          <div class="table-scroll-container">
+            <table id="topTaskTable" class="wb-tables dataTable" style="width: 100%">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Time stamp</th>
+                  <th>Survey Referrer</th>
+                  <th>Language</th>
+                  <th>Device</th>
+                  <th>Screener</th>
+                  <th>Department</th>
+                  <th>Theme</th>
+                  <th>Theme Other</th>
+                  <th>Grouping</th>
+                  <th>Task</th>
+                  <th>Task Other</th>
+                  <th>Task Satisfaction</th>
+                  <th>Task Ease</th>
+                  <th>Task Completion</th>
+                  <th>Task Improve</th>
+                  <th>Task Improve Comment</th>
+                  <th>Task Why Not</th>
+                  <th>Task Why Not Comment</th>
+                  <th>Sampling</th>
+                  <th>Sampling Invitation</th>
+                  <th>Sampling GC</th>
+                  <th>Sampling Canada</th>
+                  <th>Sampling Theme</th>
+                  <th>Sampling Institution</th>
+                  <th>Sampling Group</th>
+                  <th>Sampling Task</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
@@ -197,8 +199,7 @@
     <script src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
     <script type="text/javascript" src="js/spring-friendly.min.js"></script>
-    <script src="/js/custom-dropdown.js"></script>
-      <script th:inline="javascript">
+    <script th:inline="javascript">
       /*
             <![CDATA[*/
       var earliestDate = /*[[${earliestDate}]]*/ "";

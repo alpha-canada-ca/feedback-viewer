@@ -113,7 +113,26 @@ $(document).ready(function () {
 
   // DataTable initialization
   var table = new DataTable("#myTable", {
-    language: isFrench ? { url: "//cdn.datatables.net/plug-ins/2.3.2/i18n/fr-FR.json" } : undefined,
+    language: isFrench ? {
+      url: "//cdn.datatables.net/plug-ins/2.3.2/i18n/fr-FR.json",
+      lengthMenu: "Afficher _MENU_ entrées",
+      info: "Affichage de _START_ à _END_ sur _TOTAL_ entrées",
+      paginate: {
+        first: "Premier",
+        last: "Dernier",
+        next: "Suivant",
+        previous: "Précédent"
+      }
+    } : {
+      lengthMenu: "Show _MENU_ entries",
+      info: "Showing _START_ to _END_ of _TOTAL_ entries",
+      paginate: {
+        first: "First",
+        last: "Last",
+        next: "Next",
+        previous: "Previous"
+      }
+    },
     stripeClasses: [],
     bSortClasses: false,
     order: [[0, "desc"]],
@@ -126,14 +145,14 @@ $(document).ready(function () {
     ],
     pageLength: 50,
     orderCellsTop: true,
-    fixedHeader: true,
-    responsive: true,
+    fixedHeader: false,
+    responsive: false,
     drawCallback: function () {
       fetchTotalCommentsCount();
       fetchTotalPagesCount();
       fetchDataAndCreateChart();
     },
-    dom: 'Br<"table-responsive"t>tilp',
+    dom: 't<"table-controls-outside"lip>',
     ajax: {
       url: "/dashboardData",
       type: "GET",
@@ -175,6 +194,10 @@ $(document).ready(function () {
         console.log("error: " + error);
         console.log("thrown : " + thrown);
       },
+    },
+    initComplete: function() {
+      // Move pagination controls outside the table wrapper
+      $('.table-controls-outside').insertAfter('.feedback-tool-data');
     },
     buttons: [
       {
@@ -502,6 +525,13 @@ $(document).ready(function () {
          table.ajax.reload(); // Reload the table without resetting pagination
     }, 800)
   );
+
+  // Force recalculate column widths after window fully loads to prevent footer squishing
+  $(window).on('load', function() {
+    setTimeout(function() {
+      table.columns.adjust().draw();
+    }, 100);
+  });
 
 });
 

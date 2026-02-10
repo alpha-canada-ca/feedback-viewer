@@ -1,18 +1,27 @@
 package ca.gc.tbs.service;
 
-import edu.stanford.nlp.pipeline.CoreDocument;
-import edu.stanford.nlp.pipeline.CoreEntityMention;
-import edu.stanford.nlp.pipeline.StanfordCoreNLP;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Properties;
+import java.util.Set;
 import java.util.regex.Pattern;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import edu.stanford.nlp.pipeline.CoreDocument;
+import edu.stanford.nlp.pipeline.CoreEntityMention;
+import edu.stanford.nlp.pipeline.StanfordCoreNLP;
+
 @Service
 public class ContentService {
+  private static final Logger logger = LoggerFactory.getLogger(ContentService.class);
 
   // Pre-compiled regex patterns for better performance
   private static final Pattern POSTAL_CODE_PATTERN =
@@ -25,155 +34,131 @@ public class ContentService {
   private static final Pattern PHONE_PATTERN_2 =
       Pattern.compile(
           "(?:(?:\\+?1\\s*(?:[.-]\\s*)?)?(?:\\(\\s*([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9])\\s*\\)|([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9]))\\s*(?:[.-]\\s*)?)?([2-9]1[02-9]|[2-9][02-9]1|[2-9][02-9]{2})\\s*(?:[.-]\\s*)?([0-9]{4})(?:\\s*(?:#|x\\.?|ext\\.?|extension)\\s*(\\d+))?");
-  // Updated email pattern to catch obfuscated emails: supports +, spaces in domain, optional TLD, longer TLDs
   private static final Pattern EMAIL_PATTERN =
       Pattern.compile("([a-zA-Z0-9_+\\-\\.]+)\\s*@\\s*([a-zA-Z0-9_\\-\\.]+)(?:\\s*[\\.,]\\s*([a-zA-Z]{0,10}))?");
-  
+
   // Address patterns for English and French street addresses
-  // Pattern 1: NUMBER + WORD(S) + SUFFIX + DIRECTION (optional)
-  private static final Pattern ADDRESS_PATTERN_1 = 
+  private static final Pattern ADDRESS_PATTERN_1 =
       Pattern.compile("(?i)\\b(\\d{1,6}[A-Za-z]?)\\s+([A-Za-z][A-Za-z''\\-]*(?:\\s+[A-Za-z][A-Za-z''\\-]*){0,3})\\s+" +
           "(?:st|street|ave|avenue|av|av\\.|rd|road|dr|drive|blvd|boulevard|boul|boul\\.|ln|lane|ct|court|pl|place|ter|terrace|terr|pkwy|parkway|cir|circle|hwy|highway|rue|chemin|ch|ch\\.|chem|chem\\.|route|rte|all[ée]e?|all\\.|allee|cours|voie|terrain|terrasse|rang|promenade|prom|prom\\.)" +
           "(?:\\s+(?:n|s|e|w|ne|nw|se|sw|o|no|so))?\\b");
-  
-  // Pattern 2: NUMBER + DIRECTION + WORD(S) + SUFFIX
-  private static final Pattern ADDRESS_PATTERN_2 = 
+
+  private static final Pattern ADDRESS_PATTERN_2 =
       Pattern.compile("(?i)\\b(\\d{1,6}[A-Za-z]?)\\s+(?:n|s|e|w|ne|nw|se|sw|o|no|so)\\s+([A-Za-z][A-Za-z''\\-]*(?:\\s+[A-Za-z][A-Za-z''\\-]*){0,3})\\s+" +
           "(?:st|street|ave|avenue|av|av\\.|rd|road|dr|drive|blvd|boulevard|boul|boul\\.|ln|lane|ct|court|pl|place|ter|terrace|terr|pkwy|parkway|cir|circle|hwy|highway|rue|chemin|ch|ch\\.|chem|chem\\.|route|rte|all[ée]e?|all\\.|allee|cours|voie|terrain|terrasse|rang|promenade|prom|prom\\.)\\b");
-  
-  // Pattern 3: NUMBER + WORD(S) + SUFFIX (fallback pattern)
-  private static final Pattern ADDRESS_PATTERN_3 = 
+
+  private static final Pattern ADDRESS_PATTERN_3 =
       Pattern.compile("(?i)\\b(\\d{1,6}[A-Za-z]?)\\s+([A-Za-z][A-Za-z''\\-]*(?:\\s+[A-Za-z][A-Za-z''\\-]*){0,3})\\s+" +
           "(?:st|street|ave|avenue|av|av\\.|rd|road|dr|drive|blvd|boulevard|boul|boul\\.|ln|lane|ct|court|pl|place|ter|terrace|terr|pkwy|parkway|cir|circle|hwy|highway|rue|chemin|ch|ch\\.|chem|chem\\.|route|rte|all[ée]e?|all\\.|allee|cours|voie|terrain|terrasse|rang|promenade|prom|prom\\.)\\b");
 
   // Singleton NLP pipeline for better performance
   private static final StanfordCoreNLP nlpPipeline;
 
-  // Initialize the NLP pipeline once
   static {
     Properties props = new Properties();
     props.setProperty("annotators", "tokenize,ssplit,pos,lemma,ner");
     nlpPipeline = new StanfordCoreNLP(props);
   }
 
-  // BadWords service for profanity and threat filtering
   private final BadWords badWords;
 
   @Autowired
   public ContentService(BadWords badWords) {
-    logger.info("=== ContentService constructor START ===");
     this.badWords = badWords;
-    logger.info("BadWords service injected successfully");
-    logger.info("=== ContentService constructor COMPLETED ===");
   }
-  
-  private static final Logger logger = LoggerFactory.getLogger(ContentService.class);
-  
-  /**
-   * Get allowed words from BadWords service (lazy-loaded).
-   * This ensures BadWords has finished initialization before accessing the words.
-   */
+
   private Set<String> getAllowedWords() {
     return badWords.getAllowedWords();
   }
 
   public String cleanContent(String content) {
     if (content.isEmpty()) {
-      return content; // Return empty string if content is empty
+      return content;
     }
     content = StringUtils.normalizeSpace(content);
+
     String newContent = badWords.censor(content);
     if (!newContent.contentEquals(content)) {
       content = newContent;
-      System.out.println("curse words cleaned: " + content);
+      logger.debug("Profanity filtered");
     }
+
     newContent = this.cleanPostalCode(content);
     if (!newContent.contentEquals(content)) {
       content = newContent;
-      System.out.println("Postal code cleaned: " + content);
+      logger.debug("Postal code cleaned");
     }
+
     newContent = this.cleanPhoneNumber(content);
     if (!newContent.contentEquals(content)) {
       content = newContent;
-      System.out.println("Phone number cleaned: " + content);
+      logger.debug("Phone number cleaned");
     }
+
     newContent = this.cleanPassportNumber(content);
     if (!newContent.contentEquals(content)) {
       content = newContent;
-      System.out.println("Passport number cleaned: " + content);
+      logger.debug("Passport number cleaned");
     }
+
     newContent = this.cleanSIN(content);
     if (!newContent.contentEquals(content)) {
       content = newContent;
-      System.out.println("SIN number cleaned: " + content);
+      logger.debug("SIN cleaned");
     }
+
     newContent = this.cleanEmailAddress(content);
     if (!newContent.contentEquals(content)) {
       content = newContent;
-      System.out.println("Email Address cleaned: " + content);
+      logger.debug("Email address cleaned");
     }
+
     newContent = this.cleanStreetAddress(content);
     if (!newContent.contentEquals(content)) {
       content = newContent;
-      System.out.println("Street address cleaned: " + content);
+      logger.debug("Street address cleaned");
     }
+
     newContent = this.cleanNames(content);
     if (!newContent.contentEquals(content)) {
       content = newContent;
-      System.out.println("Names cleaned: " + content);
+      logger.debug("Names cleaned");
     }
+
     return content;
   }
 
-  /** Cleans postal codes from the content. */
   private String cleanPostalCode(String content) {
     return POSTAL_CODE_PATTERN.matcher(content).replaceAll("### ###");
   }
 
-  /** Cleans passport numbers from the content. */
   private String cleanPassportNumber(String content) {
     return PASSPORT_PATTERN.matcher(content).replaceAll("## ######");
   }
 
-  /** Cleans SIN numbers from the content. */
   private String cleanSIN(String content) {
     return SIN_PATTERN.matcher(content).replaceAll("### ### ###");
   }
 
-  /** Cleans phone numbers from the content. */
   private String cleanPhoneNumber(String content) {
     content = PHONE_PATTERN_1.matcher(content).replaceAll("# ### ### ###");
     content = PHONE_PATTERN_2.matcher(content).replaceAll("# ### ### ###");
     return content;
   }
 
-  /** Cleans email addresses from the content. */
   private String cleanEmailAddress(String content) {
     return EMAIL_PATTERN.matcher(content).replaceAll("####@####.####");
   }
 
-  /** 
-   * Cleans street addresses from the content.
-   * Applies three patterns in order: 
-   * 1. Pattern 2 (NUMBER + DIRECTION + WORD(S) + SUFFIX) - most specific
-   * 2. Pattern 1 (NUMBER + WORD(S) + SUFFIX + optional DIRECTION)
-   * 3. Pattern 3 (NUMBER + WORD(S) + SUFFIX) - fallback
-   */
   private String cleanStreetAddress(String content) {
-    // Apply Pattern 2 first (most specific with direction)
     content = ADDRESS_PATTERN_2.matcher(content).replaceAll("### #### ######");
-    // Apply Pattern 1 (with optional direction at end)
     content = ADDRESS_PATTERN_1.matcher(content).replaceAll("### #### ######");
-    // Apply Pattern 3 last (fallback pattern)
     content = ADDRESS_PATTERN_3.matcher(content).replaceAll("### #### ######");
     return content;
   }
 
   /**
-   * Cleans the names of persons in the provided content by replacing them with '#' characters. Uses
-   * StanfordCoreNLP for natural language processing and entity recognition. Reverses the list of
-   * entity mentions to replace them from the end of the string, preserving the indices of earlier
-   * mentions when replacing later ones.
+   * Cleans person names from content using NLP entity recognition.
    */
   public String cleanNames(String content) {
     try {
@@ -193,12 +178,8 @@ public class ContentService {
           String mentionText = em.text().toLowerCase();
           String pos = em.tokens().get(0).tag();
 
-          // Skip if it's a common pronoun, if its POS tag is a pronoun (PRP or PRP$),
-          // or if it's in our allowed words list
           boolean isAllowed = getAllowedWords().contains(mentionText);
-          
-          // Also check if any word in the mention is in the allowed list
-          // This handles multi-word names where one part might be allowed
+
           if (!isAllowed && mentionText.contains(" ")) {
             for (String word : mentionText.split("\\s+")) {
               if (getAllowedWords().contains(word)) {
@@ -207,7 +188,7 @@ public class ContentService {
               }
             }
           }
-          
+
           if (!commonPronouns.contains(mentionText) && !pos.startsWith("PRP") && !isAllowed) {
             int start = em.charOffsets().first();
             int end = em.charOffsets().second();
@@ -219,9 +200,8 @@ public class ContentService {
       }
 
       return sb.toString();
-    } catch (Exception e) {
-      System.out.println("Error during NLP processing: " + e.getMessage());
-      // Return original content if NLP processing fails
+    } catch (Exception e) { 
+        logger.error("Error during NLP processing", e);
       return content;
     }
   }

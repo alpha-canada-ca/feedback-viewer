@@ -13,7 +13,6 @@ $(document).ready(function () {
     TOTAL_DISTINCT_TASKS: '/topTask/totalDistinctTasks',
     TOTAL_TASK_COUNT: '/topTask/totalTaskCount',
     DEPARTMENTS: '/topTaskSurvey/departments',
-    TASK_NAMES: '/taskNames',
     EXPORT_CSV: '/exportTopTaskCSV',
     EXPORT_EXCEL: '/exportTopTaskExcel'
   };
@@ -24,7 +23,6 @@ $(document).ready(function () {
       NO_DATA_EXPORT: "Aucune donnée à exporter avec les filtres sélectionnés.",
       ERROR_CSV_DOWNLOAD: "Erreur lors du téléchargement du fichier CSV. Veuillez réessayer.",
       ERROR_EXCEL_DOWNLOAD: "Erreur lors du téléchargement du fichier Excel. Veuillez réessayer.",
-      SEARCH_MIN_CHARS: "La recherche doit comporter au moins 2 caractères",
       NETWORK_ERROR: "La réponse du réseau n'était pas correcte"
     },
     en: {
@@ -32,7 +30,6 @@ $(document).ready(function () {
       NO_DATA_EXPORT: "No data to export with the selected filters.",
       ERROR_CSV_DOWNLOAD: "Error downloading CSV file. Please try again.",
       ERROR_EXCEL_DOWNLOAD: "Error downloading Excel file. Please try again.",
-      SEARCH_MIN_CHARS: "Search must be at least 2 characters",
       NETWORK_ERROR: "Network response was not ok"
     }
   };
@@ -123,96 +120,290 @@ $(document).ready(function () {
     return [quarterStart, quarterEnd];
   }
 
-    const $originalTasks = $("#tasks");
-    $originalTasks.hide().css('visibility', 'hidden');
+  // ========================================
+  // TaskAutocomplete - Client-side task filter
+  // ========================================
+  var TaskAutocomplete = (function() {
+    var MAX_VISIBLE = 15;
+    var allTasks = [];
+    var selectedTask = null;
+    var filteredTasks = [];
+    var highlightIndex = -1;
+    var isOpen = false;
 
-    const $tasksContainer = $('<div id="tasks-replacement"></div>');
-    $originalTasks.after($tasksContainer);
+    var $wrapper, $input, $clearBtn, $listbox;
 
-    var taskSelect = new CustomDropdown({
-      select: "#tasks",
-      multiSelect: false,
-      settings: {
-        hideSelected: false,
-        keepOrder: true,
-        placeholderText: isFrench ? "Filtrer par mot-clé de la tâche" : "Filter by task keyword",
-        searchText: isFrench ? "Aucun résultat trouvé" : "No results found",
-        searchPlaceholder: isFrench ? "Recherche" : "Search",
-        searchingText: isFrench ? "Recherche en cours..." : "Searching...",
-        closeOnSelect: true,
-      },
-      events: {
-        search: (search, currentData) => {
-          return new Promise((resolve, reject) => {
-            clearTimeout(taskSelect.debounceTimer);
-            taskSelect.debounceTimer = setTimeout(() => {
-              if (search.length < CONFIG.SEARCH_MIN_CHARS) {
-                return reject(getMessage('SEARCH_MIN_CHARS'));
-              }
+    function init() {
+      $wrapper  = $('.task-autocomplete-wrapper');
+      $input    = $('#task-autocomplete-input');
+      $clearBtn = $('.task-autocomplete-clear');
+      $listbox  = $('#task-autocomplete-listbox');
 
-              // Build URL with current filters using existing getFilterParams function
-              var url = new URL(window.location.origin + ENDPOINTS.TASK_NAMES);
-              var filterParams = getFilterParams();
-              
-              // Add all existing filter parameters
-              filterParams.forEach((value, key) => {
-                // Skip task-related params since we're searching for tasks
-                if (!key.startsWith('tasks')) {
-                  url.searchParams.append(key, value);
-                }
-              });
-              
-              // Add the search term
-              url.searchParams.append('search', search);
+      fetchTasks();
+      bindEvents();
+    }
 
-              fetch(url.toString(), {
-                method: "GET",
-                headers: {
-                  Accept: "application/json",
-                },
-              })
-              .then((response) => {
-                if (!response.ok) {
-                  throw new Error(getMessage('NETWORK_ERROR'));
-                }
-                return response.json();
-              })
-              .then((data) => {
-                const options = data
-                  .filter((title) => {
-                    return !currentData.some((optionData) => optionData.value === title);
-                  })
-                  .map((title) => {
-                    return { text: title, value: title };
-                  });
-
-                resolve(options);
-              })
-              .catch((error) => {
-                console.error("Error fetching task names:", error);
-                reject(error);
-              });
-            }, CONFIG.DEBOUNCE_DELAY);
-          });
-        },
-        onChange: function(selectedValue) {
-          console.log("Tasks changed:", selectedValue);
-          if (typeof table !== 'undefined') {
-            table.ajax.reload();
+    function fetchTasks() {
+      fetch('/json/tasks.json')
+        .then(function(response) {
+          if (!response.ok) throw new Error('Failed to load tasks.json');
+          return response.json();
+        })
+        .then(function(data) {
+          if (Array.isArray(data) && data.length > 0 && Array.isArray(data[0].tasks)) {
+            allTasks = data[0].tasks.filter(function(t) {
+              return t && t.trim() !== '' && t.trim() !== '/' && t.indexOf('${') === -1;
+            });
           }
+        })
+        .catch(function(err) {
+          console.error('Error loading tasks.json:', err);
+        });
+    }
+
+    function bindEvents() {
+      $input.on('input', function() {
+        var query = $input.val();
+        if (selectedTask) {
+          clearSelection(false);
+        }
+        if (query.trim().length === 0) {
+          closeListbox();
+          return;
+        }
+        filterAndRender(query);
+      });
+
+      $input.on('focus', function() {
+        var query = $input.val().trim();
+        if (query.length > 0 && !selectedTask) {
+          filterAndRender(query);
+        }
+      });
+
+      $input.on('keydown', function(e) {
+        if (!isOpen) {
+          if (e.key === 'ArrowDown' && $input.val().trim().length > 0) {
+            filterAndRender($input.val());
+            e.preventDefault();
+          }
+          return;
+        }
+
+        switch (e.key) {
+          case 'ArrowDown':
+            e.preventDefault();
+            highlightIndex = Math.min(highlightIndex + 1, filteredTasks.length - 1);
+            updateHighlight();
+            scrollToHighlighted();
+            break;
+          case 'ArrowUp':
+            e.preventDefault();
+            highlightIndex = Math.max(highlightIndex - 1, 0);
+            updateHighlight();
+            scrollToHighlighted();
+            break;
+          case 'Enter':
+            e.preventDefault();
+            if (highlightIndex >= 0 && highlightIndex < filteredTasks.length) {
+              selectTask(filteredTasks[highlightIndex]);
+            }
+            break;
+          case 'Tab':
+            if (highlightIndex >= 0 && highlightIndex < filteredTasks.length) {
+              selectTask(filteredTasks[highlightIndex]);
+            } else {
+              closeListbox();
+            }
+            break;
+          case 'Escape':
+            e.preventDefault();
+            closeListbox();
+            $input.blur();
+            break;
+        }
+      });
+
+      $clearBtn.on('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        clearSelection(true);
+        $input.focus();
+      });
+
+      $listbox.on('mousedown', 'li', function(e) {
+        e.preventDefault();
+        var index = $(this).data('index');
+        if (index !== undefined && filteredTasks[index]) {
+          selectTask(filteredTasks[index]);
+        }
+      });
+
+      $listbox.on('mouseenter', 'li', function() {
+        var idx = $(this).data('index');
+        if (idx !== undefined) {
+          highlightIndex = idx;
+          updateHighlight();
+        }
+      });
+
+      $(document).on('click', function(e) {
+        if (!$(e.target).closest('.task-autocomplete-wrapper').length) {
+          closeListbox();
+        }
+      });
+    }
+
+    function filterAndRender(query) {
+      var lowerQuery = query.toLowerCase();
+      filteredTasks = [];
+
+      for (var i = 0; i < allTasks.length && filteredTasks.length < MAX_VISIBLE; i++) {
+        if (allTasks[i].toLowerCase().indexOf(lowerQuery) !== -1) {
+          filteredTasks.push(allTasks[i]);
         }
       }
-    });
 
-    $(document).on('tasks:changed', function(event, selectedTasks) {
-      console.log("Tasks changed event:", selectedTasks);
+      highlightIndex = filteredTasks.length > 0 ? 0 : -1;
+      renderListbox();
+      openListbox();
+    }
+
+    function renderListbox() {
+      $listbox.empty();
+
+      if (filteredTasks.length === 0) {
+        var noResultsText = isFrench ? 'Aucun résultat trouvé' : 'No results found';
+        $listbox.append(
+          $('<li>').addClass('task-autocomplete-no-results')
+                   .attr('role', 'option')
+                   .attr('aria-disabled', 'true')
+                   .text(noResultsText)
+        );
+      } else {
+        filteredTasks.forEach(function(task, idx) {
+          var $li = $('<li>')
+            .attr('role', 'option')
+            .attr('id', 'task-option-' + idx)
+            .attr('data-index', idx)
+            .text(task);
+          if (idx === highlightIndex) {
+            $li.addClass('task-autocomplete-highlighted')
+               .attr('aria-selected', 'true');
+          }
+          $listbox.append($li);
+        });
+      }
+
+      if (highlightIndex >= 0) {
+        $input.attr('aria-activedescendant', 'task-option-' + highlightIndex);
+      } else {
+        $input.removeAttr('aria-activedescendant');
+      }
+    }
+
+    function updateHighlight() {
+      $listbox.find('li').removeClass('task-autocomplete-highlighted')
+              .attr('aria-selected', 'false');
+      if (highlightIndex >= 0) {
+        var $target = $listbox.find('li[data-index="' + highlightIndex + '"]');
+        $target.addClass('task-autocomplete-highlighted')
+               .attr('aria-selected', 'true');
+        $input.attr('aria-activedescendant', 'task-option-' + highlightIndex);
+      } else {
+        $input.removeAttr('aria-activedescendant');
+      }
+    }
+
+    function scrollToHighlighted() {
+      var $highlighted = $listbox.find('.task-autocomplete-highlighted');
+      if ($highlighted.length) {
+        var listboxEl = $listbox[0];
+        var itemEl = $highlighted[0];
+        if (itemEl.offsetTop < listboxEl.scrollTop) {
+          listboxEl.scrollTop = itemEl.offsetTop;
+        } else if (itemEl.offsetTop + itemEl.offsetHeight >
+                   listboxEl.scrollTop + listboxEl.clientHeight) {
+          listboxEl.scrollTop = itemEl.offsetTop + itemEl.offsetHeight
+                                - listboxEl.clientHeight;
+        }
+      }
+    }
+
+    function openListbox() {
+      if (isOpen) return;
+      isOpen = true;
+      $listbox.show();
+      $wrapper.attr('aria-expanded', 'true');
+    }
+
+    function closeListbox() {
+      if (!isOpen) return;
+      isOpen = false;
+      $listbox.hide();
+      $wrapper.attr('aria-expanded', 'false');
+      highlightIndex = -1;
+      $input.removeAttr('aria-activedescendant');
+    }
+
+    function selectTask(taskName) {
+      selectedTask = taskName;
+      $input.val(taskName);
+      $clearBtn.show();
+      $input.addClass('has-selection');
+      closeListbox();
       if (typeof table !== 'undefined') {
         table.ajax.reload();
       }
-    });
+    }
+
+    function clearSelection(clearInput) {
+      selectedTask = null;
+      if (clearInput !== false) {
+        $input.val('');
+      }
+      $clearBtn.hide();
+      $input.removeClass('has-selection');
+      closeListbox();
+      if (typeof table !== 'undefined') {
+        table.ajax.reload();
+      }
+    }
+
+    return {
+      init: init,
+      getSelected: function() {
+        return selectedTask ? [selectedTask] : [];
+      },
+      reset: function() {
+        clearSelection(true);
+      }
+    };
+  })();
+
+  TaskAutocomplete.init();
 
   var table = new DataTable("#topTaskTable", {
-       language: isFrench ? { url: "//cdn.datatables.net/plug-ins/2.3.2/i18n/fr-FR.json" } : undefined,
+       language: isFrench ? {
+         url: "//cdn.datatables.net/plug-ins/2.3.2/i18n/fr-FR.json",
+         lengthMenu: "Afficher _MENU_ entrées",
+         info: "Affichage de _START_ à _END_ sur _TOTAL_ entrées",
+         paginate: {
+           first: "Premier",
+           last: "Dernier",
+           next: "Suivant",
+           previous: "Précédent"
+         }
+       } : {
+         lengthMenu: "Show _MENU_ entries",
+         info: "Showing _START_ to _END_ of _TOTAL_ entries",
+         paginate: {
+           first: "First",
+           last: "Last",
+           next: "Next",
+           previous: "Previous"
+         }
+       },
        stripeClasses: [],
        bSortClasses: false,
        order: [[0, "desc"]],
@@ -225,9 +416,14 @@ $(document).ready(function () {
        ],
        pageLength: 50,
        orderCellsTop: true,
-       fixedHeader: true,
-       responsive: true,
-       dom: 'Br<"table-responsive"t>tilp',
+       fixedHeader: false,
+       responsive: false,
+       autoWidth: false,
+       dom: 't<"table-controls-outside"lip>',
+       initComplete: function() {
+         // Move pagination controls outside the table wrapper
+         $('.table-controls-outside').insertAfter('.keywords-table-wrapper');
+       },
        drawCallback: function () {
          fetchTotalDistinctTask();
          fetchTotalTaskCount();
@@ -266,7 +462,7 @@ $(document).ready(function () {
          // Filter out null or empty params before setting them
          if ($("#department").val()) data.department = $("#department").val();
          if ($("#theme").val()) data.theme = $("#theme").val();
-         var selectedTasks = taskSelect.getSelected();
+         var selectedTasks = TaskAutocomplete.getSelected();
          if (selectedTasks && selectedTasks.length > 0) {
             data.tasks = selectedTasks;
          }
@@ -336,15 +532,15 @@ $(document).ready(function () {
          { data: 'theme', title: isFrench ? 'Thème' : 'Theme', visible: false },
          { data: 'themeOther', title: isFrench ? 'Autre thème' : 'Theme Other', visible: false },
          { data: 'grouping', title: isFrench ? 'Regroupement' : 'Grouping', visible: false },
-         { data: 'task', title: isFrench ? 'Tâche' : 'Task', visible: true, width: "20" },
-         { data: 'taskOther', title: isFrench ? 'Autre tâche' : 'Task Other', visible: false },
+         { data: 'task', title: isFrench ? 'Tâche' : 'Task', visible: true, width: "20%" },
+         { data: 'taskOther', title: isFrench ? 'Autre tâche' : 'Task Other', visible: true, width: "15%" },
          { data: 'taskSatisfaction', title: isFrench ? 'Satisfaction de la tâche' : 'Task Satisfaction', visible: false },
          { data: 'taskEase', title: isFrench ? 'Facilité de la tâche' : 'Task Ease', visible: false },
          { data: 'taskCompletion', title: isFrench ? 'Accomplissement de la tâche' : 'Task Completion', visible: false },
          { data: 'taskImprove', title: isFrench ? 'Améliorer la tâche' : 'Task Improve', visible: false },
-         { data: 'taskImproveComment', title: isFrench ? 'Améliorer la tâche - commentaire' : 'Task Improve Comment', visible: true, width: "35%" },
+         { data: 'taskImproveComment', title: isFrench ? 'Améliorer la tâche - commentaire' : 'Task Improve Comment', visible: true, width: "27%" },
          { data: 'taskWhyNot', title: isFrench ? 'Pourquoi pas' : 'Task Why Not', visible: false },
-         { data: 'taskWhyNotComment', title: isFrench ? 'Tâche non complétée - commentaire' : 'Task Why Not Comment', visible: true, width: "35%"},
+         { data: 'taskWhyNotComment', title: isFrench ? 'Tâche non complétée - commentaire' : 'Task Why Not Comment', visible: true, width: "28%"},
          { data: 'taskSampling', title: isFrench ? 'Échantillonnage de tâche' : 'Task Sampling', visible: false },
          { data: 'samplingInvitation', title: isFrench ? 'Invitation à l\'échantillonnage' : 'Sampling Invitation', visible: false },
          { data: 'samplingGC', title: isFrench ? 'Échantillonnage GC' : 'Sampling GC', visible: false },
@@ -417,7 +613,7 @@ $(document).ready(function () {
       console.warn("Error fetching departments:", err);
     });
 
-  $("#tasks, #taskCompletion, #commentsCheckbox, #language").on("change", function () {
+  $("#taskCompletion, #commentsCheckbox, #language").on("change", function () {
     table.ajax.reload();
   });
 
@@ -435,9 +631,7 @@ $(document).ready(function () {
     $("#group").val("");
     $("#language").val("");
     $("#comments").val("");
-    taskSelect.setData([]);
-    taskSelect.setSelected([]);
-    $("#tasks").val("");
+    TaskAutocomplete.reset();
     $("#dateRangePicker").data("daterangepicker").setStartDate(moment(earliestDate));
     $("#dateRangePicker").data("daterangepicker").setEndDate(moment(latestDate));
     $("#dateRangePicker").val(earliestDate + " - " + latestDate);
@@ -543,8 +737,14 @@ $(document).ready(function () {
        table.ajax.reload();
      });
 
+     // Force recalculate column widths after window fully loads to prevent footer squishing
+     $(window).on('load', function() {
+       setTimeout(function() {
+         table.columns.adjust().draw();
+       }, 100);
+     });
+
      function getFilterParams() {
-       var tasks = $("#tasks").val();
        var params = new URLSearchParams();
 
        // Filter out null or empty params before setting them
@@ -552,10 +752,10 @@ $(document).ready(function () {
        if ($("#theme").val()) params.append('theme', $("#theme").val());
        if ($("#group").val()) params.append('group', $("#group").val());
        if ($("#language").val()) params.append('language', $("#language").val());
-       if ($("#taskCompletion").val()) params.append("taskCompletion", $("#taskCompletion").val());  //nus added
+       if ($("#taskCompletion").val()) params.append("taskCompletion", $("#taskCompletion").val());
        params.append('includeCommentsOnly', $("#commentsCheckbox").is(":checked"));
 
-       var selectedTasks = taskSelect.getSelected();
+       var selectedTasks = TaskAutocomplete.getSelected();
        if (selectedTasks && selectedTasks.length > 0) {
          selectedTasks.forEach(function(task) {
            params.append('tasks[]', task);
