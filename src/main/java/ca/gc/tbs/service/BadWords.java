@@ -42,6 +42,8 @@ public class BadWords {
 
   // Flag to track if data has been loaded (volatile for thread visibility)
   private volatile boolean isLoaded = false;
+  private long lastLoadAttempt = 0;
+  private static final long RETRY_INTERVAL_MS = 60000; // 1 minute
   private final Object loadLock = new Object();
 
   @Autowired
@@ -58,8 +60,11 @@ public class BadWords {
     if (!isLoaded) {
       synchronized (loadLock) {
         if (!isLoaded) {
-          logger.info("Lazy initializing BadWords - loading from database");
-          loadConfigs();
+          long now = System.currentTimeMillis();
+          if (now - lastLoadAttempt >= RETRY_INTERVAL_MS) {
+            logger.info("Lazy initializing BadWords - loading from database");
+            loadConfigs();
+          }
         }
       }
     }
@@ -72,6 +77,7 @@ public class BadWords {
   @PostConstruct
   public void loadConfigs() {
     logger.info("Loading word configurations from MongoDB...");
+    lastLoadAttempt = System.currentTimeMillis();
 
     try {
       if (badWordEntryRepository == null) {
@@ -85,7 +91,6 @@ public class BadWords {
         profanityWords.add(word);
         allFilterWords.add(word);
       });
-      compileFilterPattern();
 
       // Load threat words
       List<BadWordEntry> threatEntries = badWordEntryRepository.findByTypeAndActive("threat", true);
@@ -119,8 +124,7 @@ public class BadWords {
 
     } catch (Exception e) {
       logger.error("Failed to load word configurations from MongoDB", e);
-      // Continue with empty lists rather than crashing
-      isLoaded = true;
+      // isLoaded remains false to allow retry on next access after backoff
     }
   }
 

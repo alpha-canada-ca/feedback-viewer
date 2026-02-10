@@ -200,8 +200,8 @@ public class ContentService {
       }
 
       return sb.toString();
-    } catch (Exception e) {
-      logger.error("Error during NLP processing: {}", e.getMessage());
+    } catch (Exception e) { 
+        logger.error("Error during NLP processing", e);
       return content;
     }
   }

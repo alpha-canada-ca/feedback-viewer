@@ -120,7 +120,7 @@ $(document).ready(function () {
 		}
 
 		$.ajax({
-			type: "get",
+			type: "POST",
 			data: data,
 			cache: false,
 			url: url,
@@ -157,7 +157,7 @@ $(document).ready(function () {
 
 		var id = btn.attr("id").replace("delete", "");
 		$.ajax({
-			type: "get",
+			type: "POST",
 			data: { "id": id },
 			cache: false,
 			url: "/keywords/delete",
@@ -189,7 +189,7 @@ $(document).ready(function () {
 
 		var id = btn.attr("id").replace("activate", "");
 		$.ajax({
-			type: "get",
+			type: "POST",
 			data: { "id": id, "active": true },
 			cache: false,
 			url: "/keywords/update",
@@ -219,7 +219,7 @@ $(document).ready(function () {
 
 		var id = btn.attr("id").replace("deactivate", "");
 		$.ajax({
-			type: "get",
+			type: "POST",
 			data: { "id": id, "active": false },
 			cache: false,
 			url: "/keywords/update",
