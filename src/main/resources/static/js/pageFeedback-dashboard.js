@@ -370,132 +370,164 @@ $(document).ready(function () {
     }
     return rollingAverages;
 }
+let chartInstance = null;
+
 function fetchDataAndCreateChart() {
-//error keyword filter
   const errorKeywordChecked = $("#errorComments").prop("checked");
   let url = "/chartData";
   let params = [];
 
-   if (errorKeywordChecked) params.push("error_keyword=true");
+  if (errorKeywordChecked) params.push("error_keyword=true");
 
-   // Date range
-   const dateRangePickerValue = $("#dateRangePicker").val();
-   if (dateRangePickerValue) {
-     const dateRange = $("#dateRangePicker").data("daterangepicker");
-     params.push("startDate=" + encodeURIComponent(dateRange.startDate.format("YYYY-MM-DD")));
-     params.push("endDate=" + encodeURIComponent(dateRange.endDate.format("YYYY-MM-DD")));
-   }
+  const dateRangePickerValue = $("#dateRangePicker").val();
+  if (dateRangePickerValue) {
+    const dateRange = $("#dateRangePicker").data("daterangepicker");
+    params.push("startDate=" + encodeURIComponent(dateRange.startDate.format("YYYY-MM-DD")));
+    params.push("endDate=" + encodeURIComponent(dateRange.endDate.format("YYYY-MM-DD")));
+  }
 
-   // Other filters (need to turn this into a module that takes an ID as a parameter)
-   if ($("#language").val()) params.push("language=" + encodeURIComponent($("#language").val()));
-   if ($("#department").val()) params.push("department=" + encodeURIComponent($("#department").val()));
-   if ($("#comments").val()) params.push("comments=" + encodeURIComponent($("#comments").val()));
-   if ($("#section").val()) params.push("section=" + encodeURIComponent($("#section").val()));
-   if ($("#theme").val()) params.push("theme=" + encodeURIComponent($("#theme").val()));
-   if ($("#url").val()) params.push("url=" + encodeURIComponent($("#url").val()));
+  if ($("#language").val()) params.push("language=" + encodeURIComponent($("#language").val()));
+  if ($("#department").val()) params.push("department=" + encodeURIComponent($("#department").val()));
+  if ($("#comments").val()) params.push("comments=" + encodeURIComponent($("#comments").val()));
+  if ($("#section").val()) params.push("section=" + encodeURIComponent($("#section").val()));
+  if ($("#theme").val()) params.push("theme=" + encodeURIComponent($("#theme").val()));
+  if ($("#url").val()) params.push("url=" + encodeURIComponent($("#url").val()));
 
-   if (params.length > 0) url += "?" + params.join("&");
+  if (params.length > 0) url += "?" + params.join("&");
 
- // Fetch the data from your endpoint
   fetch(url)
-      .then((response) => response.json())
-      .then((data) => {
-          // Extract categories (dates) and comments data
-          const categories = data.map((item) => item.date);
-          const commentsData = data.map((item) => item.comments);
+    .then((response) => response.json())
+    .then((data) => {
+      const categories = data.map((item) => item.date);
+      const commentsData = data.map((item) => item.comments);
 
-          // Calculate rolling average (e.g., over 7 days)
-          const windowSize = 7;  // Adjust this value as needed
-          const rollingAverages = calculateRollingAverage(commentsData, windowSize);
+      const windowSize = 7;
+      const rollingAverages = calculateRollingAverage(commentsData, windowSize);
+      const paddedRollingAverages = new Array(windowSize - 1).fill(null).concat(rollingAverages);
 
-          const paddedRollingAverages = new Array(windowSize - 1).fill(null).concat(rollingAverages);
+      if (chartInstance) {
+        chartInstance.destroy();
+      }
 
-          // Now create the chart with the data
-          Highcharts.chart("chart", {
-              chart: {
-                  type: "column",
+      const ctx = document.getElementById("chartCanvas").getContext("2d");
+      chartInstance = new Chart(ctx, {
+        data: {
+          labels: categories,
+          datasets: [
+            {
+              type: "bar",
+              label: isFrench ? "Commentaires" : "Comments",
+              data: commentsData,
+              backgroundColor: "#2a78d6",       // categorical slot 1 (blue)
+              hoverBackgroundColor: "#2a78d6",
+              borderWidth: 0,
+              borderRadius: 4,
+              borderSkipped: "bottom",
+              maxBarThickness: 28,
+              categoryPercentage: 0.9,
+              barPercentage: 0.9,
+              order: 2,
+            },
+            {
+              type: "line",
+              label: isFrench ? "Moyenne mobile (7 jours)" : "Rolling Average (7 days)",
+              data: paddedRollingAverages,
+              borderColor: "#eb6834",           // categorical slot 8 (orange)
+              backgroundColor: "#eb6834",
+              borderWidth: 5,
+              pointRadius: 0,
+              pointHoverRadius: 4,
+              pointHoverBorderWidth: 0,
+              spanGaps: true,
+              tension: 0.35,
+              order: 1,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          layout: { padding: { top: 4, right: 8 } },
+          interaction: {
+            mode: "index",
+            intersect: false,
+          },
+          plugins: {
+            title: {
+              display: true,
+              text: isFrench ? "Commentaires par jour" : "Comments by day",
+              align: "start",
+              font: { size: 18, weight: "600" },
+              color: "#0b0b0b",                 // primary ink
+              padding: { bottom: 18 },
+            },
+            legend: {
+              position: "bottom",
+              labels: {
+                font: { size: 13 },
+                color: "#52514e",               // secondary ink
+                usePointStyle: true,
+                pointStyle: "circle",
+                boxWidth: 8,
+                boxHeight: 8,
+                padding: 18,
               },
+            },
+            tooltip: {
+              backgroundColor: "#ffffff",
+              titleColor: "#0b0b0b",
+              bodyColor: "#52514e",
+              borderColor: "rgba(11,11,11,0.10)",
+              borderWidth: 1,
+              padding: 12,
+              cornerRadius: 6,
+              usePointStyle: true,
+              boxPadding: 6,
+              callbacks: {
+                label: function (context) {
+                  const val = context.parsed.y;
+                  if (val === null) return null;
+                  const suffix = isFrench ? " commentaires" : " comments";
+                  return context.dataset.label + ": " + formatNumberWithCommas(val) + suffix;
+                },
+              },
+            },
+          },
+          scales: {
+            x: {
+              ticks: {
+                font: { size: 12 },
+                color: "#898781",               // muted axis ink
+                maxRotation: 45,
+                autoSkipPadding: 12,
+              },
+              grid: { display: false },
+              border: { color: "#c3c2b7" },      // baseline
+            },
+            y: {
+              min: 0,
               title: {
-                  text: isFrench ? "Commentaires par jour" : "Comments by day",
-                  align: "left",
-                  style: {
-                      fontSize: "20px", // Adjust title font size here
-                  },
+                display: true,
+                text: isFrench ? "Nombre de commentaires" : "Number of Comments",
+                font: { size: 13, weight: "600" },
+                color: "#52514e",
               },
-              xAxis: {
-                  categories: categories, // Set the categories from the data
-                  crosshair: true,
-                  accessibility: {
-                      description: "Dates",
-                  },
-                  labels: {
-                      style: {
-                          fontSize: "14px", // Adjust X axis labels font size here
-                      },
-                  },
+              ticks: {
+                font: { size: 12 },
+                color: "#898781",
+                padding: 8,
+                callback: function (value) { return formatNumberWithCommas(value); },
               },
-              yAxis: {
-                  min: 0,
-                  title: {
-                      text: isFrench ? "Nombre de commentaires" : "Number of Comments",
-                      style: {
-                          fontSize: "16px", // Adjust Y axis title font size here
-                          fontWeight: "bold",
-                      },
-                  },
-                  labels: {
-                      style: {
-                          fontSize: "16px", // Adjust Y axis labels font size here
-                      },
-                      formatter: function() {
-                          return formatNumberWithCommas(this.value);
-                      }
-                  },
-              },
-              legend: {
-                  style: {
-                      fontSize: "16px", // Adjust legend font size here
-                  },
-                  itemStyle: {
-                      fontSize: "14px", // Adjust legend item font size here
-                  },
-              },
-              tooltip: {
-                  valueSuffix: isFrench ? " commentaires" : " comments",
-                  style: {
-                      fontSize: "16px", // Adjust font size for text in the tooltip on hover
-                  },
-                  formatter: function() {
-                        const date = categories[this.point.index];
-                        return 'Date: <b>' + date + '</b><br/>' +
-                             this.series.name + ': <b>' + formatNumberWithCommas(this.y) + '</b>' +
-                             (isFrench ? " commentaires" : " comments");
-                  }
-              },
-              plotOptions: {
-                  column: {
-                      pointPadding: 0, // Minimizes the space between points within the same category
-                      groupPadding: 0.1, // Adjust space between categories
-                      borderWidth: 0,
-                  },
-              },
-              series: [
-                  {
-                      name: isFrench ? "Commentaires" : "Comments",
-                      data: commentsData, // Set the data from the data
-                  },
-                  {
-                      name: isFrench ? "Moyenne mobile (7 jours)" : "Rolling Average (7 days)",
-                      data: paddedRollingAverages, // Use the rolling average data
-                      type: "line", // Display as a line chart
-                      color: "#5D3FD3", // Optional: Set a different color for the rolling average
-                  },
-              ],
-          });
-      })
-      .catch((error) => {
-          console.error("Error fetching data: ", error);
+              grid: { color: "#e1e0d9", drawTicks: false },   // hairline gridlines
+              border: { display: false },
+            },
+          },
+        },
       });
+    })
+    .catch((error) => {
+      console.error("Error fetching data: ", error);
+    });
 }
 
 
