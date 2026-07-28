@@ -423,6 +423,14 @@ public class TopTaskController {
             "GOVERNMENT OF CANADA, PUBLIC SERVICES AND PROCUREMENT CANADA",
             "PSPC / SPAC"));
     institutionMappings.put(
+        "PSPC-OL",
+        Arrays.asList(
+            "PSPC-OL",
+            "SPAC-NL",
+            "GOVERNMENT OF CANADA, PUBLIC SERVICES AND PROCUREMENT CANADA, TRANSLATION BUREAU",
+            "GOUVERNEMENT DU CANADA, SERVICES PUBLICS ET APPROVISIONNEMENT CANADA, BUREAU DE LA TRADUCTION",
+            "PSPC-OL / SPAC-NL"));
+    institutionMappings.put(
         "RCMP",
         Arrays.asList(
             "RCMP",
